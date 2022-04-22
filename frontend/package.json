@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "generate-rest": "npx @openapitools/openapi-generator-cli generate -i ../swaggerDocumentation.yaml -g typescript-angular -o ./app/generated-sources/openapi -c ./openApiAngularConfig.json"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +41,7 @@
     "@angular/cli": "13.3.1",
     "@angular/compiler-cli": "13.3.1",
     "@angular/language-service": "13.3.1",
+    "@openapitools/openapi-generator-cli": "2.4.26",
     "@types/jasmine": "4.0.2",
     "@types/jasminewd2": "2.0.10",
     "@types/jwt-decode": "2.2.1",
