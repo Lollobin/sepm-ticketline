@@ -12,7 +12,7 @@ import {LoginComponent} from './components/login/login.component';
 import {MessageComponent} from './components/message/message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
-import { SeatingPlanComponent } from './seating-plan/seating-plan.component';
+import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
 
 @NgModule({
   declarations: [
