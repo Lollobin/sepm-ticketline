@@ -9,6 +9,8 @@ servers:
 paths:
   /login:
     post:
+      tags:
+        - auth
       summary: Retrieves an authentication token.
       requestBody:
         required: true
@@ -29,6 +31,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /passwordReset/{id}:
     post: 
+      tags:
+        - userManagement 
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
       security:
         - BearerAuth: []
@@ -45,6 +49,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts:
     post:
+      tags: 
+        - seatingPlans
       summary: Uploads a seating plan layout.
       security:
         - BearerAuth: []      
@@ -68,6 +74,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts/{id}:
     get:
+      tags: 
+        - seatingPlans
       summary: Retreives seating plan layout with the given ID 
       security:
         - BearerAuth: []
@@ -85,6 +93,8 @@ paths:
           description: The seating plan layout with the given ID was not found
   /images:
     post:
+      tags:
+        - articles
       summary: Uploads an image.
       security:
         - BearerAuth: []
@@ -107,6 +117,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /images/{id}:
     get:
+      tags:
+        - articles
       summary: Retreives an article image with the given ID 
       security:
         - BearerAuth: []
@@ -124,6 +136,8 @@ paths:
           description: The image with the given ID was not found
   /users:
     get:
+      tags:
+        - userManagement
       summary: Gets a list of users
       security:
         - BearerAuth: []
@@ -139,6 +153,8 @@ paths:
                 items:
                   $ref: "#/components/schemas/User"
     post:
+      tags:
+        - userManagement
       summary: Registers an user with the given data.
       requestBody:
         required: true
@@ -158,6 +174,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /users/{id}:
     put:
+      tags:
+        - userManagement
       summary: Updates information of an user with the given data.
       parameters:
         - $ref: "#/components/parameters/userId"
@@ -179,6 +197,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags:
+        - userManagement
       summary: Retreives information of an user with the given data.
       parameters:
         - $ref: "#/components/parameters/userId"
@@ -198,6 +218,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     delete:
+      tags:
+        - userManagement
       summary: Deletes the user with the given ID.
       description: Only an administrator or the user itself can delete a given user account.
       parameters:
@@ -217,6 +239,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /administrativeUsers:
     post:
+      tags:
+        - userManagement
       summary: Registers an user with administrative rights with the given data.
       security:
         - BearerAuth: []
@@ -242,6 +266,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /lockStatus/{id}:
     put:
+      tags:
+        - userManagement
       summary: Locks the user-account with the given ID. 
       parameters:
         - $ref: "#/components/parameters/userId"
@@ -265,6 +291,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /articles:
     post:
+      tags:
+        - articles
       summary: Creates a news article
       description: Only admins can create new news articles
       security:
@@ -290,6 +318,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags:
+        - articles
       summary: Gets news articles
       security:
         - BearerAuth: []
@@ -310,6 +340,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /articles/{id}:
     get:
+      tags:
+        - articles
       summary: Gets the details of a news article
       parameters:
         - $ref: "#/components/parameters/articleId"
@@ -330,6 +362,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /readArticleStatus/{id}:
     put:
+      tags:
+        - articles
       summary: Sets the status to read or unread for an article for the current user
       security:
         - BearerAuth: []
@@ -350,6 +384,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /events:
     post:
+      tags: 
+        - events
       summary: Creates an event
       security:
         - BearerAuth: []
@@ -374,6 +410,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags: 
+        - events
       summary: Searches for events depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all events are returned
       security:
@@ -398,6 +436,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /events/{id}:
     get:
+      tags:
+        - events
       summary: Gets the details of an event
       parameters:
         - $ref: "#/components/parameters/eventId"
@@ -418,6 +458,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /shows:
     post:
+      tags: 
+        - shows
       summary: Creates a show
       security:
         - BearerAuth: []
@@ -442,6 +484,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags: 
+        - shows
       summary: Searches for shows depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all shows are returned
       security:
@@ -466,6 +510,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /shows/{id}:
     get:
+      tags: 
+        - shows
       summary: Retreives information of the show with the given ID.
       parameters:
         - $ref: "#/components/parameters/showId"
@@ -486,6 +532,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /topShows:
     get:
+      tags: 
+        - shows
       summary: Searches for shows that have the highest amount of tickets sold per category for a given month
       description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
       security:
@@ -510,6 +558,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations:
     post:
+      tags: 
+        - locations
       summary: Creates a location.
       security:
         - BearerAuth: []
@@ -534,6 +584,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags: 
+        - locations
       summary: Searches for locations depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all locations are returned
       security:
@@ -558,6 +610,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}:
     get:
+      tags: 
+        - locations
       summary: Gets the details of a location
       parameters:
         - $ref: "#/components/parameters/locationId"
@@ -578,6 +632,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /artists:
     get:
+      tags: 
+        - artists
       summary: Searches for artists depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all artists are returned
       security:
@@ -603,6 +659,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /artists/{id}:
     get:
+      tags: 
+        - artists
       summary: Retreives information of the artist with the given ID.
       parameters:
         - $ref: "#/components/parameters/artistId"
@@ -623,6 +681,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlans:
     post:
+      tags: 
+        - seatingPlans
       summary: Creates a seating plan.
       security:
         - BearerAuth: []
@@ -647,6 +707,8 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
+      tags: 
+        - seatingPlans
       summary: Gets all seating plans
       security:
         - BearerAuth: []
@@ -665,6 +727,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlans/{id}:
     get:
+      tags: 
+        - seatingPlans
       summary: Retreives information of the seating plan with the given ID.
       parameters:
         - $ref: "#/components/parameters/seatingPlanId"
@@ -685,6 +749,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
     get:
+      tags: 
+        - shows
       summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
       security:
         - BearerAuth: []
@@ -705,6 +771,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /tickets:
     post:
+      tags: 
+        - tickets
       summary: Sets the given tickets to purchased or reserved
       security:
         - BearerAuth: []
@@ -729,6 +797,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /ticketPrints/{id}:
     get:
+      tags: 
+        - tickets
       summary: Retreives a ticket in PDF-format or the given Ticket ID.
       parameters:
         - $ref: "#/components/parameters/ticketId"
@@ -752,6 +822,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /ticketCancellations:
     post:
+      tags: 
+        - tickets
       summary: Cancels the given tickets purchased or reserved status
       security:
         - BearerAuth: []
@@ -778,6 +850,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /orders:
     get:
+      tags: 
+        - tickets
       summary: Shows orders for the user possessing the token
       security:
         - BearerAuth: []
@@ -800,6 +874,8 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /bills/{id}:
     get:
+      tags: 
+        - tickets
       summary: Gets a PDF version of a bill
       security:
         - BearerAuth: []
