@@ -69,7 +69,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts/{id}:
     get:
-      summary: Serves all available seat layouts
+      summary: Retreives seating plan layout with the given ID 
       security:
         - BearerAuth: []
       parameters:
@@ -83,7 +83,7 @@ paths:
                 type: string
                 format: binary
         404:
-          description: The seatingPlanLayout with the given ID was not found
+          description: The seating plan layout with the given ID was not found
   /images:
     post:
       summary: Uploads an image.
@@ -109,7 +109,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /images/{id}:
     get:
-      summary: Serves all available article images
+      summary: Retreives an article image with the given ID 
       security:
         - BearerAuth: []
       parameters:
