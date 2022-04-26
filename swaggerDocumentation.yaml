@@ -1016,8 +1016,16 @@ components:
           type: number
         ticketsSold:
           type: integer
+        artists:
+          type: array
+          items:
+            type: number
       required:
         - showId
+        - date
+        - event
+        - ticketsSold
+        - artists
     Article:
       type: object
       properties:
