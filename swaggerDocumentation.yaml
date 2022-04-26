@@ -1,0 +1,1477 @@
+openapi: 3.0.0
+info:
+  title: Ticketline API
+  description: Documentation for the Ticketline API
+  version: 0.0.1
+servers:
+  - url: localhost
+    description: Can be used when spring application is started locally
+paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Retrieves an authentication token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+      responses:
+        200:
+          description: Returns the JWT token on success
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /passwordReset/{id}:
+    post: 
+      tags:
+        - userManagement 
+      summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
+      security:
+        - BearerAuth: []
+      parameters: 
+        - $ref: "#/components/parameters/userId"
+      responses:
+        200:
+          description: Successful reset of the password. An email will be sent soon.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlanLayouts:
+    post:
+      tags: 
+        - seatingPlans
+      summary: Uploads a seating plan layout.
+      security:
+        - BearerAuth: []      
+      requestBody:
+        required: true
+        content:
+          # Change to correct schema
+          application/json:
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: Successful upload of a seating plan layout.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlanLayouts/{id}:
+    get:
+      tags: 
+        - seatingPlans
+      summary: Retreives seating plan layout with the given ID 
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/seatingPlanLayoutId"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: The seating plan layout with the given ID was not found
+  /images:
+    post:
+      tags:
+        - articles
+      summary: Uploads an image.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: Successful upload of an image.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /images/{id}:
+    get:
+      tags:
+        - articles
+      summary: Retreives an article image with the given ID 
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/imageId"
+      responses:
+        200:
+          description: OK
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: The image with the given ID was not found
+  /users:
+    get:
+      tags:
+        - userManagement
+      summary: Gets a list of users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/filterLocked"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      tags:
+        - userManagement
+      summary: Registers an user with the given data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithPassword"
+      responses:
+        201:
+          description: Successful creation of an user
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /users/{id}:
+    put:
+      tags:
+        - userManagement
+      summary: Updates information of an user with the given data.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithPassword"
+      responses:
+        204:
+          description: Successful update of an user.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags:
+        - userManagement
+      summary: Retreives information of an user with the given data.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of an user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    delete:
+      tags:
+        - userManagement
+      summary: Deletes the user with the given ID.
+      description: Only an administrator or the user itself can delete a given user account.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - BearerAuth: []
+      responses:
+        204:
+          description: Successful deletion of an user.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /administrativeUsers:
+    post:
+      tags:
+        - userManagement
+      summary: Registers an user with administrative rights with the given data.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithPassword"
+      responses:
+        201:
+          description: Successful creation of an administrative user. Location header points to normal /user/{id} endpoint.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /lockStatus/{id}:
+    put:
+      tags:
+        - userManagement
+      summary: Locks the user-account with the given ID. 
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Send boolean value for locking/unlocking
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
+      responses:
+        200:
+          description: Successful update of the lock status of an user.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /articles:
+    post:
+      tags:
+        - articles
+      summary: Creates a news article
+      description: Only admins can create new news articles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleWithoutId"
+      responses:
+        201:
+          description: Successful creation of an article
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags:
+        - articles
+      summary: Gets news articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/filterRead"
+      responses:
+        200:
+          description: Successful retreival of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /articles/{id}:
+    get:
+      tags:
+        - articles
+      summary: Gets the details of a news article
+      parameters:
+        - $ref: "#/components/parameters/articleId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of the article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The article with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /readArticleStatus/{id}:
+    put:
+      tags:
+        - articles
+      summary: Sets the status to read or unread for an article for the current user
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/articleId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
+      responses:
+        200:
+          description: Successful set the "read"-status of an article for an user
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /events:
+    post:
+      tags: 
+        - events
+      summary: Creates an event
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventWithoutId"
+      responses:
+        201:
+          description: Successful creation of an event
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags: 
+        - events
+      summary: Searches for events depending on parameters
+      description: Filters data depending on the query parameters. When no query parameters are given, all events are returned
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            $ref: "#/components/schemas/EventSearch"
+      responses:
+        200:
+          description: Successful retreival of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /events/{id}:
+    get:
+      tags:
+        - events
+      summary: Gets the details of an event
+      parameters:
+        - $ref: "#/components/parameters/eventId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of the event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The article with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /shows:
+    post:
+      tags: 
+        - shows
+      summary: Creates a show
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShowWithoutId"
+      responses:
+        201:
+          description: Successful creation of a show
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags: 
+        - shows
+      summary: Searches for shows depending on parameters
+      description: Filters data depending on the query parameters. When no query parameters are given, all shows are returned
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            $ref: "#/components/schemas/ShowSearch"
+      responses:
+        200:
+          description: Successful retreival of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Show"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /shows/{id}:
+    get:
+      tags: 
+        - shows
+      summary: Retreives information of the show with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/showId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of a show.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Show"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The show with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /topShows:
+    get:
+      tags: 
+        - shows
+      summary: Searches for shows that have the highest amount of tickets sold per category for a given month
+      description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            $ref: "#/components/schemas/TopShowSearch"
+      responses:
+        200:
+          description: Successful retreival of locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShowWithTicketsSold"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /locations:
+    post:
+      tags: 
+        - locations
+      summary: Creates a location.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationWithoutId"
+      responses:
+        201:
+          description: Successful creation of a location
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags: 
+        - locations
+      summary: Searches for locations depending on parameters
+      description: Filters data depending on the query parameters. When no query parameters are given, all locations are returned
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            $ref: "#/components/schemas/LocationSearch"
+      responses:
+        200:
+          description: Successful retreival of locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /locations/{id}:
+    get:
+      tags: 
+        - locations
+      summary: Gets the details of a location
+      parameters:
+        - $ref: "#/components/parameters/locationId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of the location
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The location with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /artists:
+    get:
+      tags: 
+        - artists
+      summary: Searches for artists depending on parameters
+      description: Filters data depending on the query parameters. When no query parameters are given, all artists are returned
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: Finds artists that either have their first, last, band name or their alias containing the search string
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retreival of artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Artist"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /artists/{id}:
+    get:
+      tags: 
+        - artists
+      summary: Retreives information of the artist with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/artistId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of an artist.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artist"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The artist with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlans:
+    post:
+      tags: 
+        - seatingPlans
+      summary: Creates a seating plan.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeatingPlanWithoutId"
+      responses:
+        201:
+          description: Successful creation of a seating plan
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    get:
+      tags: 
+        - seatingPlans
+      summary: Gets all seating plans
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeatingPlan"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlans/{id}:
+    get:
+      tags: 
+        - seatingPlans
+      summary: Retreives information of the seating plan with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/seatingPlanId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of a seating plan.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeatingPlan"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The seating plan with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /showTickets/{id}:
+    get:
+      tags: 
+        - shows
+      summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/showId"
+      responses:
+        200:
+          description: Successful retreival of the show information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShowInformation"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /tickets:
+    post:
+      tags: 
+        - tickets
+      summary: Sets the given tickets to purchased or reserved
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketStatus"
+      responses:
+        201:
+          description: Successful purchase of a ticket. Returns the purchased and reserved tickets with their ID.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FullTicketWithStatus"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /ticketPrints/{id}:
+    get:
+      tags: 
+        - tickets
+      summary: Retreives a ticket in PDF-format or the given Ticket ID.
+      parameters:
+        - $ref: "#/components/parameters/ticketId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of a ticket.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The ticket with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /ticketCancellations:
+    post:
+      tags: 
+        - tickets
+      summary: Cancels the given tickets purchased or reserved status
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketStatus"
+      responses:
+        201:
+          description: Successful cancellation of a ticket. Returns the id of the cancelled tickets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketStatus"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        409:
+          description: Tickets can only be cancelled for the own user
+        422:
+          description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /orders:
+    get:
+      tags: 
+        - tickets
+      summary: Shows orders for the user possessing the token
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The user with the given token was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /bills/{id}:
+    get:
+      tags: 
+        - tickets
+      summary: Gets a PDF version of a bill
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/transactionId"
+      responses:
+        200:
+          description: Successful retreival of orders
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The given transaction id was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+components:
+  parameters:
+    userId:
+      name: id
+      in: path
+      description: ID of the user that is retreived
+      required: true
+      schema:
+        type: integer
+    articleId:
+      name: id
+      in: path
+      description: ID of the user that is retreived
+      required: true
+      schema:
+        type: integer
+    artistId:
+      name: id
+      in: path
+      description: ID of the artist that is retreived
+      required: true
+      schema:
+        type: integer
+    eventId:
+      name: id
+      in: path
+      description: ID of the event that is retreived
+      required: true
+      schema:
+        type: integer
+    showId:
+      name: id
+      in: path
+      description: ID of the show that is retreived
+      required: true
+      schema:
+        type: integer
+    locationId:
+      name: id
+      in: path
+      description: ID of the location that is retreived
+      required: true
+      schema:
+        type: integer
+    transactionId:
+      name: id
+      in: path
+      description: ID of the transaction that is retreived
+      required: true
+      schema:
+        type: integer
+    ticketId:
+      name: id
+      in: path
+      description: ID of the ticket that is retreived
+      required: true
+      schema:
+        type: integer
+    seatingPlanId:
+      name: id
+      in: path
+      description: ID of the seating plan layout that is retreived
+      required: true
+      schema:
+        type: integer
+    seatingPlanLayoutId:
+      name: id
+      in: path
+      description: ID of the seating plan layout that is retreived
+      required: true
+      schema:
+        type: integer
+    imageId:
+      name: id
+      in: path
+      description: ID of the image that is retreived
+      required: true
+      schema:
+        type: integer
+    filterLocked:
+      name: filterLocked
+      in: query
+      description: Only return locked users if this is set to true
+      required: false
+      schema:
+        type: boolean
+    filterRead:
+      name: filterRead
+      in: query
+      description: Only return read articles if this is set to true
+      required: false
+      schema:
+        type: boolean
+  responses:
+    500-internal-error:
+      description: Internal Server Error
+    401-not-authenticated:
+      description: The user is not logged in
+    403-forbidden:
+      description: The user needs administrative rights
+    404-not-found:
+      description: Could not find resource
+  headers:
+    Location:
+      required: true
+      description: The location of the created resource
+      schema:
+        type: string
+        format: uri
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Gender:
+      type: string
+      enum:
+        - male
+        - female
+        - other
+    BookingType:
+      type: string
+      enum:
+        - purchase
+        - cancellation
+        - reservation
+        - dereservation
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        street:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        isLocked:
+          type: boolean
+      required:
+        - userId
+        - firstName
+        - lastName
+        - email
+        - gender
+        - street
+        - zipCode
+        - city
+        - country
+        - isLocked
+    UserWithPassword:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        street:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        password:
+          type: string
+      required:
+        - firstName
+        - lastName
+        - email
+        - gender
+        - street
+        - zipCode
+        - city
+        - country
+        - password
+    EventWithoutId:
+      type: object
+      properties:
+        name:
+          type: string
+        duration:
+          type: number
+        category:
+          type: string
+        content:
+          type: string
+      required:
+        - name
+    Event:
+      type: object
+      properties:
+        eventId:
+          type: integer
+        name:
+          type: string
+        duration:
+          type: number
+        category:
+          type: string
+        content:
+          type: string
+      required:
+        - eventId
+        - name
+    Show:
+      type: object
+      properties:
+        showId:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        event:
+          type: number
+        artists:
+          type: array
+          items:
+            type: number
+      required:
+        - showId
+        - event
+        - artists
+    ShowWithoutId:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        event:
+          type: number
+        artists:
+          type: array
+          items:
+            type: number
+      required:
+        - date
+        - event
+        - artists
+    ShowWithTicketsSold:
+      type: object
+      properties:
+        showId:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        event:
+          type: number
+        ticketsSold:
+          type: integer
+        artists:
+          type: array
+          items:
+            type: number
+      required:
+        - showId
+        - date
+        - event
+        - ticketsSold
+        - artists
+    Article:
+      type: object
+      properties:
+        articleId:
+          type: integer
+        title:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        summary:
+          type: string
+        text:
+          type: string
+        images:
+          type: array
+          items:
+            type: integer
+      required:
+        - articleId
+        - title
+        - creationDate
+        - images
+    ArticleWithoutId:
+      type: object
+      properties:
+        title:
+          type: string
+        summary:
+          type: string
+        text:
+          type: string
+        images:
+          type: array
+          items:
+            type: integer
+      required:
+        - title
+        - images
+    Location:
+      type: object
+      properties:
+        locationId:
+          type: integer
+        name:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+      required:
+        - locationId
+        - name
+    LocationWithoutId:
+      type: object
+      properties:
+        name:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+      required:
+        - name
+    Artist:
+      type: object
+      properties:
+        artistId:
+          type: integer
+        bandName:
+          type: string
+        knownAs:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+        - artistId
+    SeatingPlanWithoutId:
+      type: object
+      properties:
+        name:
+          type: string
+        seatingPlanLayoutId:
+          type: number
+        locationId:
+          type: integer
+      required:
+        - name
+        - seatingPlanLayoutId
+        - locationId
+    SeatingPlan:
+      type: object
+      properties:
+        seatingPlanId:
+          type: integer
+        name:
+          type: string
+        seatingPlanLayoutId:
+          type: number
+        locationId:
+          type: integer
+      required:
+        - seatingPlanId
+        - name
+        - seatingPlanLayoutId
+        - locationId
+    Ticket:
+      type: object
+      properties:
+        ticketId:
+          type: number
+        rowNumber:
+          type: number
+        seatNumber:
+          type: number
+        sector:
+          type: number
+      required:
+        - ticketId
+        - sector
+    SeatWithBookingStatus:
+      type: object
+      properties:
+        seatId:
+          type: number
+        reserved:
+          type: boolean
+        purchased:
+          type: boolean
+        rowNumber:
+          type: number
+        seatNumber:
+          type: number
+        sector:
+          type: number
+      required:
+        - seatId
+        - reserved
+        - purchased
+        - sector
+    Sector:
+      type: object
+      properties:
+        sectorId:
+          type: number
+        price:
+          type: number
+      required:
+        - sectorId
+        - price
+    Transaction:
+      type: object
+      properties:
+        transactionId:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        invoiceItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceItem"
+      required:
+        - transactionId
+        - date
+        - invoiceItems
+    InvoiceItem:
+      type: object
+      properties:
+        priceAtBookingTime:
+          type: number
+        type:
+          $ref: "#/components/schemas/BookingType"
+        ticket:
+          $ref: "#/components/schemas/Ticket"
+      required:
+        - priceAtBookingTime
+        - type
+        - ticket
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    EventSearch:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        duration:
+          type: integer
+        content:
+          type: string
+    TopShowSearch:
+      type: object
+      properties:
+        category:
+          type: string
+        month:
+          type: string
+          format: date
+      required:
+        - category
+        - month
+    ShowSearch:
+      type: object
+      properties:
+        event:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        price:
+          type: number
+        seatingPlan:
+          type: integer
+        location:
+          type: integer
+        artist:
+          type: integer
+    LocationSearch:
+      type: object
+      properties:
+        name:
+          description: Finds locations that contains the given string in their name
+          type: string
+        street:
+          description: Finds locations that contains the given string in their street
+          type: string
+        city:
+          description: Finds locations that contains the given string in their city
+          type: string
+        country:
+          description: Finds locations that contains the given string in their country
+          type: string
+        zipCode:
+          description: Finds locations that contains the given string in their zipCode
+          type: string
+    TicketStatus:
+      type: object
+      properties:
+        reserved:
+          type: array
+          items:
+            type: integer
+        purchased:
+          type: array
+          items:
+            type: integer
+      required:
+        - reserved
+        - purchased
+    FullTicketWithStatus:
+      type: object
+      properties:
+        reserved:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
+        purchased:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
+      required:
+        - reserved
+        - purchased
+    ShowInformation: 
+      type: object
+      properties:
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatWithBookingStatus"
+        sectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sector"
+        seatingPlan:
+          $ref: "#/components/schemas/SeatingPlan"
+      required:
+        - seats
+        - sectors
+        - seatingPlan
+

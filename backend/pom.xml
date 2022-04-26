@@ -183,7 +183,7 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
-                    <failOnViolation>true</failOnViolation>
+                    <failOnViolation>false</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
                 </configuration>
                 <executions>
@@ -213,6 +213,39 @@
                     <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
                     <verbose>true</verbose>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <!-- RELEASE_VERSION -->
+                <version>5.4.0</version>
+                <!-- /RELEASE_VERSION -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../swaggerDocumentation.yaml</inputSpec>
+                            <output>${project.basedir}</output>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <modelNameSuffix>Dto</modelNameSuffix>
+                            <generateApiTests>true</generateApiTests>
+                            <generateModelTests>true</generateModelTests>
+                            <enablePostProcessFile>true</enablePostProcessFile>
+                            <configOptions>
+                                <basePackage>at.ac.tuwien.sepm.groupphase.backend</basePackage>
+                                <modelPackage>at.ac.tuwien.sepm.groupphase.backend.endpoint.dto</modelPackage>
+                                <apiPackage>at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces</apiPackage>
+                                <configPackage>at.ac.tuwien.sepm.groupphase.backend.config</configPackage>
+                                <dateLibrary>java8</dateLibrary>
+                                <interfaceOnly>true</interfaceOnly>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
