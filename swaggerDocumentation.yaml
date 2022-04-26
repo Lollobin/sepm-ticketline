@@ -634,14 +634,14 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
     get:
-      summary: Gets all tickets with their corresponding booking status + hall plan + sectors
+      summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
       security:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/showId"
       responses:
         200:
-          description: Successful retreival of tickets
+          description: Successful retreival of the show information
           content:
             application/json:
               schema:
