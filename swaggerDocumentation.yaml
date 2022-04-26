@@ -569,6 +569,26 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         500:
           $ref: "#/components/responses/500-internal-error"
+  /artists/{id}:
+    get:
+      summary: Retreives information of the artist with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/artistId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of an artist.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artist"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The artist with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /seatingPlans:
     post:
       summary: Creates a seating plan.
@@ -766,6 +786,13 @@ components:
       required: true
       schema:
         type: integer
+    artistId:
+      name: id
+      in: path
+      description: ID of the artist that is retreived
+      required: true
+      schema:
+        type: integer
     eventId:
       name: id
       in: path
@@ -953,9 +980,14 @@ components:
           format: date-time
         event:
           type: number
+        artists:
+          type: array
+          items:
+            type: number
       required:
         - showId
         - event
+        - artists
     ShowWithoutId:
       type: object
       properties:
