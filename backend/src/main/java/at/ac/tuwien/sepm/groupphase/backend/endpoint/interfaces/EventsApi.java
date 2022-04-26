@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "events", description = "the events API")
 public interface EventsApi {
@@ -52,6 +52,7 @@ public interface EventsApi {
     @Operation(
         operationId = "eventsGet",
         summary = "Searches for events depending on parameters",
+        tags = { "events" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -84,6 +85,51 @@ public interface EventsApi {
 
 
     /**
+     * GET /events/{id} : Gets the details of an event
+     *
+     * @param id ID of the event that is retreived (required)
+     * @return Successful retreival of the event (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The article with the given ID was not found (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "eventsIdGet",
+        summary = "Gets the details of an event",
+        tags = { "events" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The article with the given ID was not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/events/{id}",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<EventDto> eventsIdGet(
+        @Parameter(name = "id", description = "ID of the event that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
      * POST /events : Creates an event
      *
      * @param eventWithoutIdDto  (required)
@@ -96,8 +142,9 @@ public interface EventsApi {
     @Operation(
         operationId = "eventsPost",
         summary = "Creates an event",
+        tags = { "events" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of an event", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventDto.class))),
+            @ApiResponse(responseCode = "201", description = "Successful creation of an event"),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
@@ -110,21 +157,11 @@ public interface EventsApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/events",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<EventDto> eventsPost(
+    default ResponseEntity<Void> eventsPost(
         @Parameter(name = "EventWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody EventWithoutIdDto eventWithoutIdDto
     ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "ticketPrints", description = "the ticketPrints API")
 public interface TicketPrintsApi {
@@ -50,6 +50,7 @@ public interface TicketPrintsApi {
     @Operation(
         operationId = "ticketPrintsIdGet",
         summary = "Retreives a ticket in PDF-format or the given Ticket ID.",
+        tags = { "tickets" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of a ticket.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  org.springframework.core.io.Resource.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),

@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "locations", description = "the locations API")
 public interface LocationsApi {
@@ -52,6 +52,7 @@ public interface LocationsApi {
     @Operation(
         operationId = "locationsGet",
         summary = "Searches for locations depending on parameters",
+        tags = { "locations" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of locations", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  LocationDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -84,6 +85,51 @@ public interface LocationsApi {
 
 
     /**
+     * GET /locations/{id} : Gets the details of a location
+     *
+     * @param id ID of the location that is retreived (required)
+     * @return Successful retreival of the location (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The location with the given ID was not found (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "locationsIdGet",
+        summary = "Gets the details of a location",
+        tags = { "locations" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of the location", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  LocationDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The location with the given ID was not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/locations/{id}",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<LocationDto> locationsIdGet(
+        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"locationId\" : 0, \"street\" : \"street\", \"name\" : \"name\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
      * POST /locations : Creates a location.
      *
      * @param locationWithoutIdDto  (required)
@@ -96,8 +142,9 @@ public interface LocationsApi {
     @Operation(
         operationId = "locationsPost",
         summary = "Creates a location.",
+        tags = { "locations" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of a location", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  LocationDto.class))),
+            @ApiResponse(responseCode = "201", description = "Successful creation of a location"),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
@@ -110,21 +157,11 @@ public interface LocationsApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/locations",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<LocationDto> locationsPost(
+    default ResponseEntity<Void> locationsPost(
         @Parameter(name = "LocationWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody LocationWithoutIdDto locationWithoutIdDto
     ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"locationId\" : 0, \"street\" : \"street\", \"name\" : \"name\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "articles", description = "the articles API")
 public interface ArticlesApi {
@@ -50,6 +50,7 @@ public interface ArticlesApi {
     @Operation(
         operationId = "articlesGet",
         summary = "Gets news articles",
+        tags = { "articles" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -93,6 +94,7 @@ public interface ArticlesApi {
     @Operation(
         operationId = "articlesIdGet",
         summary = "Gets the details of a news article",
+        tags = { "articles" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of the article", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -139,8 +141,9 @@ public interface ArticlesApi {
     @Operation(
         operationId = "articlesPost",
         summary = "Creates a news article",
+        tags = { "articles" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of an article", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
+            @ApiResponse(responseCode = "201", description = "Successful creation of an article"),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
@@ -153,21 +156,11 @@ public interface ArticlesApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/articles",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<ArticleDto> articlesPost(
+    default ResponseEntity<Void> articlesPost(
         @Parameter(name = "ArticleWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody ArticleWithoutIdDto articleWithoutIdDto
     ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"summary\" : \"summary\", \"images\" : [ 6, 6 ], \"articleId\" : 0, \"text\" : \"text\", \"title\" : \"title\", \"creationDate\" : \"2000-01-23T04:56:07.000+00:00\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

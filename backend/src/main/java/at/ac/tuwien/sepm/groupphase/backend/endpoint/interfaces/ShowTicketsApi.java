@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "showTickets", description = "the showTickets API")
 public interface ShowTicketsApi {
@@ -39,19 +39,20 @@ public interface ShowTicketsApi {
     }
 
     /**
-     * GET /showTickets/{id} : Gets all tickets with their corresponding booking status + hall plan + sectors
+     * GET /showTickets/{id} : Gets all tickets of a show with their corresponding booking status + hall plan + sectors
      *
      * @param id ID of the show that is retreived (required)
-     * @return Successful retreival of tickets (status code 200)
+     * @return Successful retreival of the show information (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user with the given ID was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
         operationId = "showTicketsIdGet",
-        summary = "Gets all tickets with their corresponding booking status + hall plan + sectors",
+        summary = "Gets all tickets of a show with their corresponding booking status + hall plan + sectors",
+        tags = { "shows" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowInformationDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of the show information", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowInformationDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
@@ -71,7 +72,7 @@ public interface ShowTicketsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 }, { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 } ], \"seatingPlan\" : { \"locationId\" : 6, \"seatingPlanId\" : 0, \"name\" : \"name\", \"seatingLayoutId\" : \"seatingLayoutId\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 } ] }";
+                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 }, { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

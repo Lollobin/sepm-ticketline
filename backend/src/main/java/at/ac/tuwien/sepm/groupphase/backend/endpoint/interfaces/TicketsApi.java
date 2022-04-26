@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "tickets", description = "the tickets API")
 public interface TicketsApi {
@@ -40,7 +40,7 @@ public interface TicketsApi {
     }
 
     /**
-     * POST /tickets/ : Sets the given tickets to purchased or reserved
+     * POST /tickets : Sets the given tickets to purchased or reserved
      *
      * @param ticketStatusDto  (required)
      * @return Successful purchase of a ticket. Returns the purchased and reserved tickets with their ID. (status code 201)
@@ -51,6 +51,7 @@ public interface TicketsApi {
     @Operation(
         operationId = "ticketsPost",
         summary = "Sets the given tickets to purchased or reserved",
+        tags = { "tickets" },
         responses = {
             @ApiResponse(responseCode = "201", description = "Successful purchase of a ticket. Returns the purchased and reserved tickets with their ID.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  FullTicketWithStatusDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -63,7 +64,7 @@ public interface TicketsApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/tickets/",
+        value = "/tickets",
         produces = { "application/json" },
         consumes = { "application/json" }
     )

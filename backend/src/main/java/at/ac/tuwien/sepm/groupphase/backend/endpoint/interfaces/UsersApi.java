@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "users", description = "the users API")
 public interface UsersApi {
@@ -48,6 +48,7 @@ public interface UsersApi {
     @Operation(
         operationId = "usersGet",
         summary = "Gets a list of users",
+        tags = { "userManagement" },
         responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UserDto.class)))
         },
@@ -91,6 +92,7 @@ public interface UsersApi {
     @Operation(
         operationId = "usersIdDelete",
         summary = "Deletes the user with the given ID.",
+        tags = { "userManagement" },
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful deletion of an user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -126,6 +128,7 @@ public interface UsersApi {
     @Operation(
         operationId = "usersIdGet",
         summary = "Retreives information of an user with the given data.",
+        tags = { "userManagement" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of an user.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UserDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -171,6 +174,7 @@ public interface UsersApi {
     @Operation(
         operationId = "usersIdPut",
         summary = "Updates information of an user with the given data.",
+        tags = { "userManagement" },
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful update of an user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -206,8 +210,9 @@ public interface UsersApi {
     @Operation(
         operationId = "usersPost",
         summary = "Registers an user with the given data.",
+        tags = { "userManagement" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of an user", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UserDto.class))),
+            @ApiResponse(responseCode = "201", description = "Successful creation of an user"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         }
@@ -215,21 +220,11 @@ public interface UsersApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/users",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<UserDto> usersPost(
+    default ResponseEntity<Void> usersPost(
         @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
     ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"zipCode\" : \"zipCode\", \"country\" : \"country\", \"city\" : \"city\", \"street\" : \"street\", \"isLocked\" : true, \"userId\" : 0, \"email\" : \"email\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

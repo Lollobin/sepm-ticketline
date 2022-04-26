@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "ticketCancellations", description = "the ticketCancellations API")
 public interface TicketCancellationsApi {
@@ -39,7 +39,7 @@ public interface TicketCancellationsApi {
     }
 
     /**
-     * POST /ticketCancellations/ : Cancels the given tickets purchased or reserved status
+     * POST /ticketCancellations : Cancels the given tickets purchased or reserved status
      *
      * @param ticketStatusDto  (required)
      * @return Successful cancellation of a ticket. Returns the id of the cancelled tickets (status code 201)
@@ -51,6 +51,7 @@ public interface TicketCancellationsApi {
     @Operation(
         operationId = "ticketCancellationsPost",
         summary = "Cancels the given tickets purchased or reserved status",
+        tags = { "tickets" },
         responses = {
             @ApiResponse(responseCode = "201", description = "Successful cancellation of a ticket. Returns the id of the cancelled tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  TicketStatusDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -64,7 +65,7 @@ public interface TicketCancellationsApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/ticketCancellations/",
+        value = "/ticketCancellations",
         produces = { "application/json" },
         consumes = { "application/json" }
     )

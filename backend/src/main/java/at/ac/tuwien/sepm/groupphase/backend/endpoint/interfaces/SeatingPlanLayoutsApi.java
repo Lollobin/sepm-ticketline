@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "seatingPlanLayouts", description = "the seatingPlanLayouts API")
 public interface SeatingPlanLayoutsApi {
@@ -38,18 +38,19 @@ public interface SeatingPlanLayoutsApi {
     }
 
     /**
-     * GET /seatingPlanLayouts/{id} : Serves all available seat layouts
+     * GET /seatingPlanLayouts/{id} : Retreives seating plan layout with the given ID
      *
      * @param id ID of the seating plan layout that is retreived (required)
      * @return OK (status code 200)
-     *         or The seatingPlanLayout with the given ID was not found (status code 404)
+     *         or The seating plan layout with the given ID was not found (status code 404)
      */
     @Operation(
         operationId = "seatingPlanLayoutsIdGet",
-        summary = "Serves all available seat layouts",
+        summary = "Retreives seating plan layout with the given ID",
+        tags = { "seatingPlans" },
         responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  org.springframework.core.io.Resource.class))),
-            @ApiResponse(responseCode = "404", description = "The seatingPlanLayout with the given ID was not found")
+            @ApiResponse(responseCode = "404", description = "The seating plan layout with the given ID was not found")
         },
         security = {
             @SecurityRequirement(name = "BearerAuth")
@@ -72,15 +73,16 @@ public interface SeatingPlanLayoutsApi {
      * POST /seatingPlanLayouts : Uploads a seating plan layout.
      *
      * @param body  (required)
-     * @return Successful upload of a seating plan layout. Returns ID of seating plan. (status code 201)
+     * @return Successful upload of a seating plan layout. (status code 201)
      *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
         operationId = "seatingPlanLayoutsPost",
         summary = "Uploads a seating plan layout.",
+        tags = { "seatingPlans" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful upload of a seating plan layout. Returns ID of seating plan.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  Integer.class))),
+            @ApiResponse(responseCode = "201", description = "Successful upload of a seating plan layout."),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
@@ -91,10 +93,9 @@ public interface SeatingPlanLayoutsApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/seatingPlanLayouts",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<Integer> seatingPlanLayoutsPost(
+    default ResponseEntity<Void> seatingPlanLayoutsPost(
         @Parameter(name = "body", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody org.springframework.core.io.Resource body
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

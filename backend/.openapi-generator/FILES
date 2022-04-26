@@ -32,12 +32,12 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/Administr
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ApiUtil.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ArticlesApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ArtistsApi.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/AuthenticateApi.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/BillApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/BillsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/EventsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ImagesApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/LocationsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/LockStatusApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/LoginApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/OrdersApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/PasswordResetApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ReadArticleStatusApi.java

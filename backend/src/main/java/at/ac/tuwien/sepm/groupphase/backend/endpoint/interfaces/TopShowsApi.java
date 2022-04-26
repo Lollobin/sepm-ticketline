@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "topShows", description = "the topShows API")
 public interface TopShowsApi {
@@ -51,6 +51,7 @@ public interface TopShowsApi {
     @Operation(
         operationId = "topShowsGet",
         summary = "Searches for shows that have the highest amount of tickets sold per category for a given month",
+        tags = { "shows" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of locations", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowWithTicketsSoldDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -71,7 +72,7 @@ public interface TopShowsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"ticketsSold\" : 1, \"event\" : 6.027456183070403 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"ticketsSold\" : 1, \"artists\" : [ 5.962133916683182, 5.962133916683182 ], \"event\" : 6.027456183070403 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

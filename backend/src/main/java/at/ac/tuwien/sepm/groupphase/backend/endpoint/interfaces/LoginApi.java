@@ -5,7 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AuthRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -31,45 +31,39 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
-@Tag(name = "administrativeUsers", description = "the administrativeUsers API")
-public interface AdministrativeUsersApi {
+@Tag(name = "login", description = "the login API")
+public interface LoginApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * POST /administrativeUsers : Registers an user with administrative rights with the given data.
+     * POST /login : Retrieves an authentication token.
      *
-     * @param userWithPasswordDto  (required)
-     * @return Successful creation of an administrative user. Location header points to normal /user/{id} endpoint. (status code 201)
+     * @param authRequestDto  (required)
+     * @return Returns the JWT token on success (status code 200)
      *         or The user is not logged in (status code 401)
-     *         or The user needs administrative rights (status code 403)
-     *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "administrativeUsersPost",
-        summary = "Registers an user with administrative rights with the given data.",
-        tags = { "userManagement" },
+        operationId = "loginPost",
+        summary = "Retrieves an authentication token.",
+        tags = { "auth" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of an administrative user. Location header points to normal /user/{id} endpoint."),
+            @ApiResponse(responseCode = "200", description = "Returns the JWT token on success", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  String.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
-            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/administrativeUsers",
+        value = "/login",
+        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<Void> administrativeUsersPost(
-        @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
+    default ResponseEntity<String> loginPost(
+        @Parameter(name = "AuthRequestDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody AuthRequestDto authRequestDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

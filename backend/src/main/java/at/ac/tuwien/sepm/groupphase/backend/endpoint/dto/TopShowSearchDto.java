@@ -19,7 +19,7 @@ import javax.annotation.Generated;
  * TopShowSearchDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 public class TopShowSearchDto   {
 
   @JsonProperty("category")

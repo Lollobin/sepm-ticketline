@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "artists", description = "the artists API")
 public interface ArtistsApi {
@@ -50,6 +50,7 @@ public interface ArtistsApi {
     @Operation(
         operationId = "artistsGet",
         summary = "Searches for artists depending on parameters",
+        tags = { "artists" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of artists", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArtistDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -66,6 +67,51 @@ public interface ArtistsApi {
     )
     default ResponseEntity<List<ArtistDto>> artistsGet(
         @Parameter(name = "search", description = "Finds artists that either have their first, last, band name or their alias containing the search string", schema = @Schema(description = "")) @Valid @RequestParam(value = "search", required = false) String search
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"knownAs\" : \"knownAs\", \"artistId\" : 0, \"bandName\" : \"bandName\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /artists/{id} : Retreives information of the artist with the given ID.
+     *
+     * @param id ID of the artist that is retreived (required)
+     * @return Successful retreival of an artist. (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The artist with the given ID was not found (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "artistsIdGet",
+        summary = "Retreives information of the artist with the given ID.",
+        tags = { "artists" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of an artist.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArtistDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The artist with the given ID was not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/artists/{id}",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<ArtistDto> artistsIdGet(
+        @Parameter(name = "id", description = "ID of the artist that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

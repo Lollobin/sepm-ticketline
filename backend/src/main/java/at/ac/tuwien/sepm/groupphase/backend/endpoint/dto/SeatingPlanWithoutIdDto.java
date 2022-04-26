@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -17,14 +18,14 @@ import javax.annotation.Generated;
  * SeatingPlanWithoutIdDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 public class SeatingPlanWithoutIdDto   {
 
   @JsonProperty("name")
   private String name;
 
-  @JsonProperty("seatingLayoutId")
-  private String seatingLayoutId;
+  @JsonProperty("seatingPlanLayoutId")
+  private BigDecimal seatingPlanLayoutId;
 
   @JsonProperty("locationId")
   private Integer locationId;
@@ -48,23 +49,23 @@ public class SeatingPlanWithoutIdDto   {
     this.name = name;
   }
 
-  public SeatingPlanWithoutIdDto seatingLayoutId(String seatingLayoutId) {
-    this.seatingLayoutId = seatingLayoutId;
+  public SeatingPlanWithoutIdDto seatingPlanLayoutId(BigDecimal seatingPlanLayoutId) {
+    this.seatingPlanLayoutId = seatingPlanLayoutId;
     return this;
   }
 
   /**
-   * Get seatingLayoutId
-   * @return seatingLayoutId
+   * Get seatingPlanLayoutId
+   * @return seatingPlanLayoutId
   */
-  
-  @Schema(name = "seatingLayoutId", required = false)
-  public String getSeatingLayoutId() {
-    return seatingLayoutId;
+  @NotNull @Valid 
+  @Schema(name = "seatingPlanLayoutId", required = true)
+  public BigDecimal getSeatingPlanLayoutId() {
+    return seatingPlanLayoutId;
   }
 
-  public void setSeatingLayoutId(String seatingLayoutId) {
-    this.seatingLayoutId = seatingLayoutId;
+  public void setSeatingPlanLayoutId(BigDecimal seatingPlanLayoutId) {
+    this.seatingPlanLayoutId = seatingPlanLayoutId;
   }
 
   public SeatingPlanWithoutIdDto locationId(Integer locationId) {
@@ -96,13 +97,13 @@ public class SeatingPlanWithoutIdDto   {
     }
     SeatingPlanWithoutIdDto seatingPlanWithoutId = (SeatingPlanWithoutIdDto) o;
     return Objects.equals(this.name, seatingPlanWithoutId.name) &&
-        Objects.equals(this.seatingLayoutId, seatingPlanWithoutId.seatingLayoutId) &&
+        Objects.equals(this.seatingPlanLayoutId, seatingPlanWithoutId.seatingPlanLayoutId) &&
         Objects.equals(this.locationId, seatingPlanWithoutId.locationId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, seatingLayoutId, locationId);
+    return Objects.hash(name, seatingPlanLayoutId, locationId);
   }
 
   @Override
@@ -110,7 +111,7 @@ public class SeatingPlanWithoutIdDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class SeatingPlanWithoutIdDto {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    seatingLayoutId: ").append(toIndentedString(seatingLayoutId)).append("\n");
+    sb.append("    seatingPlanLayoutId: ").append(toIndentedString(seatingPlanLayoutId)).append("\n");
     sb.append("    locationId: ").append(toIndentedString(locationId)).append("\n");
     sb.append("}");
     return sb.toString();

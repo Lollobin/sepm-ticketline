@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-25T14:38:18.865520970+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "seatingPlans", description = "the seatingPlans API")
 public interface SeatingPlansApi {
@@ -49,6 +49,7 @@ public interface SeatingPlansApi {
     @Operation(
         operationId = "seatingPlansGet",
         summary = "Gets all seating plans",
+        tags = { "seatingPlans" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful retreival of artists", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
@@ -69,7 +70,52 @@ public interface SeatingPlansApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"locationId\" : 6, \"seatingPlanId\" : 0, \"name\" : \"name\", \"seatingLayoutId\" : \"seatingLayoutId\" }";
+                    String exampleString = "{ \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /seatingPlans/{id} : Retreives information of the seating plan with the given ID.
+     *
+     * @param id ID of the seating plan layout that is retreived (required)
+     * @return Successful retreival of a seating plan. (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The seating plan with the given ID was not found (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "seatingPlansIdGet",
+        summary = "Retreives information of the seating plan with the given ID.",
+        tags = { "seatingPlans" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of a seating plan.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The seating plan with the given ID was not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/seatingPlans/{id}",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<SeatingPlanDto> seatingPlansIdGet(
+        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -93,8 +139,9 @@ public interface SeatingPlansApi {
     @Operation(
         operationId = "seatingPlansPost",
         summary = "Creates a seating plan.",
+        tags = { "seatingPlans" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of a seating plan", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
+            @ApiResponse(responseCode = "201", description = "Successful creation of a seating plan"),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
@@ -107,21 +154,11 @@ public interface SeatingPlansApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/seatingPlans",
-        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<SeatingPlanDto> seatingPlansPost(
+    default ResponseEntity<Void> seatingPlansPost(
         @Parameter(name = "SeatingPlanWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody SeatingPlanWithoutIdDto seatingPlanWithoutIdDto
     ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"locationId\" : 6, \"seatingPlanId\" : 0, \"name\" : \"name\", \"seatingLayoutId\" : \"seatingLayoutId\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

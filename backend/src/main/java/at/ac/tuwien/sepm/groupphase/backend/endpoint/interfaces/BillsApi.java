@@ -5,7 +5,6 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -31,32 +30,32 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:09:28.088881827+02:00[Europe/Vienna]")
 @Validated
-@Tag(name = "administrativeUsers", description = "the administrativeUsers API")
-public interface AdministrativeUsersApi {
+@Tag(name = "bills", description = "the bills API")
+public interface BillsApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * POST /administrativeUsers : Registers an user with administrative rights with the given data.
+     * GET /bills/{id} : Gets a PDF version of a bill
      *
-     * @param userWithPasswordDto  (required)
-     * @return Successful creation of an administrative user. Location header points to normal /user/{id} endpoint. (status code 201)
+     * @param id ID of the transaction that is retreived (required)
+     * @return Successful retreival of orders (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
-     *         or Validation failed for an input (status code 422)
+     *         or The given transaction id was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "administrativeUsersPost",
-        summary = "Registers an user with administrative rights with the given data.",
-        tags = { "userManagement" },
+        operationId = "billsIdGet",
+        summary = "Gets a PDF version of a bill",
+        tags = { "tickets" },
         responses = {
-            @ApiResponse(responseCode = "201", description = "Successful creation of an administrative user. Location header points to normal /user/{id} endpoint."),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  org.springframework.core.io.Resource.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
-            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
+            @ApiResponse(responseCode = "404", description = "The given transaction id was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
         security = {
@@ -64,12 +63,12 @@ public interface AdministrativeUsersApi {
         }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/administrativeUsers",
-        consumes = { "application/json" }
+        method = RequestMethod.GET,
+        value = "/bills/{id}",
+        produces = { "application/pdf" }
     )
-    default ResponseEntity<Void> administrativeUsersPost(
-        @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
+    default ResponseEntity<org.springframework.core.io.Resource> billsIdGet(
+        @Parameter(name = "id", description = "ID of the transaction that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
