@@ -15,5 +15,6 @@ export interface Show {
     showId: number;
     date?: string;
     event: number;
+    artists: Array<number>;
 }
 

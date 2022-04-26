@@ -2,7 +2,15 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
-import { DefaultService } from './api/default.service';
+import { ArticlesService } from './api/articles.service';
+import { ArtistsService } from './api/artists.service';
+import { AuthService } from './api/auth.service';
+import { EventsService } from './api/events.service';
+import { LocationsService } from './api/locations.service';
+import { SeatingPlansService } from './api/seatingPlans.service';
+import { ShowsService } from './api/shows.service';
+import { TicketsService } from './api/tickets.service';
+import { UserManagementService } from './api/userManagement.service';
 
 @NgModule({
   imports:      [],

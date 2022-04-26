@@ -13,7 +13,7 @@
 
 export interface SeatingPlanWithoutId { 
     name: string;
-    seatingLayoutId?: string;
+    seatingPlanLayoutId: number;
     locationId: number;
 }
 

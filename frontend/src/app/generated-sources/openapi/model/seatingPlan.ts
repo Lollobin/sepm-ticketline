@@ -14,7 +14,7 @@
 export interface SeatingPlan { 
     seatingPlanId: number;
     name: string;
-    seatingLayoutId?: string;
+    seatingPlanLayoutId: number;
     locationId: number;
 }
 

@@ -13,8 +13,9 @@
 
 export interface ShowWithTicketsSold { 
     showId: number;
-    date?: string;
-    event?: number;
-    ticketsSold?: number;
+    date: string;
+    event: number;
+    ticketsSold: number;
+    artists: Array<number>;
 }
 
