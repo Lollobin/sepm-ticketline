@@ -7,7 +7,7 @@ servers:
   - url: localhost
     description: Can be used when spring application is started locally
 paths:
-  /authenticate:
+  /login:
     post:
       summary: Retrieves an authentication token.
       requestBody:
