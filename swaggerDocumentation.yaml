@@ -747,7 +747,7 @@ paths:
           description: The user with the given token was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /bill/{id}:
+  /bills/{id}:
     get:
       summary: Gets a PDF version of a bill
       security:
