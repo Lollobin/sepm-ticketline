@@ -58,11 +58,10 @@ paths:
               format: binary
       responses:
         201:
-          description: Successful upload of a seating plan layout. Returns ID of seating plan.
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Successful upload of a seating plan layout.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         422:
           description: Validation failed for an input
         500:
@@ -98,11 +97,10 @@ paths:
               format: binary
       responses:
         201:
-          description: Successful upload of an image. Returns the ID of the image
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Successful upload of an image.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         422:
           description: Validation failed for an input
         500:
@@ -151,10 +149,9 @@ paths:
       responses:
         201:
           description: Successful creation of an user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         422:
           description: Validation failed for an input
         500:
@@ -231,11 +228,10 @@ paths:
               $ref: "#/components/schemas/UserWithPassword"
       responses:
         201:
-          description: Successful creation of an administrative user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
+          description: Successful creation of an administrative user. Location header points to normal /user/{id} endpoint.
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -282,10 +278,9 @@ paths:
       responses:
         201:
           description: Successful creation of an article
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Article"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -367,10 +362,9 @@ paths:
       responses:
         201:
           description: Successful creation of an event
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Event"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -402,6 +396,26 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         500:
           $ref: "#/components/responses/500-internal-error"
+  /events/{id}:
+    get:
+      summary: Gets the details of an event
+      parameters:
+        - $ref: "#/components/parameters/eventId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of the event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The article with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /shows:
     post:
       summary: Creates a show
@@ -416,10 +430,9 @@ paths:
       responses:
         201:
           description: Successful creation of a show
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Show"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -509,10 +522,9 @@ paths:
       responses:
         201:
           description: Successful creation of a location
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Location"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -542,6 +554,26 @@ paths:
                   $ref: "#/components/schemas/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /locations/{id}:
+    get:
+      summary: Gets the details of a location
+      parameters:
+        - $ref: "#/components/parameters/locationId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of the location
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The location with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
   /artists:
@@ -603,10 +635,9 @@ paths:
       responses:
         201:
           description: Successful creation of a seating plan
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SeatingPlan"
+          headers: 
+            Location:
+              $ref: "#/components/headers/Location"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -632,6 +663,26 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         500:
           $ref: "#/components/responses/500-internal-error"
+  /seatingPlans/{id}:
+    get:
+      summary: Retreives information of the seating plan with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/seatingPlanId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of a seating plan.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeatingPlan"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The seating plan with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
     get:
       summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
@@ -652,7 +703,7 @@ paths:
           description: The user with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /tickets/:
+  /tickets:
     post:
       summary: Sets the given tickets to purchased or reserved
       security:
@@ -699,7 +750,7 @@ paths:
           description: The ticket with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /ticketCancellations/:
+  /ticketCancellations:
     post:
       summary: Cancels the given tickets purchased or reserved status
       security:
@@ -725,7 +776,7 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /orders/:
+  /orders:
     get:
       summary: Shows orders for the user possessing the token
       security:
@@ -807,6 +858,13 @@ components:
       required: true
       schema:
         type: integer
+    locationId:
+      name: id
+      in: path
+      description: ID of the location that is retreived
+      required: true
+      schema:
+        type: integer
     transactionId:
       name: id
       in: path
@@ -818,6 +876,13 @@ components:
       name: id
       in: path
       description: ID of the ticket that is retreived
+      required: true
+      schema:
+        type: integer
+    seatingPlanId:
+      name: id
+      in: path
+      description: ID of the seating plan layout that is retreived
       required: true
       schema:
         type: integer
@@ -858,6 +923,13 @@ components:
       description: The user needs administrative rights
     404-not-found:
       description: Could not find resource
+  headers:
+    Location:
+      required: true
+      description: The location of the created resource
+      schema:
+        type: string
+        format: uri
   securitySchemes:
     BearerAuth:
       type: http
@@ -1118,8 +1190,8 @@ components:
       properties:
         name:
           type: string
-        seatingLayoutId:
-          type: string
+        seatingPlanLayoutId:
+          type: number
         locationId:
           type: integer
       required:
@@ -1133,8 +1205,8 @@ components:
           type: integer
         name:
           type: string
-        seatingLayoutId:
-          type: string
+        seatingPlanLayoutId:
+          type: number
         locationId:
           type: integer
       required:
