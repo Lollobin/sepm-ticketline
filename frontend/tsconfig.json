@@ -12,6 +12,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es2015",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
