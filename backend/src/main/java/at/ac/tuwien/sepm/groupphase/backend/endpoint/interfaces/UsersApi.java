@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
+import java.net.URI;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:20:21.425982882+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-27T17:50:38.012857315+02:00[Europe/Vienna]")
 @Validated
 @Tag(name = "users", description = "the users API")
 public interface UsersApi {
