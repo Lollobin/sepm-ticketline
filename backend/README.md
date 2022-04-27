@@ -1,3 +1,14 @@
+# Backend Template for SEPM Group Phase
+
+## How to run it
+
+### Start the backed
+`mvn spring-boot:run`
+
+### Start the backed with test data
+If the database is not clean, the test data won't be inserted
+
+`mvn spring-boot:run -Dspring-boot.run.profiles=generateData`
 
 # OpenAPI generated API stub
 
@@ -18,7 +29,7 @@ public class PetController implements PetApi {
 }
 ```
 
-You can also use the interface to create [Spring-Cloud Feign clients](http://projects.spring.io/spring-cloud/spring-cloud.html#spring-cloud-feign-inheritance).Eg:
+You can also use the interface to create [Spring-Cloud Feign clients](http://projects.spring.io/spring-cloud/spring-cloud.html#spring-cloud-feign-inheritance). Eg:
 ```java
 @FeignClient(name="pet", url="http://petstore.swagger.io/v2")
 public interface PetClient extends PetApi {
