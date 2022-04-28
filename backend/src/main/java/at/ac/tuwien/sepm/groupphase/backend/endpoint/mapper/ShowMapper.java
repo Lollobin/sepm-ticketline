@@ -15,6 +15,6 @@ public interface ShowMapper {
 
     ShowDto showToShowDto(Show show);
 
-    Show showWithoutDtoToShow(ShowWithoutIdDto showWithoutIdDto);
+    Show showWithoutIdDtoToShow(ShowWithoutIdDto showWithoutIdDto);
 
 }

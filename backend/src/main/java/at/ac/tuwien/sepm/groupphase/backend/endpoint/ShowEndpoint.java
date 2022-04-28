@@ -55,7 +55,7 @@ public class ShowEndpoint {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
         ShowDto newShowDto = showMapper.showToShowDto(
             showService.createShow(
-                showMapper.showWithoutDtoToShow(showWithoutIdDto)
+                showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
             ));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
