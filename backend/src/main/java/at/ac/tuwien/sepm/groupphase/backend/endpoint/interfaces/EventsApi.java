@@ -159,7 +159,7 @@ public interface EventsApi {
         value = "/events",
         consumes = { "application/json" }
     )
-    default ResponseEntity<Void> eventsPost(
+    default ResponseEntity<EventDto> eventsPost(
         @Parameter(name = "EventWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody EventWithoutIdDto eventWithoutIdDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
