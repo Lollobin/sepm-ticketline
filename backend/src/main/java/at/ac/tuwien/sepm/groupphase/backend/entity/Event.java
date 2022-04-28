@@ -94,4 +94,5 @@ public class Event {
     public void setContent(String content) {
         this.content = content;
     }
+
 }
