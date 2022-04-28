@@ -1,6 +1,22 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { Application, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
-import { drawNoSeatArea, drawStandingArea, drawArea } from "./drawElements";
+import { countBy, mapValues } from "lodash";
+import {
+  Application,
+  Container,
+  Graphics,
+  Rectangle,
+  Text,
+  TextStyle,
+} from "pixi.js";
+import {
+  drawNoSeatArea,
+  drawStandingArea,
+  drawArea,
+  SeatingPlan,
+  SectorWithLocation,
+  Sector,
+} from "./drawElements";
+import sample from "./sampleStructure.json";
 @Component({
   selector: "app-seating-plan",
   templateUrl: "./seating-plan.component.html",
@@ -17,66 +33,66 @@ export class SeatingPlanComponent implements OnInit {
       backgroundAlpha: 0,
     });
     this.pixiContainer.nativeElement.appendChild(app.view);
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 30; y++) {
-        const seat = drawArea(
-          { x: x * 15+5, y: y * 15+5, w: 10, h: 10 },
-          { baseColor: 0xf0f0f0, strokeColor:  y>15? 0xaa0000: 0xaaaa00 },
-          4
-        );
-        this.addListeners(
-          seat,
-          () => {},
-          () => {},
-          () => {}
-        );
-        app.stage.addChild(seat);
-      }
-    }
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 30; y++) {
-        const seat = drawArea(
-          { x: x * 15+455, y: y * 15+5, w: 10, h: 10 },
-          { baseColor: 0xf0f0f0, strokeColor: y>15? 0xaa0000: 0xaaaa00 },
-          4
-        );
-        this.addListeners(
-          seat,
-          () => {},
-          () => {},
-          () => {}
-        );
-        app.stage.addChild(seat);
-      }
-    }
-    app.stage.addChild(
-      drawNoSeatArea(
-        { x: 200, y: 0, w: 200, h: 100 },
-        { baseColor: 0xf0f0f0, strokeColor: 0x000000 },
-        "STAGE, when there is more text there is more text and this is good"
-      )
-    );
-    app.stage.addChild(
-      drawStandingArea(
-        { x: 200, y: 240, w: 200, h: 200 },
-        { baseColor: 0xf0f0f0, strokeColor: 0x0000aa },
-        15,
-        10,
-        "STANDING SECTOR 1"
-      )
-    );
-    app.stage.addChild(
-      drawStandingArea(
-        { x: 200, y: 120, w: 200, h: 100 },
-        { baseColor: 0xf0f0f0, strokeColor: 0x00aaaa },
-        100,
-        15,
-        "STANDING SECTOR 2"
-      )
-    );
+    this.drawSeatingPlan(app.stage, <SeatingPlan>sample);
+    console.log(app.stage.getChildByName("seat3"))
   }
-  private updateStandingAreaSeats() {}
+  private drawSeatingPlan(stage: Container, seatingPlan: SeatingPlan) {
+    this.drawSeats(stage, seatingPlan);
+    this.drawStandingAreas(stage, seatingPlan)
+    this.drawStaticAreas(stage, seatingPlan)
+  }
+  private drawSeats(stage: Container, seatingPlan: SeatingPlan) {
+    const sectorMap: { [id: number]: Sector | SectorWithLocation } = {};
+    for (const sector of seatingPlan.sectors) {
+      sectorMap[sector.id] = sector;
+    }
+    for (const seat of seatingPlan.seats) {
+      if (sectorMap[seat.sectorId].noSeats === false) {
+        const seatGraphics = drawArea(
+          seat.location,
+          { baseColor: 0xf0f0f0, strokeColor: sectorMap[seat.sectorId].color },
+          4
+        );
+        seatGraphics.name = `seat${seat.id}`
+        this.addListeners(
+          seatGraphics,
+          () => {},
+          () => {},
+          () => {}
+        );
+        stage.addChild(seatGraphics);
+      }
+    }
+  }
+  private drawStandingAreas(stage: Container, seatingPlan: SeatingPlan) {
+    const standingAreas = <Array<SectorWithLocation>>(
+      seatingPlan.sectors.filter((sector) => sector.noSeats)
+    );
+    const seatCounts = countBy(seatingPlan.seats, "sectorId");
+    for (const standingArea of standingAreas) {
+      const numberOfAvailableSeats = seatCounts[standingArea.id];
+      const standingAreaGraphics = drawStandingArea(
+        standingArea.location,
+        { baseColor: 0xf0f0f0, strokeColor: standingArea.color },
+        numberOfAvailableSeats,
+        0,
+        standingArea.description ? standingArea.description : ""
+      );
+      standingAreaGraphics.name = `standingArea${standingArea.id}`
+      stage.addChild(standingAreaGraphics);
 
+    }
+  }
+  private drawStaticAreas(stage: Container, seatingPlan: SeatingPlan){
+    for(const staticArea of seatingPlan.staticElements){
+      const staticGraphics = drawNoSeatArea(
+        staticArea.location,
+        { baseColor: 0xf0f0f0, strokeColor: staticArea.color },
+        staticArea.description ? staticArea.description : ""
+      )
+      stage.addChild(staticGraphics)
+    }
+  }
   private addListeners(
     graphics: Graphics,
     mouseOverCallback: () => void,
