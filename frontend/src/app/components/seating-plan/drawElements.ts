@@ -1,4 +1,5 @@
-import { Graphics, Text } from "pixi.js";
+import { countBy } from "lodash";
+import { Container, Graphics, Text } from "pixi.js";
 
 interface Location {
   x: number;
@@ -12,22 +13,22 @@ interface Color {
 }
 
 interface Sector {
-    id: number, 
-    noSeats: boolean, 
-    color: number,
-    description?: string
+  id: number;
+  noSeats: boolean;
+  color: number;
+  description?: string;
 }
 
 interface SectorWithLocation extends Sector {
-    noSeats: true,
-    location: Location
+  noSeats: true;
+  location: Location;
 }
 
 interface StaticElement {
-    id: number, 
-    color: number,
-    description?: string
-    location: Location
+  id: number;
+  color: number;
+  description?: string;
+  location: Location;
 }
 
 interface SeatingPlan {
@@ -37,8 +38,87 @@ interface SeatingPlan {
     sectorId: number;
     location?: Location;
   }>;
-  sectors: Array<Sector| SectorWithLocation>;
-  staticElements: Array<StaticElement>
+  sectors: Array<Sector | SectorWithLocation>;
+  staticElements: Array<StaticElement>;
+}
+
+function drawSeatingPlan(stage: Container, seatingPlan: SeatingPlan) {
+  drawSeats(stage, seatingPlan);
+  drawStandingAreas(stage, seatingPlan);
+  drawStaticAreas(stage, seatingPlan);
+}
+function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
+  const sectorMap: { [id: number]: Sector | SectorWithLocation } = {};
+  for (const sector of seatingPlan.sectors) {
+    sectorMap[sector.id] = sector;
+  }
+  for (const seat of seatingPlan.seats) {
+    if (sectorMap[seat.sectorId].noSeats === false) {
+      const seatGraphics = drawArea(
+        seat.location,
+        { baseColor: 0xf0f0f0, strokeColor: sectorMap[seat.sectorId].color },
+        4
+      );
+      seatGraphics.name = `seat${seat.id}`;
+      addListeners(
+        seatGraphics,
+        () => {},
+        () => {},
+        () => {}
+      );
+      stage.addChild(seatGraphics);
+    }
+  }
+}
+function drawStandingAreas(stage: Container, seatingPlan: SeatingPlan) {
+  const standingAreas = <Array<SectorWithLocation>>(
+    seatingPlan.sectors.filter((sector) => sector.noSeats)
+  );
+  const seatCounts = countBy(seatingPlan.seats, "sectorId");
+  for (const standingArea of standingAreas) {
+    const numberOfAvailableSeats = seatCounts[standingArea.id];
+    const standingAreaGraphics = drawStandingArea(
+      standingArea.location,
+      { baseColor: 0xf0f0f0, strokeColor: standingArea.color },
+      numberOfAvailableSeats,
+      0,
+      standingArea.description ? standingArea.description : ""
+    );
+    standingAreaGraphics.name = `standingArea${standingArea.id}`;
+    stage.addChild(standingAreaGraphics);
+  }
+}
+function drawStaticAreas(stage: Container, seatingPlan: SeatingPlan) {
+  for (const staticArea of seatingPlan.staticElements) {
+    const staticGraphics = drawNoSeatArea(
+      staticArea.location,
+      { baseColor: 0xf0f0f0, strokeColor: staticArea.color },
+      staticArea.description ? staticArea.description : ""
+    );
+    stage.addChild(staticGraphics);
+  }
+}
+function addListeners(
+  graphics: Graphics,
+  mouseOverCallback: () => void,
+  mouseOutCallback: () => void,
+  clickCallback: () => void, 
+  seatHoverAlpha = 0.7
+) {
+  graphics.interactive = true;
+  graphics.buttonMode = true;
+  graphics.on("mouseover", () => {
+    graphics.alpha = seatHoverAlpha;
+    mouseOverCallback();
+  });
+  graphics.on("mouseout", () => {
+    graphics.alpha = 1;
+    mouseOutCallback();
+  });
+  graphics.on("click", () => {
+    console.log("click");
+    clickCallback();
+  });
 }
 
 function drawPlus(color: Color) {
@@ -158,13 +238,9 @@ function drawArea(location: Location, color: Color, radius: number) {
 }
 
 export {
-  drawArea,
-  drawMinus,
-  drawNoSeatArea,
-  drawPlus,
-  drawStandingArea,
-  drawText,
-  SeatingPlan, 
-  Sector, 
-  SectorWithLocation
+  drawSeatingPlan,
+  addListeners,
+  SeatingPlan,
+  Sector,
+  SectorWithLocation,
 };
