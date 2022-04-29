@@ -18,7 +18,7 @@ import {
   drawSeatingPlan,
   generateSeatId,
   generateStandingAreaId,
-  addListeners,
+  addButtonListeners,
 } from "./drawElements";
 import sample from "./sampleStructure.json";
 import sampleData from "./sampleShowInformation.json";
@@ -35,7 +35,7 @@ export class SeatingPlanComponent implements OnInit {
   hoverInfo: SeatWithBookingStatus | undefined = undefined;
   seatUsage: ShowInformation = sampleData;
   chosenSeats: Map<number, SeatWithBookingStatus> = new Map();
-
+  seatingPlan: SeatingPlan = sample;
   constructor() {}
   ngAfterViewInit() {
     const app = new Application({
@@ -49,8 +49,19 @@ export class SeatingPlanComponent implements OnInit {
       return event;
     });
     this.pixiContainer.nativeElement.appendChild(app.view);
-    drawSeatingPlan(app.stage, <SeatingPlan>sample);
+    drawSeatingPlan(app.stage, this.seatingPlan);
     this.applyShowInformation(app.stage, this.seatUsage);
+  }
+  private triggerSeat(seatId: number){
+    if(this.chosenSeats.get(seatId)){
+      this.chosenSeats.delete(seatId)
+      return "available"
+    }
+    const availableSeat = this.seatUsage.seats.find((seat)=>seat.seatId === seatId)
+    if(availableSeat && !availableSeat.purchased && !availableSeat.reserved ){
+      this.chosenSeats.set(availableSeat.seatId, availableSeat)
+      return "unavailable"
+    }
   }
   private addStandingSeat(sectorId: number) {
     const freeSeat = this.seatUsage.seats.find(
@@ -96,7 +107,7 @@ export class SeatingPlanComponent implements OnInit {
       } else if (graphics) {
         graphics.interactive = true;
         graphics.buttonMode = true;
-        addListeners(
+        addButtonListeners(
           <Graphics>graphics,
           () => {
             this.hoverInfo = seat;
@@ -104,7 +115,16 @@ export class SeatingPlanComponent implements OnInit {
           () => {
             this.hoverInfo = undefined;
           },
-          () => {}
+          () => {
+            const grpahicsCover = stage.getChildByName(`${generateSeatId(seat.seatId)}_cover`);
+            const availability = this.triggerSeat(seat.seatId)
+            if(availability === "unavailable"){
+              grpahicsCover.visible = true
+            }
+            if(availability === "available"){
+              grpahicsCover.visible = false
+            }
+          }
         );
       }
     }
@@ -131,7 +151,7 @@ export class SeatingPlanComponent implements OnInit {
         const counter = <Text>(
           plusMinusContainer.getChildByName("ticketCounter")
         );
-        addListeners(
+        addButtonListeners(
           <Graphics>plus,
           () => {},
           () => {},
@@ -142,7 +162,7 @@ export class SeatingPlanComponent implements OnInit {
             }
           }
         );
-        addListeners(
+        addButtonListeners(
           <Graphics>minus,
           () => {},
           () => {},

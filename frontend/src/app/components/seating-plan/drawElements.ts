@@ -62,8 +62,14 @@ function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
         { baseColor: 0xf0f0f0, strokeColor: sectorMap[seat.sectorId].color },
         4
       );
+
       seatGraphics.name = generateSeatId(seat.id);
       stage.addChild(seatGraphics);
+
+      const cover = drawArea(seat.location, { baseColor: 0x000055, strokeColor: sectorMap[seat.sectorId].color }, 4)
+      cover.name = `${generateSeatId(seat.id)}_cover`
+      cover.visible = false
+      stage.addChild(cover)
     }
   }
 }
@@ -95,7 +101,7 @@ function drawStaticAreas(stage: Container, seatingPlan: SeatingPlan) {
     stage.addChild(staticGraphics);
   }
 }
-function addListeners(
+function addButtonListeners(
   graphics: Graphics,
   mouseOverCallback: () => void,
   mouseOutCallback: () => void,
@@ -241,7 +247,7 @@ function drawArea(location: Location, color: Color, radius: number) {
 
 export {
   drawSeatingPlan,
-  addListeners,
+  addButtonListeners,
   generateStandingAreaId, 
   generateSeatId,
   SeatingPlan,
