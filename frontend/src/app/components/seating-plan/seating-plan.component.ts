@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, mapValues } from "lodash";
+import { countBy, find, mapValues, noop } from "lodash";
 import {
   Application,
   Container,
@@ -18,10 +18,10 @@ import {
   drawSeatingPlan,
   generateSeatId,
   generateStandingAreaId,
-  addButtonListeners,
-} from "./drawElements";
+} from "./seatingPlanGraphics";
 import sample from "./sampleStructure.json";
 import sampleData from "./sampleShowInformation.json";
+import { applyShowInformation } from "./seatingPlanEvents";
 
 @Component({
   selector: "app-seating-plan",
@@ -31,10 +31,13 @@ import sampleData from "./sampleShowInformation.json";
 export class SeatingPlanComponent implements OnInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
+  
+  //Thanks angular for that gore (Is needed so that Object funtions are available in html templete)
+  Object = Object
 
   hoverInfo: SeatWithBookingStatus | undefined = undefined;
   seatUsage: ShowInformation = sampleData;
-  chosenSeats: Map<number, SeatWithBookingStatus> = new Map();
+  chosenSeats: {[seatId:number]: SeatWithBookingStatus} = {}
   seatingPlan: SeatingPlan = sample;
   constructor() {}
   ngAfterViewInit() {
@@ -51,131 +54,64 @@ export class SeatingPlanComponent implements OnInit {
     });
     this.pixiContainer.nativeElement.appendChild(app.view);
     drawSeatingPlan(app.stage, this.seatingPlan);
-    this.applyShowInformation(app.stage, this.seatUsage);
+    applyShowInformation(
+      app.stage,
+      this.seatUsage,
+      {
+        mouseover: this.seatHover.bind(this),
+        mouseout: this.seatBlur.bind(this),
+        click: this.triggerSeat.bind(this),
+      },
+      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
+      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) },
+    );
   }
-  private triggerSeat(seatId: number){
-    if(this.chosenSeats.get(seatId)){
-      this.chosenSeats.delete(seatId)
-      return "available"
+  private seatHover(seatId: number) {
+    this.hoverInfo = this.seatUsage.seats.find(
+      (seat) => seat.seatId === seatId
+    );
+  }
+  private seatBlur(seatId: number) {
+    this.hoverInfo = undefined;
+  }
+  private triggerSeat(seatId: number) {
+    if (this.chosenSeats[seatId]) {
+      delete this.chosenSeats[seatId];
+      return "available";
     }
-    const availableSeat = this.seatUsage.seats.find((seat)=>seat.seatId === seatId)
-    if(availableSeat && !availableSeat.purchased && !availableSeat.reserved ){
-      this.chosenSeats.set(availableSeat.seatId, availableSeat)
-      return "unavailable"
+    const availableSeat = this.seatUsage.seats.find(
+      (seat) => seat.seatId === seatId
+    );
+    if (availableSeat && !availableSeat.purchased && !availableSeat.reserved) {
+      this.chosenSeats[availableSeat.seatId] = availableSeat;
+      return "unavailable";
     }
   }
-  private addStandingSeat(sectorId: number) {
+  private addStandingSeat(sectorId: number){
     const freeSeat = this.seatUsage.seats.find(
       (seat) =>
         seat.sector === sectorId &&
         !seat.reserved &&
         !seat.purchased &&
-        !this.chosenSeats.get(seat.seatId)
+        !this.chosenSeats[seat.seatId]
     );
     if (freeSeat) {
-      this.chosenSeats.set(freeSeat.seatId, freeSeat);
-      return countBy(Array.from(this.chosenSeats.values()), "sector")[sectorId];
+      this.chosenSeats[freeSeat.seatId]= freeSeat;
+      return countBy(this.chosenSeats, "sector")[sectorId];
     }
   }
   private removeStandingSeat(sectorId: number) {
-    const seatToFree = Array.from(this.chosenSeats.values()).find(
+    const seatToFree = find(this.chosenSeats, 
       (seat) => seat.sector === sectorId
     );
     if (seatToFree) {
-      this.chosenSeats.delete(seatToFree.seatId);
-      const count = countBy(Array.from(this.chosenSeats.values()), "sector")[
+      delete this.chosenSeats[seatToFree.seatId];
+      const count = countBy(this.chosenSeats, "sector")[
         sectorId
       ];
-      return count!==undefined ? count : 0;
+      return count !== undefined ? count : 0;
     }
   }
-  private applyShowInformation(stage: Container, info: ShowInformation) {
-    const sectorMap: { [id: number]: Sector } = {};
-    const unavailableSeats: { [sectorId: number]: number } = {};
-    const totalSeats = countBy(info.seats, "sector");
-    for (const sector of info.sectors) {
-      sectorMap[sector.sectorId] = sector;
-      unavailableSeats[sector.sectorId] = 0;
-    }
-    for (const seat of info.seats) {
-      const graphics = stage.getChildByName(generateSeatId(seat.seatId));
-      if (seat.purchased || seat.reserved) {
-        if (graphics) {
-          graphics.alpha = 0.1;
-        } else {
-          unavailableSeats[seat.sector] += 1;
-        }
-      } else if (graphics) {
-        graphics.interactive = true;
-        graphics.buttonMode = true;
-        addButtonListeners(
-          <Graphics>graphics,
-          () => {
-            this.hoverInfo = seat;
-          },
-          () => {
-            this.hoverInfo = undefined;
-          },
-          () => {
-            const grpahicsCover = stage.getChildByName(`${generateSeatId(seat.seatId)}_cover`);
-            const availability = this.triggerSeat(seat.seatId)
-            if(availability === "unavailable"){
-              grpahicsCover.visible = true
-            }
-            if(availability === "available"){
-              grpahicsCover.visible = false
-            }
-          }
-        );
-      }
-    }
-    for (const sector of info.sectors) {
-      const graphics = stage.getChildByName(
-        generateStandingAreaId(sector.sectorId)
-      );
-      if (graphics) {
-        const seatAvailability = <Text>(
-          (<Container>graphics).getChildByName("seatAvailability")
-        );
-        seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${
-          totalSeats[sector.sectorId]
-        }`;
-        const plusMinusContainer = <Container>(
-          (<Container>graphics).getChildByName("plusMinusContainer")
-        );
-        const plus = plusMinusContainer.getChildByName("plus");
-        plus.buttonMode = true;
-        plus.interactive = true;
-        const minus = plusMinusContainer.getChildByName("minus");
-        minus.buttonMode = true;
-        minus.interactive = true;
-        const counter = <Text>(
-          plusMinusContainer.getChildByName("ticketCounter")
-        );
-        addButtonListeners(
-          <Graphics>plus,
-          () => {},
-          () => {},
-          () => {
-            const updatedCount = this.addStandingSeat(sector.sectorId);
-            if (updatedCount) {
-              counter.text = `${updatedCount}`;
-            }
-          }
-        );
-        addButtonListeners(
-          <Graphics>minus,
-          () => {},
-          () => {},
-          () => {
-            const updatedCount = this.removeStandingSeat(sector.sectorId);
-            if (updatedCount!==undefined) {
-              counter.text = `${updatedCount}`;
-            }
-          }
-        );
-      }
-    }
-  }
+
   ngOnInit(): void {}
 }

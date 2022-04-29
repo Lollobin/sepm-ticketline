@@ -4,7 +4,7 @@
       <div #pixiContainer></div>
     </div>
     <ul>
-      <li *ngFor="let seat of chosenSeats.values()">{{seat.seatId}}</li>
+      <li *ngFor="let seat of Object.values(chosenSeats)">{{seat.seatId}}</li>
     </ul>
   </div>
   <div
