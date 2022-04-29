@@ -1,13 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.List;
 import java.util.stream.Stream;
 import javax.validation.Valid;
 import org.slf4j.Logger;
@@ -26,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/shows")
-public class ShowEndpoint {
+public class ShowEndpoint implements ShowsApi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final ShowService showService;
@@ -38,20 +43,15 @@ public class ShowEndpoint {
         this.showMapper = showMapper;
     }
 
-    @Secured("ROLE_USER")
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Find all shows", security = @SecurityRequirement(name = "apiKey"))
-    public Stream<ShowDto> findAll(){
+    @Override
+    public ResponseEntity<List<ShowDto>> showsGet(ShowSearchDto search){
         LOGGER.info("GET /shows");
-        return showService.findAll().stream().map(showMapper::showToShowDto);
+        return new ResponseEntity<>(showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
     }
 
-    @Secured("ROLE_ADMIN")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new show", security = @SecurityRequirement(name = "apiKey"))
-    public ResponseEntity<ShowDto> createShow(@Valid @RequestBody ShowWithoutIdDto showWithoutIdDto){
+
+    @Override
+    public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto){
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
         ShowDto newShowDto = showMapper.showToShowDto(
             showService.createShow(
@@ -61,6 +61,6 @@ public class ShowEndpoint {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
             buildAndExpand(newShowDto.getShowId()).toUri();
         LOGGER.debug("id {}", newShowDto.getShowId());
-        return ResponseEntity.created(location).body(newShowDto);
+        return ResponseEntity.created(location).build();
     }
 }
