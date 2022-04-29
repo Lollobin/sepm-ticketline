@@ -1,4 +1,14 @@
-<!-- This top reference is for testing purposes only, #pixiContainer will be root.-->
 <div class="fullHeight fullWidth">
-    <div #pixiContainer class="fullDimensions"></div>
+  <div #pixiContainer class="fullDimensions"></div>
+  <div
+    #infoOverlay
+    class="position-absolute bg-white p-2 border"
+    [hidden]="hoverInfo === undefined"
+  >
+    <div *ngIf="hoverInfo !== undefined">
+      <div>Row: {{ hoverInfo.rowNumber }}</div>
+      <div>Seat: {{ hoverInfo.seatNumber }}</div>
+      <div>Sector: {{ hoverInfo.sector }}</div>
+    </div>
+  </div>
 </div>

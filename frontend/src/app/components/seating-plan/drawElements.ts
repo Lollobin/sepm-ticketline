@@ -42,6 +42,9 @@ interface SeatingPlan {
   staticElements: Array<StaticElement>;
 }
 
+const generateSeatId = (id: number) => `seat${id}`
+const generateStandingAreaId = (id: number) => `standingArea${id}`
+
 function drawSeatingPlan(stage: Container, seatingPlan: SeatingPlan) {
   drawSeats(stage, seatingPlan);
   drawStandingAreas(stage, seatingPlan);
@@ -59,13 +62,7 @@ function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
         { baseColor: 0xf0f0f0, strokeColor: sectorMap[seat.sectorId].color },
         4
       );
-      seatGraphics.name = `seat${seat.id}`;
-      addListeners(
-        seatGraphics,
-        () => {},
-        () => {},
-        () => {}
-      );
+      seatGraphics.name = generateSeatId(seat.id);
       stage.addChild(seatGraphics);
     }
   }
@@ -84,7 +81,7 @@ function drawStandingAreas(stage: Container, seatingPlan: SeatingPlan) {
       0,
       standingArea.description ? standingArea.description : ""
     );
-    standingAreaGraphics.name = `standingArea${standingArea.id}`;
+    standingAreaGraphics.name = generateStandingAreaId(standingArea.id);
     stage.addChild(standingAreaGraphics);
   }
 }
@@ -170,16 +167,21 @@ function drawStandingArea(
     15,
     areaGraphics.width
   );
+  seatAvailability.name = "seatAvailability"
   seatAvailability.setTransform(
     calculateBoxCenterPoint(areaGraphics.width, seatAvailability.width),
     location.h * 0.05
   );
   areaGraphics.addChild(seatAvailability);
   const plusMinusContainer = new Graphics();
+  plusMinusContainer.name = "plusMinusContainer"
   const plus = drawPlus(color);
+  plus.name = "plus"
   const minus = drawMinus(color);
+  minus.name = "minus"
   const ticketCounter = drawText("0", 15, 100);
-  ticketCounter.anchor.set(0.5, 0);
+  ticketCounter.name = "ticketCounter"
+  ticketCounter.anchor.set(0.5, 0); 
   plus.setTransform(
     areaGraphics.width / 2 + areaGraphics.width / 3 - plus.width
   );
@@ -240,6 +242,8 @@ function drawArea(location: Location, color: Color, radius: number) {
 export {
   drawSeatingPlan,
   addListeners,
+  generateStandingAreaId, 
+  generateSeatId,
   SeatingPlan,
   Sector,
   SectorWithLocation,
