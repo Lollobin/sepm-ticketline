@@ -39,7 +39,8 @@ export class SeatingPlanComponent implements OnInit {
   constructor() {}
   ngAfterViewInit() {
     const app = new Application({
-      resizeTo: this.pixiContainer.nativeElement,
+      width: this.seatingPlan.general.width,
+      height: this.seatingPlan.general.height,
       antialias: true,
       backgroundAlpha: 0,
     });

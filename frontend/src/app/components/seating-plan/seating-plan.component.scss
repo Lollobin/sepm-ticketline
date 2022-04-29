@@ -10,3 +10,10 @@
 .fullWidth{
     height: 70vh;
 }
+
+.screenBounded {
+    overflow: auto;
+    width: 70%;
+    max-width: 70%;
+    max-height: 90vh;
+}

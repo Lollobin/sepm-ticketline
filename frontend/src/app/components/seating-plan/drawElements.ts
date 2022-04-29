@@ -32,7 +32,11 @@ interface StaticElement {
 }
 
 interface SeatingPlan {
-  general: any;
+  general: {
+    width: number
+    height: number
+    [key: string]: string|number
+  }
   seats: Array<{
     id: number;
     sectorId: number;

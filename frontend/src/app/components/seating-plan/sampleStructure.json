@@ -1,5 +1,8 @@
 {
-  "general": {},
+  "general": {
+    "width": 1000,
+    "height": 1000
+  },
   "seats": [
     {
       "id": 1,
