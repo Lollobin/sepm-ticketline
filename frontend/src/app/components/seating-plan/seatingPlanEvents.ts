@@ -1,6 +1,10 @@
-import { countBy } from "lodash";
+import { countBy, min } from "lodash";
 import { Container, Graphics, Text } from "pixi.js";
-import { Sector, ShowInformation } from "src/app/generated-sources/openapi";
+import {
+  SeatWithBookingStatus,
+  Sector,
+  ShowInformation,
+} from "src/app/generated-sources/openapi";
 import { generateSeatId, generateStandingAreaId } from "./seatingPlanGraphics";
 
 interface ButtonCallbacks {
@@ -21,6 +25,109 @@ interface CounterCallbacks extends ButtonCallbacks {
   click: (sectorId: number) => number;
 }
 
+/**
+ * Applies the click logic for a seat
+ * @param stage container where the seat graphics object is located
+ * @param seat Seat that is processed
+ * @param seatCallbacks Callbacks for th seats
+ * @returns The number of seats that do not have a graphic object and are in a seating sector(1 or 0)
+ */
+function applySeatLogic(
+  stage: Container,
+  seat: SeatWithBookingStatus,
+  seatCallbacks: SeatCallbacks
+): number {
+  const seatGraphics = stage.getChildByName(generateSeatId(seat.seatId));
+  if (seatGraphics && (seat.purchased || seat.reserved)) {
+    seatGraphics.alpha = 0.1;
+    return 0;
+  }
+  if (!seatGraphics && (seat.purchased || seat.reserved)) {
+    return 1;
+  }
+  if (seatGraphics) {
+    seatGraphics.interactive = true;
+    seatGraphics.buttonMode = true;
+    addButtonListeners(<Graphics>seatGraphics, {
+      mouseover: () => {
+        seatCallbacks.mouseover(seat.seatId);
+      },
+      mouseout: () => {
+        seatCallbacks.mouseout(seat.seatId);
+      },
+      click: () => {
+        const graphicsCover = stage.getChildByName(
+          `${generateSeatId(seat.seatId)}_cover`
+        );
+        const availability = seatCallbacks.click(seat.seatId);
+        if (availability === "unavailable") {
+          graphicsCover.visible = true;
+        }
+        if (availability === "available") {
+          graphicsCover.visible = false;
+        }
+      },
+    });
+    return 0;
+  }
+  return 0;
+}
+
+function initCounterCallbacks(
+  button: Graphics,
+  counter: Text,
+  callbacks: CounterCallbacks,
+  sector: Sector
+) {
+  button.buttonMode = true;
+  button.interactive = true;
+  addButtonListeners(button, {
+    mouseover: () => {
+      callbacks.mouseover();
+    },
+    mouseout: () => {
+      callbacks.mouseout();
+    },
+    click: () => {
+      const updatedCount = callbacks.click(sector.sectorId);
+      if (updatedCount !== undefined) {
+        counter.text = `${updatedCount}`;
+      }
+    },
+  });
+}
+
+function applySectorLogic(
+  stage: Container,
+  sector: Sector,
+  plusCallbacks: CounterCallbacks,
+  minusCallbacks: CounterCallbacks,
+  unavailableSeats: { [sectorId: number]: number },
+  seats: ShowInformation["seats"]
+) {
+  const graphics = <Container | undefined>(
+    stage.getChildByName(generateStandingAreaId(sector.sectorId))
+  );
+  if (!graphics) {
+    return;
+  }
+  const seatsPerSector = countBy(seats, "sector");
+  const seatAvailability = <Text>graphics.getChildByName("seatAvailability");
+  seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${
+    seatsPerSector[sector.sectorId]
+  }`;
+
+  const plusMinusContainer = <Container>(
+    graphics.getChildByName("plusMinusContainer")
+  );
+  const counter = <Text>plusMinusContainer.getChildByName("ticketCounter");
+  const plus = <Graphics>plusMinusContainer.getChildByName("plus");
+  initCounterCallbacks(plus, counter, plusCallbacks, sector);
+
+  const minus = <Graphics>plusMinusContainer.getChildByName("minus");
+  initCounterCallbacks(minus, counter, minusCallbacks, sector);
+}
+
 function applyShowInformation(
   stage: Container,
   info: ShowInformation,
@@ -28,97 +135,24 @@ function applyShowInformation(
   plusCallbacks: CounterCallbacks,
   minusCallbacks: CounterCallbacks
 ) {
-  const sectorMap: { [id: number]: Sector } = {};
   const unavailableSeats: { [sectorId: number]: number } = {};
-  const totalSeats = countBy(info.seats, "sector");
-  for (const sector of info.sectors) {
-    sectorMap[sector.sectorId] = sector;
-    unavailableSeats[sector.sectorId] = 0;
-  }
-  for (const seat of info.seats) {
-    const graphics = stage.getChildByName(generateSeatId(seat.seatId));
-    if (seat.purchased || seat.reserved) {
-      if (graphics) {
-        graphics.alpha = 0.1;
-      } else {
-        unavailableSeats[seat.sector] += 1;
-      }
-    } else if (graphics) {
-      graphics.interactive = true;
-      graphics.buttonMode = true;
-      addButtonListeners(<Graphics>graphics, {
-        mouseover: () => {
-          seatCallbacks.mouseover(seat.seatId);
-        },
-        mouseout: () => {
-          seatCallbacks.mouseout(seat.seatId);
-        },
-        click: () => {
-          const graphicsCover = stage.getChildByName(
-            `${generateSeatId(seat.seatId)}_cover`
-          );
-          const availability = seatCallbacks.click(seat.seatId);
-          if (availability === "unavailable") {
-            graphicsCover.visible = true;
-          }
-          if (availability === "available") {
-            graphicsCover.visible = false;
-          }
-        },
-      });
-    }
-  }
-  for (const sector of info.sectors) {
-    const graphics = stage.getChildByName(
-      generateStandingAreaId(sector.sectorId)
+  info.seats.forEach((seat) => {
+    const hasGraphic = applySeatLogic(stage, seat, seatCallbacks);
+    unavailableSeats[seat.sector] = unavailableSeats[seat.sector]
+      ? unavailableSeats[seat.sector] + hasGraphic
+      : hasGraphic;
+  });
+  console.log(unavailableSeats);
+  info.sectors.forEach((sector) => {
+    applySectorLogic(
+      stage,
+      sector,
+      plusCallbacks,
+      minusCallbacks,
+      unavailableSeats,
+      info.seats
     );
-    if (graphics) {
-      const seatAvailability = <Text>(
-        (<Container>graphics).getChildByName("seatAvailability")
-      );
-      seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${
-        totalSeats[sector.sectorId]
-      }`;
-      const plusMinusContainer = <Container>(
-        (<Container>graphics).getChildByName("plusMinusContainer")
-      );
-      const plus = plusMinusContainer.getChildByName("plus");
-      plus.buttonMode = true;
-      plus.interactive = true;
-      const minus = plusMinusContainer.getChildByName("minus");
-      minus.buttonMode = true;
-      minus.interactive = true;
-      const counter = <Text>plusMinusContainer.getChildByName("ticketCounter");
-      addButtonListeners(<Graphics>plus, {
-        mouseover: () => {
-          plusCallbacks.mouseover();
-        },
-        mouseout: () => {
-          plusCallbacks.mouseout();
-        },
-        click: () => {
-          const updatedCount = plusCallbacks.click(sector.sectorId);
-          if (updatedCount) {
-            counter.text = `${updatedCount}`;
-          }
-        },
-      });
-      addButtonListeners(<Graphics>minus, {
-        mouseover: () => {
-          minusCallbacks.mouseover();
-        },
-        mouseout: () => {
-          minusCallbacks.mouseout();
-        },
-        click: () => {
-          const updatedCount = minusCallbacks.click(sector.sectorId);
-          if (updatedCount !== undefined) {
-            counter.text = `${updatedCount}`;
-          }
-        },
-      });
-    }
-  }
+  });
 }
 
 function addButtonListeners(
