@@ -3,7 +3,9 @@
     <div class="screenBounded">
       <div #pixiContainer></div>
     </div>
-    <div>INDOjansdkjasnk  askljbndaskdn asdansdka sdknasmkd lkasmdalskdmalsdkmalsdkmalsdkmaslkdmasldkmasl</div>
+    <ul>
+      <li *ngFor="let seat of chosenSeats.values()">{{seat.seatId}}</li>
+    </ul>
   </div>
   <div
     #infoOverlay
