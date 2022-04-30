@@ -36,14 +36,14 @@ function applySeatLogic(
   stage: Container,
   seat: SeatWithBookingStatus,
   seatCallbacks: SeatCallbacks
-): number {
+): boolean {
   const seatGraphics = stage.getChildByName(generateSeatId(seat.seatId));
   if (seatGraphics && (seat.purchased || seat.reserved)) {
     seatGraphics.alpha = 0.1;
-    return 0;
+    return false;
   }
   if (!seatGraphics && (seat.purchased || seat.reserved)) {
-    return 1;
+    return true;
   }
   if (seatGraphics) {
     seatGraphics.interactive = true;
@@ -68,9 +68,9 @@ function applySeatLogic(
         }
       },
     });
-    return 0;
+    return false;
   }
-  return 0;
+  return false;
 }
 
 function initCounterCallbacks(
@@ -137,12 +137,12 @@ function applyShowInformation(
 ) {
   const unavailableSeats: { [sectorId: number]: number } = {};
   info.seats.forEach((seat) => {
-    const hasGraphic = applySeatLogic(stage, seat, seatCallbacks);
+    const isReservedSectorSeat = applySeatLogic(stage, seat, seatCallbacks);
+    const seatCount = isReservedSectorSeat ? 1 : 0;
     unavailableSeats[seat.sector] = unavailableSeats[seat.sector]
-      ? unavailableSeats[seat.sector] + hasGraphic
-      : hasGraphic;
+      ? unavailableSeats[seat.sector] + seatCount
+      : seatCount;
   });
-  console.log(unavailableSeats);
   info.sectors.forEach((sector) => {
     applySectorLogic(
       stage,
