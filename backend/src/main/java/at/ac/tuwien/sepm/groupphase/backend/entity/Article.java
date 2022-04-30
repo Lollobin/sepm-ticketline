@@ -17,7 +17,7 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long articleId;
+    private Long articleId;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -71,11 +71,11 @@ public class Article {
             '}';
     }
 
-    public long getArticleId() {
+    public Long getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(long articleId) {
+    public void setArticleId(Long articleId) {
         this.articleId = articleId;
     }
 

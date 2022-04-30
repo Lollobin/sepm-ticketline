@@ -10,7 +10,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,12 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
@@ -159,7 +155,7 @@ public interface EventsApi {
         value = "/events",
         consumes = { "application/json" }
     )
-    default ResponseEntity<EventDto> eventsPost(
+    default ResponseEntity<Void> eventsPost(
         @Parameter(name = "EventWithoutIdDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody EventWithoutIdDto eventWithoutIdDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

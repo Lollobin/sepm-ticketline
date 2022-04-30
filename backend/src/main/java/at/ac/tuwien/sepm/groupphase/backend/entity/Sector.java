@@ -14,7 +14,7 @@ public class Sector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long sectorId;
+    private Long sectorId;
 
     @Column(nullable = false)
     private float price;
@@ -53,11 +53,11 @@ public class Sector {
         nullable = false)
     private SeatingPlan seatingPlanId;
 
-    public long getSectorId() {
+    public Long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(long sectorId) {
+    public void setSectorId(Long sectorId) {
         this.sectorId = sectorId;
     }
 

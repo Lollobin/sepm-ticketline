@@ -21,7 +21,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private Long userId;
 
     @Column(nullable = false, length = 100, unique = true)
     private String email;
@@ -112,7 +112,7 @@ public class User {
     private boolean hasAdministrativeRights;
 
     @Column(nullable = false)
-    private long loginTries;
+    private Long loginTries;
 
     @Column(nullable = false)
     private boolean mustResetPassword;
@@ -128,11 +128,11 @@ public class User {
     )
     private Set<Article> articles;
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -224,11 +224,11 @@ public class User {
         this.hasAdministrativeRights = hasAdministrativeRights;
     }
 
-    public long getLoginTries() {
+    public Long getLoginTries() {
         return loginTries;
     }
 
-    public void setLoginTries(long loginTries) {
+    public void setLoginTries(Long loginTries) {
         this.loginTries = loginTries;
     }
 

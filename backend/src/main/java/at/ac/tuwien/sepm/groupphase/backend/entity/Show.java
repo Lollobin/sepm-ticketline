@@ -17,7 +17,7 @@ public class Show {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long showId;
+    private Long showId;
 
     private LocalDateTime date;
 
@@ -65,11 +65,11 @@ public class Show {
         return Objects.hash(showId, date, artistIds, event);
     }
 
-    public long getShowId() {
+    public Long getShowId() {
         return showId;
     }
 
-    public void setShowId(long showId) {
+    public void setShowId(Long showId) {
         this.showId = showId;
     }
 

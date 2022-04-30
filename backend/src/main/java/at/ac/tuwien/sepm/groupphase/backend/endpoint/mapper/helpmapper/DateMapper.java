@@ -9,11 +9,20 @@ import org.mapstruct.Mapper;
 public class DateMapper {
 
     public OffsetDateTime asOffsetDateTime(LocalDateTime localDateTime){
-        return localDateTime.atOffset(ZoneId.of("Europe/Vienna").getRules().getOffset(localDateTime));
+        if (localDateTime != null) {
+            return localDateTime.atOffset(ZoneId.of("Europe/Vienna").getRules().getOffset(localDateTime));
+        }
+        else {
+            return null;
+        }
     }
 
     public LocalDateTime asLocalDateTime(OffsetDateTime offsetDateTime){
-        return offsetDateTime.toLocalDateTime();
+        if (offsetDateTime != null) {
+            return offsetDateTime.toLocalDateTime();
+        } else {
+            return null;
+        }
     }
 
 }
