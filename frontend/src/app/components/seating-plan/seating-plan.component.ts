@@ -1,18 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { countBy, find, mapValues, noop } from "lodash";
-import {
-  Application,
-  Container,
-  Graphics,
-  Rectangle,
-  Text,
-  TextStyle,
-} from "pixi.js";
-import {
-  SeatWithBookingStatus,
-  Sector,
-  ShowInformation,
-} from "src/app/generated-sources/openapi";
+import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
+import { SeatWithBookingStatus, Sector, ShowInformation } from "src/app/generated-sources/openapi";
 import {
   SeatingPlan,
   drawSeatingPlan,
@@ -31,13 +20,13 @@ import { applyShowInformation } from "./seatingPlanEvents";
 export class SeatingPlanComponent implements OnInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
-  
+
   //Thanks angular for that gore (Is needed so that Object funtions are available in html templete)
-  Object = Object
+  Object = Object;
 
   hoverInfo: SeatWithBookingStatus | undefined = undefined;
   seatUsage: ShowInformation = sampleData;
-  chosenSeats: {[seatId:number]: SeatWithBookingStatus} = {}
+  chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
   seatingPlan: SeatingPlan = sample;
   constructor() {}
   ngAfterViewInit() {
@@ -62,14 +51,12 @@ export class SeatingPlanComponent implements OnInit {
         mouseout: this.seatBlur.bind(this),
         click: this.triggerSeat.bind(this),
       },
-      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
-      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) },
+      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this) },
+      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
     );
   }
   private seatHover(seatId: number) {
-    this.hoverInfo = this.seatUsage.seats.find(
-      (seat) => seat.seatId === seatId
-    );
+    this.hoverInfo = this.seatUsage.seats.find((seat) => seat.seatId === seatId);
   }
   private seatBlur(seatId: number) {
     this.hoverInfo = undefined;
@@ -79,15 +66,13 @@ export class SeatingPlanComponent implements OnInit {
       delete this.chosenSeats[seatId];
       return "available";
     }
-    const availableSeat = this.seatUsage.seats.find(
-      (seat) => seat.seatId === seatId
-    );
+    const availableSeat = this.seatUsage.seats.find((seat) => seat.seatId === seatId);
     if (availableSeat && !availableSeat.purchased && !availableSeat.reserved) {
       this.chosenSeats[availableSeat.seatId] = availableSeat;
       return "unavailable";
     }
   }
-  private addStandingSeat(sectorId: number){
+  private addStandingSeat(sectorId: number) {
     const freeSeat = this.seatUsage.seats.find(
       (seat) =>
         seat.sector === sectorId &&
@@ -96,19 +81,15 @@ export class SeatingPlanComponent implements OnInit {
         !this.chosenSeats[seat.seatId]
     );
     if (freeSeat) {
-      this.chosenSeats[freeSeat.seatId]= freeSeat;
+      this.chosenSeats[freeSeat.seatId] = freeSeat;
       return countBy(this.chosenSeats, "sector")[sectorId];
     }
   }
   private removeStandingSeat(sectorId: number) {
-    const seatToFree = find(this.chosenSeats, 
-      (seat) => seat.sector === sectorId
-    );
+    const seatToFree = find(this.chosenSeats, (seat) => seat.sector === sectorId);
     if (seatToFree) {
       delete this.chosenSeats[seatToFree.seatId];
-      const count = countBy(this.chosenSeats, "sector")[
-        sectorId
-      ];
+      const count = countBy(this.chosenSeats, "sector")[sectorId];
       return count !== undefined ? count : 0;
     }
   }

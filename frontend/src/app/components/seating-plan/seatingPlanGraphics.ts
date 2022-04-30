@@ -33,10 +33,10 @@ interface StaticElement {
 
 interface SeatingPlan {
   general: {
-    width: number
-    height: number
-    [key: string]: string|number
-  }
+    width: number;
+    height: number;
+    [key: string]: string | number;
+  };
   seats: Array<{
     id: number;
     sectorId: number;
@@ -46,8 +46,8 @@ interface SeatingPlan {
   staticElements: Array<StaticElement>;
 }
 
-const generateSeatId = (id: number) => `seat${id}`
-const generateStandingAreaId = (id: number) => `standingArea${id}`
+const generateSeatId = (id: number) => `seat${id}`;
+const generateStandingAreaId = (id: number) => `standingArea${id}`;
 
 function drawSeatingPlan(stage: Container, seatingPlan: SeatingPlan) {
   drawSeats(stage, seatingPlan);
@@ -66,14 +66,17 @@ function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
         { baseColor: 0xf0f0f0, strokeColor: sectorMap[seat.sectorId].color },
         4
       );
-
       seatGraphics.name = generateSeatId(seat.id);
       stage.addChild(seatGraphics);
 
-      const cover = drawArea(seat.location, { baseColor: 0x000055, strokeColor: sectorMap[seat.sectorId].color }, 4)
-      cover.name = `${generateSeatId(seat.id)}_cover`
-      cover.visible = false
-      stage.addChild(cover)
+      const cover = drawArea(
+        seat.location,
+        { baseColor: 0x000055, strokeColor: sectorMap[seat.sectorId].color },
+        4
+      );
+      cover.name = `${generateSeatId(seat.id)}_cover`;
+      cover.visible = false;
+      stage.addChild(cover);
     }
   }
 }
@@ -106,13 +109,11 @@ function drawStaticAreas(stage: Container, seatingPlan: SeatingPlan) {
   }
 }
 
-function drawPlus(color: Color) {
-  const w = 20;
-  const h = 20;
+function drawPlus(color: Color, w = 20, h = 20, strokeWidth = 3) {
   const scaleFactor = 0.2;
   const plusContainer = drawArea({ x: 0, y: 0, w, h }, color, w);
   const plusSign = new Graphics()
-    .lineStyle({ width: 3, color: color.strokeColor })
+    .lineStyle({ width: strokeWidth, color: color.strokeColor })
     .moveTo(w / 2, h - h * scaleFactor)
     .lineTo(w / 2, h * scaleFactor)
     .moveTo(w - w * scaleFactor, h / 2)
@@ -120,13 +121,11 @@ function drawPlus(color: Color) {
   plusContainer.addChild(plusSign);
   return plusContainer;
 }
-function drawMinus(color: Color) {
-  const w = 20;
-  const h = 20;
+function drawMinus(color: Color, w = 20, h = 20, strokeWidth = 3) {
   const scaleFactor = 0.2;
   const plusContainer = drawArea({ x: 0, y: 0, w, h }, color, w);
   const plusSign = new Graphics()
-    .lineStyle({ width: 3, color: color.strokeColor })
+    .lineStyle({ width: strokeWidth, color: color.strokeColor })
     .moveTo(w - w * scaleFactor, h / 2)
     .lineTo(w * scaleFactor, h / 2);
   plusContainer.addChild(plusSign);
@@ -155,43 +154,43 @@ function drawStandingArea(
     15,
     areaGraphics.width
   );
-  seatAvailability.name = "seatAvailability"
+  seatAvailability.name = "seatAvailability";
   seatAvailability.setTransform(
     calculateBoxCenterPoint(areaGraphics.width, seatAvailability.width),
     location.h * 0.05
   );
   areaGraphics.addChild(seatAvailability);
+
   const plusMinusContainer = new Graphics();
-  plusMinusContainer.name = "plusMinusContainer"
-  const plus = drawPlus(color);
-  plus.name = "plus"
-  const minus = drawMinus(color);
-  minus.name = "minus"
-  const ticketCounter = drawText("0", 15, 100);
-  ticketCounter.name = "ticketCounter"
-  ticketCounter.anchor.set(0.5, 0); 
-  plus.setTransform(
-    areaGraphics.width / 2 + areaGraphics.width / 3 - plus.width
-  );
-  minus.setTransform(areaGraphics.width / 2 - areaGraphics.width / 3);
-  plusMinusContainer.addChild(plus);
-  plusMinusContainer.addChild(minus);
-  ticketCounter.setTransform(areaGraphics.width / 2, 0);
-  plusMinusContainer.addChild(ticketCounter);
+  plusMinusContainer.name = "plusMinusContainer";
   plusMinusContainer.setTransform(
     0,
     seatAvailability.position.y + seatAvailability.height + location.h * 0.05
   );
-
   areaGraphics.addChild(plusMinusContainer);
+
+  const plus = drawPlus(color);
+  plus.name = "plus";
+  plus.setTransform(areaGraphics.width / 2 + areaGraphics.width / 3 - plus.width);
+  plusMinusContainer.addChild(plus);
+
+  const minus = drawMinus(color);
+  minus.name = "minus";
+  minus.setTransform(areaGraphics.width / 2 - areaGraphics.width / 3);
+  plusMinusContainer.addChild(minus);
+
+  const ticketCounter = drawText("0", 15, 100);
+  ticketCounter.name = "ticketCounter";
+  ticketCounter.anchor.set(0.5, 0);
+  ticketCounter.setTransform(areaGraphics.width / 2, 0);
+  plusMinusContainer.addChild(ticketCounter);
+
   if (text) {
     const additionalText = drawText(text, 15, areaGraphics.width);
     centerText(additionalText, areaGraphics.width);
     additionalText.setTransform(
       additionalText.position.x,
-      plusMinusContainer.position.y +
-        plusMinusContainer.height +
-        location.h * 0.05
+      plusMinusContainer.position.y + plusMinusContainer.height + location.h * 0.05
     );
     areaGraphics.addChild(additionalText);
   }
@@ -229,7 +228,7 @@ function drawArea(location: Location, color: Color, radius: number) {
 
 export {
   drawSeatingPlan,
-  generateStandingAreaId, 
+  generateStandingAreaId,
   generateSeatId,
   SeatingPlan,
   Sector,

@@ -1,10 +1,6 @@
 import { countBy, min } from "lodash";
 import { Container, Graphics, Text } from "pixi.js";
-import {
-  SeatWithBookingStatus,
-  Sector,
-  ShowInformation,
-} from "src/app/generated-sources/openapi";
+import { SeatWithBookingStatus, Sector, ShowInformation } from "src/app/generated-sources/openapi";
 import { generateSeatId, generateStandingAreaId } from "./seatingPlanGraphics";
 
 interface ButtonCallbacks {
@@ -56,9 +52,7 @@ function applySeatLogic(
         seatCallbacks.mouseout(seat.seatId);
       },
       click: () => {
-        const graphicsCover = stage.getChildByName(
-          `${generateSeatId(seat.seatId)}_cover`
-        );
+        const graphicsCover = stage.getChildByName(`${generateSeatId(seat.seatId)}_cover`);
         const availability = seatCallbacks.click(seat.seatId);
         if (availability === "unavailable") {
           graphicsCover.visible = true;
@@ -113,13 +107,9 @@ function applySectorLogic(
   }
   const seatsPerSector = countBy(seats, "sector");
   const seatAvailability = <Text>graphics.getChildByName("seatAvailability");
-  seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${
-    seatsPerSector[sector.sectorId]
-  }`;
+  seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${seatsPerSector[sector.sectorId]}`;
 
-  const plusMinusContainer = <Container>(
-    graphics.getChildByName("plusMinusContainer")
-  );
+  const plusMinusContainer = <Container>graphics.getChildByName("plusMinusContainer");
   const counter = <Text>plusMinusContainer.getChildByName("ticketCounter");
   const plus = <Graphics>plusMinusContainer.getChildByName("plus");
   initCounterCallbacks(plus, counter, plusCallbacks, sector);
@@ -144,22 +134,11 @@ function applyShowInformation(
       : seatCount;
   });
   info.sectors.forEach((sector) => {
-    applySectorLogic(
-      stage,
-      sector,
-      plusCallbacks,
-      minusCallbacks,
-      unavailableSeats,
-      info.seats
-    );
+    applySectorLogic(stage, sector, plusCallbacks, minusCallbacks, unavailableSeats, info.seats);
   });
 }
 
-function addButtonListeners(
-  graphics: Graphics,
-  callbacks: ButtonCallbacks,
-  seatHoverAlpha = 0.7
-) {
+function addButtonListeners(graphics: Graphics, callbacks: ButtonCallbacks, seatHoverAlpha = 0.7) {
   graphics.interactive = true;
   graphics.buttonMode = true;
   graphics.on("mouseover", () => {
