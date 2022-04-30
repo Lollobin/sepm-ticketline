@@ -13,8 +13,19 @@ public interface EventService {
      */
     Event createEvent(Event event);
 
+    /**
+     * finds all events in EventRepository
+     *
+     * @return list of all events
+     */
     List<Event> findAll();
 
-    Event findOne(Long id);
+    /**
+     * finds event with given id in EventRepository
+     *
+     * @param id of searched event
+     * @return event with given id
+     */
+    Event findById(Long id);
 
 }

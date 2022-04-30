@@ -53,4 +53,10 @@ public class ShowEndpoint implements ShowsApi {
 
         return ResponseEntity.created(location).build();
     }
+
+    @Override
+    public ResponseEntity<ShowDto> showsIdGet(Integer id){
+        LOGGER.info("GET /shows/{}", id);
+        return ResponseEntity.ok(showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
+    }
 }

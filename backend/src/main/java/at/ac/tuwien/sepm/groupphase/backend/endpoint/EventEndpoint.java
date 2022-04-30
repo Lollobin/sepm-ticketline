@@ -60,4 +60,9 @@ public class EventEndpoint implements EventsApi {
         return ResponseEntity.created(location).build();
     }
 
+    @Override
+    public ResponseEntity<EventDto> eventsIdGet(Integer id){
+        LOGGER.info("GET /events/{}", id);
+        return ResponseEntity.ok(eventMapper.eventToEventDto(eventService.findById(Long.valueOf(id))));
+    }
 }
