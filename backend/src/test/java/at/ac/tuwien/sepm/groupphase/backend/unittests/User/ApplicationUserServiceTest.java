@@ -36,7 +36,7 @@ public class ApplicationUserServiceTest implements TestData {
 
     @BeforeEach
     void setUp() {
-        userService = new CustomUserDetailService(userRepository);
+        userService = new CustomUserDetailService(userRepository,passwordEncoder);
     }
 
     @Disabled

@@ -14,12 +14,14 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+
 
 @Service
 public class CustomUserDetailService implements UserService {
@@ -40,23 +42,29 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        LOGGER.debug("Load all user by email");
-//        try {
-//            ApplicationUser applicationUser = findApplicationUserByEmail(email);
-//
-//            List<GrantedAuthority> grantedAuthorities;
-//            if (applicationUser.getAdmin()) {
-//                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
-//            } else {
-//                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
-//            }
-//
-//            return new User(applicationUser.getEmail(), applicationUser.getPassword(), grantedAuthorities);
-//        } catch (NotFoundException e) {
-//            throw new UsernameNotFoundException(e.getMessage(), e);
-//        }
-        return null;
-    }
+        LOGGER.debug("Load all user by email");
+        ApplicationUser applicationUser = new ApplicationUser();
+            if(email.equals("admin@email.com")){
+                applicationUser.setEmail("admin@email.com");
+
+                applicationUser.setHasAdministrativeRights(true);
+            }
+            else if(email.equals("user@email.com")) {
+                applicationUser.setEmail("user@email.com");
+
+                applicationUser.setHasAdministrativeRights(false);
+            }
+            else throw new UsernameNotFoundException("User does not exist");
+            List<GrantedAuthority> grantedAuthorities;
+
+            if (applicationUser.isHasAdministrativeRights()) {
+                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
+            } else {
+                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
+            }
+
+            return new User(applicationUser.getEmail(), passwordEncoder.encode("password"), grantedAuthorities);
+       }
 
     @Override
     public ApplicationUser findApplicationUserByEmail(String email) {
