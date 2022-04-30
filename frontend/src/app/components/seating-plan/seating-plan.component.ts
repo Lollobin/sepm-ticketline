@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { countBy, find, mapValues, noop } from "lodash";
 import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
 import { SeatWithBookingStatus, Sector, ShowInformation } from "src/app/generated-sources/openapi";
@@ -17,18 +17,18 @@ import { applyShowInformation } from "./seatingPlanEvents";
   templateUrl: "./seating-plan.component.html",
   styleUrls: ["./seating-plan.component.scss"],
 })
-export class SeatingPlanComponent implements OnInit {
+export class SeatingPlanComponent implements OnInit, AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
 
-  //Thanks angular for that gore (Is needed so that Object funtions are available in html templete)
-  Object = Object;
+  getValues = Object.values;
 
   hoverInfo: SeatWithBookingStatus | undefined = undefined;
   seatUsage: ShowInformation = sampleData;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
   seatingPlan: SeatingPlan = sample;
   constructor() {}
+  ngOnInit(): void {}
   ngAfterViewInit() {
     const app = new Application({
       width: this.seatingPlan.general.width,
@@ -94,5 +94,4 @@ export class SeatingPlanComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
 }

@@ -1,21 +1,21 @@
-import { countBy, min } from "lodash";
+import { countBy } from "lodash";
 import { Container, Graphics, Text } from "pixi.js";
 import { SeatWithBookingStatus, Sector, ShowInformation } from "src/app/generated-sources/openapi";
 import { generateSeatId, generateStandingAreaId } from "./seatingPlanGraphics";
 
 interface ButtonCallbacks {
-  mouseover: Function;
-  mouseout: Function;
-  click: Function;
+  mouseover: () => void;
+  mouseout: () => void;
+  click: () => void;
 }
 
-interface SeatCallbacks extends ButtonCallbacks {
+interface SeatCallbacks {
   mouseover: (seatId: number) => void;
   mouseout: (seatId: number) => void;
   click: (seatId: number) => "available" | "unavailable";
 }
 
-interface CounterCallbacks extends ButtonCallbacks {
+interface CounterCallbacks {
   mouseover: () => void;
   mouseout: () => void;
   click: (sectorId: number) => number;
@@ -23,16 +23,17 @@ interface CounterCallbacks extends ButtonCallbacks {
 
 /**
  * Applies the click logic for a seat
+ *
  * @param stage container where the seat graphics object is located
  * @param seat Seat that is processed
  * @param seatCallbacks Callbacks for th seats
  * @returns The number of seats that do not have a graphic object and are in a seating sector(1 or 0)
  */
-function applySeatLogic(
+const applySeatLogic = (
   stage: Container,
   seat: SeatWithBookingStatus,
   seatCallbacks: SeatCallbacks
-): boolean {
+): boolean => {
   const seatGraphics = stage.getChildByName(generateSeatId(seat.seatId));
   if (seatGraphics && (seat.purchased || seat.reserved)) {
     seatGraphics.alpha = 0.1;
@@ -44,7 +45,7 @@ function applySeatLogic(
   if (seatGraphics) {
     seatGraphics.interactive = true;
     seatGraphics.buttonMode = true;
-    addButtonListeners(<Graphics>seatGraphics, {
+    addButtonListeners(seatGraphics as Graphics, {
       mouseover: () => {
         seatCallbacks.mouseover(seat.seatId);
       },
@@ -65,14 +66,14 @@ function applySeatLogic(
     return false;
   }
   return false;
-}
+};
 
-function initCounterCallbacks(
+const initCounterCallbacks = (
   button: Graphics,
   counter: Text,
   callbacks: CounterCallbacks,
   sector: Sector
-) {
+) => {
   button.buttonMode = true;
   button.interactive = true;
   addButtonListeners(button, {
@@ -89,42 +90,42 @@ function initCounterCallbacks(
       }
     },
   });
-}
+};
 
-function applySectorLogic(
+const applySectorLogic = (
   stage: Container,
   sector: Sector,
   plusCallbacks: CounterCallbacks,
   minusCallbacks: CounterCallbacks,
   unavailableSeats: { [sectorId: number]: number },
   seats: ShowInformation["seats"]
-) {
-  const graphics = <Container | undefined>(
-    stage.getChildByName(generateStandingAreaId(sector.sectorId))
-  );
+) => {
+  const graphics = stage.getChildByName(generateStandingAreaId(sector.sectorId)) as
+    | Container
+    | undefined;
   if (!graphics) {
     return;
   }
   const seatsPerSector = countBy(seats, "sector");
-  const seatAvailability = <Text>graphics.getChildByName("seatAvailability");
+  const seatAvailability = graphics.getChildByName("seatAvailability") as Text;
   seatAvailability.text = `${unavailableSeats[sector.sectorId]}/${seatsPerSector[sector.sectorId]}`;
 
-  const plusMinusContainer = <Container>graphics.getChildByName("plusMinusContainer");
-  const counter = <Text>plusMinusContainer.getChildByName("ticketCounter");
-  const plus = <Graphics>plusMinusContainer.getChildByName("plus");
+  const plusMinusContainer = graphics.getChildByName("plusMinusContainer") as Container;
+  const counter = plusMinusContainer.getChildByName("ticketCounter") as Text;
+  const plus = plusMinusContainer.getChildByName("plus") as Graphics;
   initCounterCallbacks(plus, counter, plusCallbacks, sector);
 
-  const minus = <Graphics>plusMinusContainer.getChildByName("minus");
+  const minus = plusMinusContainer.getChildByName("minus") as Graphics;
   initCounterCallbacks(minus, counter, minusCallbacks, sector);
-}
+};
 
-function applyShowInformation(
+const applyShowInformation = (
   stage: Container,
   info: ShowInformation,
   seatCallbacks: SeatCallbacks,
   plusCallbacks: CounterCallbacks,
   minusCallbacks: CounterCallbacks
-) {
+) => {
   const unavailableSeats: { [sectorId: number]: number } = {};
   info.seats.forEach((seat) => {
     const isReservedSectorSeat = applySeatLogic(stage, seat, seatCallbacks);
@@ -136,9 +137,13 @@ function applyShowInformation(
   info.sectors.forEach((sector) => {
     applySectorLogic(stage, sector, plusCallbacks, minusCallbacks, unavailableSeats, info.seats);
   });
-}
+};
 
-function addButtonListeners(graphics: Graphics, callbacks: ButtonCallbacks, seatHoverAlpha = 0.7) {
+const addButtonListeners = (
+  graphics: Graphics,
+  callbacks: ButtonCallbacks,
+  seatHoverAlpha = 0.7
+) => {
   graphics.interactive = true;
   graphics.buttonMode = true;
   graphics.on("mouseover", () => {
@@ -152,5 +157,5 @@ function addButtonListeners(graphics: Graphics, callbacks: ButtonCallbacks, seat
   graphics.on("click", () => {
     callbacks.click();
   });
-}
-export { applyShowInformation, ButtonCallbacks };
+};
+export { applyShowInformation };

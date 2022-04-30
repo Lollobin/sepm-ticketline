@@ -33,9 +33,9 @@ interface StaticElement {
 
 interface SeatingPlan {
   general: {
+    [key: string]: string | number;
     width: number;
     height: number;
-    [key: string]: string | number;
   };
   seats: Array<{
     id: number;
@@ -49,12 +49,12 @@ interface SeatingPlan {
 const generateSeatId = (id: number) => `seat${id}`;
 const generateStandingAreaId = (id: number) => `standingArea${id}`;
 
-function drawSeatingPlan(stage: Container, seatingPlan: SeatingPlan) {
+const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlan) => {
   drawSeats(stage, seatingPlan);
   drawStandingAreas(stage, seatingPlan);
   drawStaticAreas(stage, seatingPlan);
-}
-function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
+};
+const drawSeats = (stage: Container, seatingPlan: SeatingPlan) => {
   const sectorMap: { [id: number]: Sector | SectorWithLocation } = {};
   for (const sector of seatingPlan.sectors) {
     sectorMap[sector.id] = sector;
@@ -79,11 +79,11 @@ function drawSeats(stage: Container, seatingPlan: SeatingPlan) {
       stage.addChild(cover);
     }
   }
-}
-function drawStandingAreas(stage: Container, seatingPlan: SeatingPlan) {
-  const standingAreas = <Array<SectorWithLocation>>(
+};
+const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlan) => {
+  const standingAreas = (
     seatingPlan.sectors.filter((sector) => sector.noSeats)
-  );
+  ) as Array<SectorWithLocation>;
   const seatCounts = countBy(seatingPlan.seats, "sectorId");
   for (const standingArea of standingAreas) {
     const numberOfAvailableSeats = seatCounts[standingArea.id];
@@ -97,8 +97,8 @@ function drawStandingAreas(stage: Container, seatingPlan: SeatingPlan) {
     standingAreaGraphics.name = generateStandingAreaId(standingArea.id);
     stage.addChild(standingAreaGraphics);
   }
-}
-function drawStaticAreas(stage: Container, seatingPlan: SeatingPlan) {
+};
+const drawStaticAreas = (stage: Container, seatingPlan: SeatingPlan) => {
   for (const staticArea of seatingPlan.staticElements) {
     const staticGraphics = drawNoSeatArea(
       staticArea.location,
@@ -107,9 +107,9 @@ function drawStaticAreas(stage: Container, seatingPlan: SeatingPlan) {
     );
     stage.addChild(staticGraphics);
   }
-}
+};
 
-function drawPlus(color: Color, w = 20, h = 20, strokeWidth = 3) {
+const drawPlus = (color: Color, w = 20, h = 20, strokeWidth = 3) => {
   const scaleFactor = 0.2;
   const plusContainer = drawArea({ x: 0, y: 0, w, h }, color, w);
   const plusSign = new Graphics()
@@ -120,8 +120,8 @@ function drawPlus(color: Color, w = 20, h = 20, strokeWidth = 3) {
     .lineTo(w * scaleFactor, h / 2);
   plusContainer.addChild(plusSign);
   return plusContainer;
-}
-function drawMinus(color: Color, w = 20, h = 20, strokeWidth = 3) {
+};
+const drawMinus = (color: Color, w = 20, h = 20, strokeWidth = 3) => {
   const scaleFactor = 0.2;
   const plusContainer = drawArea({ x: 0, y: 0, w, h }, color, w);
   const plusSign = new Graphics()
@@ -130,24 +130,23 @@ function drawMinus(color: Color, w = 20, h = 20, strokeWidth = 3) {
     .lineTo(w * scaleFactor, h / 2);
   plusContainer.addChild(plusSign);
   return plusContainer;
-}
+};
 
-function calculateBoxCenterPoint(parentWidth: number, childWidth: number) {
-  return (parentWidth - childWidth) / 2;
-}
+const calculateBoxCenterPoint = (parentWidth: number, childWidth: number) =>
+  (parentWidth - childWidth) / 2;
 
-function centerText(text: Text, parentWidth: number) {
+const centerText = (text: Text, parentWidth: number) => {
   text.anchor.set(0.5, 0);
   text.setTransform(parentWidth / 2);
-}
+};
 
-function drawStandingArea(
+const drawStandingArea = (
   location: Location,
   color: Color,
   numberOfSeatsAvailable: number,
   numberOfSeatsUnavailable: number,
   text?: string
-) {
+) => {
   const areaGraphics = drawArea(location, color, 0);
   const seatAvailability = drawText(
     `${numberOfSeatsUnavailable}/${numberOfSeatsAvailable}`,
@@ -195,8 +194,8 @@ function drawStandingArea(
     areaGraphics.addChild(additionalText);
   }
   return areaGraphics;
-}
-function drawNoSeatArea(location: Location, color: Color, text?: string) {
+};
+const drawNoSeatArea = (location: Location, color: Color, text?: string) => {
   const areaGraphics = drawArea(location, color, 0);
   if (text) {
     const additionalText = drawText(text, 15, areaGraphics.width);
@@ -205,8 +204,8 @@ function drawNoSeatArea(location: Location, color: Color, text?: string) {
     areaGraphics.addChild(additionalText);
   }
   return areaGraphics;
-}
-function drawText(text: string, fontSize: number, maxWidth: number) {
+};
+const drawText = (text: string, fontSize: number, maxWidth: number) => {
   const textGraphics = new Text(text, {
     fontSize,
     wordWrap: true,
@@ -215,8 +214,8 @@ function drawText(text: string, fontSize: number, maxWidth: number) {
     align: "center",
   });
   return textGraphics;
-}
-function drawArea(location: Location, color: Color, radius: number) {
+};
+const drawArea = (location: Location, color: Color, radius: number) => {
   const areaGraphics = new Graphics();
   areaGraphics
     .beginFill(color.baseColor)
@@ -224,7 +223,7 @@ function drawArea(location: Location, color: Color, radius: number) {
     .setTransform(location.x, location.y)
     .drawRoundedRect(0, 0, location.w, location.h, radius);
   return areaGraphics;
-}
+};
 
 export {
   drawSeatingPlan,
