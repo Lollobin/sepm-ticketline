@@ -37,7 +37,7 @@ public class Article {
         joinColumns = @JoinColumn(name = "articleId"),
         inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    private Set<User> users;
+    private Set<ApplicationUser> users;
 
     @Override
     public boolean equals(Object o) {
@@ -111,11 +111,11 @@ public class Article {
         this.text = text;
     }
 
-    public Set<User> getUsers() {
+    public Set<ApplicationUser> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(Set<ApplicationUser> users) {
         this.users = users;
     }
 }
