@@ -20,7 +20,7 @@ import javax.annotation.Generated;
  * InvoiceItemDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-26T12:20:21.425982882+02:00[Europe/Vienna]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 public class InvoiceItemDto   {
 
   @JsonProperty("priceAtBookingTime")
