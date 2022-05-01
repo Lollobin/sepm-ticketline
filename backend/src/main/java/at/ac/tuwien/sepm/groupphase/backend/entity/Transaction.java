@@ -29,7 +29,7 @@ public class Transaction {
         name = "userId",
         referencedColumnName = "userId",
         nullable = false)
-    private User user;
+    private ApplicationUser user;
 
     @OneToMany(mappedBy = "transaction")
     private Set<BookedIn> bookedIns;
@@ -88,11 +88,11 @@ public class Transaction {
         this.billPath = billPath;
     }
 
-    public User getUser() {
+    public ApplicationUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(ApplicationUser user) {
         this.user = user;
     }
 
