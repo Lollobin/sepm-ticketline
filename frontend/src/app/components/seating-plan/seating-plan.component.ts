@@ -13,11 +13,11 @@ import sampleData from "./sampleShowInformation.json";
 import { applyShowInformation } from "./seatingPlanEvents";
 
 interface SeatBookingInformation {
-  color: number,
-  isStandingSector: boolean, 
-  totalPrice: number,
-  singlePrice: number, 
-  ticketCount: number
+  color: number;
+  isStandingSector: boolean;
+  totalPrice: number;
+  singlePrice: number;
+  ticketCount: number;
 }
 
 @Component({
@@ -35,16 +35,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   showInformation: ShowInformation = sampleData;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
   seatingPlan: SeatingPlan = sample;
-  sectorBookingInformation: SeatBookingInformation[] = []
+  sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
-  totalPrice: number = 0
+  totalPrice: number = 0;
   constructor() {}
   ngOnInit(): void {
     //TODO: Add retreival of necessary data here (when backend is implemented)
     this.showInformation.sectors.forEach((sector) => {
       this.sectorPriceMap[sector.sectorId] = sector.price;
     });
-    this.calculateSectorBookingInformation()
+    this.calculateSectorBookingInformation();
   }
   ngAfterViewInit() {
     const app = new Application({
@@ -75,23 +75,30 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   numberToCssColorString(color: number) {
     return { color: `#${color.toString(16).padStart(6, "0")}` };
   }
-  calculateSectorBookingInformation(){
-    this.sectorBookingInformation = this.seatingPlan.sectors.map((sector)=> {
-      const sectorSeatInformation = this.getSectorSeatInformation(sector.id)
-      return {color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation}
-    })
-    this.totalPrice = this.sectorBookingInformation.reduce((oldValue, sector)=> oldValue + sector.totalPrice, 0)
+  calculateSectorBookingInformation() {
+    this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
+      const sectorSeatInformation = this.getSectorSeatInformation(sector.id);
+      return { color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation };
+    });
+    this.totalPrice =
+      this.sectorBookingInformation.reduce(
+        (oldValue, sector) => oldValue + Math.ceil(sector.totalPrice * 100),
+        0
+      ) / 100;
   }
   getSectorSeatInformation(sectorId: number) {
     const sectorSeats = groupBy(this.chosenSeats, "sector")[sectorId];
-    if(!sectorSeats){
-      const emptySector = this.showInformation.sectors.find((sector)=>sector.sectorId === sectorId)
-      return { totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0}
+    if (!sectorSeats) {
+      const emptySector = this.showInformation.sectors.find(
+        (sector) => sector.sectorId === sectorId
+      );
+      return { totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0 };
     }
-    const totalPrice = sectorSeats.reduce(
-      (oldValue, seat) => oldValue + Math.ceil(this.sectorPriceMap[seat.sector]*100),
-      0
-    )/100;
+    const totalPrice =
+      sectorSeats.reduce(
+        (oldValue, seat) => oldValue + Math.ceil(this.sectorPriceMap[seat.sector] * 100),
+        0
+      ) / 100;
     const ticketCount = sectorSeats.length;
     return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
   }
@@ -104,13 +111,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   private triggerSeat(seatId: number) {
     if (this.chosenSeats[seatId]) {
       delete this.chosenSeats[seatId];
-      this.calculateSectorBookingInformation()
+      this.calculateSectorBookingInformation();
       return "available";
     }
     const availableSeat = this.showInformation.seats.find((seat) => seat.seatId === seatId);
     if (availableSeat && !availableSeat.purchased && !availableSeat.reserved) {
       this.chosenSeats[availableSeat.seatId] = availableSeat;
-      this.calculateSectorBookingInformation()
+      this.calculateSectorBookingInformation();
       return "unavailable";
     }
   }
@@ -124,7 +131,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     );
     if (freeSeat) {
       this.chosenSeats[freeSeat.seatId] = freeSeat;
-      this.calculateSectorBookingInformation()
+      this.calculateSectorBookingInformation();
       return countBy(this.chosenSeats, "sector")[sectorId];
     }
   }
@@ -132,7 +139,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     const seatToFree = find(this.chosenSeats, (seat) => seat.sector === sectorId);
     if (seatToFree) {
       delete this.chosenSeats[seatToFree.seatId];
-      this.calculateSectorBookingInformation()
+      this.calculateSectorBookingInformation();
       const count = countBy(this.chosenSeats, "sector")[sectorId];
       return count !== undefined ? count : 0;
     }

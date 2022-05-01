@@ -7,10 +7,22 @@
       <li *ngFor="let seat of getValues(chosenSeats)">{{ seat.seatId }}</li>
     </ul> -->
     <div class="container">
+      <div class="row border-bottom border-secondary border-4">
+        <div class="col text-center py-1"></div>
+        <div class="col border-start border-end border-secondary border-4 text-center py-1">Selected</div>
+        <div class="col text-center py-1">Sum</div>
+      </div>
       <div class="row" *ngFor="let sectorInfo of sectorBookingInformation">
-        <div class="col" [ngStyle]="numberToCssColorString(sectorInfo.color)">{{sectorInfo.singlePrice}}</div>
-        <div class="col">{{sectorInfo.ticketCount}}</div>
-        <div class="col">{{sectorInfo.totalPrice}}</div>
+        <div class="col text-center  py-1" [ngStyle]="numberToCssColorString(sectorInfo.color)">
+          € {{ sectorInfo.singlePrice }}
+        </div>
+        <div class="col border-start border-end border-secondary border-4 text-center  py-1">{{ sectorInfo.ticketCount }}</div>
+        <div class="col text-center py-1">€ {{ sectorInfo.totalPrice }}</div>
+      </div>
+      <div class="row border-top border-secondary border-4">
+        <div class="col text-center  py-1">Total</div>
+        <div class="col border-start border-end border-secondary border-4  py-1"></div>
+        <div class="col text-center  py-1">€ {{totalPrice}}</div>
       </div>
     </div>
   </div>
