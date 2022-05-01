@@ -3,9 +3,16 @@
     <div class="screenBounded">
       <div #pixiContainer></div>
     </div>
-    <ul>
+    <!-- <ul>
       <li *ngFor="let seat of getValues(chosenSeats)">{{ seat.seatId }}</li>
-    </ul>
+    </ul> -->
+    <div class="container">
+      <div class="row" *ngFor="let sectorInfo of sectorBookingInformation">
+        <div class="col" [ngStyle]="numberToCssColorString(sectorInfo.color)">{{sectorInfo.singlePrice}}</div>
+        <div class="col">{{sectorInfo.ticketCount}}</div>
+        <div class="col">{{sectorInfo.totalPrice}}</div>
+      </div>
+    </div>
   </div>
   <div
     #infoOverlay
