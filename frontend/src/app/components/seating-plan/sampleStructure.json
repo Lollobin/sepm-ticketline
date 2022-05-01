@@ -147,7 +147,7 @@
     {
       "id": 1233,
       "noSeats": true,
-      "color": 125,
+      "color": 16724991,
       "location": { "x": 300, "y": 300, "w": 200, "h": 100 },
       "description": "FRONT OF HOUSE"
     },
@@ -158,7 +158,7 @@
       "location": { "x": 300, "y": 410, "w": 200, "h": 100 },
       "description": "BACK OF HOUSE"
     },
-    { "id": 1235, "noSeats": false, "color": 12435 },
+    { "id": 1235, "noSeats": false, "color": 16724736 },
     { "id": 1236, "noSeats": false, "color": 1012435 }
   ],
   "staticElements": [
