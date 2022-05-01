@@ -49,8 +49,7 @@ public class ApplicationUser {
     private String country;
 
     @Column(nullable = false, length = 64)
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] password;
+    private String password;
 
     @Override
     public String toString() {
@@ -64,8 +63,7 @@ public class ApplicationUser {
             ", zipCode='" + zipCode + '\'' +
             ", city='" + city + '\'' +
             ", country='" + country + '\'' +
-            ", password=" + Arrays.toString(password) +
-            ", salt=" + Arrays.toString(salt) +
+            ", password=" + password +
             ", hasAdministrativeRights=" + hasAdministrativeRights +
             ", loginTries=" + loginTries +
             ", mustResetPassword=" + mustResetPassword +
@@ -89,8 +87,7 @@ public class ApplicationUser {
             && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
             user.lastName) && gender == user.gender && Objects.equals(street, user.street)
             && Objects.equals(zipCode, user.zipCode) && Objects.equals(city,
-            user.city) && Objects.equals(country, user.country) && Arrays.equals(
-            password, user.password) && Arrays.equals(salt, user.salt)
+            user.city) && Objects.equals(country, user.country) && password.equals(user.password)
             && Objects.equals(articles, user.articles);
     }
 
@@ -99,14 +96,9 @@ public class ApplicationUser {
         int result = Objects.hash(userId, email, firstName, lastName, gender, street, zipCode, city,
             country, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
             articles);
-        result = 31 * result + Arrays.hashCode(password);
-        result = 31 * result + Arrays.hashCode(salt);
+        result = 31 * result + password.hashCode();
         return result;
     }
-
-    @Column(nullable = false, length = 16)
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] salt;
 
     @Column(nullable = false)
     private boolean hasAdministrativeRights;
@@ -200,20 +192,12 @@ public class ApplicationUser {
         this.country = country;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public byte[] getSalt() {
-        return salt;
-    }
-
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
     }
 
     public boolean isHasAdministrativeRights() {
