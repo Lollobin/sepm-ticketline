@@ -1,0 +1,19 @@
+.fullDimensions{
+    width: 100%;
+    height: 100%;
+}
+
+.fullHeigth{
+    width: 100vw;
+}
+
+.fullWidth{
+    height: 70vh;
+}
+
+.screenBounded {
+    overflow: auto;
+    width: 70%;
+    max-width: 70%;
+    max-height: 90vh;
+}
