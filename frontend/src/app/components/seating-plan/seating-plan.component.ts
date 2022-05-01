@@ -1,7 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { countBy, find, groupBy, mapValues, noop } from "lodash";
 import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
-import { Artist, Event, SeatWithBookingStatus, Sector, Show, ShowInformation } from "src/app/generated-sources/openapi";
+import {
+  Artist,
+  Event,
+  SeatWithBookingStatus,
+  Sector,
+  Show,
+  ShowInformation,
+} from "src/app/generated-sources/openapi";
 import {
   SeatingPlan,
   drawSeatingPlan,
@@ -31,16 +38,27 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   getValues = Object.values;
 
-  hoverInfo: SeatWithBookingStatus | undefined = undefined;
+  hoverInfo: { seatNumber: number; rowNumber: number; price: number; color: number } | undefined =
+    undefined;
   showInformation: ShowInformation = sampleData;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
   seatingPlan: SeatingPlan = sample;
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice: number = 0;
-  show: Show = {showId: 1234, date: (new Date()).toLocaleString(), event: 1234, artists: [12] }
-  event: Event = {eventId: 1234, name: "Rock am Berg", category: "Zeltfest", duration: 144, content: "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!"}
-  artists: Artist[] = [{artistId: 12, bandName: "Carlos Rock Band"}, {artistId: 133, firstName: "Karlo", lastName: "Steinband"}]
+  show: Show = { showId: 1234, date: new Date().toLocaleString(), event: 1234, artists: [12] };
+  event: Event = {
+    eventId: 1234,
+    name: "Rock am Berg",
+    category: "Zeltfest",
+    duration: 144,
+    content:
+      "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
+  };
+  artists: Artist[] = [
+    { artistId: 12, bandName: "Carlos Rock Band" },
+    { artistId: 133, firstName: "Karlo", lastName: "Steinband" },
+  ];
   constructor() {}
   ngOnInit(): void {
     //TODO: Add retreival of necessary data here (when backend is implemented)
@@ -75,19 +93,19 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
     );
   }
-  convertToCurrency(value: number){
-    return value.toLocaleString(undefined, {style:"currency", currency:"EUR"})
+  convertToCurrency(value: number) {
+    return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
   numberToCssColorString(color: number) {
-    return { color: `#${color.toString(16).padStart(6, "0")}` };
+    return `#${color.toString(16).padStart(6, "0")}`;
   }
-  confirmPurchase(){
+  confirmPurchase() {
     //TODO: Add redirect to bill and show purchase overview
-    console.log("YOU BOUGHT THEM TICkETS")
+    console.log("YOU BOUGHT THEM TICkETS");
   }
-  confirmReservation(){
+  confirmReservation() {
     //TODO: Add redirect to "reservation"-bill and show purchase overview
-    console.log("YOU RESERVED THEM TICKETS")
+    console.log("YOU RESERVED THEM TICKETS");
   }
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
@@ -117,7 +135,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
   }
   private seatHover(seatId: number) {
-    this.hoverInfo = this.showInformation.seats.find((seat) => seat.seatId === seatId);
+    const seat = this.showInformation.seats.find((seat) => seat.seatId === seatId);
+    const sector = this.seatingPlan.sectors.find((sector) => seat.sector === sector.id);
+    this.hoverInfo = {
+      rowNumber: seat.rowNumber,
+      seatNumber: seat.seatNumber,
+      price: this.sectorPriceMap[seat.sector],
+      color: sector ? sector.color : 0xffffff,
+    };
   }
   private seatBlur(seatId: number) {
     this.hoverInfo = undefined;
