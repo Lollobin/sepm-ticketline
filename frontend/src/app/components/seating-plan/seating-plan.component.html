@@ -1,0 +1,21 @@
+<div class="fullHeight fullWidth">
+  <div class="d-flex">
+    <div class="screenBounded">
+      <div #pixiContainer></div>
+    </div>
+    <ul>
+      <li *ngFor="let seat of getValues(chosenSeats)">{{ seat.seatId }}</li>
+    </ul>
+  </div>
+  <div
+    #infoOverlay
+    class="position-absolute bg-white p-2 border"
+    [hidden]="hoverInfo === undefined"
+  >
+    <div *ngIf="hoverInfo !== undefined">
+      <div>Row: {{ hoverInfo.rowNumber }}</div>
+      <div>Seat: {{ hoverInfo.seatNumber }}</div>
+      <div>Sector: {{ hoverInfo.sector }}</div>
+    </div>
+  </div>
+</div>

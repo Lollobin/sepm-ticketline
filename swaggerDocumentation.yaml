@@ -67,7 +67,11 @@ paths:
           description: Successful upload of a seating plan layout.
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         422:
           description: Validation failed for an input
         500:
@@ -110,7 +114,11 @@ paths:
           description: Successful upload of an image.
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         422:
           description: Validation failed for an input
         500:
@@ -167,7 +175,11 @@ paths:
           description: Successful creation of an user
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         422:
           description: Validation failed for an input
         500:
@@ -255,7 +267,11 @@ paths:
           description: Successful creation of an administrative user. Location header points to normal /user/{id} endpoint.
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -308,7 +324,11 @@ paths:
           description: Successful creation of an article
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -400,7 +420,11 @@ paths:
           description: Successful creation of an event
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -474,7 +498,11 @@ paths:
           description: Successful creation of a show
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -574,7 +602,11 @@ paths:
           description: Successful creation of a location
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -697,7 +729,11 @@ paths:
           description: Successful creation of a seating plan
           headers: 
             Location:
-              $ref: "#/components/headers/Location"
+              required: true
+              description: The location of the created resource
+              schema:
+                type: string
+                format: uri
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -999,13 +1035,6 @@ components:
       description: The user needs administrative rights
     404-not-found:
       description: Could not find resource
-  headers:
-    Location:
-      required: true
-      description: The location of the created resource
-      schema:
-        type: string
-        format: uri
   securitySchemes:
     BearerAuth:
       type: http
