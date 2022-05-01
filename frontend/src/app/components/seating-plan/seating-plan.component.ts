@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { countBy, find, groupBy, mapValues, noop } from "lodash";
 import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
-import { SeatWithBookingStatus, Sector, ShowInformation } from "src/app/generated-sources/openapi";
+import { Artist, Event, SeatWithBookingStatus, Sector, Show, ShowInformation } from "src/app/generated-sources/openapi";
 import {
   SeatingPlan,
   drawSeatingPlan,
@@ -38,6 +38,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice: number = 0;
+  show: Show = {showId: 1234, date: (new Date()).toLocaleString(), event: 1234, artists: [12] }
+  event: Event = {eventId: 1234, name: "Rock am Berg", category: "Zeltfest", duration: 144, content: "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text."}
+  artists: Artist[] = [{artistId: 12, bandName: "Carlos Rock Band"}, {artistId: 133, firstName: "Carlus", lastName: "Band"}]
   constructor() {}
   ngOnInit(): void {
     //TODO: Add retreival of necessary data here (when backend is implemented)

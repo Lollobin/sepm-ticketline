@@ -1,40 +1,70 @@
 <div class="fullHeight fullWidth">
+  <h1 class="text-center mt-5">{{ event.name }}</h1>
+  <div class="d-flex mt-2 mb-5 justify-content-between">
+    <div>
+      with
+      <span *ngFor="let artist of artists; index as i">
+        <span class="font-family-bold text-primary">{{ artist.bandName }} {{ artist.firstName }} {{artist.lastName}}</span>
+        <span *ngIf="artists.length-1!==i">and</span>
+      </span>
+    </div>
+    <div class="flex-end">starting at {{show.date}}</div>
+  </div>
   <div class="d-flex">
-    <div class="screenBounded">
+    <div class="screenBounded border border-dark border-2">
       <div #pixiContainer></div>
     </div>
     <!-- <ul>
       <li *ngFor="let seat of getValues(chosenSeats)">{{ seat.seatId }}</li>
     </ul> -->
-    <div class="container">
-      <div class="row border-bottom border-secondary border-4">
-        <div class="col text-center py-1"></div>
-        <div class="col border-start border-end border-secondary border-4 text-center py-1">Selected</div>
-        <div class="col text-center py-1">Sum</div>
+    <div class="flex-column w-33">
+      <div class="p-3">
+        <h4>Details of the show</h4>
+        {{ event.content }}
       </div>
-      <div class="row" *ngFor="let sectorInfo of sectorBookingInformation">
-        <div class="col text-center  py-1" [ngStyle]="numberToCssColorString(sectorInfo.color)">
-          € {{ sectorInfo.singlePrice }}
+      <div class="container m-3">
+        <div class="row border-bottom border-secondary border-4">
+          <div class="col text-center py-1"></div>
+          <div
+            class="col border-start border-end border-secondary border-4 text-center py-1 text-truncate"
+          >
+            Selected
+          </div>
+          <div class="col text-center py-1 text-truncate">Sum</div>
         </div>
-        <div class="col border-start border-end border-secondary border-4 text-center  py-1">{{ sectorInfo.ticketCount }}</div>
-        <div class="col text-center py-1">€ {{ sectorInfo.totalPrice }}</div>
-      </div>
-      <div class="row border-top border-secondary border-4">
-        <div class="col text-center  py-1">Total</div>
-        <div class="col border-start border-end border-secondary border-4  py-1"></div>
-        <div class="col text-center  py-1">€ {{totalPrice}}</div>
+        <div class="row" *ngFor="let sectorInfo of sectorBookingInformation">
+          <div
+            class="col text-center py-1 text-truncate"
+            [ngStyle]="numberToCssColorString(sectorInfo.color)"
+          >
+            € {{ sectorInfo.singlePrice }}
+          </div>
+          <div
+            class="col border-start border-end border-secondary border-4 text-center py-1 text-truncate"
+          >
+            {{ sectorInfo.ticketCount }}
+          </div>
+          <div class="col text-center py-1">€ {{ sectorInfo.totalPrice }}</div>
+        </div>
+        <div class="row border-top border-secondary border-4 text-truncate">
+          <div class="col text-center py-1 text-truncate">Total</div>
+          <div
+            class="col border-start border-end border-secondary border-4 py-1 text-truncate"
+          ></div>
+          <div class="col text-center py-1 text-truncate">€ {{ totalPrice }}</div>
+        </div>
       </div>
     </div>
-  </div>
-  <div
-    #infoOverlay
-    class="position-absolute bg-white p-2 border"
-    [hidden]="hoverInfo === undefined"
-  >
-    <div *ngIf="hoverInfo !== undefined">
-      <div>Row: {{ hoverInfo.rowNumber }}</div>
-      <div>Seat: {{ hoverInfo.seatNumber }}</div>
-      <div>Sector: {{ hoverInfo.sector }}</div>
+    <div
+      #infoOverlay
+      class="position-absolute bg-white p-2 border"
+      [hidden]="hoverInfo === undefined"
+    >
+      <div *ngIf="hoverInfo !== undefined">
+        <div>Row: {{ hoverInfo.rowNumber }}</div>
+        <div>Seat: {{ hoverInfo.seatNumber }}</div>
+        <div>Sector: {{ hoverInfo.sector }}</div>
+      </div>
     </div>
   </div>
 </div>
