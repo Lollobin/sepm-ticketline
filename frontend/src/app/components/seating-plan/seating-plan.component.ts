@@ -39,8 +39,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice: number = 0;
   show: Show = {showId: 1234, date: (new Date()).toLocaleString(), event: 1234, artists: [12] }
-  event: Event = {eventId: 1234, name: "Rock am Berg", category: "Zeltfest", duration: 144, content: "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text."}
-  artists: Artist[] = [{artistId: 12, bandName: "Carlos Rock Band"}, {artistId: 133, firstName: "Carlus", lastName: "Band"}]
+  event: Event = {eventId: 1234, name: "Rock am Berg", category: "Zeltfest", duration: 144, content: "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!"}
+  artists: Artist[] = [{artistId: 12, bandName: "Carlos Rock Band"}, {artistId: 133, firstName: "Karlo", lastName: "Steinband"}]
   constructor() {}
   ngOnInit(): void {
     //TODO: Add retreival of necessary data here (when backend is implemented)
@@ -77,6 +77,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   }
   numberToCssColorString(color: number) {
     return { color: `#${color.toString(16).padStart(6, "0")}` };
+  }
+  confirmPurchase(){
+    //TODO: Add redirect to bill and show purchase overview
+    console.log("YOU BOUGHT THEM TICkETS")
+  }
+  confirmReservation(){
+    //TODO: Add redirect to "reservation"-bill and show purchase overview
+    console.log("YOU RESERVED THEM TICKETS")
   }
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {

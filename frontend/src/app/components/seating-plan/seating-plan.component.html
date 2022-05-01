@@ -1,22 +1,21 @@
 <div class="fullHeight fullWidth">
   <h1 class="text-center mt-5">{{ event.name }}</h1>
-  <div class="d-flex mt-2 mb-5 justify-content-between">
+  <div class="d-flex mt-2 mb-4 justify-content-between">
     <div>
       with
       <span *ngFor="let artist of artists; index as i">
-        <span class="font-family-bold text-primary">{{ artist.bandName }} {{ artist.firstName }} {{artist.lastName}}</span>
-        <span *ngIf="artists.length-1!==i">and</span>
+        <span class="font-family-bold text-primary"
+          >{{ artist.bandName }} {{ artist.firstName }} {{ artist.lastName }}</span
+        >
+        <span *ngIf="artists.length - 1 !== i">and</span>
       </span>
     </div>
-    <div class="flex-end">starting at {{show.date}}</div>
+    <div class="flex-end">starting at {{ show.date }}</div>
   </div>
   <div class="d-flex">
     <div class="screenBounded border border-dark border-2">
       <div #pixiContainer></div>
     </div>
-    <!-- <ul>
-      <li *ngFor="let seat of getValues(chosenSeats)">{{ seat.seatId }}</li>
-    </ul> -->
     <div class="flex-column w-33">
       <div class="p-3">
         <h4>Details of the show</h4>
@@ -54,7 +53,30 @@
           <div class="col text-center py-1 text-truncate">€ {{ totalPrice }}</div>
         </div>
       </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-secondary mx-1" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve tickets</button>
+        <button class="btn btn-primary mx-1" (click)="confirmPurchase()">Buy now</button>
+      </div>
     </div>
+<!-- Modal -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reserveModalLabel">Reservation confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        You have to pick up your tickets 30 minutes before the show starts, or your reservation will expire. 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="confirmReservation()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <div
       #infoOverlay
       class="position-absolute bg-white p-2 border"
