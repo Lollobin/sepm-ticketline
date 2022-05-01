@@ -75,6 +75,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
     );
   }
+  convertToCurrency(value: number){
+    return value.toLocaleString(undefined, {style:"currency", currency:"EUR"})
+  }
   numberToCssColorString(color: number) {
     return { color: `#${color.toString(16).padStart(6, "0")}` };
   }

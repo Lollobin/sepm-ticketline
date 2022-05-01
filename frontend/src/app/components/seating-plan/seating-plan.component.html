@@ -45,21 +45,21 @@
             >
               &#9673;
             </span>
-            <span> € {{ sectorInfo.singlePrice }} </span>
+            <span> {{ convertToCurrency(sectorInfo.singlePrice) }} </span>
           </div>
           <div
             class="col border-start border-end border-secondary border-4 text-center py-1 text-truncate"
           >
             {{ sectorInfo.ticketCount }}
           </div>
-          <div class="col text-center py-1">€ {{ sectorInfo.totalPrice }}</div>
+          <div class="col text-center py-1">{{ convertToCurrency(sectorInfo.totalPrice) }}</div>
         </div>
         <div class="row border-top border-secondary border-4 text-truncate">
           <div class="col text-center py-1 text-truncate">Total</div>
           <div
             class="col border-start border-end border-secondary border-4 py-1 text-truncate"
           ></div>
-          <div class="col text-center py-1 text-truncate">€ {{ totalPrice }}</div>
+          <div class="col text-center py-1 text-truncate">{{ convertToCurrency(totalPrice) }}</div>
         </div>
       </div>
       <div class="d-flex justify-content-end">
