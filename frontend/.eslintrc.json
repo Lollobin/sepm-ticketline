@@ -29,13 +29,15 @@
             "accessibility": "explicit"
           }
         ],
+        "@typescript-eslint/quotes": "off",
         "brace-style": [
           "error",
           "1tbs"
         ],
         "id-blacklist": "off",
         "id-match": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off", 
+        "no-trailing-spaces": "off"
       }
     },
     {
