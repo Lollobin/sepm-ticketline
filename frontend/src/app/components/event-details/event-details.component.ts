@@ -1,0 +1,56 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EventService } from 'src/app/services/event.service';
+
+@Component({
+  selector: 'app-event-details',
+  templateUrl: './event-details.component.html',
+  styleUrls: ['./event-details.component.scss']
+})
+export class EventDetailsComponent implements OnInit {
+  eventId: number;
+  name: String;
+  duration: Number;
+  category: String;
+  content: String;
+
+  constructor(private router: Router, private route: ActivatedRoute, private service: EventService) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.eventId = params["id"];
+      this.getDetails(this.eventId);
+    })
+  }
+
+  getDetails(id: number): void {
+    this.service.getEventById(this.eventId).subscribe({
+      next: data => {
+        console.log("got event with id ", id);
+        this.eventId = id;
+        this.name = data.name;
+        this.duration = data.duration;
+        this.category = data.category;
+        this.content = data.content;
+      },
+      error: error => {
+        console.error('Error fetching event', error.message);
+      }
+    });
+  }
+
+  secondsToHms(d): string {
+    d = Number(d * 60);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
+
+  addShows(id: number): void {
+    this.router.navigateByUrl("/events/"+this.eventId+"/shows");
+  }
+}

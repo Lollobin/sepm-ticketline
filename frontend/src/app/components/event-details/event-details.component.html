@@ -1,0 +1,23 @@
+<p class="h2 form-margin form-group">Details for event "{{this.name}}"</p>
+
+<form class="form-margin">
+    <div class="form-group">
+        <small for="name" class="form-label text-muted">Name</small>
+        <div type="text" class="form-control" id="name">{{this.name}}</div>
+    </div>
+    <div class="row">
+        <small for="category" class="form-label text-muted">Category</small>
+        <span class="form-group col-md-6">
+            <span type="text" class="form-control" id="category">{{this.category}}</span>
+        </span>
+        <small for="duration" class="form-label text-muted">Duration</small>
+        <span class="form-group col-md-6">
+            <span type="text" class="form-control" id="duration">{{this.secondsToHms(this.duration)}}</span>
+        </span>
+    </div>
+    <div class="form-group">
+        <small for="description" class="form-label text-muted">Description</small>
+        <div type="text" class="form-control" id="description" style="height: 120px;">{{this.content}}</div>
+    </div>
+    <button type="submit" class="btn btn-primary" (click)="addShows(this.eventId)">Add Shows</button>
+</form>
