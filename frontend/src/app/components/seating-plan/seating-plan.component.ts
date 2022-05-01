@@ -45,7 +45,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   seatingPlan: SeatingPlan = sample;
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
-  totalPrice: number = 0;
+  totalPrice = 0;
   show: Show = { showId: 1234, date: new Date().toLocaleString(), event: 1234, artists: [12] };
   event: Event = {
     eventId: 1234,
@@ -53,7 +53,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     category: "Zeltfest",
     duration: 144,
     content:
-      "This festival contains many different artists, mainly carlus and hios gang. This is very good. I like that. Can we have more like this? I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
+      "This festival contains many different artists, mainly carlus and hios gang. This is very good. " +
+      "I like that. Can we have more like this? " +
+      "I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
   };
   artists: Artist[] = [
     { artistId: 12, bandName: "Carlos Rock Band" },
@@ -135,13 +137,15 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
   }
   private seatHover(seatId: number) {
-    const seat = this.showInformation.seats.find((seat) => seat.seatId === seatId);
-    const sector = this.seatingPlan.sectors.find((sector) => seat.sector === sector.id);
+    const seatInformation = this.showInformation.seats.find((seat) => seat.seatId === seatId);
+    const sectorInformation = this.seatingPlan.sectors.find(
+      (sector) => seatInformation.sector === sector.id
+    );
     this.hoverInfo = {
-      rowNumber: seat.rowNumber,
-      seatNumber: seat.seatNumber,
-      price: this.sectorPriceMap[seat.sector],
-      color: sector ? sector.color : 0xffffff,
+      rowNumber: seatInformation.rowNumber,
+      seatNumber: seatInformation.seatNumber,
+      price: this.sectorPriceMap[seatInformation.sector],
+      color: sectorInformation ? sectorInformation.color : 0xffffff,
     };
   }
   private seatBlur(seatId: number) {
