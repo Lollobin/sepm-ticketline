@@ -1,20 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import org.hibernate.annotations.Type;
+import javax.persistence.*;
+
 
 @Entity
 public class ApplicationUser {
@@ -36,20 +26,15 @@ public class ApplicationUser {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(nullable = false, length = 100)
-    private String street;
-
-    @Column(nullable = false, length = 16)
-    private String zipCode;
-
-    @Column(nullable = false, length = 100)
-    private String city;
-
-    @Column(nullable = false, length = 100)
-    private String country;
-
     @Column(nullable = false, length = 64)
     private String password;
+
+    @OneToOne
+    @JoinColumn(name = "addressId",
+        referencedColumnName = "addressId",
+        nullable = false
+    )
+    private Address address;
 
     @Override
     public String toString() {
@@ -59,10 +44,7 @@ public class ApplicationUser {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", gender=" + gender +
-            ", street='" + street + '\'' +
-            ", zipCode='" + zipCode + '\'' +
-            ", city='" + city + '\'' +
-            ", country='" + country + '\'' +
+            address +
             ", password=" + password +
             ", hasAdministrativeRights=" + hasAdministrativeRights +
             ", loginTries=" + loginTries +
@@ -85,16 +67,13 @@ public class ApplicationUser {
             && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
             && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
             && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(street, user.street)
-            && Objects.equals(zipCode, user.zipCode) && Objects.equals(city,
-            user.city) && Objects.equals(country, user.country) && password.equals(user.password)
+            user.lastName) && gender == user.gender && Objects.equals(address,user.address) && password.equals(user.password)
             && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(userId, email, firstName, lastName, gender, street, zipCode, city,
-            country, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
+        int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
             articles);
         result = 31 * result + password.hashCode();
         return result;
@@ -160,36 +139,12 @@ public class ApplicationUser {
         this.gender = gender;
     }
 
-    public String getStreet() {
-        return street;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getPassword() {
