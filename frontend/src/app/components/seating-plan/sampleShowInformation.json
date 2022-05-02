@@ -220,14 +220,14 @@
   "sectors": [
     {
       "sectorId": 1233,
-      "price": 5
+      "price": 5.10
     },
     {
       "sectorId": 1234,
-      "price": 12
+      "price": 12.50
     },
-    { "sectorId": 1235, "price": 100 },
-    { "sectorId": 1236, "price": 150 }
+    { "sectorId": 1235, "price": 100.99 },
+    { "sectorId": 1236, "price": 150.66 }
   ],
   "seatingPlan": {
     "seatingPlanId": 12134,
