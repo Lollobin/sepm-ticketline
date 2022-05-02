@@ -1,11 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
-import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.JpaUserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import javax.annotation.PostConstruct;
@@ -35,7 +34,7 @@ public class TransactionDataGenerator {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
         } else {
-            User user = new User();
+            ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@email.com");
             user.setFirstName("Benno");
             user.setLastName("Kossatz");
@@ -45,7 +44,7 @@ public class TransactionDataGenerator {
             user.setCity("testCity");
             user.setCountry("Austria");
 
-            byte[] emptyByte = new byte[]{1,2};
+            byte[] emptyByte = new byte[]{1, 2};
             user.setPassword(emptyByte);
             user.setSalt(emptyByte);
             user.setHasAdministrativeRights(true);
@@ -55,7 +54,7 @@ public class TransactionDataGenerator {
 
             jpaUserRepository.save(user);
 
-            User user2 = new User();
+            ApplicationUser user2 = new ApplicationUser();
             user2.setEmail("user@email.com");
             user2.setFirstName("Benno");
             user2.setLastName("Kossatz");
@@ -72,8 +71,6 @@ public class TransactionDataGenerator {
             user2.setLockedAccount(false);
 
             jpaUserRepository.save(user2);
-
-
 
             Transaction transaction = new Transaction();
             transaction.setTransactionId(1);
