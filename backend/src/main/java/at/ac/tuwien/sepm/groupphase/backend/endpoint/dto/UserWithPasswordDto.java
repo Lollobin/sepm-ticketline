@@ -1,17 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import java.net.URI;
+
 import java.util.Objects;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import java.time.OffsetDateTime;
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
-import java.util.*;
 import javax.annotation.Generated;
 
 /**
@@ -33,17 +31,8 @@ public class UserWithPasswordDto   {
   @JsonProperty("gender")
   private GenderDto gender;
 
-  @JsonProperty("street")
-  private String street;
-
-  @JsonProperty("zipCode")
-  private String zipCode;
-
-  @JsonProperty("city")
-  private String city;
-
-  @JsonProperty("country")
-  private String country;
+  @JsonProperty("address")
+  private AddressDto address;
 
   @JsonProperty("password")
   private String password;
@@ -57,7 +46,7 @@ public class UserWithPasswordDto   {
    * Get firstName
    * @return firstName
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "firstName", required = true)
   public String getFirstName() {
     return firstName;
@@ -76,7 +65,7 @@ public class UserWithPasswordDto   {
    * Get lastName
    * @return lastName
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "lastName", required = true)
   public String getLastName() {
     return lastName;
@@ -95,7 +84,7 @@ public class UserWithPasswordDto   {
    * Get email
    * @return email
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "email", required = true)
   public String getEmail() {
     return email;
@@ -114,7 +103,7 @@ public class UserWithPasswordDto   {
    * Get gender
    * @return gender
   */
-  @NotNull @Valid 
+  @NotNull @Valid
   @Schema(name = "gender", required = true)
   public GenderDto getGender() {
     return gender;
@@ -124,80 +113,23 @@ public class UserWithPasswordDto   {
     this.gender = gender;
   }
 
-  public UserWithPasswordDto street(String street) {
-    this.street = street;
+  public UserWithPasswordDto address(AddressDto address) {
+    this.address = address;
     return this;
   }
 
   /**
-   * Get street
-   * @return street
+   * Get address
+   * @return address
   */
-  @NotNull 
-  @Schema(name = "street", required = true)
-  public String getStreet() {
-    return street;
+  @NotNull @Valid
+  @Schema(name = "address", required = true)
+  public AddressDto getAddress() {
+    return address;
   }
 
-  public void setStreet(String street) {
-    this.street = street;
-  }
-
-  public UserWithPasswordDto zipCode(String zipCode) {
-    this.zipCode = zipCode;
-    return this;
-  }
-
-  /**
-   * Get zipCode
-   * @return zipCode
-  */
-  @NotNull 
-  @Schema(name = "zipCode", required = true)
-  public String getZipCode() {
-    return zipCode;
-  }
-
-  public void setZipCode(String zipCode) {
-    this.zipCode = zipCode;
-  }
-
-  public UserWithPasswordDto city(String city) {
-    this.city = city;
-    return this;
-  }
-
-  /**
-   * Get city
-   * @return city
-  */
-  @NotNull 
-  @Schema(name = "city", required = true)
-  public String getCity() {
-    return city;
-  }
-
-  public void setCity(String city) {
-    this.city = city;
-  }
-
-  public UserWithPasswordDto country(String country) {
-    this.country = country;
-    return this;
-  }
-
-  /**
-   * Get country
-   * @return country
-  */
-  @NotNull 
-  @Schema(name = "country", required = true)
-  public String getCountry() {
-    return country;
-  }
-
-  public void setCountry(String country) {
-    this.country = country;
+  public void setAddress(AddressDto address) {
+    this.address = address;
   }
 
   public UserWithPasswordDto password(String password) {
@@ -209,7 +141,7 @@ public class UserWithPasswordDto   {
    * Get password
    * @return password
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "password", required = true)
   public String getPassword() {
     return password;
@@ -232,16 +164,13 @@ public class UserWithPasswordDto   {
         Objects.equals(this.lastName, userWithPassword.lastName) &&
         Objects.equals(this.email, userWithPassword.email) &&
         Objects.equals(this.gender, userWithPassword.gender) &&
-        Objects.equals(this.street, userWithPassword.street) &&
-        Objects.equals(this.zipCode, userWithPassword.zipCode) &&
-        Objects.equals(this.city, userWithPassword.city) &&
-        Objects.equals(this.country, userWithPassword.country) &&
+        Objects.equals(this.address, userWithPassword.address) &&
         Objects.equals(this.password, userWithPassword.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName, lastName, email, gender, street, zipCode, city, country, password);
+    return Objects.hash(firstName, lastName, email, gender, address, password);
   }
 
   @Override
@@ -252,10 +181,7 @@ public class UserWithPasswordDto   {
     sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    gender: ").append(toIndentedString(gender)).append("\n");
-    sb.append("    street: ").append(toIndentedString(street)).append("\n");
-    sb.append("    zipCode: ").append(toIndentedString(zipCode)).append("\n");
-    sb.append("    city: ").append(toIndentedString(city)).append("\n");
-    sb.append("    country: ").append(toIndentedString(country)).append("\n");
+    sb.append("    address: ").append(toIndentedString(address)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("}");
     return sb.toString();
