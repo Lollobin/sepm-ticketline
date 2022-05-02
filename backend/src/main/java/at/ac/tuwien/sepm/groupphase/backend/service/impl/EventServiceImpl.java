@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import at.ac.tuwien.sepm.groupphase.backend.validator.EventValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ public class EventServiceImpl implements EventService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final EventRepository eventRepository;
+    private final EventValidator eventValidator;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository){
+    public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator){
         this.eventRepository = eventRepository;
+        this.eventValidator = eventValidator;
     }
 
     @Override
@@ -37,6 +40,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event createEvent(Event event) {
         LOGGER.debug("Create new event {}", event);
+
+        eventValidator.checkIfEvenIsValid(event);
+
         return eventRepository.save(event);
     }
 }
