@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Address } from './address';
 import { Gender } from './gender';
 
 
@@ -18,10 +19,7 @@ export interface User {
     lastName: string;
     email: string;
     gender: Gender;
-    street: string;
-    zipCode: string;
-    city: string;
-    country: string;
+    address: Address;
     isLocked: boolean;
 }
 

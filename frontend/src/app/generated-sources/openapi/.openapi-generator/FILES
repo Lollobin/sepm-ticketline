@@ -16,6 +16,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/address.ts
 model/article.ts
 model/articleWithoutId.ts
 model/artist.ts
