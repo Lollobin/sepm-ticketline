@@ -21,6 +21,10 @@ spring:
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
 
+server:
+  error:
+    include-message: always
+
 security:
   auth:
     header: Authorization
