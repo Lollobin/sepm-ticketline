@@ -2,8 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Event } from 'src/app/generated-sources/openapi';
-import { EventService } from 'src/app/services/event.service';
+import { Event, EventsService } from 'src/app/generated-sources/openapi';
 
 
 @Component({
@@ -16,7 +15,7 @@ export class CreateEventComponent implements OnInit {
   categories: string[];
   eventForm: any;
   
-  constructor(private formBuilder: FormBuilder, private eventService: EventService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router) { }
 
   ngOnInit(): void {
     this.categories = [
@@ -42,7 +41,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   createEvent(): void {
-    this.eventService.createEvent(this.eventForm.value).subscribe(
+    this.eventService.eventsPost(this.eventForm.value, 'response').subscribe(
       (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
         console.log("Succesfully created event");

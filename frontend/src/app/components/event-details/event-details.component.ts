@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EventService } from 'src/app/services/event.service';
+import { EventsService } from 'src/app/generated-sources/openapi';
 
 @Component({
   selector: 'app-event-details',
@@ -14,7 +14,7 @@ export class EventDetailsComponent implements OnInit {
   category: string;
   content: string;
 
-  constructor(private router: Router, private route: ActivatedRoute, private service: EventService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private service: EventsService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -24,7 +24,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   getDetails(id: number): void {
-    this.service.getEventById(this.eventId).subscribe({
+    this.service.eventsIdGet(this.eventId).subscribe({
       next: data => {
         console.log("got event with id ", id);
         this.eventId = id;
