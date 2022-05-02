@@ -12,7 +12,7 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long locationId;
+    private Long locationId;
 
     @Column(nullable = false)
     private String name;
@@ -25,10 +25,6 @@ public class Location {
 
     @Column(length = 16)
     private String zipCode;
-
-    public long getId() {
-        return locationId;
-    }
 
     public String getName() {
         return name;
@@ -48,10 +44,6 @@ public class Location {
 
     public String getZipCode() {
         return zipCode;
-    }
-
-    public void setId(long locationId) {
-        this.locationId = locationId;
     }
 
     public void setName(String name) {
@@ -106,11 +98,11 @@ public class Location {
         return Objects.hash(locationId, name, street, city, country, zipCode);
     }
 
-    public long getLocationId() {
+    public Long getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(long locationId) {
+    public void setLocationId(Long locationId) {
         this.locationId = locationId;
     }
 }

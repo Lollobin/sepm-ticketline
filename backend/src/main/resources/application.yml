@@ -2,6 +2,7 @@ logging:
   file.name: ./log/backend.log
   level:
     root: INFO
+    at.ac.tuwien.sepm.groupphase.backend: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 
 spring:
@@ -19,6 +20,10 @@ spring:
     # is disabled since it breaks the principle of least astonishment and leads to bad performance. The learn more,
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
+
+server:
+  error:
+    include-message: always
 
 security:
   auth:

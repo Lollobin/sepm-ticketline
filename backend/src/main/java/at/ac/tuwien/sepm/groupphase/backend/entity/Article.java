@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -17,13 +17,13 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long articleId;
+    private Long articleId;
 
     @Column(nullable = false, length = 100)
     private String title;
 
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @Column(columnDefinition = "CLOB")
     private String summary;
@@ -71,11 +71,11 @@ public class Article {
             '}';
     }
 
-    public long getArticleId() {
+    public Long getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(long articleId) {
+    public void setArticleId(Long articleId) {
         this.articleId = articleId;
     }
 
@@ -87,11 +87,11 @@ public class Article {
         this.title = title;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

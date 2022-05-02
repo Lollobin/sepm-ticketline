@@ -13,7 +13,7 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long imageId;
+    private Long imageId;
 
     private String filePath;
 
@@ -48,11 +48,11 @@ public class Image {
         return Objects.hash(imageId, filePath, article);
     }
 
-    public long getImageId() {
+    public Long getImageId() {
         return imageId;
     }
 
-    public void setImageId(long imageId) {
+    public void setImageId(Long imageId) {
         this.imageId = imageId;
     }
 
