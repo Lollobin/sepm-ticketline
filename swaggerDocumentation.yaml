@@ -1066,14 +1066,8 @@ components:
           type: string
         gender:
           $ref: "#/components/schemas/Gender"
-        street:
-          type: string
-        zipCode:
-          type: string
-        city:
-          type: string
-        country:
-          type: string
+        address:
+          $ref: "#/components/schemas/Address"
         isLocked:
           type: boolean
       required:
@@ -1082,10 +1076,7 @@ components:
         - lastName
         - email
         - gender
-        - street
-        - zipCode
-        - city
-        - country
+        - address
         - isLocked
     UserWithPassword:
       type: object
@@ -1098,14 +1089,8 @@ components:
           type: string
         gender:
           $ref: "#/components/schemas/Gender"
-        street:
-          type: string
-        zipCode:
-          type: string
-        city:
-          type: string
-        country:
-          type: string
+        address:
+          $ref: "#/components/schemas/Address"
         password:
           type: string
       required:
@@ -1113,10 +1098,7 @@ components:
         - lastName
         - email
         - gender
-        - street
-        - zipCode
-        - city
-        - country
+        - address
         - password
     EventWithoutId:
       type: object
@@ -1249,32 +1231,22 @@ components:
           type: integer
         name:
           type: string
-        street:
-          type: string
-        city:
-          type: string
-        country:
-          type: string
-        zipCode:
-          type: string
+        address:
+          $ref: "#/components/schemas/Address"
       required:
         - locationId
         - name
+        - address
     LocationWithoutId:
       type: object
       properties:
         name:
           type: string
-        street:
-          type: string
-        city:
-          type: string
-        country:
-          type: string
-        zipCode:
-          type: string
+        address:
+          $ref: "#/components/schemas/Address"
       required:
         - name
+        - address
     Artist:
       type: object
       properties:
@@ -1503,4 +1475,22 @@ components:
         - seats
         - sectors
         - seatingPlan
-
+    Address:
+      type: object
+      properties:
+        houseNumber:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+      required:
+        - houseNumber
+        - street
+        - city  
+        - country  
+        - zipCode  
