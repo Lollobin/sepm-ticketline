@@ -9,7 +9,7 @@ import {Globals} from '../global/globals';
 })
 export class MessageService {
 
-  private messageBaseUri: string = this.globals.backendUri + '/api/v1/messages';
+  private messageBaseUri: string = this.globals.backendUriApiV1 + '/messages';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }

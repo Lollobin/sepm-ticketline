@@ -9,10 +9,10 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class EventDetailsComponent implements OnInit {
   eventId: number;
-  name: String;
-  duration: Number;
-  category: String;
-  content: String;
+  name: string;
+  duration: number;
+  category: string;
+  content: string;
 
   constructor(private router: Router, private route: ActivatedRoute, private service: EventService) { }
 
@@ -20,7 +20,7 @@ export class EventDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.eventId = params["id"];
       this.getDetails(this.eventId);
-    })
+    });
   }
 
   getDetails(id: number): void {
@@ -41,12 +41,12 @@ export class EventDetailsComponent implements OnInit {
 
   secondsToHms(d): string {
     d = Number(d * 60);
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+    const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
     return hDisplay + mDisplay + sDisplay;
   };
 

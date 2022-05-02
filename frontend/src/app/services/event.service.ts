@@ -19,26 +19,27 @@ export class EventService {
    * Loads all events from the backend
    */
    getEvent(): Observable<Event[]> {
+    console.log('GET ' + this.eventServiceUri);
     return this.httpClient.get<Event[]>(this.eventServiceUri);
   }
 
   /**
    * Loads specific event from the backend
    *
-   * @param id of event to load
+   * @param id of event to be loaded
    */
    getEventById(id: number): Observable<Event> {
-    console.log('Load event details for ' + id);
+    console.log('GET ' + this.eventServiceUri + "/" + id);
     return this.httpClient.get<Event>(this.eventServiceUri + '/' + id);
   }
 
   /**
-   * Persists event to the backend
+   * Creates event in backend
    *
-   * @param event to persist
+   * @param event to be created
    */
   createEvent(event: EventWithoutId): Observable<HttpResponse<Event>> {
-    console.log('Create event with name ' + event.name);
+    console.log('POST ' + this.eventServiceUri + " " + JSON.stringify(event));
     return this.httpClient.post<Event>(this.eventServiceUri, event, {observe: 'response'});
   }
 }

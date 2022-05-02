@@ -14,12 +14,12 @@ export class ShowService {
   constructor(private httpClient: HttpClient, private globals: Globals) { }
 
   /**
-   * Persists event to the backend
+   * Adds show to event in backend
    *
-   * @param event to persist
+   * @param show to be created
    */
    createEvent(show: ShowWithoutId): Observable<HttpResponse<Show>> {
-    console.log('POST '+ this.showServiceUri + " " + show);
+    console.log('POST '+ this.showServiceUri + " " + JSON.stringify(show));
     return this.httpClient.post<Show>(this.showServiceUri, show, {observe: 'response'});
   }
 }

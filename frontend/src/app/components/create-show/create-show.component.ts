@@ -27,24 +27,24 @@ export class CreateShowComponent implements OnInit {
   }
 
   showForm = this.formBuilder.group({
-    date: [, Validators.required],
-    time: [, Validators.required],
+    date: ['', [Validators.required]],
+    time: ['', [Validators.required]],
     event: []
 
-  })
+  });
 
   createShow(): void{
     this.showForm.value.event = this.id;
     this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+00:00";
     this.showService.createEvent(this.showForm.value).subscribe(
       (res: HttpResponse<Show>) => {
-        console.log(res.headers.get('Content-Length'));
         console.log("Succesfully created show");
+        console.log(res.headers.get('Location'));
       },
       error => {
         console.log(error.message);
       }
-    )
+    );
   }
 
   get date(){
