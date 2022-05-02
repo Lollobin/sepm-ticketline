@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+//TODO: Replace with proper dataGenerator class and create dataGenerator for Users
 @Profile("generateData")
 @Component
 public class TransactionDataGenerator {
@@ -30,15 +31,15 @@ public class TransactionDataGenerator {
     }
 
     @PostConstruct
-    private void generateMessage() {
+    private void generateTransaction() {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
         } else {
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@email.com");
-            user.setFirstName("Benno");
-            user.setLastName("Kossatz");
-            user.setGender(Gender.MALE);
+            user.setFirstName("Admin");
+            user.setLastName("User");
+            user.setGender(Gender.FEMALE);
             user.setStreet("TestStreet 123");
             user.setZipCode("21938");
             user.setCity("testCity");
@@ -56,8 +57,8 @@ public class TransactionDataGenerator {
 
             ApplicationUser user2 = new ApplicationUser();
             user2.setEmail("user@email.com");
-            user2.setFirstName("Benno");
-            user2.setLastName("Kossatz");
+            user2.setFirstName("Admin");
+            user2.setLastName("User");
             user2.setGender(Gender.MALE);
             user2.setStreet("TestStreet 123");
             user2.setZipCode("21938");
@@ -69,22 +70,22 @@ public class TransactionDataGenerator {
             user2.setLoginTries(0);
             user2.setMustResetPassword(false);
             user2.setLockedAccount(false);
-
             jpaUserRepository.save(user2);
 
             Transaction transaction = new Transaction();
-            transaction.setTransactionId(1);
-            transaction.setDate(LocalDate.now());
+            transaction.setDate(LocalDate.of(2005, 11, 20));
             transaction.setUser(user);
-
             transactionRepository.save(transaction);
 
             Transaction transaction2 = new Transaction();
-            transaction2.setTransactionId(2);
-            transaction2.setDate(LocalDate.now());
-            transaction2.setUser(user2);
-
+            transaction2.setDate(LocalDate.of(2003, 5, 17));
+            transaction2.setUser(user);
             transactionRepository.save(transaction2);
+
+            Transaction transaction3 = new Transaction();
+            transaction3.setDate(LocalDate.of(2020, 3, 1));
+            transaction3.setUser(user2);
+            transactionRepository.save(transaction3);
         }
     }
 }

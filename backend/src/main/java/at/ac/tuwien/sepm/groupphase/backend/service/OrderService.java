@@ -6,7 +6,7 @@ import java.util.List;
 public interface OrderService {
 
     /**
-     * Gets all orders of the current user.
+     * Returns all orders of the current user.
      * @return all orders belonging to the current user
      */
     List<Transaction> findAllByCurrentUser();
