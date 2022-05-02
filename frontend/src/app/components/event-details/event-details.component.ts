@@ -51,6 +51,6 @@ export class EventDetailsComponent implements OnInit {
   };
 
   addShows(id: number): void {
-    this.router.navigateByUrl("/events/"+this.eventId+"/shows");
+    this.router.navigateByUrl("/events/" + this.eventId + "/shows");
   }
 }

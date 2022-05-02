@@ -1,12 +1,11 @@
-<p class="h2 form-margin form-group">Add new shows</p>
+<p class="h2 form-margin form-group">Add new shows for event "{{this.eventName}}"</p>
 
 <form class="form-margin" [formGroup]="showForm">
     <div class="row">
         <div class="form-group col-md-6">
             <small for="inputDate" class="form-label text-muted">Date</small>
             <input id="inputDate" class="form-control form-override" [class.is-invalid]="!this.date.valid"
-                [class.is-valid]="this.date.valid" formControlName="date" type="date"
-                placeholder="yyyy-mm-dd">
+                [class.is-valid]="this.date.valid" formControlName="date" type="date" placeholder="yyyy-mm-dd">
             <div *ngIf="!this.date.valid" class="invalid-feedback" style="display: block">
                 <div *ngIf="this.date.errors.required">Date is required!</div>
                 <div *ngIf="!this.date.errors.required">Date is invalid!</div>
@@ -14,8 +13,8 @@
         </div>
         <div class="form-group col-md-6">
             <small for="inputTime" class="form-label text-muted">Time</small>
-            <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time" [class.is-invalid]="!this.time.valid"
-            [class.is-valid]="this.time.valid">
+            <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time"
+                [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
             <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
                 <div *ngIf="this.time.errors.required">Time is required!</div>
                 <div *ngIf="!this.time.errors.required">Time is invalid!</div>

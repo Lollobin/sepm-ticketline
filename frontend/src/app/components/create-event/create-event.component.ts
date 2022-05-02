@@ -14,20 +14,36 @@ export class CreateEventComponent implements OnInit {
 
   categories: string[];
   eventForm: any;
-  
+
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router) { }
+
+  get name() {
+    return this.eventForm.get("name");
+  }
+
+  get category() {
+    return this.eventForm.get("category");
+  }
+
+  get duration() {
+    return this.eventForm.get("duration");
+  }
+
+  get description() {
+    return this.eventForm.get("description");
+  }
 
   ngOnInit(): void {
     this.categories = [
       "Classical", "Country", "EDM", "Jazz", "Oldies", "Pop", "Rap", "R&B", "Rock", "Techno"
     ];
     this.eventForm = this.formBuilder.group({
-      name: ['',[Validators.required]],
-      category: ['',[Validators.required]],
+      name: ['', [Validators.required]],
+      category: ['', [Validators.required]],
       duration: [120],
       description: []
     });
-}
+  }
 
   secondsToHms(d): string {
     d = Number(d * 60);
@@ -47,7 +63,7 @@ export class CreateEventComponent implements OnInit {
         console.log("Succesfully created event");
         console.log(location);
         const id = location.split("/").pop();
-        this.router.navigateByUrl("/events/"+id+"/shows");
+        this.router.navigateByUrl("/events/" + id + "/shows");
       },
       error => {
         console.log(error.message);
@@ -55,20 +71,5 @@ export class CreateEventComponent implements OnInit {
     );
   }
 
-  get name(){
-  return this.eventForm.get("name");
-}
-
-  get category(){
-  return this.eventForm.get("category");
-}
-
-  get duration(){
-  return this.eventForm.get("duration");
-}
-
-  get description(){
-  return this.eventForm.get("description");
-}
 }
 
