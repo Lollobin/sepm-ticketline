@@ -14,13 +14,13 @@ public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seatId;
+    private Long seatId;
 
     @Column
-    private long rowNumber;
+    private Long rowNumber;
 
     @Column
-    private long seatNumber;
+    private Long seatNumber;
 
     @Override
     public boolean equals(Object o) {
@@ -33,6 +33,38 @@ public class Seat {
         Seat seat = (Seat) o;
         return seatId == seat.seatId && rowNumber == seat.rowNumber && seatNumber == seat.seatNumber
             && Objects.equals(sector, seat.sector);
+    }
+
+    public Long getSeatId() {
+        return seatId;
+    }
+
+    public void setSeatId(Long seatId) {
+        this.seatId = seatId;
+    }
+
+    public Long getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(Long rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public Long getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Long seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
     }
 
     @Override
