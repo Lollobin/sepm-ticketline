@@ -12,9 +12,12 @@ public class UserEncodePasswordMapper {
     private final GenderMapper genderMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserEncodePasswordMapper(GenderMapper genderMapper, PasswordEncoder passwordEncoder) {
+    private final AddressMapper addressMapper;
+
+    public UserEncodePasswordMapper(GenderMapper genderMapper, PasswordEncoder passwordEncoder, AddressMapper addressMapper) {
         this.genderMapper = genderMapper;
         this.passwordEncoder = passwordEncoder;
+        this.addressMapper = addressMapper;
     }
 
     public ApplicationUser userWithPasswordDtoToAppUser(UserWithPasswordDto userWithPasswordDto) {
@@ -25,11 +28,7 @@ public class UserEncodePasswordMapper {
         applicationUser.setFirstName(userWithPasswordDto.getFirstName());
         applicationUser.setLastName(userWithPasswordDto.getLastName());
         applicationUser.setEmail(userWithPasswordDto.getEmail());
-        applicationUser.setStreet(userWithPasswordDto.getStreet());
-        applicationUser.setCountry(userWithPasswordDto.getCountry());
-        applicationUser.setCity(userWithPasswordDto.getCity());
-        applicationUser.setZipCode(userWithPasswordDto.getZipCode());
-        applicationUser.setCountry(userWithPasswordDto.getCountry());
+        applicationUser.setAddress(addressMapper.addressDtoToAddress(userWithPasswordDto.getAddress()));
         return applicationUser;
     }
 }
