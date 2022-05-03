@@ -44,7 +44,7 @@ public class ApplicationUser {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", gender=" + gender +
-            address +
+            ", " + address + '\'' +
             ", password=" + password +
             ", hasAdministrativeRights=" + hasAdministrativeRights +
             ", loginTries=" + loginTries +
@@ -67,17 +67,18 @@ public class ApplicationUser {
             && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
             && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
             && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(address,user.address) && password.equals(user.password)
+            user.lastName) && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(
+            password, user.password)
             && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
-            articles);
-        result = 31 * result + password.hashCode();
+            articles,password);
         return result;
     }
+
 
     @Column(nullable = false)
     private boolean hasAdministrativeRights;

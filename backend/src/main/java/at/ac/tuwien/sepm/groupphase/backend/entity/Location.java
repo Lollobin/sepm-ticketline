@@ -28,14 +28,6 @@ public class Location {
         return name;
     }
 
-    public void setId(long locationId) {
-        this.locationId = locationId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Address getAddress() {
         return address;
     }
@@ -44,12 +36,22 @@ public class Location {
         this.address = address;
     }
 
+    public void setId(long locationId) {
+        this.locationId = locationId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+
     @Override
     public String toString() {
         return "Location{" +
             "locationId=" + locationId +
             ", name='" + name + '\'' +
-            address +
+            ", " + address + '\'' +
             '}';
     }
 
@@ -58,11 +60,20 @@ public class Location {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Location location = (Location) o;
-        return locationId == location.locationId && name.equals(location.name) && address.equals(location.address);
+        return locationId == location.locationId && Objects.equals(name, location.name)
+            && Objects.equals(address, location.address);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(locationId, name, address);
+    }
+
+    public long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(long locationId) {
+        this.locationId = locationId;
     }
 }
