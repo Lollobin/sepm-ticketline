@@ -305,30 +305,6 @@ paths:
           $ref: "#/components/responses/403-forbidden"
         500:
           $ref: "#/components/responses/500-internal-error"
-    patch:
-      tags:
-        - userManagement
-      summary: Locks the user-account with the given ID with PATCH. 
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      security:
-        - BearerAuth: []
-      requestBody:
-        description: Send boolean value for locking/unlocking
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
-      responses:
-        200:
-          description: Successful update of the lock status of an user with PATCH.
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
-        403:
-          $ref: "#/components/responses/403-forbidden"
-        500:
-          $ref: "#/components/responses/500-internal-error"
   /articles:
     post:
       tags:
@@ -1098,7 +1074,7 @@ components:
           type: string
         country:
           type: string
-        isLocked:
+        lockedAccount:
           type: boolean
       required:
         - userId
@@ -1110,7 +1086,7 @@ components:
         - zipCode
         - city
         - country
-        - isLocked
+        - lockedAccount
     UserWithPassword:
       type: object
       properties:
