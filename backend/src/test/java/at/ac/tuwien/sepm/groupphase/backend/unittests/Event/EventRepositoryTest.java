@@ -89,6 +89,11 @@ public class EventRepositoryTest {
         eventRepository.save(event3);
 
         Event foundEvent = eventRepository.findById(event2.getEventId()).get();
+
         assertThat(foundEvent).isEqualTo(event2);
+        assertThat(foundEvent.getName()).isEqualTo(EVENT2_NAME);
+        assertThat(foundEvent.getDuration()).isEqualTo(EVENT2_DURATION.longValue());
+        assertThat(foundEvent.getCategory()).isEqualTo(EVENT2_CATEGORY);
+        assertThat(foundEvent.getContent()).isEqualTo(EVENT2_CONTENT);
     }
 }

@@ -42,7 +42,7 @@ public class EventEndpointTest {
     }
 
     @Test
-    public void shouldGetAllHorses() throws Exception {
+    public void firstTestShouldReturnSize0() throws Exception {
         byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
                         .get("/events")
@@ -54,6 +54,11 @@ public class EventEndpointTest {
 
         assertThat(eventResult).isNotNull();
         assertThat(eventResult.size()).isEqualTo(1);
+        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT_NAME);
+        assertThat(eventResult.get(0).getDuration()).isEqualTo(EVENT_DURATION);
+        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT_CATEGORY);
+        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT_CONTENT);
+
     }
 
     @Test
