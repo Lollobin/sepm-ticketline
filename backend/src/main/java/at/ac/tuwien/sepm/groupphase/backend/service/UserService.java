@@ -41,6 +41,7 @@ public interface UserService extends UserDetailsService {
      */
     void save(UserWithPasswordDto user);
 
+    List<ApplicationUser> findAll(boolean filterLocked);
 
 
     List<ApplicationUser> findLockedUser();

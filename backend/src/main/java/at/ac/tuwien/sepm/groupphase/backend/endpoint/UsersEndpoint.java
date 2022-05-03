@@ -9,7 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,21 +36,17 @@ public class UsersEndpoint implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked){
+    public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked) {
         LOGGER.info("GET all locked user");
 
-        try{
-            List<UserDto> userDto = userService.findLockedUser().stream().map(userMapper::applicationUserToUserDto).toList();
+        try {
+            List<UserDto> userDto = userService.findAll(filterLocked).stream().map(userMapper::applicationUserToUserDto).toList();
             return ResponseEntity.ok().body(userDto);
 
-        }catch(NotFoundException e){
+        } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-
-
-
-
 
 
 }

@@ -21,21 +21,22 @@ public class LockedEndpoint implements LockStatusApi {
 
     private final LockedService lockedService;
 
-    public LockedEndpoint(LockedService lockedService){
+    public LockedEndpoint(LockedService lockedService) {
         this.lockedService = lockedService;
     }
 
     @Override
-    public ResponseEntity<Void> lockStatusIdPatch(Integer id, Boolean body) {
+    public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
         LOGGER.info("PATCH lockStatus");
         Optional<ApplicationUser> optionalUser = lockedService.unlockApplicationUser(Long.valueOf(id), body);
 
         if (optionalUser.isPresent()) {
 
-//            ApplicationUser current = optionalUser.get();
             return ResponseEntity.ok().build();
 
-        } else throw new NotFoundException("Not found by id");
+        } else {
+            throw new NotFoundException("Not found by id");
+        }
     }
 
 }

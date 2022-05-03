@@ -68,7 +68,7 @@ public interface UsersApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"zipCode\" : \"zipCode\", \"country\" : \"country\", \"city\" : \"city\", \"street\" : \"street\", \"isLocked\" : true, \"userId\" : 0, \"email\" : \"email\" }";
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"zipCode\" : \"zipCode\", \"country\" : \"country\", \"lockedAccount\" : true, \"city\" : \"city\", \"street\" : \"street\", \"userId\" : 0, \"email\" : \"email\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -151,7 +151,7 @@ public interface UsersApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"zipCode\" : \"zipCode\", \"country\" : \"country\", \"city\" : \"city\", \"street\" : \"street\", \"isLocked\" : true, \"userId\" : 0, \"email\" : \"email\" }";
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"zipCode\" : \"zipCode\", \"country\" : \"country\", \"lockedAccount\" : true, \"city\" : \"city\", \"street\" : \"street\", \"userId\" : 0, \"email\" : \"email\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

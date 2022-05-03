@@ -18,21 +18,16 @@ public class LockedServiceImpl implements LockedService {
     }
 
     @Override
-    public Optional<ApplicationUser> unlockApplicationUser(Long id, boolean unlock){
+    public Optional<ApplicationUser> unlockApplicationUser(Long id, boolean unlock) {
 
-        if(userRepository.existsById(id)){
-//            int ret = userRepository.unlockApplicationUser(id, unlock);
-//            // das prüft wie viele zeilen verändert wurden
-//            if (ret != 1) {
-//
-//            }
-//            List allAfter = userRepository.findAll();
+        if (userRepository.existsById(id)) {
+            int ret = userRepository.unlockApplicationUser(unlock, id);
+
 
             return userRepository.findById(id);
         } else {
             throw new NotFoundException("User with id " + id + " is not present");
         }
-
 
 
     }
