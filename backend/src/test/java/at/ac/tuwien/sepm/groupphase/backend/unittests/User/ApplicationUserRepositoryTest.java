@@ -84,7 +84,7 @@ public class ApplicationUserRepositoryTest{
 
         assertThat(userRepository.findByLockedState().size()).isEqualTo(1);
 
-        userRepository.unlockApplicationUser(userToSave.getUserId(), false);
+        userRepository.unlockApplicationUser(false, userToSave.getUserId());
 
 
         List after = userRepository.findByLockedState();
