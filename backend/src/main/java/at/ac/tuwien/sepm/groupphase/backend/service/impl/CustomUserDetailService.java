@@ -85,25 +85,7 @@ public class CustomUserDetailService implements UserService {
         return userRepository.findByLockedState();
     }
 
-    @Override
-    public Optional<ApplicationUser> unlockApplicationUser(Long id, boolean unlock){
 
-        if(userRepository.existsById(id)){
-//            int ret = userRepository.unlockApplicationUser(id, unlock);
-//            // das prüft wie viele zeilen verändert wurden
-//            if (ret != 1) {
-//
-//            }
-//            List allAfter = userRepository.findAll();
-
-            return userRepository.findById(id);
-        } else {
-            throw new NotFoundException("User with id " + id + " is not present");
-        }
-
-
-
-    }
 
     @Override
     public Optional<ApplicationUser> findById(Long id) {

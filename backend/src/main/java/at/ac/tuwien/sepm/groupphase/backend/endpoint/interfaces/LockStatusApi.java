@@ -38,6 +38,44 @@ public interface LockStatusApi {
     }
 
     /**
+     * PATCH /lockStatus/{id} : Locks the user-account with the given ID with PATCH.
+     *
+     * @param id ID of the user that is retreived (required)
+     * @param body Send boolean value for locking/unlocking (required)
+     * @return Successful update of the lock status of an user with PATCH. (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The user needs administrative rights (status code 403)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "lockStatusIdPatch",
+        summary = "Locks the user-account with the given ID with PATCH.",
+        tags = { "userManagement" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful update of the lock status of an user with PATCH."),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PATCH,
+        value = "/lockStatus/{id}",
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<Void> lockStatusIdPatch(
+        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id,
+        @Parameter(name = "body", description = "Send boolean value for locking/unlocking", required = true, schema = @Schema(description = "")) @Valid @RequestBody Boolean body
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
      * PUT /lockStatus/{id} : Locks the user-account with the given ID.
      *
      * @param id ID of the user that is retreived (required)

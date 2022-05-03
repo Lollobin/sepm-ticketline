@@ -41,7 +41,7 @@ public interface UserService extends UserDetailsService {
      */
     void save(UserWithPasswordDto user);
 
-    Optional<ApplicationUser> unlockApplicationUser(Long id, boolean unlock);
+
 
     List<ApplicationUser> findLockedUser();
 
