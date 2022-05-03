@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public SecurityConfig(UserService userService,
-                          PasswordEncoder passwordEncoder,
-                          SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
+        PasswordEncoder passwordEncoder,
+        SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
         this.userService = userService;
         this.securityProperties = securityProperties;
         this.passwordEncoder = passwordEncoder;
@@ -44,8 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
             .csrf().disable()
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
+            .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties,
+                jwtTokenizer))
             .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
+
+        //enable h2-console
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 
     @Override
@@ -56,8 +61,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final List<String> permitAll = Collections.singletonList("*");
-        final List<String> permitMethods = List.of(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-            HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(), HttpMethod.HEAD.name(),
+        final List<String> permitMethods = List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
+            HttpMethod.PUT.name(),
+            HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
+            HttpMethod.HEAD.name(),
             HttpMethod.TRACE.name());
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(permitAll);
