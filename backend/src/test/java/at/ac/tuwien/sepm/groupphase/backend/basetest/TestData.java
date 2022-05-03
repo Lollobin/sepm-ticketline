@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.basetest;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,4 +46,6 @@ public interface TestData {
     String USER_PASSWORD = "abcdefghijkl";
     String USER_STREET = "Kohlmarkt 1";
     String USER_ZIPCODE = "1010";
+
+    LocalDate TRANSACTION_DATE = LocalDate.of(2020,12,7);
 }
