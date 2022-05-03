@@ -23,4 +23,10 @@ public class UsersEndpoint implements UsersApi {
         this.userService = userService;
     }
 
+    @Override
+    public ResponseEntity<Void> usersPost(@Valid UserWithPasswordDto userWithPasswordDto) {
+       LOGGER.info("POST user with mail {}",userWithPasswordDto.getEmail());
+        userService.save(userWithPasswordDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

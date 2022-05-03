@@ -41,7 +41,7 @@ public class AddressValidator {
         } catch (ValidationException e){
             throw new ValidationException ("Check Country! "+ e.getMessage());
         }
-        if (!Pattern.matches("[a-zA-Z]", country)){
+        if (!Pattern.matches("([A-Za-z0-9_äÄöÖüÜß])+", country)){
             throw new ValidationException("Not a valid country!");
         }
 
@@ -64,6 +64,6 @@ public class AddressValidator {
     }
 
     private void validateNotEmpty(String s){
-        if(s.trim().length()==0) throw new ValidationException("This field cannot be empty!");
+        if(s.trim().length()==0) throw new ValidationException("This field cannot be empty or contain only spaces!");
     }
 }

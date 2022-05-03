@@ -24,7 +24,14 @@ public class Address {
     @Column(nullable = false, length = 100)
     private String country;
 
-    public Address(String userHouseNo, String userStreet, String userZipcode, String userCity, String userCtry) {
+    public Address(String houseNumber, String street, String zipCode, String city, String country) {
+
+        this.houseNumber=houseNumber;
+        this.street=street;
+        this.zipCode=zipCode;
+        this.city=city;
+        this.country=country;
+
     }
 
     public Address() {

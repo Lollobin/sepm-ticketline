@@ -33,17 +33,15 @@ class UserEndpointTest implements TestData {
     @Autowired
     private ObjectMapper objectMapper;
 
-
-
-
     private UserWithPasswordDto user = new UserWithPasswordDto()
         .firstName(USER_FNAME)
         .lastName(USER_LNAME)
         .gender(USER_GENDER_DTO)
         .email(USER_EMAIL)
+        .address(ADDRESS_DTO)
         .password(USER_PASSWORD);
 
-    @Disabled
+
     @Test
     void givenNothing_whenPost_thenUserWithAllPropertiesAndId() throws Exception {
 
@@ -58,11 +56,16 @@ class UserEndpointTest implements TestData {
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
 
     }
-    @Disabled
+
     @Test
-    void givenNothing_whenPostInvalid_then400() throws Exception {
-        user.email(null);
-        user.gender(null);
+    void givenNothing_whenPostInvalid_then422_anderrorArrayHascorrectlength() throws Exception {
+        user
+            .email(null)
+            .gender(null)
+            .address(null)
+            .password(null)
+            .firstName(null)
+            .lastName(null);
         String body = objectMapper.writeValueAsString(user);
 
         MvcResult mvcResult = this.mockMvc.perform(post(USERS_BASE_URI)
@@ -73,13 +76,13 @@ class UserEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertAll(
-            () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
             () -> {
                 //Reads the errors from the body
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
-                assertEquals(2, errors.length);
+                assertEquals(6, errors.length);
             }
         );
     }

@@ -9,7 +9,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMa
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -38,7 +37,6 @@ class UserEncodePasswordMapperTest implements TestData {
     }
 
     @Test
-    @Disabled
     void whenUserWithPasswordDtoToAppUser_thenPasswordEncoderIsInvoked() {
 
         UserWithPasswordDto userDto = new UserWithPasswordDto().firstName(USER_FNAME)
@@ -55,7 +53,6 @@ class UserEncodePasswordMapperTest implements TestData {
         verify(passwordEncoder, times(1)).encode("abcdefghijkl");
     }
     @Test
-    @Disabled
     void whenUserWithPasswordDtoToAppUser_thenGenderMapperIsInvoked() {
 
         UserWithPasswordDto userDto = new UserWithPasswordDto().firstName(USER_FNAME)
@@ -73,7 +70,6 @@ class UserEncodePasswordMapperTest implements TestData {
     }
 
     @Test
-    @Disabled
     void whenUserWithPasswordDtoToAppUser_thenDtoIsCorrectlyMapped() {
 
         UserWithPasswordDto userDto = new UserWithPasswordDto()
@@ -90,12 +86,12 @@ class UserEncodePasswordMapperTest implements TestData {
         ApplicationUser appUser= userEncodePasswordMapper.userWithPasswordDtoToAppUser(userDto);
 
         assertAll(
-            () -> assertEquals(appUser.getFirstName(),userDto.getFirstName()),
-            () -> assertEquals(appUser.getLastName(),userDto.getLastName()),
-            () -> assertEquals(appUser.getEmail(),userDto.getEmail()),
-            () -> assertEquals(appUser.getGender(),Gender.MALE),
-            () -> assertEquals(appUser.getAddress(), ADDRESS_ENTITY),
-            () -> assertEquals(appUser.getPassword(),"passwordisencoded")
+            () -> assertEquals(userDto.getFirstName(),appUser.getFirstName()),
+            () -> assertEquals(userDto.getLastName(),appUser.getLastName()),
+            () -> assertEquals(userDto.getEmail(),appUser.getEmail()),
+            () -> assertEquals(Gender.MALE,appUser.getGender()),
+            () -> assertEquals(ADDRESS_ENTITY,appUser.getAddress()),
+            () -> assertEquals("passwordisencoded",appUser.getPassword())
         );
 
     }

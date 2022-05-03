@@ -1,15 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-
+import java.net.URI;
 import java.util.Objects;
-
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
+import java.util.*;
 import javax.annotation.Generated;
 
 /**
@@ -46,7 +49,7 @@ public class UserWithPasswordDto   {
    * Get firstName
    * @return firstName
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "firstName", required = true)
   public String getFirstName() {
     return firstName;
@@ -65,7 +68,7 @@ public class UserWithPasswordDto   {
    * Get lastName
    * @return lastName
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "lastName", required = true)
   public String getLastName() {
     return lastName;
@@ -84,7 +87,7 @@ public class UserWithPasswordDto   {
    * Get email
    * @return email
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "email", required = true)
   public String getEmail() {
     return email;
@@ -103,7 +106,7 @@ public class UserWithPasswordDto   {
    * Get gender
    * @return gender
   */
-  @NotNull @Valid
+  @NotNull @Valid 
   @Schema(name = "gender", required = true)
   public GenderDto getGender() {
     return gender;
@@ -122,7 +125,7 @@ public class UserWithPasswordDto   {
    * Get address
    * @return address
   */
-  @NotNull @Valid
+  @NotNull @Valid 
   @Schema(name = "address", required = true)
   public AddressDto getAddress() {
     return address;
@@ -141,7 +144,7 @@ public class UserWithPasswordDto   {
    * Get password
    * @return password
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "password", required = true)
   public String getPassword() {
     return password;
