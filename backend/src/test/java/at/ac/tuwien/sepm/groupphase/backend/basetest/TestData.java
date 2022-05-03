@@ -63,6 +63,7 @@ public interface TestData {
         .country(USER_CTRY);
 
     Address ADDRESS_ENTITY= new Address(USER_HOUSE_NO,USER_STREET, USER_ZIPCODE,USER_CITY,USER_CTRY);
+    Address ADDRESS_ENTITY2=new Address(USER_HOUSE_NO,USER_STREET, USER_ZIPCODE,USER_CITY,USER_CTRY);
 
 
 

@@ -39,7 +39,7 @@ class ApplicationUserRepositoryTest implements TestData {
         testuser.setLastName(USER_LNAME);
         testuser.setGender(USER_GENDER);
         testuser.setEmail(USER_EMAIL);
-        testuser.setAddress(ADDRESS_ENTITY);
+        testuser.setAddress(ADDRESS_ENTITY2);
         testuser.setPassword(ENCODED_USER_PASSWORD_EXAMPLE);
         ApplicationUser returns= userRepository.save(testuser);
         assertEquals(USER_HOUSE_NO, returns.getAddress().getHouseNumber());
