@@ -27,8 +27,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Transaction> findAllByCurrentUser() {
-        Authentication authentication = authenticationFacade.getAuthentication();
-        String email = authentication.getName();
+        String email = authenticationFacade.getEmail();
         LOGGER.debug("Looking for orders by '{}'", email);
 
         return transactionRepository.findAllByUserEmail(email);

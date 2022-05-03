@@ -11,4 +11,9 @@ public class AuthenticationFacade implements IAuthenticationFacade {
     public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
+    @Override
+    public String getEmail() {
+        return getAuthentication().getName();
+    }
 }
