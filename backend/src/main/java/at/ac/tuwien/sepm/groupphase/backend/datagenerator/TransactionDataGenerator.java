@@ -3,8 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import at.ac.tuwien.sepm.groupphase.backend.repository.JpaUserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import javax.annotation.PostConstruct;
@@ -22,12 +22,12 @@ public class TransactionDataGenerator {
         MethodHandles.lookup().lookupClass());
 
     private final TransactionRepository transactionRepository;
-    private final JpaUserRepository jpaUserRepository;
+    private final UserRepository userRepository;
 
     public TransactionDataGenerator(TransactionRepository transactionRepository,
-        JpaUserRepository jpaUserRepository) {
+        UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
-        this.jpaUserRepository = jpaUserRepository;
+        this.userRepository = userRepository;
     }
 
     @PostConstruct
@@ -53,7 +53,7 @@ public class TransactionDataGenerator {
             user.setMustResetPassword(false);
             user.setLockedAccount(false);
 
-            jpaUserRepository.save(user);
+            userRepository.save(user);
 
             ApplicationUser user2 = new ApplicationUser();
             user2.setEmail("user@email.com");
@@ -70,7 +70,7 @@ public class TransactionDataGenerator {
             user2.setLoginTries(0);
             user2.setMustResetPassword(false);
             user2.setLockedAccount(false);
-            jpaUserRepository.save(user2);
+            userRepository.save(user2);
 
             Transaction transaction = new Transaction();
             transaction.setDate(LocalDate.of(2005, 11, 20));
