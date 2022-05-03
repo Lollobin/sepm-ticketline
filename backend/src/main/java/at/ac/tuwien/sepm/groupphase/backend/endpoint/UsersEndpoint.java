@@ -28,24 +28,25 @@ public class UsersEndpoint implements UsersApi {
 
     }
 
-    @GetMapping(path = "/user/test")
-    public ResponseEntity<List<UserDto>> getLockedUser(){
+    @Override
+    public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked){
         LOGGER.info("GET all locked user");
 
         List<UserDto> userDto = userService.findLockedUser().stream().map(userMapper::applicationUserToUserDto).toList();
         return ResponseEntity.ok().body(userDto);
     }
 
-    @GetMapping(path="/user/test/unlock")
-    public ResponseEntity<UserDto> unlockUser(@RequestParam Long id){
+    @PatchMapping(path = "/user/test/unlock")
+    public ResponseEntity<UserDto> unlockUser(@RequestParam Long id, @RequestBody String locked) {
         LOGGER.info("Unlock a locked user");
 
-        Optional<ApplicationUser> optionalUser = userService.findById(id);
-        if(optionalUser.isPresent()){
+        Optional<ApplicationUser> optionalUser = userService.unlockApplicationUser(id, Boolean.parseBoolean(locked));
+
+        if (optionalUser.isPresent()) {
 
             ApplicationUser current = optionalUser.get();
-            current.setLockedAccount(false);
-            return ResponseEntity.ok(userMapper.applicationUserToUserDto(userService.updateSave(current)));
+
+            return ResponseEntity.ok(userMapper.applicationUserToUserDto(current));
         } else throw new NotFoundException("Not found by id");
 
     }
