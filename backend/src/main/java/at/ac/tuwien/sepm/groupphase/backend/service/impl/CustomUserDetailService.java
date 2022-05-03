@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.config.EncoderConfig;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -18,9 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -79,5 +77,21 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void save(UserWithPasswordDto user) {
 
+    }
+
+    @Override
+    public List<ApplicationUser> findLockedUser() {
+        return userRepository.findByLockedState();
+    }
+
+    @Override
+    public ApplicationUser updateSave(ApplicationUser user){
+        return userRepository.save(user);
+
+    }
+
+    @Override
+    public Optional<ApplicationUser> findById(Long id) {
+        return userRepository.findById(id);
     }
 }

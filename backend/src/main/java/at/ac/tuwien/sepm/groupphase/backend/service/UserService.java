@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserService extends UserDetailsService {
 
     /**
@@ -37,4 +40,11 @@ public interface UserService extends UserDetailsService {
      * @return a application user entity
      */
     void save(UserWithPasswordDto user);
+
+    ApplicationUser updateSave(ApplicationUser user);
+
+    List<ApplicationUser> findLockedUser();
+
+    Optional<ApplicationUser> findById(Long id);
+
 }
