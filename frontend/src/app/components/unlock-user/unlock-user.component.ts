@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {UserService} from "../../services/user.service";
-import {User} from "../../generated-sources/openapi";
+import {User, UserManagementService} from "../../generated-sources/openapi";
 
 @Component({
   selector: "app-unlock-user",
@@ -11,21 +10,31 @@ export class UnlockUserComponent implements OnInit {
 
   users: User[];
   error = "";
-  success = null;
+  empty = false;
+  success = false;
   firstName = "";
   lastName = "";
 
-  constructor(private userService: UserService) { }
+  constructor(private userManagementService: UserManagementService) { }
 
   ngOnInit(): void {
       this.reloadUser();
   }
 
+  // getAll(){
+  //   this.userManagementService.usersGet(false).subscribe({
+  //     next: value => {
+  //       console.log("all", value);
+  //     }
+  //   });
+  // }
+
   reloadUser() {
-    this.userService.getLockedUser().subscribe({
+    this.userManagementService.usersGet(true).subscribe({
       next: user => {
         this.users = user;
         console.log("received user", user);
+        // this.getAll();
       },
       error: err => {
         console.log("Error fetching user: ", err.message);
@@ -35,19 +44,40 @@ export class UnlockUserComponent implements OnInit {
   }
 
   unlockUser(id: number) {
-    this.userService.unlockUser(id).subscribe({
+    console.log("hier" + id);
+    this.userManagementService.lockStatusIdPut(id, false).subscribe({
       next: () => {
         this.success = true;
+        this.reloadUser();
       },
       error: err => {
         this.showError(err.error.message);
       }
     });
   }
-
+  public vanishempty(): void {
+    this.empty = null;
+  }
+  public vanishError(): void {
+    this.error = null;
+  }
+  public vanishSuccess(): void {
+    this.success = null;
+  }
   private showError(msg: string) {
     this.error = msg;
   }
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
