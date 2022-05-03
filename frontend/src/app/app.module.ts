@@ -13,6 +13,7 @@ import {MessageComponent} from './components/message/message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
+import { UnlockUserComponent } from './components/unlock-user/unlock-user.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SeatingPlanComponent } from './components/seating-plan/seating-plan.com
     LoginComponent,
     MessageComponent,
     SeatingPlanComponent,
+    UnlockUserComponent,
   ],
   imports: [
     BrowserModule,
