@@ -4,16 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -36,21 +28,16 @@ public class ApplicationUser {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(nullable = false, length = 100)
-    private String street;
-
-    @Column(nullable = false, length = 16)
-    private String zipCode;
-
-    @Column(nullable = false, length = 100)
-    private String city;
-
-    @Column(nullable = false, length = 100)
-    private String country;
+    @OneToOne
+    @JoinColumn(name = "addressId",
+        referencedColumnName = "addressId",
+        nullable = false
+    )
+    private Address address;
 
     @Column(nullable = false, length = 64)
     @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] password;
+    private String password;
 
     @Override
     public String toString() {
@@ -60,12 +47,8 @@ public class ApplicationUser {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", gender=" + gender +
-            ", street='" + street + '\'' +
-            ", zipCode='" + zipCode + '\'' +
-            ", city='" + city + '\'' +
-            ", country='" + country + '\'' +
-            ", password=" + Arrays.toString(password) +
-            ", salt=" + Arrays.toString(salt) +
+            ", " + address + '\'' +
+            ", password=" + password +
             ", hasAdministrativeRights=" + hasAdministrativeRights +
             ", loginTries=" + loginTries +
             ", mustResetPassword=" + mustResetPassword +
@@ -87,26 +70,18 @@ public class ApplicationUser {
             && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
             && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
             && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(street, user.street)
-            && Objects.equals(zipCode, user.zipCode) && Objects.equals(city,
-            user.city) && Objects.equals(country, user.country) && Arrays.equals(
-            password, user.password) && Arrays.equals(salt, user.salt)
+            user.lastName) && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(
+            password, user.password)
             && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(userId, email, firstName, lastName, gender, street, zipCode, city,
-            country, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
-            articles);
-        result = 31 * result + Arrays.hashCode(password);
-        result = 31 * result + Arrays.hashCode(salt);
+        int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
+            articles,password);
         return result;
     }
 
-    @Column(nullable = false, length = 16)
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] salt;
 
     @Column(nullable = false)
     private boolean hasAdministrativeRights;
@@ -168,52 +143,20 @@ public class ApplicationUser {
         this.gender = gender;
     }
 
-    public String getStreet() {
-        return street;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public byte[] getSalt() {
-        return salt;
-    }
-
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
     }
 
     public boolean isHasAdministrativeRights() {

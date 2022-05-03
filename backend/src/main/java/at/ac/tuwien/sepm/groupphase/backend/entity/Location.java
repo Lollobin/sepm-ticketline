@@ -1,11 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Location {
@@ -17,14 +13,12 @@ public class Location {
     @Column(nullable = false)
     private String name;
 
-    private String street;
-
-    private String city;
-
-    private String country;
-
-    @Column(length = 16)
-    private String zipCode;
+    @OneToOne
+    @JoinColumn(name = "addressId",
+        referencedColumnName = "addressId",
+        nullable = false
+    )
+    private Address address;
 
     public long getId() {
         return locationId;
@@ -34,20 +28,12 @@ public class Location {
         return name;
     }
 
-    public String getStreet() {
-        return street;
+    public Address getAddress() {
+        return address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getZipCode() {
-        return zipCode;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public void setId(long locationId) {
@@ -58,31 +44,14 @@ public class Location {
         this.name = name;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
 
     @Override
     public String toString() {
         return "Location{" +
             "locationId=" + locationId +
             ", name='" + name + '\'' +
-            ", street='" + street + '\'' +
-            ", city='" + city + '\'' +
-            ", country='" + country + '\'' +
-            ", zipCode='" + zipCode + '\'' +
+            ", " + address + '\'' +
             '}';
     }
 
@@ -96,14 +65,12 @@ public class Location {
         }
         Location location = (Location) o;
         return locationId == location.locationId && Objects.equals(name, location.name)
-            && Objects.equals(street, location.street) && Objects.equals(city,
-            location.city) && Objects.equals(country, location.country)
-            && Objects.equals(zipCode, location.zipCode);
+            && Objects.equals(address, location.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(locationId, name, street, city, country, zipCode);
+        return Objects.hash(locationId, name, address);
     }
 
     public long getLocationId() {
