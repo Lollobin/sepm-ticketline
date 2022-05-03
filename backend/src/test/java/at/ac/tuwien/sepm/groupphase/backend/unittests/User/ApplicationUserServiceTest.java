@@ -18,14 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-
-import java.nio.charset.StandardCharsets;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ApplicationUserServiceTest implements TestData {
+class ApplicationUserServiceTest implements TestData {
 
     @Mock private UserRepository userRepository;
     @Mock private PasswordEncoder passwordEncoder;
@@ -52,12 +49,10 @@ public class ApplicationUserServiceTest implements TestData {
         userToSave.setFirstName(USER_FNAME);
         userToSave.setLastName(USER_LNAME);
         userToSave.setGender(USER_GENDER_DTO);
-        userToSave.setCity(USER_CITY);
-        userToSave.setCountry(USER_CTRY);
         userToSave.setEmail(USER_EMAIL);
+        userToSave.setAddress(ADDRESS_DTO);
         userToSave.setPassword(USER_PASSWORD);
-        userToSave.setStreet(USER_STREET);
-        userToSave.setZipCode(USER_ZIPCODE);
+
 
 
 
@@ -66,17 +61,16 @@ public class ApplicationUserServiceTest implements TestData {
         verify(userRepository, times(1)).findUserByEmail("test@email.com");
         verify(passwordEncoder,times(1)).encode("abcdefghijkl");
         verify(userRepository).save(userArgCaptor.capture());
-
         ApplicationUser capturedUser=userArgCaptor.getValue();
-        assertEquals(capturedUser.getFirstName(), USER_FNAME);
-        assertEquals(capturedUser.getLastName(), USER_LNAME);
-        assertEquals(capturedUser.getEmail(), USER_EMAIL);
-        assertEquals(capturedUser.getGender(),USER_GENDER);
-        assertEquals(capturedUser.getCity(),USER_CITY);
-        assertEquals(capturedUser.getCountry(),USER_CTRY);
-        assertEquals(capturedUser.getStreet(),USER_STREET);
-        assertEquals(capturedUser.getZipCode(),USER_ZIPCODE);
-        assertEquals(capturedUser.getPassword(),USER_PASSWORD.getBytes(StandardCharsets.UTF_8));
+        assertEquals(USER_FNAME,capturedUser.getFirstName());
+        assertEquals( USER_LNAME,capturedUser.getLastName());
+        assertEquals(USER_EMAIL,capturedUser.getEmail());
+        assertEquals(USER_HOUSE_NO, capturedUser.getAddress().getHouseNumber());
+        assertEquals(USER_STREET, capturedUser.getAddress().getStreet());
+        assertEquals(USER_CITY, capturedUser.getAddress().getCity());
+        assertEquals(USER_CTRY, capturedUser.getAddress().getCountry());
+        assertEquals(USER_GENDER, capturedUser.getGender());
+        assertEquals(USER_PASSWORD,capturedUser.getPassword());
 
 
     }
@@ -87,12 +81,9 @@ public class ApplicationUserServiceTest implements TestData {
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
         fakePersistedUser.setGender(USER_GENDER);
-        fakePersistedUser.setCity(USER_CITY);
-        fakePersistedUser.setCountry(USER_CTRY);
         fakePersistedUser.setEmail(USER_EMAIL);
-        fakePersistedUser.setPassword(USER_PASSWORD.getBytes(StandardCharsets.UTF_8));
-        fakePersistedUser.setStreet(USER_STREET);
-        fakePersistedUser.setZipCode(USER_ZIPCODE);
+        fakePersistedUser.setPassword(USER_PASSWORD);
+        fakePersistedUser.setAddress(ADDRESS_ENTITY);
 
         userToSave.email(USER_EMAIL);
 
@@ -107,12 +98,9 @@ public class ApplicationUserServiceTest implements TestData {
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
         fakePersistedUser.setGender(USER_GENDER);
-        fakePersistedUser.setCity(USER_CITY);
-        fakePersistedUser.setCountry(USER_CTRY);
         fakePersistedUser.setEmail(USER_EMAIL);
-        fakePersistedUser.setPassword(USER_PASSWORD.getBytes(StandardCharsets.UTF_8));
-        fakePersistedUser.setStreet(USER_STREET);
-        fakePersistedUser.setZipCode(USER_ZIPCODE);
+        fakePersistedUser.setPassword(USER_PASSWORD);
+        fakePersistedUser.setAddress(ADDRESS_ENTITY);
 
         userToSave.email(USER_EMAIL);
 

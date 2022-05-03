@@ -13,14 +13,14 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @ActiveProfiles("test")
-public class ApplicationUserRepositoryTest{
+class ApplicationUserRepositoryTest{
     @Autowired
     private UserRepository userRepository;
 
     @Disabled
     @Test
-    public void shouldSaveOneUser() {
-        ApplicationUser testuser = new ApplicationUser();//("JANE","DOE", "female",... //je nachdem wie user dann aussieht);
+    void shouldSaveOneUser() {
+        ApplicationUser testuser = new ApplicationUser();
         userRepository.save(testuser);
         assertTrue(testuser.getUserId()>0);
     }
