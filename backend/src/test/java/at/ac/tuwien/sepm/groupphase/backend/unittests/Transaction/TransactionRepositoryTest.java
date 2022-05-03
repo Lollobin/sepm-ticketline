@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -24,16 +26,23 @@ class TransactionRepositoryTest implements TestData {
     @Autowired
     private TransactionRepository transactionRepository;
 
+
     @Test
     void whenFindAllByUserEmail_thenReturnOnlyTransactionsByUser() {
-        entityManager.persist(ADDRESS_ENTITY);
+        Address address = new Address();
+        address.setHouseNumber(USER_HOUSE_NO);
+        address.setStreet(USER_STREET);
+        address.setZipCode(USER_ZIPCODE);
+        address.setCity(USER_CITY);
+        address.setCountry(USER_CTRY);
+        entityManager.persist(address);
         entityManager.flush();
 
         ApplicationUser testUser = new ApplicationUser();
         testUser.setFirstName(USER_FNAME);
         testUser.setLastName(USER_LNAME);
         testUser.setGender(USER_GENDER);
-        testUser.setAddress(ADDRESS_ENTITY);
+        testUser.setAddress(address);
         testUser.setEmail(USER_EMAIL);
         testUser.setPassword(USER_PASSWORD);
         entityManager.persist(testUser);
@@ -42,7 +51,7 @@ class TransactionRepositoryTest implements TestData {
         adminUser.setFirstName(USER_FNAME);
         adminUser.setLastName(USER_LNAME);
         adminUser.setGender(USER_GENDER);
-        adminUser.setAddress(ADDRESS_ENTITY);
+        adminUser.setAddress(address);
         adminUser.setEmail(ADMIN_USER);
         adminUser.setPassword(USER_PASSWORD);
         entityManager.persist(adminUser);

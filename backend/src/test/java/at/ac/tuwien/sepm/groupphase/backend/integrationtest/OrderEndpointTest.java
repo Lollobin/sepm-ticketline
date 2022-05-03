@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
@@ -58,19 +59,27 @@ class OrderEndpointTest implements TestData {
     @Autowired
     private SecurityProperties securityProperties;
 
-    private ApplicationUser user = new ApplicationUser();
+    private ApplicationUser user;
+    private Address address;
 
     @BeforeEach
     public void beforeEach() {
         transactionRepository.deleteAll();
         userRepository.deleteAll();
 
+        address = new Address();
+        address.setHouseNumber(USER_HOUSE_NO);
+        address.setStreet(USER_STREET);
+        address.setZipCode(USER_ZIPCODE);
+        address.setCity(USER_CITY);
+        address.setCountry(USER_CTRY);
+
         user = new ApplicationUser();
         user.setEmail(USER_EMAIL);
         user.setFirstName(USER_FNAME);
         user.setLastName(USER_LNAME);
         user.setGender(USER_GENDER);
-        user.setAddress(ADDRESS_ENTITY);
+        user.setAddress(address);
         user.setPassword(USER_PASSWORD);
     }
 
@@ -101,7 +110,7 @@ class OrderEndpointTest implements TestData {
     @Test
     void givenOneOrder_whenOrdersGet_thenListWithSizeOneAndTransaction() throws Exception {
 
-        addressRepository.save(ADDRESS_ENTITY);
+        addressRepository.save(address);
 
         userRepository.save(user);
 
