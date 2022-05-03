@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "generate-rest": "rimraf src/app/generated-sources; npx @openapitools/openapi-generator-cli generate -i ../swaggerDocumentation.yaml -g typescript-angular -o ./src/app/generated-sources/openapi -c ./openApiAngularConfig.json"
+    "clean-rest": "rimraf ./src/app/generated-sources",
+    "generate-rest": "npx @openapitools/openapi-generator-cli generate -i ../swaggerDocumentation.yaml -g typescript-angular -o ./src/app/generated-sources/openapi -c ./openApiAngularConfig.json"
   },
   "private": true,
   "dependencies": {
