@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
@@ -35,19 +36,21 @@ public class TransactionDataGenerator {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
         } else {
+            Address address = new Address();
+            address.setStreet("TestStreet 123");
+            address.setZipCode("21938");
+            address.setCity("testCity");
+            address.setCountry("Austria");
+            address.setHouseNumber("3");
+
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@email.com");
             user.setFirstName("Admin");
             user.setLastName("User");
             user.setGender(Gender.FEMALE);
-            user.setStreet("TestStreet 123");
-            user.setZipCode("21938");
-            user.setCity("testCity");
-            user.setCountry("Austria");
+            user.setAddress(address);
 
-            byte[] emptyByte = new byte[]{1, 2};
-            user.setPassword(emptyByte);
-            user.setSalt(emptyByte);
+            user.setPassword("password");
             user.setHasAdministrativeRights(true);
             user.setLoginTries(0);
             user.setMustResetPassword(false);
@@ -60,12 +63,8 @@ public class TransactionDataGenerator {
             user2.setFirstName("Admin");
             user2.setLastName("User");
             user2.setGender(Gender.MALE);
-            user2.setStreet("TestStreet 123");
-            user2.setZipCode("21938");
-            user2.setCity("testCity");
-            user2.setCountry("Austria");
-            user2.setPassword(emptyByte);
-            user2.setSalt(emptyByte);
+            user2.setAddress(address);
+            user2.setPassword("password");
             user2.setHasAdministrativeRights(true);
             user2.setLoginTries(0);
             user2.setMustResetPassword(false);

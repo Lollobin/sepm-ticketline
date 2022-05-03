@@ -42,6 +42,10 @@ public class ApplicationUser {
     @Column(nullable = false, length = 64)
     private String password;
 
+    public ApplicationUser() {
+
+    }
+
     @Override
     public String toString() {
         return "ApplicationUser{"
@@ -99,6 +103,16 @@ public class ApplicationUser {
     @ManyToMany
     @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
+    }
 
     public long getUserId() {
         return userId;

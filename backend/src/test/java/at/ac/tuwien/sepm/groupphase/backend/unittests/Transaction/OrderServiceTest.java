@@ -8,7 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
-import at.ac.tuwien.sepm.groupphase.backend.security.IAuthenticationFacade;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.OrderServiceImpl;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ class OrderServiceTest implements TestData {
     @Mock
     private TransactionRepository transactionRepository;
     @Mock
-    private IAuthenticationFacade authenticationFacade;
+    private AuthenticationUtil authenticationFacade;
     private OrderService orderService;
 
     private final List<Transaction> transactionsToReturn = new ArrayList<>();

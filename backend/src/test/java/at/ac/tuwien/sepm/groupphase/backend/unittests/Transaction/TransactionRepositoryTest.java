@@ -26,31 +26,28 @@ class TransactionRepositoryTest implements TestData {
 
     @Test
     void whenFindAllByUserEmail_thenReturnOnlyTransactionsByUser() {
+        entityManager.persist(ADDRESS_ENTITY);
+        entityManager.flush();
+
         ApplicationUser testUser = new ApplicationUser();
         testUser.setFirstName(USER_FNAME);
         testUser.setLastName(USER_LNAME);
         testUser.setGender(USER_GENDER);
-        testUser.setCity(USER_CITY);
-        testUser.setCountry(USER_CTRY);
+        testUser.setAddress(ADDRESS_ENTITY);
         testUser.setEmail(USER_EMAIL);
-        testUser.setPassword(new byte[]{});
-        testUser.setSalt(new byte[]{});
-        testUser.setStreet(USER_STREET);
-        testUser.setZipCode(USER_ZIPCODE);
+        testUser.setPassword(USER_PASSWORD);
         entityManager.persist(testUser);
 
         ApplicationUser adminUser = new ApplicationUser();
         adminUser.setFirstName(USER_FNAME);
         adminUser.setLastName(USER_LNAME);
         adminUser.setGender(USER_GENDER);
-        adminUser.setCity(USER_CITY);
-        adminUser.setCountry(USER_CTRY);
+        adminUser.setAddress(ADDRESS_ENTITY);
         adminUser.setEmail(ADMIN_USER);
-        adminUser.setPassword(new byte[]{});
-        adminUser.setSalt(new byte[]{});
-        adminUser.setStreet(USER_STREET);
-        adminUser.setZipCode(USER_ZIPCODE);
+        adminUser.setPassword(USER_PASSWORD);
         entityManager.persist(adminUser);
+
+        entityManager.flush();
 
         Transaction testTransaction = new Transaction();
         testTransaction.setUser(testUser);
@@ -63,6 +60,7 @@ class TransactionRepositoryTest implements TestData {
         entityManager.persist(adminTransaction);
 
         entityManager.flush();
+        entityManager.clear();
 
         List<Transaction> found = transactionRepository.findAllByUserEmail(USER_EMAIL);
 

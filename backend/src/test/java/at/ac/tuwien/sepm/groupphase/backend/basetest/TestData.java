@@ -3,8 +3,9 @@ package at.ac.tuwien.sepm.groupphase.backend.basetest;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +22,8 @@ public interface TestData {
 
     String BASE_URI = "/api/v1";
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
-    String USERS_BASE_URI= "/users";
+    String USERS_BASE_URI = "/users";
+    String ORDERS_BASE_URI = "/orders";
 
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES = new ArrayList<>() {
@@ -37,7 +39,6 @@ public interface TestData {
         }
     };
 
-
     String USER_FNAME = "John";
     String USER_LNAME = "Doe";
     GenderDto USER_GENDER_DTO = GenderDto.MALE;
@@ -48,17 +49,17 @@ public interface TestData {
     String USER_PASSWORD = "abcdefghijkl";
     String USER_STREET = "Kohlmarkt 1";
     String USER_ZIPCODE = "1010";
+    String USER_HOUSE_NO = "3";
 
-    LocalDate TRANSACTION_DATE = LocalDate.of(2020,12,7);
-    String USER_HOUSE_NO="3";
+    LocalDate TRANSACTION_DATE = LocalDate.of(2020, 12, 7);
 
-
-    AddressDto ADDRESS_DTO =new AddressDto()
+    AddressDto ADDRESS_DTO = new AddressDto()
         .houseNumber(USER_HOUSE_NO)
         .street(USER_STREET)
         .zipCode(USER_ZIPCODE)
         .city(USER_CITY)
         .country(USER_CTRY);
 
-    Address ADDRESS_ENTITY= new Address(USER_HOUSE_NO,USER_STREET, USER_ZIPCODE,USER_CITY,USER_CTRY);
+    Address ADDRESS_ENTITY = new Address(USER_HOUSE_NO, USER_STREET, USER_ZIPCODE, USER_CITY,
+        USER_CTRY);
 }
