@@ -37,12 +37,8 @@ public class Seat {
 
     @Override
     public String toString() {
-        return "Seat{" +
-            "seatId=" + seatId +
-            ", rowNumber=" + rowNumber +
-            ", seatNumber=" + seatNumber +
-            ", sector=" + sector +
-            '}';
+        return "Seat{" + "seatId=" + seatId + ", rowNumber=" + rowNumber + ", seatNumber="
+            + seatNumber + ", sector=" + sector + '}';
     }
 
     @Override

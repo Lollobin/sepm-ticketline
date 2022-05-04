@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface AddressMapper {
+
     AddressDto addressToAddressDto(Address address);
+
     Address addressDtoToAddress(AddressDto addressDto);
 }
