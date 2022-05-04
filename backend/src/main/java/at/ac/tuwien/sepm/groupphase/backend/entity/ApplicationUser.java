@@ -1,12 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.*;
-
-import org.hibernate.annotations.Type;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ApplicationUser {
@@ -36,7 +43,6 @@ public class ApplicationUser {
     private Address address;
 
     @Column(nullable = false, length = 64)
-    @Type(type = "org.hibernate.type.BinaryType")
     private String password;
 
     @Override
@@ -70,16 +76,17 @@ public class ApplicationUser {
             && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
             && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
             && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(
+            user.lastName) && gender == user.gender && Objects.equals(address, user.address)
+            && Objects.equals(
             password, user.password)
             && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
-            articles,password);
-        return result;
+        return Objects.hash(userId, email, firstName, lastName, gender, address,
+            hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
+            articles, password);
     }
 
 
