@@ -83,8 +83,8 @@ public class ApplicationUser {
     @Override
     public int hashCode() {
         return Objects.hash(userId, email, firstName, lastName, gender, address,
-            hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount, articles,
-            password);
+            hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
+            articles, password);
     }
 
 
