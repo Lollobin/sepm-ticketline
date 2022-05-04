@@ -1,10 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.validation;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
-import org.springframework.stereotype.Component;
-
-import javax.validation.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import java.util.regex.Pattern;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UserValidator {
@@ -15,14 +14,27 @@ public class UserValidator {
         this.addressValidator = addressValidator;
     }
 
-    public void validateUserWithPasswordDto(UserWithPasswordDto user){
+    public void validateUserWithPasswordDto(UserWithPasswordDto user) {
         validateEmail(user.getEmail());
         validatePassword(user.getPassword());
         addressValidator.validateAddress(user.getAddress());
+        validateFirstName(user.getFirstName());
+        validateLastName(user.getLastName());
     }
 
+    private void validateFirstName(String firstName) {
+        validateNotEmpty(firstName, "Check first name! ");
+    }
+
+    private void validateLastName(String lastName) {
+        validateNotEmpty(lastName, "Check last name! ");
+    }
+
+
     private void validatePassword(String password) {
-        if(password.length()<8) throw new ValidationException("Password too short");
+        if (password.length() < 8) {
+            throw new ValidationException("Password too short");
+        }
     }
 
     private void validateEmail(String email) {
@@ -38,13 +50,13 @@ public class UserValidator {
                 m = "Given input is not a valid mail address!";
                 throw new ValidationException(m);
             }
-
         }
-
-
-
     }
 
-
-
+    private void validateNotEmpty(String s, String message) {
+        if (s.trim().length() == 0) {
+            throw new ValidationException(
+                message + "This field cannot be empty or contain only spaces!");
+        }
+    }
 }
