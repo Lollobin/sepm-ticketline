@@ -34,11 +34,8 @@ public class Sector {
 
     @Override
     public String toString() {
-        return "Sector{" +
-            "sectorId=" + sectorId +
-            ", price=" + price +
-            ", seatingPlanId=" + seatingPlanId +
-            '}';
+        return "Sector{" + "sectorId=" + sectorId + ", price=" + price + ", seatingPlanId="
+            + seatingPlanId + '}';
     }
 
     @Override
@@ -47,10 +44,7 @@ public class Sector {
     }
 
     @ManyToOne
-    @JoinColumn(
-        name = "seatingPlanId",
-        referencedColumnName = "seatingPlanId",
-        nullable = false)
+    @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
     private SeatingPlan seatingPlanId;
 
     public long getSectorId() {

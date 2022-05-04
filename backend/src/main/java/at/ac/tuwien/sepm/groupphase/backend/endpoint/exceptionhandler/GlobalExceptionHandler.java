@@ -55,7 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .collect(Collectors.toList());
         body.put("Validation errors", errors);
 
-        return new ResponseEntity<>(body.toString(), headers, status);
+        return new ResponseEntity<>(body.toString(), headers, HttpStatus.UNPROCESSABLE_ENTITY);
 
     }
 

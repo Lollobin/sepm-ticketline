@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
-import at.ac.tuwien.sepm.groupphase.backend.security.IAuthenticationFacade;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -17,10 +17,10 @@ public class OrderServiceImpl implements OrderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
     private final TransactionRepository transactionRepository;
-    private final IAuthenticationFacade authenticationFacade;
+    private final AuthenticationFacade authenticationFacade;
 
     public OrderServiceImpl(TransactionRepository transactionRepository,
-        IAuthenticationFacade authenticationFacade) {
+        AuthenticationFacade authenticationFacade) {
         this.transactionRepository = transactionRepository;
         this.authenticationFacade = authenticationFacade;
     }

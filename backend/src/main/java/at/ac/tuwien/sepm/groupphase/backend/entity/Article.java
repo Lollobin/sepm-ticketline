@@ -32,11 +32,7 @@ public class Article {
     private String text;
 
     @ManyToMany
-    @JoinTable(
-        name = "ReadArticle",
-        joinColumns = @JoinColumn(name = "articleId"),
-        inverseJoinColumns = @JoinColumn(name = "userId")
-    )
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "articleId"), inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<ApplicationUser> users;
 
     @Override
@@ -49,9 +45,9 @@ public class Article {
         }
         Article article = (Article) o;
         return articleId == article.articleId && Objects.equals(title, article.title)
-            && Objects.equals(creationDate, article.creationDate) && Objects.equals(
-            summary, article.summary) && Objects.equals(text, article.text)
-            && Objects.equals(users, article.users);
+            && Objects.equals(creationDate, article.creationDate) && Objects.equals(summary,
+            article.summary) && Objects.equals(text, article.text) && Objects.equals(users,
+            article.users);
     }
 
     @Override
@@ -61,14 +57,9 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Article{" +
-            "articleId=" + articleId +
-            ", title='" + title + '\'' +
-            ", creationDate=" + creationDate +
-            ", summary='" + summary + '\'' +
-            ", text='" + text + '\'' +
-            ", users=" + users +
-            '}';
+        return "Article{" + "articleId=" + articleId + ", title='" + title + '\''
+            + ", creationDate=" + creationDate + ", summary='" + summary + '\'' + ", text='" + text
+            + '\'' + ", users=" + users + '}';
     }
 
     public long getArticleId() {
