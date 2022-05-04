@@ -22,14 +22,14 @@ public class Ticket {
         name = "reservedBy",
         referencedColumnName = "userId"
     )
-    private User reservedBy;
+    private ApplicationUser reservedBy;
 
     @ManyToOne
     @JoinColumn(
         name = "purchasedBy",
         referencedColumnName = "userId"
     )
-    private User purchasedBy;
+    private ApplicationUser purchasedBy;
 
     @ManyToOne
     @JoinColumn(
@@ -90,19 +90,19 @@ public class Ticket {
         this.ticketId = ticketId;
     }
 
-    public User getReservedBy() {
+    public ApplicationUser getReservedBy() {
         return reservedBy;
     }
 
-    public void setReservedBy(User reservedBy) {
+    public void setReservedBy(ApplicationUser reservedBy) {
         this.reservedBy = reservedBy;
     }
 
-    public User getPurchasedBy() {
+    public ApplicationUser getPurchasedBy() {
         return purchasedBy;
     }
 
-    public void setPurchasedBy(User purchasedBy) {
+    public void setPurchasedBy(ApplicationUser purchasedBy) {
         this.purchasedBy = purchasedBy;
     }
 
