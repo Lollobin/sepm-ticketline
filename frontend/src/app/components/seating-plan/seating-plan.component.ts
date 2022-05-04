@@ -64,6 +64,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   constructor() {}
   ngOnInit(): void {
     //TODO: Add retreival of necessary data here (when backend is implemented)
+    //GET SHOW; with id from route parameter
     this.showInformation.sectors.forEach((sector) => {
       this.sectorPriceMap[sector.sectorId] = sector.price;
     });
