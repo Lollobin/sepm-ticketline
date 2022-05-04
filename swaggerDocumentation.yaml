@@ -1138,11 +1138,11 @@ components:
           type: string
           format: date-time
         event:
-          type: number
+          type: integer
         artists:
           type: array
           items:
-            type: number
+            type: integer
       required:
         - showId
         - event
@@ -1329,7 +1329,7 @@ components:
       type: object
       properties:
         sectorId:
-          type: number
+          type: integer
         price:
           type: number
       required:

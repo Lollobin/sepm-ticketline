@@ -8,7 +8,11 @@ import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping("${openapi.ticketline.base-path:}")
 public class ShowsEndpoint implements ShowsApi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
@@ -23,6 +27,7 @@ public class ShowsEndpoint implements ShowsApi {
 
     @Override
     public ResponseEntity<ShowDto> showsIdGet(Integer id) {
+        LOGGER.info("GET shows/{}", id);
         ShowDto foundShow = this.showMapper.showToShowDto(
             this.showService.findOne(Long.valueOf(id)));
         return ResponseEntity.ok(foundShow);

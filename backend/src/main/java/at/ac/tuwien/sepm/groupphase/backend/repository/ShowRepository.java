@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShowRepository extends JpaRepository<Show, Long> {
 
-    @Override
-    Show getById(Long showId);
 }
