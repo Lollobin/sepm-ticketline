@@ -4,8 +4,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.UserDetailsServiceConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +52,7 @@ public interface TestData {
     String USER_ZIPCODE = "1010";
     String USER_HOUSE_NO="3";
 
+    String ENCODED_USER_PASSWORD_EXAMPLE="$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 
     AddressDto ADDRESS_DTO =new AddressDto()
         .houseNumber(USER_HOUSE_NO)
@@ -58,4 +62,10 @@ public interface TestData {
         .country(USER_CTRY);
 
     Address ADDRESS_ENTITY= new Address(USER_HOUSE_NO,USER_STREET, USER_ZIPCODE,USER_CITY,USER_CTRY);
+    Address ADDRESS_ENTITY2=new Address(USER_HOUSE_NO,USER_STREET, USER_ZIPCODE,USER_CITY,USER_CTRY);
+
+
+
+
+
 }

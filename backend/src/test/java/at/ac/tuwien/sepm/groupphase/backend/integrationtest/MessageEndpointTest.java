@@ -182,7 +182,7 @@ public class MessageEndpointTest implements TestData {
     }
 
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    public void givenNothing_whenPostInvalid_then422() throws Exception {
         message.setTitle(null);
         message.setSummary(null);
         message.setText(null);
@@ -198,7 +198,7 @@ public class MessageEndpointTest implements TestData {
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertAll(
-            () -> assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus()),
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
             () -> {
                 //Reads the errors from the body
                 String content = response.getContentAsString();
