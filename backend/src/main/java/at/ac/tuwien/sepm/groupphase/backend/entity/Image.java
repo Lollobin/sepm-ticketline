@@ -23,11 +23,15 @@ public class Image {
 
     @Override
     public String toString() {
-        return "Image{" +
-            "imageId=" + imageId +
-            ", filePath='" + filePath + '\'' +
-            ", article=" + article +
-            '}';
+        return "Image{"
+            + "imageId="
+            + imageId
+            + ", filePath='"
+            + filePath
+            + '\''
+            + ", article="
+            + article
+            + '}';
     }
 
     @Override
@@ -39,7 +43,8 @@ public class Image {
             return false;
         }
         Image image = (Image) o;
-        return imageId == image.imageId && Objects.equals(filePath, image.filePath)
+        return imageId == image.imageId
+            && Objects.equals(filePath, image.filePath)
             && Objects.equals(article, image.article);
     }
 

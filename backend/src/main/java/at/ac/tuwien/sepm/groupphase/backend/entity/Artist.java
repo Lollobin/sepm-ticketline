@@ -26,11 +26,7 @@ public class Artist {
     private String lastName;
 
     @ManyToMany
-    @JoinTable(
-        name = "PlaysIn",
-        joinColumns = @JoinColumn(name = "artistId"),
-        inverseJoinColumns = @JoinColumn(name = "showId")
-    )
+    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "artistId"), inverseJoinColumns = @JoinColumn(name = "showId"))
     private Set<Show> shows;
 
     @Override
@@ -44,8 +40,8 @@ public class Artist {
         Artist artist = (Artist) o;
         return artistId == artist.artistId && Objects.equals(bandName, artist.bandName)
             && Objects.equals(knownAs, artist.knownAs) && Objects.equals(firstName,
-            artist.firstName) && Objects.equals(lastName, artist.lastName)
-            && Objects.equals(shows, artist.shows);
+            artist.firstName) && Objects.equals(lastName, artist.lastName) && Objects.equals(shows,
+            artist.shows);
     }
 
     @Override
@@ -55,14 +51,9 @@ public class Artist {
 
     @Override
     public String toString() {
-        return "Artist{" +
-            "artistId=" + artistId +
-            ", bandName='" + bandName + '\'' +
-            ", knownAs='" + knownAs + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", shows=" + shows +
-            '}';
+        return "Artist{" + "artistId=" + artistId + ", bandName='" + bandName + '\'' + ", knownAs='"
+            + knownAs + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\''
+            + ", shows=" + shows + '}';
     }
 
     public long getArtistId() {
