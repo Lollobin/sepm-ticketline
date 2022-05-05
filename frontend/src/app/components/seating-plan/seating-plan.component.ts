@@ -3,6 +3,7 @@ import { countBy, find, groupBy, mapValues, noop } from "lodash";
 import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
 import {
   Artist,
+  ArtistsService,
   Event,
   SeatWithBookingStatus,
   Sector,
@@ -58,11 +59,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       "I like that. Can we have more like this? " +
       "I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
   };
-  artists: Artist[] = [
-    { artistId: 1, bandName: "Carlos Rock Band" },
-    { artistId: 133, firstName: "Karlo", lastName: "Steinband" },
-  ];
-  constructor(private showsService: ShowsService) {}
+  artists: Artist[] = [];
+  constructor(private showsService: ShowsService, private artistsService: ArtistsService) {}
   async ngOnInit() {
     //TODO: Add retreival of necessary data here (when backend is implemented)
     //TODO: Add error handlers
@@ -71,6 +69,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     this.showsService.showsIdGet(showId).subscribe({
       next: (show) => {
         this.show = show;
+        for (let artistId of this.show.artists) {
+          this.artistsService.artistsIdGet(artistId).subscribe({
+            next: (artist) => {
+              this.artists.push(artist);
+            },
+          });
+        }
       },
     });
     this.showInformation.sectors.forEach((sector) => {
