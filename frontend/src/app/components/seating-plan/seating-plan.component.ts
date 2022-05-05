@@ -5,6 +5,7 @@ import {
   Artist,
   ArtistsService,
   Event,
+  EventsService,
   SeatWithBookingStatus,
   Sector,
   Show,
@@ -50,17 +51,18 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   totalPrice = 0;
   show: Show = { showId: 0, date: "", event: 0, artists: [] };
   event: Event = {
-    eventId: 1,
-    name: "Rock am Berg",
-    category: "Zeltfest",
-    duration: 144,
-    content:
-      "This festival contains many different artists, mainly carlus and hios gang. This is very good. " +
-      "I like that. Can we have more like this? " +
-      "I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
+    eventId: 0,
+    name: "",
+    category: "",
+    duration: 0,
+    content: "",
   };
   artists: Artist[] = [];
-  constructor(private showsService: ShowsService, private artistsService: ArtistsService) {}
+  constructor(
+    private showsService: ShowsService,
+    private artistsService: ArtistsService,
+    private eventsService: EventsService
+  ) {}
   async ngOnInit() {
     //TODO: Add retreival of necessary data here (when backend is implemented)
     //TODO: Add error handlers
@@ -76,6 +78,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             },
           });
         }
+        this.eventsService.eventsIdGet(this.show.event).subscribe({
+          next: (event) => {
+            this.event = event;
+          },
+        });
       },
     });
     this.showInformation.sectors.forEach((sector) => {
