@@ -1280,12 +1280,15 @@ components:
       properties:
         seatingPlanId:
           type: integer
+          format: int64
         name:
           type: string
         seatingPlanLayoutId:
-          type: number
+          type: integer
+          format: int64
         locationId:
           type: integer
+          format: int64
       required:
         - seatingPlanId
         - name

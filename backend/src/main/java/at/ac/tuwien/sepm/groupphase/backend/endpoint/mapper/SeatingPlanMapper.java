@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface SeatingPlanMapper {
-    SeatingPlanDto showToShowDto(SeatingPlan show);
+    SeatingPlanDto seatingPlanToSeatingPlanDto(SeatingPlan seatingPlan);
 
-    SeatingPlan showDtoToShow(SeatingPlanDto showDto);
+    SeatingPlan seatingPlanDtoToSeatingPlan(SeatingPlanDto seatingPlanDto);
 }
