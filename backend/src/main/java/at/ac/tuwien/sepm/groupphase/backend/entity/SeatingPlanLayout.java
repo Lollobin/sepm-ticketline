@@ -23,8 +23,8 @@ public class SeatingPlanLayout {
             return false;
         }
         SeatingPlanLayout that = (SeatingPlanLayout) o;
-        return seatingPlanLayoutId == that.seatingPlanLayoutId && Objects.equals(
-            seatingLayoutPath, that.seatingLayoutPath);
+        return seatingPlanLayoutId == that.seatingPlanLayoutId && Objects.equals(seatingLayoutPath,
+            that.seatingLayoutPath);
     }
 
     @Override
@@ -34,10 +34,8 @@ public class SeatingPlanLayout {
 
     @Override
     public String toString() {
-        return "SeatingPlanLayout{" +
-            "seatingPlanLayoutId=" + seatingPlanLayoutId +
-            ", seatingLayoutPath='" + seatingLayoutPath + '\'' +
-            '}';
+        return "SeatingPlanLayout{" + "seatingPlanLayoutId=" + seatingPlanLayoutId
+            + ", seatingLayoutPath='" + seatingLayoutPath + '\'' + '}';
     }
 
     @Column(nullable = false)

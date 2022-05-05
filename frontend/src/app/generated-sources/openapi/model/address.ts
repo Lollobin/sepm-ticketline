@@ -9,17 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Address } from './address';
-import { Gender } from './gender';
 
 
-export interface User { 
-    userId: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gender: Gender;
-    address: Address;
-    isLocked: boolean;
+export interface Address { 
+    houseNumber: string;
+    street: string;
+    city: string;
+    country: string;
+    zipCode: string;
 }
 
