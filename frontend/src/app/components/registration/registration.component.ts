@@ -12,9 +12,7 @@ import {passwordMatchValidator} from "./passwords-match-validator";
 export class RegistrationComponent {
 
   registrationForm: FormGroup;
-  // After first submission attempt, form validation will start
-  submitted = false;
-  // Error flag
+  submitted=false;
   error = false;
   errorMessage = '';
   genders = [{description: "Female", value: "female"}, {
@@ -50,7 +48,7 @@ export class RegistrationComponent {
 
 
   signUpUser() {
-    this.submitted = true;
+    this.submitted=true;
     if (this.registrationForm.valid) {
       const userAddress: Address= {
         houseNumber: this.f['address'].value.houseNumber,
@@ -76,7 +74,7 @@ export class RegistrationComponent {
   }
 
   registerUser(userWithPassword: UserWithPassword) {
-    this.userManagementService.usersPost(userWithPassword).subscribe({
+    this.userManagementService.usersPost(userWithPassword, ).subscribe({
       next: () => {
         console.log("success!");
         this.router.navigate(['/login']);
