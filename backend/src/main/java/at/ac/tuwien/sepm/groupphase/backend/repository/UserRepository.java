@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
 
 
     @Transactional
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.lockedAccount = ?1 where a.userId = ?2")
     int unlockApplicationUser(boolean lockedAccount, long userId);
 
