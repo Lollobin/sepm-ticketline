@@ -4,7 +4,7 @@ info:
   description: Documentation for the Ticketline API
   version: 0.0.1
 servers:
-  - url: localhost
+  - url: localhost:8080
     description: Can be used when spring application is started locally
 paths:
   /login:
