@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 public interface ArtistMapper {
     ArtistDto artistToArtistDto(Artist artist);
 
-    Artist showDtoToShow(ArtistDto showDto);
+    Artist artistDtoToArtist(ArtistDto artistDto);
 }

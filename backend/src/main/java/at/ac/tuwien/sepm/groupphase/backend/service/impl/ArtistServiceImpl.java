@@ -29,7 +29,7 @@ public class ArtistServiceImpl implements ArtistService {
         if (artist.isPresent()) {
             return artist.get();
         } else {
-            throw new NotFoundException(String.format("Could not find show with id %s", id));
+            throw new NotFoundException(String.format("Could not find event with id %s", id));
         }
     }
 }
