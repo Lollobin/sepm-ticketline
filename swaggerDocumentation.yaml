@@ -30,13 +30,13 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
   /passwordReset/{id}:
-    post: 
+    post:
       tags:
-        - userManagement 
+        - userManagement
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
       security:
         - BearerAuth: []
-      parameters: 
+      parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         200:
@@ -49,11 +49,11 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts:
     post:
-      tags: 
+      tags:
         - seatingPlans
       summary: Uploads a seating plan layout.
       security:
-        - BearerAuth: []      
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -65,7 +65,7 @@ paths:
       responses:
         201:
           description: Successful upload of a seating plan layout.
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -78,9 +78,9 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts/{id}:
     get:
-      tags: 
+      tags:
         - seatingPlans
-      summary: Retreives seating plan layout with the given ID 
+      summary: Retreives seating plan layout with the given ID
       security:
         - BearerAuth: []
       parameters:
@@ -112,7 +112,7 @@ paths:
       responses:
         201:
           description: Successful upload of an image.
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -127,7 +127,7 @@ paths:
     get:
       tags:
         - articles
-      summary: Retreives an article image with the given ID 
+      summary: Retreives an article image with the given ID
       security:
         - BearerAuth: []
       parameters:
@@ -173,7 +173,7 @@ paths:
       responses:
         201:
           description: Successful creation of an user
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -265,7 +265,7 @@ paths:
       responses:
         201:
           description: Successful creation of an administrative user. Location header points to normal /user/{id} endpoint.
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -284,7 +284,7 @@ paths:
     put:
       tags:
         - userManagement
-      summary: Locks the user-account with the given ID. 
+      summary: Locks the user-account with the given ID.
       parameters:
         - $ref: "#/components/parameters/userId"
       security:
@@ -322,7 +322,7 @@ paths:
       responses:
         201:
           description: Successful creation of an article
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -404,7 +404,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /events:
     post:
-      tags: 
+      tags:
         - events
       summary: Creates an event
       security:
@@ -418,7 +418,7 @@ paths:
       responses:
         201:
           description: Successful creation of an event
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -434,7 +434,7 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
-      tags: 
+      tags:
         - events
       summary: Searches for events depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all events are returned
@@ -482,7 +482,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /shows:
     post:
-      tags: 
+      tags:
         - shows
       summary: Creates a show
       security:
@@ -496,7 +496,7 @@ paths:
       responses:
         201:
           description: Successful creation of a show
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -512,7 +512,7 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
-      tags: 
+      tags:
         - shows
       summary: Searches for shows depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all shows are returned
@@ -538,7 +538,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /shows/{id}:
     get:
-      tags: 
+      tags:
         - shows
       summary: Retreives information of the show with the given ID.
       parameters:
@@ -560,7 +560,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /topShows:
     get:
-      tags: 
+      tags:
         - shows
       summary: Searches for shows that have the highest amount of tickets sold per category for a given month
       description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
@@ -586,7 +586,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations:
     post:
-      tags: 
+      tags:
         - locations
       summary: Creates a location.
       security:
@@ -600,7 +600,7 @@ paths:
       responses:
         201:
           description: Successful creation of a location
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -616,7 +616,7 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
-      tags: 
+      tags:
         - locations
       summary: Searches for locations depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all locations are returned
@@ -642,7 +642,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}:
     get:
-      tags: 
+      tags:
         - locations
       summary: Gets the details of a location
       parameters:
@@ -664,7 +664,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /artists:
     get:
-      tags: 
+      tags:
         - artists
       summary: Searches for artists depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all artists are returned
@@ -691,7 +691,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /artists/{id}:
     get:
-      tags: 
+      tags:
         - artists
       summary: Retreives information of the artist with the given ID.
       parameters:
@@ -713,7 +713,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlans:
     post:
-      tags: 
+      tags:
         - seatingPlans
       summary: Creates a seating plan.
       security:
@@ -727,7 +727,7 @@ paths:
       responses:
         201:
           description: Successful creation of a seating plan
-          headers: 
+          headers:
             Location:
               required: true
               description: The location of the created resource
@@ -743,7 +743,7 @@ paths:
         500:
           $ref: "#/components/responses/500-internal-error"
     get:
-      tags: 
+      tags:
         - seatingPlans
       summary: Gets all seating plans
       security:
@@ -763,7 +763,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlans/{id}:
     get:
-      tags: 
+      tags:
         - seatingPlans
       summary: Retreives information of the seating plan with the given ID.
       parameters:
@@ -785,7 +785,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
     get:
-      tags: 
+      tags:
         - shows
       summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
       security:
@@ -807,7 +807,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /tickets:
     post:
-      tags: 
+      tags:
         - tickets
       summary: Sets the given tickets to purchased or reserved
       security:
@@ -833,7 +833,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /ticketPrints/{id}:
     get:
-      tags: 
+      tags:
         - tickets
       summary: Retreives a ticket in PDF-format or the given Ticket ID.
       parameters:
@@ -858,7 +858,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /ticketCancellations:
     post:
-      tags: 
+      tags:
         - tickets
       summary: Cancels the given tickets purchased or reserved status
       security:
@@ -886,7 +886,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /orders:
     get:
-      tags: 
+      tags:
         - tickets
       summary: Shows orders for the user possessing the token
       security:
@@ -910,7 +910,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /bills/{id}:
     get:
-      tags: 
+      tags:
         - tickets
       summary: Gets a PDF version of a bill
       security:
@@ -1297,11 +1297,14 @@ components:
         ticketId:
           type: number
         rowNumber:
-          type: number
+          type: integer
+          format: int64
         seatNumber:
-          type: number
+          type: integer
+          format: int64
         sector:
-          type: number
+          type: integer
+          format: int64
       required:
         - ticketId
         - sector
@@ -1309,17 +1312,21 @@ components:
       type: object
       properties:
         seatId:
-          type: number
+          type: integer
+          format: int64
         reserved:
           type: boolean
         purchased:
           type: boolean
         rowNumber:
-          type: number
+          type: integer
+          format: int64
         seatNumber:
-          type: number
+          type: integer
+          format: int64
         sector:
-          type: number
+          type: integer
+          format: int64
       required:
         - seatId
         - reserved
@@ -1330,6 +1337,7 @@ components:
       properties:
         sectorId:
           type: integer
+          format: int64
         price:
           type: number
       required:
@@ -1458,7 +1466,7 @@ components:
       required:
         - reserved
         - purchased
-    ShowInformation: 
+    ShowInformation:
       type: object
       properties:
         seats:
@@ -1491,8 +1499,6 @@ components:
       required:
         - houseNumber
         - street
-        - city  
-        - country  
-        - zipCode  
-
-
+        - city
+        - country
+        - zipCode

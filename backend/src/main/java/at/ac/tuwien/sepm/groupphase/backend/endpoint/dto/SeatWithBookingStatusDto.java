@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -22,7 +21,7 @@ import javax.annotation.Generated;
 public class SeatWithBookingStatusDto   {
 
   @JsonProperty("seatId")
-  private BigDecimal seatId;
+  private Long seatId;
 
   @JsonProperty("reserved")
   private Boolean reserved;
@@ -31,15 +30,15 @@ public class SeatWithBookingStatusDto   {
   private Boolean purchased;
 
   @JsonProperty("rowNumber")
-  private BigDecimal rowNumber;
+  private Long rowNumber;
 
   @JsonProperty("seatNumber")
-  private BigDecimal seatNumber;
+  private Long seatNumber;
 
   @JsonProperty("sector")
-  private BigDecimal sector;
+  private Long sector;
 
-  public SeatWithBookingStatusDto seatId(BigDecimal seatId) {
+  public SeatWithBookingStatusDto seatId(Long seatId) {
     this.seatId = seatId;
     return this;
   }
@@ -48,13 +47,13 @@ public class SeatWithBookingStatusDto   {
    * Get seatId
    * @return seatId
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "seatId", required = true)
-  public BigDecimal getSeatId() {
+  public Long getSeatId() {
     return seatId;
   }
 
-  public void setSeatId(BigDecimal seatId) {
+  public void setSeatId(Long seatId) {
     this.seatId = seatId;
   }
 
@@ -96,7 +95,7 @@ public class SeatWithBookingStatusDto   {
     this.purchased = purchased;
   }
 
-  public SeatWithBookingStatusDto rowNumber(BigDecimal rowNumber) {
+  public SeatWithBookingStatusDto rowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
     return this;
   }
@@ -105,17 +104,17 @@ public class SeatWithBookingStatusDto   {
    * Get rowNumber
    * @return rowNumber
   */
-  @Valid 
+  
   @Schema(name = "rowNumber", required = false)
-  public BigDecimal getRowNumber() {
+  public Long getRowNumber() {
     return rowNumber;
   }
 
-  public void setRowNumber(BigDecimal rowNumber) {
+  public void setRowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
   }
 
-  public SeatWithBookingStatusDto seatNumber(BigDecimal seatNumber) {
+  public SeatWithBookingStatusDto seatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
     return this;
   }
@@ -124,17 +123,17 @@ public class SeatWithBookingStatusDto   {
    * Get seatNumber
    * @return seatNumber
   */
-  @Valid 
+  
   @Schema(name = "seatNumber", required = false)
-  public BigDecimal getSeatNumber() {
+  public Long getSeatNumber() {
     return seatNumber;
   }
 
-  public void setSeatNumber(BigDecimal seatNumber) {
+  public void setSeatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
   }
 
-  public SeatWithBookingStatusDto sector(BigDecimal sector) {
+  public SeatWithBookingStatusDto sector(Long sector) {
     this.sector = sector;
     return this;
   }
@@ -143,13 +142,13 @@ public class SeatWithBookingStatusDto   {
    * Get sector
    * @return sector
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "sector", required = true)
-  public BigDecimal getSector() {
+  public Long getSector() {
     return sector;
   }
 
-  public void setSector(BigDecimal sector) {
+  public void setSector(Long sector) {
     this.sector = sector;
   }
 
