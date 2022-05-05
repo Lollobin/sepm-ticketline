@@ -25,7 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class UserEndpointTest implements TestData {
+@Disabled
+class UserEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,16 +41,13 @@ public class UserEndpointTest implements TestData {
         .firstName(USER_FNAME)
         .lastName(USER_LNAME)
         .gender(USER_GENDER_DTO)
-        .city(USER_CITY)
-        .country(USER_CTRY)
         .email(USER_EMAIL)
-        .password(USER_PASSWORD)
-        .street(USER_STREET)
-        .zipCode(USER_ZIPCODE);
+//        .address(ADDRESS_DTO)
+        .password(USER_PASSWORD);
 
     @Disabled
     @Test
-    public void givenNothing_whenPost_thenUserWithAllPropertiesAndId() throws Exception {
+    void givenNothing_whenPost_thenUserWithAllPropertiesAndId() throws Exception {
 
         String body = objectMapper.writeValueAsString(user);
 
@@ -64,7 +62,7 @@ public class UserEndpointTest implements TestData {
     }
     @Disabled
     @Test
-    public void givenNothing_whenPostInvalid_then400() throws Exception {
+    void givenNothing_whenPostInvalid_then400() throws Exception {
         user.email(null);
         user.gender(null);
         String body = objectMapper.writeValueAsString(user);
