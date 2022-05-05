@@ -21,14 +21,6 @@ export class UnlockUserComponent implements OnInit {
       this.reloadUser();
   }
 
-  // getAll(){
-  //   this.userManagementService.usersGet(false).subscribe({
-  //     next: value => {
-  //       console.log("all", value);
-  //     }
-  //   });
-  // }
-
   reloadUser() {
     this.userManagementService.usersGet(true).subscribe({
       next: user => {

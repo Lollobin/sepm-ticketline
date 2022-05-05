@@ -7,24 +7,18 @@
             aria-label="Close"></button>
   </div>
 </div>
-
-<h1>Locked User:</h1>
+<div id="around">
+<h1 class="mainHeader">Locked Users</h1>
 <table class="table table-striped" style="text-align:center">
-
-  <thead >
-  <tr>
-    <th scope="col">First Name</th>
-    <th scope="col">Last Name</th>
-    <th scope="col">Unlock</th>
-  </tr>
-  </thead>
   <tbody>
   <tr *ngFor="let user of users">
-    <td>{{user.firstName}}</td>
-    <td>{{user.lastName}}</td>
-    <td><button type="button" (click)="unlockUser(user.userId)" class="btn btn-dark" >Unlock {{user.firstName}}</button>
+    <td>{{user.email}}</td>
+    <td>{{user.firstName}} {{user.lastName}}</td>
+    <td><button type="button" (click)="unlockUser(user.userId)" class="btn btn-dark" ><i class="fa-solid fa-lock"></i>Unlock {{user.firstName}}</button>
     </td>
   </tr>
   </tbody>
 </table>
+
+</div>
 
