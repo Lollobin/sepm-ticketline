@@ -24,22 +24,22 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return sectorId == sector.sectorId && Objects.equals(seatingPlanId, sector.seatingPlanId);
+        return sectorId == sector.sectorId && Objects.equals(seatingPlan, sector.seatingPlan);
     }
 
     @Override
     public String toString() {
-        return "Sector{" + "sectorId=" + sectorId + ", seatingPlanId=" + seatingPlanId + '}';
+        return "Sector{" + "sectorId=" + sectorId + ", seatingPlanId=" + seatingPlan + '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sectorId, seatingPlanId);
+        return Objects.hash(sectorId, seatingPlan);
     }
 
     @ManyToOne
     @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
-    private SeatingPlan seatingPlanId;
+    private SeatingPlan seatingPlan;
 
     public long getSectorId() {
         return sectorId;
@@ -49,11 +49,11 @@ public class Sector {
         this.sectorId = sectorId;
     }
 
-    public SeatingPlan getSeatingPlanId() {
-        return seatingPlanId;
+    public SeatingPlan getSeatingPlan() {
+        return seatingPlan;
     }
 
-    public void setSeatingPlanId(SeatingPlan seatingPlanId) {
-        this.seatingPlanId = seatingPlanId;
+    public void setSeatingPlan(SeatingPlan seatingPlan) {
+        this.seatingPlan = seatingPlan;
     }
 }

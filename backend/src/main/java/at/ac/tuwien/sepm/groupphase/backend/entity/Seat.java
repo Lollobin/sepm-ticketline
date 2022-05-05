@@ -49,4 +49,36 @@ public class Seat {
     @ManyToOne
     @JoinColumn(name = "sectorId", referencedColumnName = "sectorId", nullable = false)
     private Sector sector;
+
+    public long getSeatId() {
+        return seatId;
+    }
+
+    public void setSeatId(long seatId) {
+        this.seatId = seatId;
+    }
+
+    public long getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(long rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public long getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(long seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
 }
