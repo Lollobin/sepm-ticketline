@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -9,14 +11,16 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@Profile("generateData")
+@Profile("generateUserData")
 @Component
 public class UserDataGenerator {
 
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
-    public UserDataGenerator(UserRepository userRepository) {
+    public UserDataGenerator(UserRepository userRepository, AddressRepository addressRepository) {
         this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
     }
 
     @PostConstruct
@@ -29,20 +33,52 @@ public class UserDataGenerator {
 
         } else {
 
+            Address address = new Address();
+            address.setStreet("TestStreet 123");
+            address.setZipCode("21938");
+            address.setCity("testCity");
+            address.setCountry("Austria");
+            address.setHouseNumber("2");
+
+            addressRepository.save(address);
+
+            Address address2 = new Address();
+            address2.setStreet("TestStreet 1233");
+            address2.setZipCode("219338");
+            address2.setCity("test3City");
+            address2.setCountry("Aust3ria");
+            address2.setHouseNumber("2");
+
+            addressRepository.save(address2);
+
+            Address address3 = new Address();
+            address3.setStreet("TestStreet 32123");
+            address3.setZipCode("2321938");
+            address3.setCity("testC32ity");
+            address3.setCountry("Au32stria");
+            address3.setHouseNumber("2");
+
+            addressRepository.save(address3);
+
+            Address address4 = new Address();
+            address4.setStreet("TestStr321eet 1233");
+            address4.setZipCode("219312338");
+            address4.setCity("test331City");
+            address4.setCountry("Aus312t3ria");
+            address4.setHouseNumber("2");
+            addressRepository.save(address4);
+
+
 
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@emaiwadwl.com");
             user.setFirstName("Admin");
             user.setLastName("User");
             user.setGender(Gender.FEMALE);
-            user.setStreet("TestStreet 123");
-            user.setZipCode("21938");
-            user.setCity("testCity");
-            user.setCountry("Austria");
+            user.setAddress(address);
 
             byte[] emptyByte = new byte[]{1, 2};
-            user.setPassword(emptyByte);
-            user.setSalt(emptyByte);
+            user.setPassword(String.valueOf(emptyByte));
             user.setHasAdministrativeRights(true);
             user.setLoginTries(0);
             user.setMustResetPassword(false);
@@ -55,14 +91,10 @@ public class UserDataGenerator {
             user4.setFirstName("Admin");
             user4.setLastName("User");
             user4.setGender(Gender.FEMALE);
-            user4.setStreet("TestStreet 123");
-            user4.setZipCode("21938");
-            user4.setCity("testCity");
-            user4.setCountry("Austria");
+            user4.setAddress(address2);
 
             emptyByte = new byte[]{1, 2};
-            user4.setPassword(emptyByte);
-            user4.setSalt(emptyByte);
+            user4.setPassword(String.valueOf((emptyByte)));
             user4.setHasAdministrativeRights(true);
             user4.setLoginTries(0);
             user4.setMustResetPassword(false);
@@ -76,14 +108,10 @@ public class UserDataGenerator {
             user3.setFirstName("Admin");
             user3.setLastName("User");
             user3.setGender(Gender.FEMALE);
-            user3.setStreet("TestStreet 123");
-            user3.setZipCode("21938");
-            user3.setCity("testCity");
-            user3.setCountry("Austria");
+            user3.setAddress(address3);
 
             emptyByte = new byte[]{1, 2};
-            user3.setPassword(emptyByte);
-            user3.setSalt(emptyByte);
+            user3.setPassword(String.valueOf(emptyByte));
             user3.setHasAdministrativeRights(true);
             user3.setLoginTries(0);
             user3.setMustResetPassword(false);
@@ -96,17 +124,16 @@ public class UserDataGenerator {
             user2.setFirstName("Admin");
             user2.setLastName("User");
             user2.setGender(Gender.MALE);
-            user2.setStreet("TestStreet 123");
-            user2.setZipCode("21938");
-            user2.setCity("testCity");
-            user2.setCountry("Austria");
-            user2.setPassword(emptyByte);
-            user2.setSalt(emptyByte);
+            user2.setAddress(address4);
+
+            emptyByte = new byte[]{1, 2};
+            user2.setPassword(String.valueOf((emptyByte)));
             user2.setHasAdministrativeRights(true);
             user2.setLoginTries(0);
             user2.setMustResetPassword(false);
             user2.setLockedAccount(false);
             userRepository.save(user2);
+
         }
     }
 }

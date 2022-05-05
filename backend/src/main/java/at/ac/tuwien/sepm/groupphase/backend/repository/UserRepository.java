@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
-    ApplicationUser findUserByEmail(String eMail);
+    ApplicationUser findUserByEmail(String email);
 
     ApplicationUser save(ApplicationUser user);
 

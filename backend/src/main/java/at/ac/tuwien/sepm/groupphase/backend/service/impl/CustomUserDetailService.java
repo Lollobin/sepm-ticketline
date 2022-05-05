@@ -8,8 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +19,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CustomUserDetailService implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
     private final UserValidator userValidator;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper, UserValidator userValidator) {
+    public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserEncodePasswordMapper encodePasswordMapper, UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
@@ -63,8 +63,7 @@ public class CustomUserDetailService implements UserService {
             grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
         }
 
-        return new User(applicationUser.getEmail(), passwordEncoder.encode("password"),
-            grantedAuthorities);
+        return new User(applicationUser.getEmail(), passwordEncoder.encode("password"), grantedAuthorities);
     }
 
     @Override
@@ -74,20 +73,35 @@ public class CustomUserDetailService implements UserService {
         if (applicationUser != null) {
             return applicationUser;
         }
-        throw new NotFoundException(
-            String.format("Could not find the user with the email address %s", email));
+        throw new NotFoundException(String.format("Could not find the user with the email address %s", email));
     }
 
     @Override
     public void save(UserWithPasswordDto user) {
         ApplicationUser applicationUser = userRepository.findUserByEmail(user.getEmail());
         if (applicationUser != null) {
-            throw new ValidationException(
-                "User with email " + user.getEmail() + " already exists!");
+            throw new ValidationException("User with email " + user.getEmail() + " already exists!");
         }
         userValidator.validateUserWithPasswordDto(user);
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(user);
         LOGGER.debug("Attempting to save {}", appUser);
         userRepository.save(appUser);
+    }
+
+    @Override
+    public List<ApplicationUser> findAll(boolean filterLocked) {
+        return userRepository.findByLockedAccountEquals(filterLocked);
+    }
+
+    @Override
+    public List<ApplicationUser> findLockedUser() {
+
+        return userRepository.findByLockedState();
+    }
+
+
+    @Override
+    public Optional<ApplicationUser> findById(Long id) {
+        return userRepository.findById(id);
     }
 }
