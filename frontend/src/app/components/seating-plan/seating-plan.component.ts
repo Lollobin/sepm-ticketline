@@ -8,6 +8,7 @@ import {
   Sector,
   Show,
   ShowInformation,
+  ShowsService,
 } from "src/app/generated-sources/openapi";
 import {
   SeatingPlan,
@@ -46,9 +47,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
-  show: Show = { showId: 1234, date: new Date().toLocaleString(), event: 1234, artists: [12] };
+  show: Show = { showId: 0, date: "", event: 0, artists: [] };
   event: Event = {
-    eventId: 1234,
+    eventId: 1,
     name: "Rock am Berg",
     category: "Zeltfest",
     duration: 144,
@@ -58,13 +59,20 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       "I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
   };
   artists: Artist[] = [
-    { artistId: 12, bandName: "Carlos Rock Band" },
+    { artistId: 1, bandName: "Carlos Rock Band" },
     { artistId: 133, firstName: "Karlo", lastName: "Steinband" },
   ];
-  constructor() {}
-  ngOnInit(): void {
+  constructor(private showsService: ShowsService) {}
+  async ngOnInit() {
     //TODO: Add retreival of necessary data here (when backend is implemented)
-    //GET SHOW; with id from route parameter
+    //TODO: Add error handlers
+    //TODO: GET SHOW; with id from route parameter
+    const showId = 1;
+    this.showsService.showsIdGet(showId).subscribe({
+      next: (show) => {
+        this.show = show;
+      },
+    });
     this.showInformation.sectors.forEach((sector) => {
       this.sectorPriceMap[sector.sectorId] = sector.price;
     });
