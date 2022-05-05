@@ -11,12 +11,12 @@
   <div class="col-md-6">
     <div class="card">
       <header class="card-header">
-        <h4 class="card-title mt-2">Sign up</h4>
+        <h4 class="card-title mt-2">Sign up for Ticketline 4.0</h4>
       </header>
       <article class="card-body">
         <form [formGroup]="registrationForm" (ngSubmit)="signUpUser()">
 
-          <div class="form-row">
+          <div class="row">
             <div class="col form-group">
               <label>First name </label>
               <input [maxlength]="100" type="text" class="form-control" formControlName="firstName"
@@ -116,62 +116,77 @@
 
 
           <div formGroupName="address">
-
-            <div class="form-group">
-              <label for="street">Street</label>
-              <input [maxlength]="100"  type="text" id="street" value="street" formControlName="street"
-                     class="form-control">
-              <div *ngIf="registrationForm.get('address.street').touched || submitted" class="error">
-                <small class="form-text text-warning"
-                       *ngIf="registrationForm.get('address.street').errors?.required">Street must
-                  be filled in!
-                </small>
+            <div class="row">
+              <div class="form-group col-8">
+                <label for="street">Street</label>
+                <input [maxlength]="100" type="text" id="street" value="street"
+                       formControlName="street"
+                       class="form-control">
+                <div *ngIf="registrationForm.get('address.street').touched || submitted"
+                     class="error">
+                  <small class="form-text text-warning"
+                         *ngIf="registrationForm.get('address.street').errors?.required">Street
+                    must
+                    be filled in!
+                  </small>
+                </div>
               </div>
+
+
+              <div class="col form-group">
+                <label for="houseNumber">House No.</label>
+                <input [maxlength]="40" type="text" id="houseNumber" value="houseNumber"
+                       formControlName="houseNumber" class="form-control">
+                <div *ngIf="registrationForm.get('address.houseNumber').touched || submitted"
+                     class="error">
+                  <small class="form-text text-warning"
+                         *ngIf="registrationForm.get('address.houseNumber').errors?.required">House
+                    Number must
+                    be filled in!
+                  </small>
+                </div>
+              </div>
+
             </div>
 
+            <div class="row">
 
-            <div class="form-group">
-              <label for="houseNumber">House No.</label>
-              <input [maxlength]="40"  type="text" id="houseNumber" value="houseNumber"
-                     formControlName="houseNumber" class="form-control">
-              <div *ngIf="registrationForm.get('address.houseNumber').touched || submitted" class="error">
-                <small class="form-text text-warning"
-                       *ngIf="registrationForm.get('address.houseNumber').errors?.required">House Number must
-                  be filled in!
-                </small>
+              <div class="form-group col">
+                <label for="zipCode">Zip Code</label>
+                <input [maxlength]="16" type="text" id="zipCode" value="zipCode"
+                       formControlName="zipCode"
+                       class="form-control">
+                <div *ngIf="registrationForm.get('address.zipCode').touched || submitted"
+                     class="error">
+                  <small class="form-text text-warning"
+                         *ngIf="registrationForm.get('address.zipCode').errors?.required">Zip Code
+                    must
+                    be filled in!
+                  </small>
+                </div>
               </div>
-            </div>
-
-            <div class="form-group">
-              <label for="city">City</label>
-              <input [maxlength]="100"  type="text" id="city" value="city" formControlName="city"
-                     class="form-control">
-              <div *ngIf="registrationForm.get('address.city').touched || submitted"  class="error">
-                <small class="form-text text-warning"
-                       *ngIf="registrationForm.get('address.city').errors?.required">City must
-                  be filled in!
-                </small>
+              <div class="form-group col-7">
+                <label for="city">City</label>
+                <input [maxlength]="100" type="text" id="city" value="city" formControlName="city"
+                       class="form-control">
+                <div *ngIf="registrationForm.get('address.city').touched || submitted"
+                     class="error">
+                  <small class="form-text text-warning"
+                         *ngIf="registrationForm.get('address.city').errors?.required">City must
+                    be filled in!
+                  </small>
+                </div>
               </div>
+
+
             </div>
-
-
-            <div class="form-group">
-              <label for="zipCode">Zip Code</label>
-              <input [maxlength]="16"  type="text" id="zipCode" value="zipCode" formControlName="zipCode"
-                     class="form-control">
-              <div *ngIf="registrationForm.get('address.zipCode').touched || submitted" class="error">
-                <small class="form-text text-warning"
-                       *ngIf="registrationForm.get('address.zipCode').errors?.required">Zip Code must
-                  be filled in!
-                </small>
-              </div>
-            </div>
-
             <div class="form-group">
               <label for="country">Country</label>
-              <input [maxlength]="100"  type="text" id="country" value="country" formControlName="country"
+              <input [maxlength]="100" type="text" id="country" value="country"
+                     formControlName="country"
                      class="form-control">
-              <div *ngIf="registrationForm.get('address.country').touched || submitted" class="error">
+              <div *ngIf="registrationForm.get('address.country').touched || submitted"
+                   class="error">
                 <small class="form-text text-warning"
                        *ngIf="registrationForm.get('address.country').errors?.required">Country must
                   be filled in!
@@ -181,18 +196,25 @@
 
           </div>
 
-
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block"> Register</button>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <button type="button" class="btn btn-outline-primary" routerLink="/login"
+                        (click)="clearForm()"> Go back to login
+                </button>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> Create new account</button>
+              </div>
+            </div>
           </div>
         </form>
 
       </article>
-      <div class="border-top card-body text-center">Have an account? <a routerLink='/login'> Log
-        In </a>
-      </div>
-    </div> <!-- card.// -->
-  </div> <!-- col.//-->
+    </div>
+  </div>
 
-</div> <!-- row.//-->
+</div>
 

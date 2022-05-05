@@ -13,6 +13,7 @@ export class RegistrationComponent {
 
   registrationForm: FormGroup;
   submitted=false;
+
   error = false;
   errorMessage = '';
   genders = [{description: "Female", value: "female"}, {
@@ -95,4 +96,7 @@ export class RegistrationComponent {
   }
 
 
+  clearForm() {
+    this.registrationForm.reset();
+  }
 }
