@@ -14,6 +14,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
 import { UnlockUserComponent } from './components/unlock-user/unlock-user.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { UnlockUserComponent } from './components/unlock-user/unlock-user.compon
     HttpClientModule,
     NgbModule,
     FormsModule,
+    FontAwesomeModule,
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
