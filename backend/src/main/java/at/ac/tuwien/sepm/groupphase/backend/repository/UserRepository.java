@@ -14,16 +14,13 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     ApplicationUser save(ApplicationUser user);
 
 
-    @Query("select a from ApplicationUser a where a.lockedAccount = true")
-    List<ApplicationUser> findByLockedState();
-
     List<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount);
 
 
     @Transactional
     @Modifying
     @Query("update ApplicationUser a set a.lockedAccount = ?1 where a.userId = ?2")
-    int unlockApplicationUser(boolean lockedAccount, long userId);
+    void unlockApplicationUser(boolean lockedAccount, long userId);
 
 
 }

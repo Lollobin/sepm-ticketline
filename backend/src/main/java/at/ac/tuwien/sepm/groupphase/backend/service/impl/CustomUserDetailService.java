@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomUserDetailService implements UserService {
@@ -90,18 +89,9 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public List<ApplicationUser> findAll(boolean filterLocked) {
+        LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
+
         return userRepository.findByLockedAccountEquals(filterLocked);
     }
 
-    @Override
-    public List<ApplicationUser> findLockedUser() {
-
-        return userRepository.findByLockedState();
-    }
-
-
-    @Override
-    public Optional<ApplicationUser> findById(Long id) {
-        return userRepository.findById(id);
-    }
 }

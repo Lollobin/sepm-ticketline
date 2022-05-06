@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LockStatusApi;
-import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
 import at.ac.tuwien.sepm.groupphase.backend.service.LockedService;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("${openapi.ticketline.base-path:}")
@@ -35,26 +34,22 @@ public class LockedEndpoint implements LockStatusApi {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
-        LOGGER.info("PATCH lockStatus");
+        LOGGER.info("PUT /lockStatus/{}", id);
 
-
-        if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
-        if (body == null) {
-            body = false;
-        }
-
-        Optional<ApplicationUser> optionalUser = lockedService.unlockApplicationUser(Long.valueOf(id), body);
-
-        if (optionalUser.isPresent()) {
+        try {
+            if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+            lockedService.unlockApplicationUser(Long.valueOf(id), body);
 
             return ResponseEntity.ok().build();
 
-        } else {
-            throw new NotFoundException("Not found by id");
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
+
     }
 
 }

@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
 
@@ -39,11 +38,14 @@ public interface UserService extends UserDetailsService {
      */
     void save(UserWithPasswordDto user);
 
+
+    /**
+     * * Find all users whose locked status is according to the parameter.
+     *
+     * @param filterLocked true searches for locked users, false searches for all users.
+     * @return all users based on param
+     */
+
     List<ApplicationUser> findAll(boolean filterLocked);
-
-
-    List<ApplicationUser> findLockedUser();
-
-    Optional<ApplicationUser> findById(Long id);
 
 }

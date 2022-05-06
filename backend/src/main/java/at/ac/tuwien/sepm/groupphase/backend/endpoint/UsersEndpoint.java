@@ -44,10 +44,9 @@ public class UsersEndpoint implements UsersApi {
 
     @Override
     public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked) {
-        LOGGER.info("GET all locked user");
+        LOGGER.info("GET all user based on filterLocked. set to: {}", filterLocked);
 
         try {
-
 
             if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
