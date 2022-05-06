@@ -4,7 +4,7 @@ info:
   description: Documentation for the Ticketline API
   version: 0.0.1
 servers:
-  - url: localhost
+  - url: localhost:8080
     description: Can be used when spring application is started locally
 paths:
   /login:
@@ -1068,7 +1068,7 @@ components:
           $ref: "#/components/schemas/Gender"
         address:
           $ref: "#/components/schemas/Address"
-        isLocked:
+        filterLocked:
           type: boolean
       required:
         - userId
@@ -1077,7 +1077,7 @@ components:
         - email
         - gender
         - address
-        - isLocked
+        - filterLocked
     UserWithPassword:
       type: object
       properties:
