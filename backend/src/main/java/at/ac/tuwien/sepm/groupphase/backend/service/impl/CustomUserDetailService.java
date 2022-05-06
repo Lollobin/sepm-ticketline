@@ -88,10 +88,12 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public List<ApplicationUser> findAll(boolean filterLocked) {
+    public List<ApplicationUser> findAll(Boolean filterLocked) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
-        return userRepository.findByLockedAccountEquals(filterLocked);
+        boolean isLocked = filterLocked != null ? filterLocked : false;
+
+        return userRepository.findByLockedAccountEquals(isLocked);
     }
 
 }

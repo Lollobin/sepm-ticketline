@@ -28,7 +28,7 @@ public class LockedServiceImpl implements LockedService {
 
         LOGGER.debug("unlock user with id {}", id);
 
-        lockedStatusValidator.checkBody(unlock);
+        lockedStatusValidator.isBodyNull(unlock);
 
         if (userRepository.existsById(id)) {
             userRepository.unlockApplicationUser(unlock, id);

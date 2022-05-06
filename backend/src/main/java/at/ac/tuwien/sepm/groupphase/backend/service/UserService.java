@@ -46,6 +46,6 @@ public interface UserService extends UserDetailsService {
      * @return all users based on param
      */
 
-    List<ApplicationUser> findAll(boolean filterLocked);
+    List<ApplicationUser> findAll(Boolean filterLocked);
 
 }

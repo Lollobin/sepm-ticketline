@@ -12,12 +12,12 @@ public class LockedStatusValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public void checkBody(Boolean body) {
+    public void isBodyNull(Boolean body) {
 
         LOGGER.debug("body has value {}", body);
 
         if (body == null) {
-            throw new ValidationException("Body is empty");
+            throw new ValidationException("Body for locking must be either true or false");
         }
     }
 
