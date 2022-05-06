@@ -8,8 +8,10 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
@@ -17,10 +19,12 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -47,13 +51,15 @@ public class ShowDataGenerator {
     private final SectorRepository sectorRepository;
     private final SeatRepository seatRepository;
     private final TicketRepository ticketRepository;
+    private final SectorPriceRepository sectorPriceRepository;
 
     public ShowDataGenerator(ShowRepository showRepository, ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
         LocationRepository locationRepository,
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
         SeatingPlanRepository seatingPlanRepository, SectorRepository sectorRepository,
-        SeatRepository seatRepository, TicketRepository ticketRepository) {
+        SeatRepository seatRepository, TicketRepository ticketRepository,
+        SectorPriceRepository sectorPriceRepository) {
         this.showRepository = showRepository;
         this.artistRepository = artistRepository;
         this.eventRepository = eventRepository;
@@ -64,6 +70,7 @@ public class ShowDataGenerator {
         this.sectorRepository = sectorRepository;
         this.seatRepository = seatRepository;
         this.ticketRepository = ticketRepository;
+        this.sectorPriceRepository = sectorPriceRepository;
     }
 
     private Ticket generateTicket(Show show, Seat seat) {
@@ -163,7 +170,8 @@ public class ShowDataGenerator {
         for (int i = 0; i < 5; i++) {
             Sector sector = generateSector(seatingPlan);
             sectorRepository.save(sector);
-            //TODO: Add sector pricing
+            SectorPrice sectorPrice = generateSectorPrice(sector, show);
+            sectorPriceRepository.save(sectorPrice);
             for (int j = 0; j < 5; j++) {
                 Seat seat = generateSeat(sector);
                 seatRepository.save(seat);
@@ -171,5 +179,12 @@ public class ShowDataGenerator {
                 ticketRepository.save(ticket);
             }
         }
+    }
+
+    private SectorPrice generateSectorPrice(Sector sector, Show show) {
+        SectorPrice sectorPrice = new SectorPrice();
+        sectorPrice.setId(new SectorPriceId(sector.getSectorId(), show.getShowId()));
+        sectorPrice.setPrice(BigDecimal.valueOf((Math.random() + 1) * 255));
+        return sectorPrice;
     }
 }

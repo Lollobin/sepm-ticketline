@@ -1,10 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.net.URI;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.time.OffsetDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
 import javax.annotation.Generated;
-import javax.validation.constraints.NotNull;
 
 /**
  * SeatingPlanDto
@@ -34,7 +41,7 @@ public class SeatingPlanDto   {
    * Get seatingPlanId
    * @return seatingPlanId
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "seatingPlanId", required = true)
   public Long getSeatingPlanId() {
     return seatingPlanId;
@@ -53,7 +60,7 @@ public class SeatingPlanDto   {
    * Get name
    * @return name
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "name", required = true)
   public String getName() {
     return name;
@@ -72,7 +79,7 @@ public class SeatingPlanDto   {
    * Get seatingPlanLayoutId
    * @return seatingPlanLayoutId
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "seatingPlanLayoutId", required = true)
   public Long getSeatingPlanLayoutId() {
     return seatingPlanLayoutId;
@@ -91,7 +98,7 @@ public class SeatingPlanDto   {
    * Get locationId
    * @return locationId
   */
-  @NotNull
+  @NotNull 
   @Schema(name = "locationId", required = true)
   public Long getLocationId() {
     return locationId;

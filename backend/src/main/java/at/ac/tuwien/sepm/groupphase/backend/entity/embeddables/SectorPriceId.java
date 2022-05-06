@@ -7,4 +7,20 @@ import java.io.Serializable;
 public class SectorPriceId implements Serializable {
     private Long sectorId;
     private Long showId;
+
+    public SectorPriceId() {
+    }
+
+    public SectorPriceId(Long sectorId, Long showId) {
+        this.sectorId = sectorId;
+        this.showId = showId;
+    }
+
+    public Long getSectorId() {
+        return sectorId;
+    }
+
+    public Long getShowId() {
+        return showId;
+    }
 }
