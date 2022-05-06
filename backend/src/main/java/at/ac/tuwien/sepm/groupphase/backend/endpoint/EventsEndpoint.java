@@ -24,10 +24,10 @@ public class EventsEndpoint implements EventsApi {
     }
 
     @Override
-    public ResponseEntity<EventDto> eventsIdGet(Integer id) {
+    public ResponseEntity<EventDto> eventsIdGet(Long id) {
         LOGGER.info("GET events/{}", id);
         EventDto event = this.eventMapper.eventToEventDto(
-            eventService.findOne(Long.valueOf(id)));
+            eventService.findOne(id));
         return ResponseEntity.ok(event);
     }
 }

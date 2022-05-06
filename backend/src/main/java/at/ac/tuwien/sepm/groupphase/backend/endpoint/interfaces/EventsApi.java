@@ -114,7 +114,7 @@ public interface EventsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<EventDto> eventsIdGet(
-        @Parameter(name = "id", description = "ID of the event that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the event that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

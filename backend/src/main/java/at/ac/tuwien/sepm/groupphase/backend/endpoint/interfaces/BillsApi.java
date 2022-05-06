@@ -68,7 +68,7 @@ public interface BillsApi {
         produces = { "application/pdf" }
     )
     default ResponseEntity<org.springframework.core.io.Resource> billsIdGet(
-        @Parameter(name = "id", description = "ID of the transaction that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the transaction that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

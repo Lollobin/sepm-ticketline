@@ -67,7 +67,7 @@ public interface ShowTicketsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<ShowInformationDto> showTicketsIdGet(
-        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

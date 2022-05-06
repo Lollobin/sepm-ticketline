@@ -26,10 +26,10 @@ public class ShowsEndpoint implements ShowsApi {
     }
 
     @Override
-    public ResponseEntity<ShowDto> showsIdGet(Integer id) {
+    public ResponseEntity<ShowDto> showsIdGet(Long id) {
         LOGGER.info("GET shows/{}", id);
         ShowDto foundShow = this.showMapper.showToShowDto(
-            this.showService.findOne(Long.valueOf(id)));
+            this.showService.findOne(id));
         return ResponseEntity.ok(foundShow);
     }
 }

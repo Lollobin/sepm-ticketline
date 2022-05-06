@@ -26,10 +26,10 @@ public class ArtistsEndpoint implements ArtistsApi {
     }
 
     @Override
-    public ResponseEntity<ArtistDto> artistsIdGet(Integer id) {
+    public ResponseEntity<ArtistDto> artistsIdGet(Long id) {
         LOGGER.info("GET artists/{}", id);
         ArtistDto artist = this.artistMapper.artistToArtistDto(
-            artistService.findOne(Long.valueOf(id)));
+            artistService.findOne(id));
         return ResponseEntity.ok(artist);
     }
 }
