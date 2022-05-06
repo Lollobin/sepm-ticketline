@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LockStatusApi;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
 import at.ac.tuwien.sepm.groupphase.backend.service.LockedService;
 import org.slf4j.Logger;
@@ -36,19 +34,14 @@ public class LockedEndpoint implements LockStatusApi {
     public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
         LOGGER.info("PUT /lockStatus/{}", id);
 
-        try {
-            if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-            }
-            lockedService.unlockApplicationUser(Long.valueOf(id), body);
 
-            return ResponseEntity.ok().build();
-
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        lockedService.unlockApplicationUser(Long.valueOf(id), body);
+
+        return ResponseEntity.noContent().build();
+
 
     }
 
