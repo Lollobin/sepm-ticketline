@@ -26,7 +26,6 @@ public class UserDataGenerator {
     @PostConstruct
     private void generateUser() {
 
-        userRepository.deleteAll();
 
         if (userRepository.findAll().size() > 0) {
             List<ApplicationUser> all = userRepository.findAll();
