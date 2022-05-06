@@ -22,6 +22,6 @@ export interface User {
     zipCode: string;
     city: string;
     country: string;
-    isLocked: boolean;
+    lockedAccount: boolean;
 }
 
