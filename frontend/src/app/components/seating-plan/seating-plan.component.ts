@@ -14,13 +14,10 @@ import {
 } from "src/app/generated-sources/openapi";
 import {
   SeatingPlan,
-  drawSeatingPlan,
-  generateSeatId,
-  generateStandingAreaId,
+  drawSeatingPlan
 } from "./seatingPlanGraphics";
-import sample from "./sampleStructure.json";
-import sampleData from "./sampleShowInformation.json";
 import { applyShowInformation } from "./seatingPlanEvents";
+import { generateFromShowInfo } from "./generateSampleFromStructure";
 
 interface SeatBookingInformation {
   color: number;
@@ -41,11 +38,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   getValues = Object.values;
 
+  pixiApplication: Application;
   hoverInfo: { seatNumber: number; rowNumber: number; price: number; color: number } | undefined =
     undefined;
-  showInformation: ShowInformation = sampleData;
+  showInformation: ShowInformation;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
-  seatingPlan: SeatingPlan = sample;
+  seatingPlan: SeatingPlan;
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
@@ -83,29 +81,39 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.event = event;
           },
         });
+        this.showsService.showTicketsIdGet(this.show.showId).subscribe({
+          next: (showInformation) => {
+            this.showInformation = showInformation;
+            this.seatingPlan = generateFromShowInfo(showInformation);
+            this.showInformation.sectors.forEach((sector) => {
+              this.sectorPriceMap[sector.sectorId] = sector.price;
+            });
+            this.calculateSectorBookingInformation();
+            this.initializeSeatingPlan();
+          },
+        });
       },
     });
-    this.showInformation.sectors.forEach((sector) => {
-      this.sectorPriceMap[sector.sectorId] = sector.price;
-    });
-    this.calculateSectorBookingInformation();
   }
   ngAfterViewInit() {
-    const app = new Application({
-      width: this.seatingPlan.general.width,
-      height: this.seatingPlan.general.height,
+    this.pixiApplication = new Application({
       antialias: true,
       backgroundAlpha: 0,
     });
+  }
+  initializeSeatingPlan() {
+    this.pixiApplication.stage.removeChildren()
+    this.pixiApplication.view.width = this.seatingPlan.general.width
+    this.pixiApplication.view.height = this.seatingPlan.general.height
     document.addEventListener("mousemove", (event) => {
       this.infoOverlay.nativeElement.style.left = event.x + 20 + "px";
       this.infoOverlay.nativeElement.style.top = event.y + "px";
       return event;
     });
-    this.pixiContainer.nativeElement.appendChild(app.view);
-    drawSeatingPlan(app.stage, this.seatingPlan);
+    this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
+    drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     applyShowInformation(
-      app.stage,
+      this.pixiApplication.stage,
       this.showInformation,
       {
         mouseover: this.seatHover.bind(this),
