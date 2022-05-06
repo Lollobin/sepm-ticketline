@@ -1005,6 +1005,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     imageId:
       name: id
       in: path

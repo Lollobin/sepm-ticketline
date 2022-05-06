@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
@@ -23,6 +24,8 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -32,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 //TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
@@ -52,6 +56,7 @@ public class ShowDataGenerator {
     private final SeatRepository seatRepository;
     private final TicketRepository ticketRepository;
     private final SectorPriceRepository sectorPriceRepository;
+    private final FileSystemRepository fileSystemRepository;
 
     public ShowDataGenerator(ShowRepository showRepository, ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
@@ -59,7 +64,7 @@ public class ShowDataGenerator {
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
         SeatingPlanRepository seatingPlanRepository, SectorRepository sectorRepository,
         SeatRepository seatRepository, TicketRepository ticketRepository,
-        SectorPriceRepository sectorPriceRepository) {
+        SectorPriceRepository sectorPriceRepository, FileSystemRepository fileSystemRepository) {
         this.showRepository = showRepository;
         this.artistRepository = artistRepository;
         this.eventRepository = eventRepository;
@@ -71,6 +76,7 @@ public class ShowDataGenerator {
         this.seatRepository = seatRepository;
         this.ticketRepository = ticketRepository;
         this.sectorPriceRepository = sectorPriceRepository;
+        this.fileSystemRepository = fileSystemRepository;
     }
 
     private Ticket generateTicket(Show show, Seat seat) {
@@ -103,10 +109,15 @@ public class ShowDataGenerator {
         return seatingPlan;
     }
 
-    private SeatingPlanLayout generateSeatingPlanLayout() {
+    private SeatingPlanLayout generateSeatingPlanLayout() throws IOException {
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
-        //TODO: ADD REAL LAYOUT
-        seatingPlanLayout.setSeatingLayoutPath("/");
+        FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
+                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json")
+            .getAbsoluteFile());
+        String path = this.fileSystemRepository.save(
+            fis.readAllBytes(), "test");
+        fis.close();
+        seatingPlanLayout.setSeatingLayoutPath(path);
         return seatingPlanLayout;
     }
 
@@ -128,9 +139,9 @@ public class ShowDataGenerator {
     }
 
     @PostConstruct
-    private void generateData() {
+    private void generateData() throws IOException {
         if (!showRepository.findAll().isEmpty()) {
-            LOGGER.debug("order already generated");
+            LOGGER.info("shows already generated");
             return;
         }
         Artist a1 = new Artist();

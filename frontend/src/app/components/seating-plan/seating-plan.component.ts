@@ -6,6 +6,7 @@ import {
   ArtistsService,
   Event,
   EventsService,
+  SeatingPlansService,
   SeatWithBookingStatus,
   Sector,
   Show,
@@ -59,7 +60,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   constructor(
     private showsService: ShowsService,
     private artistsService: ArtistsService,
-    private eventsService: EventsService
+    private eventsService: EventsService, 
+    private seatingPlansService: SeatingPlansService
   ) {}
   async ngOnInit() {
     //TODO: Add retreival of necessary data here (when backend is implemented)
@@ -84,12 +86,17 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         this.showsService.showTicketsIdGet(this.show.showId).subscribe({
           next: (showInformation) => {
             this.showInformation = showInformation;
-            this.seatingPlan = generateFromShowInfo(showInformation);
-            this.showInformation.sectors.forEach((sector) => {
-              this.sectorPriceMap[sector.sectorId] = sector.price;
-            });
-            this.calculateSectorBookingInformation();
-            this.initializeSeatingPlan();
+            this.seatingPlansService.seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId).subscribe({
+              next: async (seatingPlan)=>{
+                this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
+                this.showInformation.sectors.forEach((sector) => {
+                  this.sectorPriceMap[sector.sectorId] = sector.price;
+                });
+                this.calculateSectorBookingInformation();
+                this.initializeSeatingPlan();
+              }
+            })
+
           },
         });
       },

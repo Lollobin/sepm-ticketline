@@ -63,7 +63,7 @@ public interface SeatingPlanLayoutsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<org.springframework.core.io.Resource> seatingPlanLayoutsIdGet(
-        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
