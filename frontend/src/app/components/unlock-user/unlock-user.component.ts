@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService} from "../../generated-sources/openapi";
+import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-unlock-user",
@@ -14,22 +15,24 @@ export class UnlockUserComponent implements OnInit {
   success = false;
   firstName = "";
   lastName = "";
+  faLockOpen = faLockOpen;
 
-  constructor(private userManagementService: UserManagementService) { }
+  constructor(private userManagementService: UserManagementService) {
+  }
 
   ngOnInit(): void {
-      this.reloadUser();
+    this.reloadUser();
   }
 
   reloadUser() {
     this.userManagementService.usersGet(true).subscribe({
       next: user => {
         this.users = user;
-        console.log("received user", user);
-        // this.getAll();
+        console.log("received users", user);
+        this.empty = this.users.length === 0;
       },
       error: err => {
-        console.log("Error fetching user: ", err.message);
+        console.log("Error fetching users: ", err);
         this.showError(err.error.message);
       }
     });
@@ -43,33 +46,27 @@ export class UnlockUserComponent implements OnInit {
         this.reloadUser();
       },
       error: err => {
-        this.showError(err.error.message);
+        console.log("Error unlocking user: ", err);
+        this.showError(err.error);
       }
     });
   }
-  public vanishempty(): void {
+
+  public vanishEmpty(): void {
     this.empty = null;
   }
+
   public vanishError(): void {
     this.error = null;
   }
+
   public vanishSuccess(): void {
     this.success = null;
   }
+
   private showError(msg: string) {
     this.error = msg;
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

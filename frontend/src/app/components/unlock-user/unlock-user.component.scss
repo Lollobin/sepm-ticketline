@@ -21,14 +21,15 @@ Tags: Primary
 
 table {
   border-collapse: collapse;
+  vertical-align: middle;
 }
 
-tr {
-  border-bottom: 1pt solid black;
+.bottom-line {
+  border-bottom: 2px solid #AAAAAA;
 }
 
 #around{
-  width: 70%;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -37,4 +38,25 @@ tr {
   margin-bottom: 5%;
   font-style: normal;
   line-height: 26px;
+}
+
+.right{
+  text-align: right;
+  width: 15%;
+}
+
+.mid{
+  text-align: left;
+  width: 55%;
+}
+
+.left{
+  width: 30%;
+}
+
+.newButton{
+
+  width: 100%;
+  background-color: #074EE8;
+  font-size: larger;
 }
