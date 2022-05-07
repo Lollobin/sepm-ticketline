@@ -39,7 +39,7 @@ public class ApplicationUser {
     @Column(nullable = false, length = 64)
     private String password;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
