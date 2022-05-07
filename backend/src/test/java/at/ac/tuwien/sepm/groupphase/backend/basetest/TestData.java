@@ -48,6 +48,30 @@ public interface TestData {
     String USER_ZIPCODE = "1010";
     String USER_HOUSE_NO = "3";
 
+    String USER2_FNAME = "Kevin";
+    String USER2_LNAME = "Maier";
+    GenderDto USER2_GENDER_DTO = GenderDto.MALE;
+    Gender USER2_GENDER = Gender.MALE;
+    String USER2_CITY = "Linz";
+    String USER2_CTRY = "Österreich";
+    String USER2_EMAIL = "second@email.com";
+    String USER2_PASSWORD = "abc2312defghijkl";
+    String USER2_STREET = "Gußhaus 1";
+    String USER2_ZIPCODE = "1100";
+    String USER2_HOUSE_NO="3";
+
+    String USER3_FNAME = "Selina";
+    String USER3_LNAME = "Koller";
+    GenderDto USER3_GENDER_DTO = GenderDto.FEMALE;
+    Gender USER3_GENDER = Gender.FEMALE;
+    String USER3_CITY = "Wels";
+    String USER3_CTRY = "Österreich";
+    String USER3_EMAIL = "third@email.com";
+    String USER3_PASSWORD = "abc231232defghijkl";
+    String USER3_STREET = "Favoriten 1";
+    String USER3_ZIPCODE = "1100";
+    String USER3_HOUSE_NO="32";
+
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 
@@ -63,4 +87,9 @@ public interface TestData {
         new Address(USER_HOUSE_NO, USER_STREET, USER_ZIPCODE, USER_CITY, USER_CTRY);
     Address ADDRESS_ENTITY2 =
         new Address(USER_HOUSE_NO, USER_STREET, USER_ZIPCODE, USER_CITY, USER_CTRY);
+
+
+    Address ADDRESS2_ENTITY= new Address(USER2_HOUSE_NO,USER2_STREET, USER2_ZIPCODE,USER2_CITY,USER2_CTRY);
+
+    Address ADDRESS3_ENTITY= new Address(USER3_HOUSE_NO,USER3_STREET, USER3_ZIPCODE,USER3_CITY,USER3_CTRY);
 }

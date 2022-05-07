@@ -124,7 +124,7 @@ public class LockerUserRepositoryTest {
         user.setGender(Gender.FEMALE);
         user.setAddress(address);
 
-        byte[] emptyByte = new byte[]{1, 2};
+        String emptyByte = "test";
         user.setPassword(emptyByte);
         user.setHasAdministrativeRights(true);
         user.setLoginTries(0);
@@ -140,7 +140,7 @@ public class LockerUserRepositoryTest {
         user4.setGender(Gender.FEMALE);
         user4.setAddress(address2);
 
-        emptyByte = new byte[]{1, 2};
+
         user4.setPassword((emptyByte));
         user4.setHasAdministrativeRights(true);
         user4.setLoginTries(0);
@@ -157,7 +157,7 @@ public class LockerUserRepositoryTest {
         user3.setGender(Gender.FEMALE);
         user3.setAddress(address3);
 
-        emptyByte = new byte[]{1, 2};
+
         user3.setPassword(emptyByte);
         user3.setHasAdministrativeRights(true);
         user3.setLoginTries(0);
@@ -173,7 +173,6 @@ public class LockerUserRepositoryTest {
         user2.setGender(Gender.MALE);
         user2.setAddress(address4);
 
-        emptyByte = new byte[]{1, 2};
         user2.setPassword((emptyByte));
         user2.setHasAdministrativeRights(true);
         user2.setLoginTries(0);
