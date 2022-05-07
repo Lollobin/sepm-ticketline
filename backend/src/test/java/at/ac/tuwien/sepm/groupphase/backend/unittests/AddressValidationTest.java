@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-
 @ExtendWith(MockitoExtension.class)
 class AddressValidationTest implements TestData {
 
@@ -21,48 +20,47 @@ class AddressValidationTest implements TestData {
 
     private AddressDto addressToValidate;
 
-
     @BeforeEach
     void setUp() {
         addressValidator = new AddressValidator();
-        addressToValidate = new AddressDto()
-            .houseNumber(USER_HOUSE_NO)
-            .street(USER_STREET)
-            .city(USER_CITY)
-            .country(USER_CTRY)
-            .zipCode(USER_ZIPCODE);
+        addressToValidate =
+            new AddressDto()
+                .houseNumber(USER_HOUSE_NO)
+                .street(USER_STREET)
+                .city(USER_CITY)
+                .country(USER_CTRY)
+                .zipCode(USER_ZIPCODE);
     }
 
     @Test
     void shouldThrowValidationException_InvalidHouseNumber() {
         addressToValidate.setHouseNumber("");
-        assertThrows(ValidationException.class,
-            () -> addressValidator.validateAddress(addressToValidate));
+        assertThrows(
+            ValidationException.class, () -> addressValidator.validateAddress(addressToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidCountry() {
         addressToValidate.setCountry("");
-        assertThrows(ValidationException.class,
-            () -> addressValidator.validateAddress(addressToValidate));
+        assertThrows(
+            ValidationException.class, () -> addressValidator.validateAddress(addressToValidate));
         addressToValidate.setCountry("678");
         addressToValidate.setCountry("");
-        assertThrows(ValidationException.class,
-            () -> addressValidator.validateAddress(addressToValidate));
+        assertThrows(
+            ValidationException.class, () -> addressValidator.validateAddress(addressToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidStreet() {
         addressToValidate.setStreet("");
-        assertThrows(ValidationException.class,
-            () -> addressValidator.validateAddress(addressToValidate));
-
+        assertThrows(
+            ValidationException.class, () -> addressValidator.validateAddress(addressToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidZipCode() {
         addressToValidate.setZipCode("");
-        assertThrows(ValidationException.class,
-            () -> addressValidator.validateAddress(addressToValidate));
+        assertThrows(
+            ValidationException.class, () -> addressValidator.validateAddress(addressToValidate));
     }
 }
