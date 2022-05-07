@@ -24,18 +24,18 @@ public class TicketStatusDto   {
 
   @JsonProperty("reserved")
   @Valid
-  private List<Integer> reserved = new ArrayList<>();
+  private List<Long> reserved = new ArrayList<>();
 
   @JsonProperty("purchased")
   @Valid
-  private List<Integer> purchased = new ArrayList<>();
+  private List<Long> purchased = new ArrayList<>();
 
-  public TicketStatusDto reserved(List<Integer> reserved) {
+  public TicketStatusDto reserved(List<Long> reserved) {
     this.reserved = reserved;
     return this;
   }
 
-  public TicketStatusDto addReservedItem(Integer reservedItem) {
+  public TicketStatusDto addReservedItem(Long reservedItem) {
     if (this.reserved == null) {
       this.reserved = new ArrayList<>();
     }
@@ -49,20 +49,20 @@ public class TicketStatusDto   {
   */
   @NotNull 
   @Schema(name = "reserved", required = true)
-  public List<Integer> getReserved() {
+  public List<Long> getReserved() {
     return reserved;
   }
 
-  public void setReserved(List<Integer> reserved) {
+  public void setReserved(List<Long> reserved) {
     this.reserved = reserved;
   }
 
-  public TicketStatusDto purchased(List<Integer> purchased) {
+  public TicketStatusDto purchased(List<Long> purchased) {
     this.purchased = purchased;
     return this;
   }
 
-  public TicketStatusDto addPurchasedItem(Integer purchasedItem) {
+  public TicketStatusDto addPurchasedItem(Long purchasedItem) {
     if (this.purchased == null) {
       this.purchased = new ArrayList<>();
     }
@@ -76,11 +76,11 @@ public class TicketStatusDto   {
   */
   @NotNull 
   @Schema(name = "purchased", required = true)
-  public List<Integer> getPurchased() {
+  public List<Long> getPurchased() {
     return purchased;
   }
 
-  public void setPurchased(List<Integer> purchased) {
+  public void setPurchased(List<Long> purchased) {
     this.purchased = purchased;
   }
 
