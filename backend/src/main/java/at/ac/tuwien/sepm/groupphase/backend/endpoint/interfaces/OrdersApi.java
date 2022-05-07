@@ -73,7 +73,7 @@ public interface OrdersApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"invoiceItems\" : [ { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 } }, { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 } } ], \"transactionId\" : 0 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"invoiceItems\" : [ { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0, \"seatNumber\" : 1 } }, { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0, \"seatNumber\" : 1 } } ], \"transactionId\" : 0 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

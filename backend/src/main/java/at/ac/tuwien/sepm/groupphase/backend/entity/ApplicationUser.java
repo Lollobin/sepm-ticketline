@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class ApplicationUser {
@@ -91,6 +93,7 @@ public class ApplicationUser {
     private boolean lockedAccount;
 
     @ManyToMany
+    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
 

@@ -1306,7 +1306,8 @@ components:
       type: object
       properties:
         ticketId:
-          type: number
+          type: integer
+          format: int64
         rowNumber:
           type: integer
           format: int64
