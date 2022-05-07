@@ -43,8 +43,9 @@ class ApplicationUserServiceTest implements TestData {
 
     @BeforeEach
     void setUp() {
-        userService = new CustomUserDetailService(userRepository, passwordEncoder,
-            userEncodePasswordMapper, userValidator);
+        userService =
+            new CustomUserDetailService(
+                userRepository, passwordEncoder, userEncodePasswordMapper, userValidator);
     }
 
     @Test
@@ -68,8 +69,8 @@ class ApplicationUserServiceTest implements TestData {
 
         when(userRepository.findUserByEmail("test@email.com")).thenReturn(null);
         doNothing().when(userValidator).validateUserWithPasswordDto(any());
-        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(
-            fakePersistedUser);
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave))
+            .thenReturn(fakePersistedUser);
 
         userService.save(userToSave);
 
@@ -107,7 +108,6 @@ class ApplicationUserServiceTest implements TestData {
         assertThrows(ValidationException.class, () -> userService.save(userToSave));
     }
 
-
     @Test
     void shouldNotInvokeRepositorySaveForDuplicateMail() {
         fakePersistedUser.setUserId(1);
@@ -124,12 +124,9 @@ class ApplicationUserServiceTest implements TestData {
         try {
             userService.save(userToSave);
         } catch (ValidationException ignored) {
-            //Do nothing, we already made sure the exception will be thrown in a test above
-            //In this test we want to make sure that the repository.save() is not called after
+            // Do nothing, we already made sure the exception will be thrown in a test above
+            // In this test we want to make sure that the repository.save() is not called after
         }
         verify(userRepository, times(0)).save(any());
     }
-
-
-
 }

@@ -30,7 +30,6 @@ public class UserValidator {
         validateNotEmpty(lastName, "Check last name! ");
     }
 
-
     private void validatePassword(String password) {
         if (password.length() < 8) {
             throw new ValidationException("Password too short");

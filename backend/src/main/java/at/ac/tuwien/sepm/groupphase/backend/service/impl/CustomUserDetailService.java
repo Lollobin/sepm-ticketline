@@ -24,16 +24,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailService implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
     private final UserValidator userValidator;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper, UserValidator userValidator) {
+    public CustomUserDetailService(
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
+        UserEncodePasswordMapper encodePasswordMapper,
+        UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
@@ -63,8 +66,8 @@ public class CustomUserDetailService implements UserService {
             grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
         }
 
-        return new User(applicationUser.getEmail(), passwordEncoder.encode("password"),
-            grantedAuthorities);
+        return new User(
+            applicationUser.getEmail(), passwordEncoder.encode("password"), grantedAuthorities);
     }
 
     @Override
@@ -89,5 +92,14 @@ public class CustomUserDetailService implements UserService {
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(user);
         LOGGER.debug("Attempting to save {}", appUser);
         userRepository.save(appUser);
+    }
+
+    @Override
+    public List<ApplicationUser> findAll(Boolean filterLocked) {
+        LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
+
+        boolean isLocked = filterLocked != null ? filterLocked : false;
+
+        return userRepository.findByLockedAccountEquals(isLocked);
     }
 }
