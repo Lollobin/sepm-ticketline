@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LockStatusApi;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
 import at.ac.tuwien.sepm.groupphase.backend.service.LockedService;
+import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.invoke.MethodHandles;
-
 @RestController
 @RequestMapping("${openapi.ticketline.base-path:}")
 public class LockedEndpoint implements LockStatusApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final LockedService lockedService;
     private final AuthenticationFacade authenticationFacade;
@@ -34,15 +34,11 @@ public class LockedEndpoint implements LockStatusApi {
     public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
         LOGGER.info("PUT /lockStatus/{}", id);
 
-
         if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         lockedService.unlockApplicationUser(Long.valueOf(id), body);
 
         return ResponseEntity.noContent().build();
-
-
     }
-
 }

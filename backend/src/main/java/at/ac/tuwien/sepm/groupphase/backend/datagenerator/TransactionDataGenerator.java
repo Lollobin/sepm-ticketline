@@ -15,19 +15,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-//TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
+// TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
 @Component
 public class TransactionDataGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
-    public TransactionDataGenerator(TransactionRepository transactionRepository,
+    public TransactionDataGenerator(
+        TransactionRepository transactionRepository,
         UserRepository userRepository,
         AddressRepository addressRepository) {
         this.transactionRepository = transactionRepository;
@@ -46,7 +47,6 @@ public class TransactionDataGenerator {
             address.setCity("testCity");
             address.setCountry("Austria");
             address.setHouseNumber("2");
-
 
             Address address2 = new Address();
             address2.setStreet("TestStreet 1233");

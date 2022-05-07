@@ -22,7 +22,10 @@ public class Show {
     private LocalDate date;
 
     @ManyToMany
-    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
+    @JoinTable(
+        name = "PlaysIn",
+        joinColumns = @JoinColumn(name = "showId"),
+        inverseJoinColumns = @JoinColumn(name = "artistId"))
     private Set<Artist> artistIds;
 
     @ManyToOne
@@ -31,8 +34,16 @@ public class Show {
 
     @Override
     public String toString() {
-        return "Show{" + "showId=" + showId + ", date=" + date + ", artistIds=" + artistIds
-            + ", event=" + event + '}';
+        return "Show{"
+            + "showId="
+            + showId
+            + ", date="
+            + date
+            + ", artistIds="
+            + artistIds
+            + ", event="
+            + event
+            + '}';
     }
 
     @Override
@@ -44,8 +55,10 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return showId == show.showId && Objects.equals(date, show.date) && Objects.equals(artistIds,
-            show.artistIds) && Objects.equals(event, show.event);
+        return showId == show.showId
+            && Objects.equals(date, show.date)
+            && Objects.equals(artistIds, show.artistIds)
+            && Objects.equals(event, show.event);
     }
 
     @Override

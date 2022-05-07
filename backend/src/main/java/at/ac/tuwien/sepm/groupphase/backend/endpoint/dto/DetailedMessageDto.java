@@ -43,6 +43,7 @@ public class DetailedMessageDto extends SimpleMessageDto {
 
 
     public static final class DetailedMessageDtoBuilder {
+
         private Long id;
         private LocalDateTime publishedAt;
         private String text;

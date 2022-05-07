@@ -13,8 +13,8 @@ public class UserEncodePasswordMapper {
 
     private final AddressMapper addressMapper;
 
-    public UserEncodePasswordMapper(GenderMapper genderMapper, PasswordEncoder passwordEncoder,
-        AddressMapper addressMapper) {
+    public UserEncodePasswordMapper(
+        GenderMapper genderMapper, PasswordEncoder passwordEncoder, AddressMapper addressMapper) {
         this.genderMapper = genderMapper;
         this.passwordEncoder = passwordEncoder;
         this.addressMapper = addressMapper;

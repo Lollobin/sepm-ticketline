@@ -45,8 +45,10 @@ public class BookedIn {
         }
         BookedIn bookedIn = (BookedIn) o;
         return Float.compare(bookedIn.priceAtBookingTime, priceAtBookingTime) == 0
-            && Objects.equals(id, bookedIn.id) && Objects.equals(transaction, bookedIn.transaction)
-            && Objects.equals(ticket, bookedIn.ticket) && bookingType == bookedIn.bookingType;
+            && Objects.equals(id, bookedIn.id)
+            && Objects.equals(transaction, bookedIn.transaction)
+            && Objects.equals(ticket, bookedIn.ticket)
+            && bookingType == bookedIn.bookingType;
     }
 
     @Override
@@ -56,8 +58,18 @@ public class BookedIn {
 
     @Override
     public String toString() {
-        return "BookedIn{" + "id=" + id + ", transaction=" + transaction + ", ticket=" + ticket
-            + ", bookingType=" + bookingType + ", priceAtBookingTime=" + priceAtBookingTime + '}';
+        return "BookedIn{"
+            + "id="
+            + id
+            + ", transaction="
+            + transaction
+            + ", ticket="
+            + ticket
+            + ", bookingType="
+            + bookingType
+            + ", priceAtBookingTime="
+            + priceAtBookingTime
+            + '}';
     }
 
     public BookedInKey getId() {
