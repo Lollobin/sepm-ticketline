@@ -67,12 +67,12 @@ public interface ShowTicketsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<ShowInformationDto> showTicketsIdGet(
-        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 }, { \"sectorId\" : 5.637376656633329, \"price\" : 2.3021358869347655 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0.8008281904610115, \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"seatNumber\" : 1.4658129805029452 } ] }";
+                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 5, \"price\" : 2.3021358869347655 }, { \"sectorId\" : 5, \"price\" : 2.3021358869347655 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

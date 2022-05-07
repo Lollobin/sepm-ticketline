@@ -25,13 +25,13 @@ public class TicketDto   {
   private BigDecimal ticketId;
 
   @JsonProperty("rowNumber")
-  private BigDecimal rowNumber;
+  private Long rowNumber;
 
   @JsonProperty("seatNumber")
-  private BigDecimal seatNumber;
+  private Long seatNumber;
 
   @JsonProperty("sector")
-  private BigDecimal sector;
+  private Long sector;
 
   public TicketDto ticketId(BigDecimal ticketId) {
     this.ticketId = ticketId;
@@ -52,7 +52,7 @@ public class TicketDto   {
     this.ticketId = ticketId;
   }
 
-  public TicketDto rowNumber(BigDecimal rowNumber) {
+  public TicketDto rowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
     return this;
   }
@@ -61,17 +61,17 @@ public class TicketDto   {
    * Get rowNumber
    * @return rowNumber
   */
-  @Valid 
+  
   @Schema(name = "rowNumber", required = false)
-  public BigDecimal getRowNumber() {
+  public Long getRowNumber() {
     return rowNumber;
   }
 
-  public void setRowNumber(BigDecimal rowNumber) {
+  public void setRowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
   }
 
-  public TicketDto seatNumber(BigDecimal seatNumber) {
+  public TicketDto seatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
     return this;
   }
@@ -80,17 +80,17 @@ public class TicketDto   {
    * Get seatNumber
    * @return seatNumber
   */
-  @Valid 
+  
   @Schema(name = "seatNumber", required = false)
-  public BigDecimal getSeatNumber() {
+  public Long getSeatNumber() {
     return seatNumber;
   }
 
-  public void setSeatNumber(BigDecimal seatNumber) {
+  public void setSeatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
   }
 
-  public TicketDto sector(BigDecimal sector) {
+  public TicketDto sector(Long sector) {
     this.sector = sector;
     return this;
   }
@@ -99,13 +99,13 @@ public class TicketDto   {
    * Get sector
    * @return sector
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "sector", required = true)
-  public BigDecimal getSector() {
+  public Long getSector() {
     return sector;
   }
 
-  public void setSector(BigDecimal sector) {
+  public void setSector(Long sector) {
     this.sector = sector;
   }
 
