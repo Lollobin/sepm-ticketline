@@ -13,12 +13,10 @@ import {
   ShowInformation,
   ShowsService,
 } from "src/app/generated-sources/openapi";
-import {
-  SeatingPlan,
-  drawSeatingPlan
-} from "./seatingPlanGraphics";
+import { SeatingPlan, drawSeatingPlan } from "./seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
 import { generateFromShowInfo } from "./generateSampleFromStructure";
+import { ActivatedRoute } from "@angular/router";
 
 interface SeatBookingInformation {
   color: number;
@@ -60,43 +58,53 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   constructor(
     private showsService: ShowsService,
     private artistsService: ArtistsService,
-    private eventsService: EventsService, 
-    private seatingPlansService: SeatingPlansService
+    private eventsService: EventsService,
+    private seatingPlansService: SeatingPlansService,
+    private route: ActivatedRoute
   ) {}
   async ngOnInit() {
-    //TODO: Add retreival of necessary data here (when backend is implemented)
     //TODO: Add error handlers
     //TODO: GET SHOW; with id from route parameter
-    const showId = 1;
-    this.showsService.showsIdGet(showId).subscribe({
-      next: (show) => {
-        this.show = show;
-        for (let artistId of this.show.artists) {
-          this.artistsService.artistsIdGet(artistId).subscribe({
-            next: (artist) => {
-              this.artists.push(artist);
-            },
-          });
+    this.route.paramMap.subscribe({
+      next: (params) => {
+        if (!params.get("showId")) {
+          //TODO: Throw Error
+          return;
         }
-        this.eventsService.eventsIdGet(this.show.event).subscribe({
-          next: (event) => {
-            this.event = event;
-          },
-        });
-        this.showsService.showTicketsIdGet(this.show.showId).subscribe({
-          next: (showInformation) => {
-            this.showInformation = showInformation;
-            this.seatingPlansService.seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId).subscribe({
-              next: async (seatingPlan)=>{
-                this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
-                this.showInformation.sectors.forEach((sector) => {
-                  this.sectorPriceMap[sector.sectorId] = sector.price;
-                });
-                this.calculateSectorBookingInformation();
-                this.initializeSeatingPlan();
-              }
-            })
-
+        const showId = +params.get("showId");
+        this.showsService.showsIdGet(showId).subscribe({
+          next: (show) => {
+            this.show = show;
+            this.artists = []
+            for (let artistId of this.show.artists) {
+              this.artistsService.artistsIdGet(artistId).subscribe({
+                next: (artist) => {
+                  this.artists.push(artist);
+                },
+              });
+            }
+            this.eventsService.eventsIdGet(this.show.event).subscribe({
+              next: (event) => {
+                this.event = event;
+              },
+            });
+            this.showsService.showTicketsIdGet(this.show.showId).subscribe({
+              next: (showInformation) => {
+                this.showInformation = showInformation;
+                this.seatingPlansService
+                  .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId)
+                  .subscribe({
+                    next: async (seatingPlan) => {
+                      this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
+                      this.showInformation.sectors.forEach((sector) => {
+                        this.sectorPriceMap[sector.sectorId] = sector.price;
+                      });
+                      this.calculateSectorBookingInformation();
+                      this.initializeSeatingPlan();
+                    },
+                  });
+              },
+            });
           },
         });
       },
@@ -109,9 +117,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     });
   }
   initializeSeatingPlan() {
-    this.pixiApplication.stage.removeChildren()
-    this.pixiApplication.view.width = this.seatingPlan.general.width
-    this.pixiApplication.view.height = this.seatingPlan.general.height
+    this.pixiApplication.stage.removeChildren();
+    this.pixiApplication.view.width = this.seatingPlan.general.width;
+    this.pixiApplication.view.height = this.seatingPlan.general.height;
     document.addEventListener("mousemove", (event) => {
       this.infoOverlay.nativeElement.style.left = event.x + 20 + "px";
       this.infoOverlay.nativeElement.style.top = event.y + "px";
