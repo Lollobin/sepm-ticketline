@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, find, groupBy, mapValues, noop } from "lodash";
-import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
+import { countBy, find, groupBy, noop } from "lodash";
+import { Application } from "pixi.js";
 import {
   Artist,
   ArtistsService,
@@ -8,14 +8,12 @@ import {
   EventsService,
   SeatingPlansService,
   SeatWithBookingStatus,
-  Sector,
   Show,
   ShowInformation,
   ShowsService,
 } from "src/app/generated-sources/openapi";
 import { SeatingPlan, drawSeatingPlan } from "./seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
-import { generateFromShowInfo } from "./generateSampleFromStructure";
 import { ActivatedRoute } from "@angular/router";
 
 interface SeatBookingInformation {
@@ -46,7 +44,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
-  show: Show = { showId: 0, date: "", event: 0, artists: [] };
+  show: Show;
   event: Event = {
     eventId: 0,
     name: "",
