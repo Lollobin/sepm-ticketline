@@ -1,10 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Address {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
@@ -24,7 +29,12 @@ public class Address {
     @Column(nullable = false, length = 100)
     private String country;
 
-    public Address(String userHouseNo, String userStreet, String userZipcode, String userCity, String userCtry) {
+    public Address(String houseNumber, String street, String zipCode, String city, String country) {
+        this.houseNumber = houseNumber;
+        this.street = street;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.country = country;
     }
 
     public Address() {
@@ -100,9 +110,12 @@ public class Address {
             return false;
         }
         Address address = (Address) o;
-        return Objects.equals(addressId,address.addressId) && Objects.equals(houseNumber,address.houseNumber) && Objects.equals(street, address.street)
-            && Objects.equals(zipCode, address.zipCode) && Objects.equals(city,
-            address.city) && Objects.equals(country, address.country);
+        return Objects.equals(addressId, address.addressId)
+            && Objects.equals(houseNumber, address.houseNumber)
+            && Objects.equals(street, address.street)
+            && Objects.equals(zipCode, address.zipCode)
+            && Objects.equals(city, address.city)
+            && Objects.equals(country, address.country);
     }
 
     @Override

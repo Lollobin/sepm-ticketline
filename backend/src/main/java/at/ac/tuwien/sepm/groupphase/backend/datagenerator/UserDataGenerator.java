@@ -5,13 +5,12 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-
-@Profile("generateData")
+@Profile("generateUserData")
 @Component
 public class UserDataGenerator {
 
@@ -26,8 +25,6 @@ public class UserDataGenerator {
     @PostConstruct
     private void generateUser() {
 
-        userRepository.deleteAll();
-
         if (userRepository.findAll().size() > 0) {
             List<ApplicationUser> all = userRepository.findAll();
 
@@ -40,16 +37,12 @@ public class UserDataGenerator {
             address.setCountry("Austria");
             address.setHouseNumber("2");
 
-            addressRepository.save(address);
-
             Address address2 = new Address();
             address2.setStreet("TestStreet 1233");
             address2.setZipCode("219338");
             address2.setCity("test3City");
             address2.setCountry("Aust3ria");
             address2.setHouseNumber("2");
-
-            addressRepository.save(address2);
 
             Address address3 = new Address();
             address3.setStreet("TestStreet 32123");
@@ -58,17 +51,12 @@ public class UserDataGenerator {
             address3.setCountry("Au32stria");
             address3.setHouseNumber("2");
 
-            addressRepository.save(address3);
-
             Address address4 = new Address();
             address4.setStreet("TestStr321eet 1233");
             address4.setZipCode("219312338");
             address4.setCity("test331City");
             address4.setCountry("Aus312t3ria");
             address4.setHouseNumber("2");
-            addressRepository.save(address4);
-
-
 
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@emaiwadwl.com");
@@ -77,7 +65,7 @@ public class UserDataGenerator {
             user.setGender(Gender.FEMALE);
             user.setAddress(address);
 
-            byte[] emptyByte = new byte[]{1, 2};
+            String emptyByte = "faf";
             user.setPassword(emptyByte);
             user.setHasAdministrativeRights(true);
             user.setLoginTries(0);
@@ -93,15 +81,13 @@ public class UserDataGenerator {
             user4.setGender(Gender.FEMALE);
             user4.setAddress(address2);
 
-            emptyByte = new byte[]{1, 2};
-            user4.setPassword((emptyByte));
+            user4.setPassword(emptyByte);
             user4.setHasAdministrativeRights(true);
             user4.setLoginTries(0);
             user4.setMustResetPassword(false);
             user4.setLockedAccount(true);
 
             userRepository.save(user4);
-
 
             ApplicationUser user3 = new ApplicationUser();
             user3.setEmail("afaefdmin@emaiw32adwl.com");
@@ -110,7 +96,6 @@ public class UserDataGenerator {
             user3.setGender(Gender.FEMALE);
             user3.setAddress(address3);
 
-            emptyByte = new byte[]{1, 2};
             user3.setPassword(emptyByte);
             user3.setHasAdministrativeRights(true);
             user3.setLoginTries(0);
@@ -126,8 +111,7 @@ public class UserDataGenerator {
             user2.setGender(Gender.MALE);
             user2.setAddress(address4);
 
-            emptyByte = new byte[]{1, 2};
-            user2.setPassword((emptyByte));
+            user2.setPassword(emptyByte);
             user2.setHasAdministrativeRights(true);
             user2.setLoginTries(0);
             user2.setMustResetPassword(false);

@@ -31,18 +31,24 @@ public class Seat {
             return false;
         }
         Seat seat = (Seat) o;
-        return seatId == seat.seatId && rowNumber == seat.rowNumber && seatNumber == seat.seatNumber
+        return seatId == seat.seatId
+            && rowNumber == seat.rowNumber
+            && seatNumber == seat.seatNumber
             && Objects.equals(sector, seat.sector);
     }
 
     @Override
     public String toString() {
-        return "Seat{" +
-            "seatId=" + seatId +
-            ", rowNumber=" + rowNumber +
-            ", seatNumber=" + seatNumber +
-            ", sector=" + sector +
-            '}';
+        return "Seat{"
+            + "seatId="
+            + seatId
+            + ", rowNumber="
+            + rowNumber
+            + ", seatNumber="
+            + seatNumber
+            + ", sector="
+            + sector
+            + '}';
     }
 
     @Override

@@ -25,25 +25,25 @@ public class Show {
     @JoinTable(
         name = "PlaysIn",
         joinColumns = @JoinColumn(name = "showId"),
-        inverseJoinColumns = @JoinColumn(name = "artistId")
-    )
+        inverseJoinColumns = @JoinColumn(name = "artistId"))
     private Set<Artist> artistIds;
 
     @ManyToOne
-    @JoinColumn(name = "eventId",
-        referencedColumnName = "eventId",
-        nullable = false
-    )
+    @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
 
     @Override
     public String toString() {
-        return "Show{" +
-            "showId=" + showId +
-            ", date=" + date +
-            ", artistIds=" + artistIds +
-            ", event=" + event +
-            '}';
+        return "Show{"
+            + "showId="
+            + showId
+            + ", date="
+            + date
+            + ", artistIds="
+            + artistIds
+            + ", event="
+            + event
+            + '}';
     }
 
     @Override
@@ -55,9 +55,10 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return showId == show.showId && Objects.equals(date, show.date)
-            && Objects.equals(artistIds, show.artistIds) && Objects.equals(event,
-            show.event);
+        return showId == show.showId
+            && Objects.equals(date, show.date)
+            && Objects.equals(artistIds, show.artistIds)
+            && Objects.equals(event, show.event);
     }
 
     @Override

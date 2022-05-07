@@ -33,19 +33,25 @@ public class SeatingPlan {
             return false;
         }
         SeatingPlan that = (SeatingPlan) o;
-        return seatingPlanId == that.seatingPlanId && Objects.equals(name, that.name)
-            && Objects.equals(location, that.location) && Objects.equals(
-            seatingPlanLayout, that.seatingPlanLayout);
+        return seatingPlanId == that.seatingPlanId
+            && Objects.equals(name, that.name)
+            && Objects.equals(location, that.location)
+            && Objects.equals(seatingPlanLayout, that.seatingPlanLayout);
     }
 
     @Override
     public String toString() {
-        return "SeatingPlan{" +
-            "seatingPlanId=" + seatingPlanId +
-            ", name='" + name + '\'' +
-            ", location=" + location +
-            ", seatingPlanLayout=" + seatingPlanLayout +
-            '}';
+        return "SeatingPlan{"
+            + "seatingPlanId="
+            + seatingPlanId
+            + ", name='"
+            + name
+            + '\''
+            + ", location="
+            + location
+            + ", seatingPlanLayout="
+            + seatingPlanLayout
+            + '}';
     }
 
     @Override
@@ -54,7 +60,8 @@ public class SeatingPlan {
     }
 
     @OneToOne
-    @JoinColumn(name = "seatingPlanLayoutId",
+    @JoinColumn(
+        name = "seatingPlanLayoutId",
         referencedColumnName = "seatingPlanLayoutId",
         nullable = false)
     private SeatingPlanLayout seatingPlanLayout;
@@ -87,8 +94,7 @@ public class SeatingPlan {
         return seatingPlanLayout;
     }
 
-    public void setSeatingPlanLayout(
-        SeatingPlanLayout seatingPlanLayout) {
+    public void setSeatingPlanLayout(SeatingPlanLayout seatingPlanLayout) {
         this.seatingPlanLayout = seatingPlanLayout;
     }
 }
