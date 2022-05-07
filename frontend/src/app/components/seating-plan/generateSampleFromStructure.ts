@@ -19,18 +19,15 @@ const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlan => 
   return seatingPlan;
 };
 
-const createSeats = (showInformation: ShowInformation): SeatingPlan["seats"] => {
-  return showInformation.seats.map((seat, index) => {
-    return {
-      id: seat.seatId,
-      sectorId: seat.sector,
-      location:
-        seat.seatNumber !== undefined && seat.rowNumber !== undefined
-          ? { x: 100 + seat.seatNumber * 20, y: 100 + seat.rowNumber * 20, w: 15, h: 15 }
-          : undefined,
-    };
-  });
-};
+const createSeats = (showInformation: ShowInformation): SeatingPlan["seats"] =>
+  showInformation.seats.map((seat) => ({
+    id: seat.seatId,
+    sectorId: seat.sector,
+    location:
+      seat.seatNumber !== undefined && seat.rowNumber !== undefined
+        ? { x: 100 + seat.seatNumber * 20, y: 100 + seat.rowNumber * 20, w: 15, h: 15 }
+        : undefined,
+  }));
 
 const createSectors = (showInformation: ShowInformation): SeatingPlan["sectors"] => {
   const standingSectors: { [sectorId: number]: true } = {};
@@ -45,16 +42,14 @@ const createSectors = (showInformation: ShowInformation): SeatingPlan["sectors"]
     }
   });
   console.log(standingSectors);
-  return showInformation.sectors.map((sector, index) => {
-    return {
-      id: sector.sectorId,
-      noSeats: !!standingSectors[sector.sectorId],
-      location: standingSectors[sector.sectorId]
-        ? { x: index * 120, y: 5, w: 100, h: 90 }
-        : undefined,
-      color: 0,
-    };
-  });
+  return showInformation.sectors.map((sector, index) => ({
+    id: sector.sectorId,
+    noSeats: !!standingSectors[sector.sectorId],
+    location: standingSectors[sector.sectorId]
+      ? { x: index * 120, y: 5, w: 100, h: 90 }
+      : undefined,
+    color: 0,
+  }));
 };
 
 export { generateFromShowInfo };

@@ -98,7 +98,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   }
   retreiveArtists(show: Show) {
     this.artists = [];
-    for (let artistId of show.artists) {
+    for (const artistId of show.artists) {
       this.artistsService.artistsIdGet(artistId).subscribe({
         next: (artist) => {
           this.artists.push(artist);
