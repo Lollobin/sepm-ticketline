@@ -54,6 +54,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     duration: 0,
     content: "",
   };
+  error = undefined;
   artists: Artist[] = [];
   constructor(
     private showsService: ShowsService,
@@ -67,26 +68,29 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     //TODO: GET SHOW; with id from route parameter
     this.route.paramMap.subscribe({
       next: (params) => {
-        if (!params.get("showId")) {
-          //TODO: Throw Error
+        if (isNaN(+params.get("showId"))) {
+          this.error = new Error("Could not process ID in parameter");
           return;
         }
         const showId = +params.get("showId");
         this.showsService.showsIdGet(showId).subscribe({
           next: (show) => {
             this.show = show;
-            this.artists = []
+            this.artists = [];
             for (let artistId of this.show.artists) {
               this.artistsService.artistsIdGet(artistId).subscribe({
                 next: (artist) => {
                   this.artists.push(artist);
                 },
+                error: (error) =>this.setError(error),
               });
             }
             this.eventsService.eventsIdGet(this.show.event).subscribe({
               next: (event) => {
                 this.event = event;
               },
+
+              error: (error) =>this.setError(error),
             });
             this.showsService.showTicketsIdGet(this.show.showId).subscribe({
               next: (showInformation) => {
@@ -102,12 +106,15 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
                       this.calculateSectorBookingInformation();
                       this.initializeSeatingPlan();
                     },
+                    error: (error) =>this.setError(error),
                   });
               },
             });
           },
+          error: (error) =>this.setError(error),
         });
       },
+      error: (error) =>this.setError(error),
     });
   }
   ngAfterViewInit() {
@@ -115,6 +122,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       antialias: true,
       backgroundAlpha: 0,
     });
+  }
+  setError(error: any) {
+    this.error = error;
   }
   initializeSeatingPlan() {
     this.pixiApplication.stage.removeChildren();
