@@ -1,12 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import java.util.Arrays;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.*;
-
-import org.hibernate.annotations.Type;
 
 @Entity
 public class ApplicationUser {
@@ -29,32 +28,16 @@ public class ApplicationUser {
     private Gender gender;
 
     @OneToOne
-    @JoinColumn(name = "addressId",
-        referencedColumnName = "addressId",
-        nullable = false
-    )
+    @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
     @Column(nullable = false, length = 64)
     @Type(type = "org.hibernate.type.BinaryType")
-    private String password;
+    private byte[] password;
 
     @Override
     public String toString() {
-        return "ApplicationUser{" +
-            "userId=" + userId +
-            ", email='" + email + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", gender=" + gender +
-            ", " + address + '\'' +
-            ", password=" + password +
-            ", hasAdministrativeRights=" + hasAdministrativeRights +
-            ", loginTries=" + loginTries +
-            ", mustResetPassword=" + mustResetPassword +
-            ", lockedAccount=" + lockedAccount +
-            ", articles=" + articles +
-            '}';
+        return "ApplicationUser{" + "userId=" + userId + ", email='" + email + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", gender=" + gender + ", " + address + '\'' + ", password=" + password + ", hasAdministrativeRights=" + hasAdministrativeRights + ", loginTries=" + loginTries + ", mustResetPassword=" + mustResetPassword + ", lockedAccount=" + lockedAccount + ", articles=" + articles + '}';
     }
 
     @Override
@@ -66,19 +49,12 @@ public class ApplicationUser {
             return false;
         }
         ApplicationUser user = (ApplicationUser) o;
-        return userId == user.userId && hasAdministrativeRights == user.hasAdministrativeRights
-            && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
-            && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
-            && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(
-            password, user.password)
-            && Objects.equals(articles, user.articles);
+        return userId == user.userId && hasAdministrativeRights == user.hasAdministrativeRights && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword && lockedAccount == user.lockedAccount && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(password, user.password) && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
-            articles,password);
+        int result = Objects.hash(userId, email, firstName, lastName, gender, address, hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount, articles, password);
         return result;
     }
 
@@ -96,11 +72,7 @@ public class ApplicationUser {
     private boolean lockedAccount;
 
     @ManyToMany
-    @JoinTable(
-        name = "ReadArticle",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "articleId")
-    )
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
 
     public long getUserId() {
@@ -151,11 +123,11 @@ public class ApplicationUser {
         this.address = address;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(byte[] password) {
         this.password = password;
     }
 
