@@ -49,8 +49,16 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" + "locationId=" + locationId + ", name='" + name + '\'' + ", " + address
-            + '\'' + '}';
+        return "Location{"
+            + "locationId="
+            + locationId
+            + ", name='"
+            + name
+            + '\''
+            + ", "
+            + address
+            + '\''
+            + '}';
     }
 
     @Override
@@ -62,7 +70,8 @@ public class Location {
             return false;
         }
         Location location = (Location) o;
-        return locationId == location.locationId && Objects.equals(name, location.name)
+        return locationId == location.locationId
+            && Objects.equals(name, location.name)
             && Objects.equals(address, location.address);
     }
 
@@ -70,5 +79,4 @@ public class Location {
     public int hashCode() {
         return Objects.hash(locationId, name, address);
     }
-
 }
