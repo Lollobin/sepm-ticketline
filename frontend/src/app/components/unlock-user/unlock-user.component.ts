@@ -15,6 +15,7 @@ export class UnlockUserComponent implements OnInit {
   success = false;
   firstName = "";
   lastName = "";
+  userEmail = "";
   faLockOpen = faLockOpen;
 
   constructor(private userManagementService: UserManagementService) {
@@ -38,10 +39,11 @@ export class UnlockUserComponent implements OnInit {
     });
   }
 
-  unlockUser(id: number) {
+  unlockUser(id: number, email: string) {
     console.log("hier" + id);
     this.userManagementService.lockStatusIdPut(id, false).subscribe({
       next: () => {
+        this.userEmail = email;
         this.success = true;
         this.reloadUser();
       },

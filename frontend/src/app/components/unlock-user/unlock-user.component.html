@@ -1,7 +1,7 @@
 <div class="container mt-3" *ngIf="success">
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Success!</h4>
-    <strong>Successfully</strong> unlocked the user!
+    Successfully <strong>unlocked</strong> user with E-Mail: <strong>{{userEmail}}!</strong>
     <p></p>
     <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
             aria-label="Close"></button>
@@ -36,7 +36,7 @@
   <tr *ngFor="let user of users" class="bottom-line">
     <td class="left">{{user.email}}</td>
     <td class="mid">{{user.firstName}} {{user.lastName}}</td>
-    <td class="right"><button type="button" (click)="unlockUser(user.userId)" class="btn btn-primary newButton" ><fa-icon style="padding-left: 0" [icon]="faLockOpen"> </fa-icon> Unlock</button>
+    <td class="right"><button type="button" (click)="unlockUser(user.userId, user.email)" class="btn btn-primary newButton" ><fa-icon style="padding-left: 0" [icon]="faLockOpen"> </fa-icon> Unlock</button>
     </td>
   </tr>
   </tbody>
