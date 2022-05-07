@@ -17,6 +17,7 @@ export class UnlockUserComponent implements OnInit {
   lastName = "";
   userEmail = "";
   faLockOpen = faLockOpen;
+  errorFetch = "";
 
   constructor(private userManagementService: UserManagementService) {
   }
@@ -34,7 +35,8 @@ export class UnlockUserComponent implements OnInit {
       },
       error: err => {
         console.log("Error fetching users: ", err);
-        this.showError(err.error.message);
+        this.showErrorFetch("Not allowed, " + err.message);
+
       }
     });
   }
@@ -62,12 +64,20 @@ export class UnlockUserComponent implements OnInit {
     this.error = null;
   }
 
+  public vanishErrorFetch(): void {
+    this.errorFetch = null;
+  }
+
   public vanishSuccess(): void {
     this.success = null;
   }
 
   private showError(msg: string) {
     this.error = msg;
+  }
+
+  private showErrorFetch(msg: string) {
+    this.errorFetch = msg;
   }
 
 
