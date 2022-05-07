@@ -64,8 +64,6 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute
   ) {}
   async ngOnInit() {
-    //TODO: Add error handlers
-    //TODO: GET SHOW; with id from route parameter
     this.route.paramMap.subscribe({
       next: (params) => {
         if (isNaN(+params.get("showId"))) {
@@ -76,51 +74,60 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         this.showsService.showsIdGet(showId).subscribe({
           next: (show) => {
             this.show = show;
-            this.artists = [];
-            for (let artistId of this.show.artists) {
-              this.artistsService.artistsIdGet(artistId).subscribe({
-                next: (artist) => {
-                  this.artists.push(artist);
-                },
-                error: (error) =>this.setError(error),
-              });
-            }
-            this.eventsService.eventsIdGet(this.show.event).subscribe({
-              next: (event) => {
-                this.event = event;
-              },
-
-              error: (error) =>this.setError(error),
-            });
-            this.showsService.showTicketsIdGet(this.show.showId).subscribe({
-              next: (showInformation) => {
-                this.showInformation = showInformation;
-                this.seatingPlansService
-                  .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId)
-                  .subscribe({
-                    next: async (seatingPlan) => {
-                      this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
-                      this.showInformation.sectors.forEach((sector) => {
-                        this.sectorPriceMap[sector.sectorId] = sector.price;
-                      });
-                      this.calculateSectorBookingInformation();
-                      this.initializeSeatingPlan();
-                    },
-                    error: (error) =>this.setError(error),
-                  });
-              },
-            });
+            this.retreiveArtists(show);
+            this.retreiveEvent(show);
+            this.retreiveSeatingPlan(show);
           },
-          error: (error) =>this.setError(error),
+          error: (error) => this.setError(error),
         });
       },
-      error: (error) =>this.setError(error),
+      error: (error) => this.setError(error),
     });
   }
   ngAfterViewInit() {
     this.pixiApplication = new Application({
       antialias: true,
       backgroundAlpha: 0,
+    });
+  }
+  retreiveEvent(show: Show) {
+    this.eventsService.eventsIdGet(show.event).subscribe({
+      next: (event) => {
+        this.event = event;
+      },
+      error: (error) => this.setError(error),
+    });
+  }
+  retreiveArtists(show: Show) {
+    this.artists = [];
+    for (let artistId of show.artists) {
+      this.artistsService.artistsIdGet(artistId).subscribe({
+        next: (artist) => {
+          this.artists.push(artist);
+        },
+        error: (error) => this.setError(error),
+      });
+    }
+  }
+  retreiveSeatingPlan(show: Show) {
+    this.showsService.showTicketsIdGet(show.showId).subscribe({
+      next: (showInformation) => {
+        this.showInformation = showInformation;
+        this.seatingPlansService
+          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId)
+          .subscribe({
+            next: async (seatingPlan) => {
+              this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
+              this.showInformation.sectors.forEach((sector) => {
+                this.sectorPriceMap[sector.sectorId] = sector.price;
+              });
+              this.calculateSectorBookingInformation();
+              this.initializeSeatingPlan();
+            },
+            error: (error) => this.setError(error),
+          });
+      },
+      error: (error) => this.setError(error),
     });
   }
   setError(error: any) {
