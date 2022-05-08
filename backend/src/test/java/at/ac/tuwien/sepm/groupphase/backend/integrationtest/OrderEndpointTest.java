@@ -84,7 +84,7 @@ class OrderEndpointTest implements TestData {
     }
 
     @Test
-    void givenNoOneLoggedIn_whenOrdersGet_then401() throws Exception {
+    void givenNoOneLoggedIn_whenOrdersGet_then403() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(get(ORDERS_BASE_URI))
             .andDo(print())
