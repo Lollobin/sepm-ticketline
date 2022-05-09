@@ -14,6 +14,8 @@ export class CreateShowComponent implements OnInit {
   id: number;
   eventName: string;
   showForm: any;
+  error = false;
+  errorMessage = '';
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute) { }
@@ -31,17 +33,17 @@ export class CreateShowComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.id = params["id"];
-      this.showForm.value.id = this.id;
-      console.log(this.id);
-      this.getDetails(this.id);
-    });
     this.showForm = this.formBuilder.group({
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
       event: []
 
+    });
+    this.route.params.subscribe(params => {
+      this.id = params["id"];
+      this.showForm.value.id = this.id;
+      console.log(this.id);
+      this.getDetails(this.id);
     });
   }
 
@@ -53,6 +55,12 @@ export class CreateShowComponent implements OnInit {
       },
       error: error => {
         console.error('Error fetching event', error.message);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
       }
     });
   }
@@ -66,9 +74,22 @@ export class CreateShowComponent implements OnInit {
         console.log(res.headers.get('Location'));
       },
       error => {
-        console.log(error.message);
+        console.log("Error creating event", error.message);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
       }
     );
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
+  clearForm() {
+    this.showForm.reset();
+  }
 }

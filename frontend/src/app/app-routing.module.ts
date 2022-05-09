@@ -7,7 +7,6 @@ import {MessageComponent} from './components/message/message.component';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
 import {RegistrationComponent} from "./components/registration/registration.component";
 import { CreateEventComponent } from './components/create-event/create-event.component';
-import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { CreateShowComponent } from './components/create-show/create-show.component';
 
 const routes: Routes = [
@@ -15,11 +14,10 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'message', canActivate: [AuthGuard], component: MessageComponent},
   {path: 'seatingPlan', component: SeatingPlanComponent},
-  {path: 'registration', component: RegistrationComponent}
+  {path: 'registration', component: RegistrationComponent},
   {path: 'seatingPlan', component: SeatingPlanComponent},
   {path: 'events/create', component: CreateEventComponent},
-  {path: 'events/:id/shows', component: CreateShowComponent},
-  {path: 'events/:id', component: EventDetailsComponent}
+  {path: 'events/:id/shows', component: CreateShowComponent}
 ];
 
 @NgModule({

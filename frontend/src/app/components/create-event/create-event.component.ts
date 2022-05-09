@@ -14,6 +14,8 @@ export class CreateEventComponent implements OnInit {
 
   categories: string[];
   eventForm: any;
+  error = false;
+  errorMessage = '';
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router) { }
 
@@ -67,9 +69,22 @@ export class CreateEventComponent implements OnInit {
       },
       error => {
         console.log(error.message);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
       }
     );
   }
 
+  vanishError() {
+    this.error = false;
+  }
+
+  clearForm() {
+    this.eventForm.reset();
+  }
 }
 

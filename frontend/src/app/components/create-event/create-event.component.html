@@ -1,5 +1,13 @@
 <p class="h2 form-margin form-group">Create a new event</p>
 
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Validation Errors: </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+
 <form class="form-margin" [formGroup]="eventForm">
     <div class="form-group">
         <small for="name" class="form-label text-muted">Name</small>

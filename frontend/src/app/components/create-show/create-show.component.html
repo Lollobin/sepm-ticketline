@@ -1,5 +1,12 @@
 <p class="h2 form-margin form-group">Add new shows for event "{{this.eventName}}"</p>
 
+<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Validation Errors: </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
 <form class="form-margin" [formGroup]="showForm">
     <div class="row">
         <div class="form-group col-md-6">
