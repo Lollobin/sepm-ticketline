@@ -20,14 +20,14 @@ public class ShowServiceImpl implements ShowService {
     private final ShowValidator showValidator;
 
     @Autowired
-    public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator){
+    public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
     }
 
 
     @Override
-    public List<Show> findAll(){
+    public List<Show> findAll() {
         LOGGER.debug("Find all shows");
         return showRepository.findAll();
     }
@@ -42,7 +42,7 @@ public class ShowServiceImpl implements ShowService {
     }
 
     @Override
-    public Show findById(Long id){
+    public Show findById(Long id) {
         LOGGER.debug("Find show by id {}", id);
         return showRepository.findById(id).orElseThrow(() -> new NotFoundException("Show with ID " + id + "  was not found"));
     }

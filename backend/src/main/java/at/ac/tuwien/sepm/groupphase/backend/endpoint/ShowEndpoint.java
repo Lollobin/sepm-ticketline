@@ -28,36 +28,36 @@ public class ShowEndpoint implements ShowsApi {
     private final ShowMapper showMapper;
 
     @Autowired
-    public ShowEndpoint(ShowService showService, ShowMapper showMapper){
+    public ShowEndpoint(ShowService showService, ShowMapper showMapper) {
         this.showService = showService;
         this.showMapper = showMapper;
     }
 
     @Override
-    public ResponseEntity<List<ShowDto>> showsGet(ShowSearchDto search){
+    public ResponseEntity<List<ShowDto>> showsGet(ShowSearchDto search) {
         LOGGER.info("GET /shows");
         return new ResponseEntity<>(showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
     }
 
 
     @Override
-    public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto){
+    public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto) {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
 
-        try{
+        try {
             ShowDto newShowDto = showMapper.showToShowDto(
                 showService.createShow(
                     showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
                 ));
 
-            URI location = ServletUriComponentsBuilder.
-                fromCurrentRequest().
-                path("/{id}").
-                buildAndExpand(newShowDto.getShowId()).
-                toUri();
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                    .path("/{id}")
+                        .buildAndExpand(newShowDto.getShowId())
+                            .toUri();
 
             return ResponseEntity.created(location).build();
-        } catch(ValidationException e){
+        } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         }
 
@@ -65,11 +65,11 @@ public class ShowEndpoint implements ShowsApi {
     }
 
     @Override
-    public ResponseEntity<ShowDto> showsIdGet(Integer id){
+    public ResponseEntity<ShowDto> showsIdGet(Integer id) {
         LOGGER.info("GET /shows/{}", id);
-        try{
+        try {
             return ResponseEntity.ok(showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
-        } catch(NotFoundException e){
+        } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 

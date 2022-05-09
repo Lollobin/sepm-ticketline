@@ -31,7 +31,7 @@ public class EventEndpoint implements EventsApi {
     private final EventMapper eventMapper;
     private final NativeWebRequest request;
 
-    public EventEndpoint(EventService eventService, EventMapper eventMapper, NativeWebRequest request){
+    public EventEndpoint(EventService eventService, EventMapper eventMapper, NativeWebRequest request) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
         this.request = request;
@@ -43,17 +43,17 @@ public class EventEndpoint implements EventsApi {
     }
 
     @Override
-    public ResponseEntity<List<EventDto>> eventsGet(EventSearchDto search){
+    public ResponseEntity<List<EventDto>> eventsGet(EventSearchDto search) {
         LOGGER.info("GET /events");
         List<EventDto> eventDtos = eventService.findAll().stream().map(eventMapper::eventToEventDto).toList();
         return ResponseEntity.ok().body(eventDtos);
     }
 
     @Override
-    public ResponseEntity<Void> eventsPost(EventWithoutIdDto eventWithoutIdDto){
+    public ResponseEntity<Void> eventsPost(EventWithoutIdDto eventWithoutIdDto) {
         LOGGER.info("POST /events body: {}", eventWithoutIdDto);
 
-        try{
+        try {
 
             EventDto eventDto = eventMapper.eventToEventDto(
                 eventService.createEvent(
@@ -67,18 +67,18 @@ public class EventEndpoint implements EventsApi {
                 .toUri();
 
             return ResponseEntity.created(location).build();
-        } catch(ValidationException e){
+        } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         }
 
     }
 
     @Override
-    public ResponseEntity<EventDto> eventsIdGet(Integer id){
+    public ResponseEntity<EventDto> eventsIdGet(Integer id) {
         LOGGER.info("GET /events/{}", id);
-        try{
+        try {
             return ResponseEntity.ok(eventMapper.eventToEventDto(eventService.findById(Long.valueOf(id))));
-        } catch(NotFoundException e){
+        } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }

@@ -10,24 +10,24 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class EventValidator {
 
-    public void checkIfEvenIsValid(Event event){
+    public void checkIfEvenIsValid(Event event) {
 
 
         String exceptionString = "";
-        if(event.getName().isBlank() || isStringLengthInvalid(event.getName()) || isStringLengthInvalid(event.getCategory()) || isDurationInvalid(event.getDuration())){
+        if (event.getName().isBlank() || isStringLengthInvalid(event.getName()) || isStringLengthInvalid(event.getCategory()) || isDurationInvalid(event.getDuration())) {
 
-            if(event.getName().isBlank()){
+            if (event.getName().isBlank()) {
                 exceptionString += "Name of event can not be empty ";
             }
 
-            if(isStringLengthInvalid(event.getName())){
+            if (isStringLengthInvalid(event.getName())) {
                 exceptionString += "Name of event is too long ";
             }
-            if(isStringLengthInvalid(event.getCategory())){
+            if (isStringLengthInvalid(event.getCategory())) {
                 exceptionString += "Category contains too many characters";
             }
 
-            if(isDurationInvalid(event.getDuration())){
+            if (isDurationInvalid(event.getDuration())) {
                 exceptionString += "Duration has to be at least 10 minutes and less than 6 hours (360 minutes)";
             }
 
@@ -36,11 +36,11 @@ public class EventValidator {
         }
     }
 
-    private boolean isStringLengthInvalid(String toCheck){
+    private boolean isStringLengthInvalid(String toCheck) {
         return toCheck.getBytes(StandardCharsets.UTF_8).length > 255;
     }
 
-    private boolean isDurationInvalid(Long duration){
+    private boolean isDurationInvalid(Long duration) {
         return duration < 10 || duration > 360;
     }
 

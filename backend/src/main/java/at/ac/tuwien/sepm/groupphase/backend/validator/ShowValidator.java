@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Component
 public class ShowValidator {
 
-    public void checkIfShowCorrect(Show show){
-        if(!show.getDate().isAfter(LocalDateTime.now())){
+    public void checkIfShowCorrect(Show show) {
+        if (!show.getDate().isAfter(LocalDateTime.now())) {
             throw new ValidationException("The show can not be in the past");
         }
     }

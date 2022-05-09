@@ -8,16 +8,15 @@ import org.mapstruct.Mapper;
 @Mapper
 public class DateMapper {
 
-    public OffsetDateTime asOffsetDateTime(LocalDateTime localDateTime){
+    public OffsetDateTime asOffsetDateTime(LocalDateTime localDateTime) {
         if (localDateTime != null) {
             return localDateTime.atOffset(ZoneId.of("Europe/Vienna").getRules().getOffset(localDateTime));
-        }
-        else {
+        } else {
             return null;
         }
     }
 
-    public LocalDateTime asLocalDateTime(OffsetDateTime offsetDateTime){
+    public LocalDateTime asLocalDateTime(OffsetDateTime offsetDateTime) {
         if (offsetDateTime != null) {
             return offsetDateTime.toLocalDateTime();
         } else {

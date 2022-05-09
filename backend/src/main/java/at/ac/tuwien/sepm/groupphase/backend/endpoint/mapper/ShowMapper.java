@@ -8,7 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = { DateMapper.class, ShowHelpMapper.class, EventServiceImpl.class } )
+@Mapper(uses = { DateMapper.class, ShowHelpMapper.class, EventServiceImpl.class })
 public interface ShowMapper {
 
     Show showDtoToShow(ShowDto showDto);

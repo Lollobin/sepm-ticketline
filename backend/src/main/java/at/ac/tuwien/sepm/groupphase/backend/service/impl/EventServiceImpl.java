@@ -20,19 +20,19 @@ public class EventServiceImpl implements EventService {
     private final EventValidator eventValidator;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator){
+    public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator) {
         this.eventRepository = eventRepository;
         this.eventValidator = eventValidator;
     }
 
     @Override
-    public List<Event> findAll(){
+    public List<Event> findAll() {
         LOGGER.debug("Find all events");
         return eventRepository.findAll();
     }
 
     @Override
-    public Event findById(Long id){
+    public Event findById(Long id) {
         LOGGER.debug("Find event with id {}", id);
         return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event with ID " + id + " was not found"));
     }

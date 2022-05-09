@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public class ShowHelpMapper {
 
-    public long idOfEvent(Event event){
+    public long idOfEvent(Event event) {
         return event.getEventId();
     }
 
