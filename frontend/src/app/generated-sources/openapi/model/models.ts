@@ -1,3 +1,4 @@
+export * from './address';
 export * from './article';
 export * from './articleWithoutId';
 export * from './artist';

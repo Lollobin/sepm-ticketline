@@ -16,6 +16,7 @@ import { SeatingPlanComponent } from './components/seating-plan/seating-plan.com
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { CreateShowComponent } from './components/create-show/create-show.component';
+import { RegistrationComponent } from './components/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { CreateShowComponent } from './components/create-show/create-show.compon
     CreateEventComponent,
     EventDetailsComponent,
     CreateShowComponent,
+    RegistrationComponent,
   ],
   imports: [
     BrowserModule,

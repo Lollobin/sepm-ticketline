@@ -28,17 +28,21 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return sectorId == sector.sectorId && Float.compare(sector.price, price) == 0
+        return sectorId == sector.sectorId
+            && Float.compare(sector.price, price) == 0
             && Objects.equals(seatingPlanId, sector.seatingPlanId);
     }
 
     @Override
     public String toString() {
-        return "Sector{" +
-            "sectorId=" + sectorId +
-            ", price=" + price +
-            ", seatingPlanId=" + seatingPlanId +
-            '}';
+        return "Sector{"
+            + "sectorId="
+            + sectorId
+            + ", price="
+            + price
+            + ", seatingPlanId="
+            + seatingPlanId
+            + '}';
     }
 
     @Override
@@ -47,10 +51,7 @@ public class Sector {
     }
 
     @ManyToOne
-    @JoinColumn(
-        name = "seatingPlanId",
-        referencedColumnName = "seatingPlanId",
-        nullable = false)
+    @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
     private SeatingPlan seatingPlanId;
 
     public Long getSectorId() {

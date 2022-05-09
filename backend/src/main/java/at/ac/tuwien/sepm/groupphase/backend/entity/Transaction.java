@@ -25,10 +25,7 @@ public class Transaction {
     private String billPath;
 
     @ManyToOne
-    @JoinColumn(
-        name = "userId",
-        referencedColumnName = "userId",
-        nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private ApplicationUser user;
 
     @OneToMany(mappedBy = "transaction")
@@ -36,13 +33,19 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-            "transactionId=" + transactionId +
-            ", date=" + date +
-            ", billPath='" + billPath + '\'' +
-            ", user=" + user +
-            ", bookedIns=" + bookedIns +
-            '}';
+        return "Transaction{"
+            + "transactionId="
+            + transactionId
+            + ", date="
+            + date
+            + ", billPath='"
+            + billPath
+            + '\''
+            + ", user="
+            + user
+            + ", bookedIns="
+            + bookedIns
+            + '}';
     }
 
     @Override
@@ -54,9 +57,11 @@ public class Transaction {
             return false;
         }
         Transaction that = (Transaction) o;
-        return transactionId == that.transactionId && Objects.equals(date, that.date)
-            && Objects.equals(billPath, that.billPath) && Objects.equals(user,
-            that.user) && Objects.equals(bookedIns, that.bookedIns);
+        return transactionId == that.transactionId
+            && Objects.equals(date, that.date)
+            && Objects.equals(billPath, that.billPath)
+            && Objects.equals(user, that.user)
+            && Objects.equals(bookedIns, that.bookedIns);
     }
 
     @Override

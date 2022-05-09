@@ -18,45 +18,37 @@ public class Ticket {
     private Long ticketId;
 
     @ManyToOne
-    @JoinColumn(
-        name = "reservedBy",
-        referencedColumnName = "userId"
-    )
+    @JoinColumn(name = "reservedBy", referencedColumnName = "userId")
     private ApplicationUser reservedBy;
 
     @ManyToOne
-    @JoinColumn(
-        name = "purchasedBy",
-        referencedColumnName = "userId"
-    )
+    @JoinColumn(name = "purchasedBy", referencedColumnName = "userId")
     private ApplicationUser purchasedBy;
 
     @ManyToOne
-    @JoinColumn(
-        name = "seatId",
-        referencedColumnName = "seatId",
-        nullable = false
-    )
+    @JoinColumn(name = "seatId", referencedColumnName = "seatId", nullable = false)
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(
-        name = "showId",
-        referencedColumnName = "showId",
-        nullable = false
-    )
+    @JoinColumn(name = "showId", referencedColumnName = "showId", nullable = false)
     private Show show;
 
     @Override
     public String toString() {
-        return "Ticket{" +
-            "ticketId=" + ticketId +
-            ", reservedBy=" + reservedBy +
-            ", purchasedBy=" + purchasedBy +
-            ", seat=" + seat +
-            ", show=" + show +
-            ", bookedIns=" + bookedIns +
-            '}';
+        return "Ticket{"
+            + "ticketId="
+            + ticketId
+            + ", reservedBy="
+            + reservedBy
+            + ", purchasedBy="
+            + purchasedBy
+            + ", seat="
+            + seat
+            + ", show="
+            + show
+            + ", bookedIns="
+            + bookedIns
+            + '}';
     }
 
     @Override
@@ -68,10 +60,12 @@ public class Ticket {
             return false;
         }
         Ticket ticket = (Ticket) o;
-        return ticketId == ticket.ticketId && Objects.equals(reservedBy, ticket.reservedBy)
-            && Objects.equals(purchasedBy, ticket.purchasedBy) && Objects.equals(seat,
-            ticket.seat) && Objects.equals(show, ticket.show) && Objects.equals(
-            bookedIns, ticket.bookedIns);
+        return ticketId == ticket.ticketId
+            && Objects.equals(reservedBy, ticket.reservedBy)
+            && Objects.equals(purchasedBy, ticket.purchasedBy)
+            && Objects.equals(seat, ticket.seat)
+            && Objects.equals(show, ticket.show)
+            && Objects.equals(bookedIns, ticket.bookedIns);
     }
 
     @Override

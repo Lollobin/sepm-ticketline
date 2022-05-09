@@ -9,13 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Address } from './address';
 
 
 export interface LocationWithoutId { 
     name: string;
-    street?: string;
-    city?: string;
-    country?: string;
-    zipCode?: string;
+    address: Address;
 }
 

@@ -34,9 +34,11 @@ public class Event {
             return false;
         }
         Event event = (Event) o;
-        return eventId == event.eventId && duration == event.duration && Objects.equals(name,
-            event.name) && Objects.equals(category, event.category) && Objects.equals(
-            content, event.content);
+        return eventId == event.eventId
+            && duration == event.duration
+            && Objects.equals(name, event.name)
+            && Objects.equals(category, event.category)
+            && Objects.equals(content, event.content);
     }
 
     @Override
@@ -46,13 +48,21 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-            "eventId=" + eventId +
-            ", name='" + name + '\'' +
-            ", duration=" + duration +
-            ", category='" + category + '\'' +
-            ", content='" + content + '\'' +
-            '}';
+        return "Event{"
+            + "eventId="
+            + eventId
+            + ", name='"
+            + name
+            + '\''
+            + ", duration="
+            + duration
+            + ", category='"
+            + category
+            + '\''
+            + ", content='"
+            + content
+            + '\''
+            + '}';
     }
 
     public Long getEventId() {
