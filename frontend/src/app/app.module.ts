@@ -13,8 +13,7 @@ import {MessageComponent} from './components/message/message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
-import { UnlockUserComponent } from './components/unlock-user/unlock-user.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RegistrationComponent } from './components/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +24,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     LoginComponent,
     MessageComponent,
     SeatingPlanComponent,
-    UnlockUserComponent,
+    RegistrationComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +33,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HttpClientModule,
     NgbModule,
     FormsModule,
-    FontAwesomeModule,
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
