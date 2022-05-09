@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -23,7 +23,7 @@ public class Article {
     private String title;
 
     @Column(nullable = false)
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @Column(columnDefinition = "CLOB")
     private String summary;
@@ -47,7 +47,7 @@ public class Article {
             return false;
         }
         Article article = (Article) o;
-        return articleId == article.articleId
+        return Objects.equals(articleId, article.articleId)
             && Objects.equals(title, article.title)
             && Objects.equals(creationDate, article.creationDate)
             && Objects.equals(summary, article.summary)
@@ -97,11 +97,11 @@ public class Article {
         this.title = title;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 

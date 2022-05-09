@@ -8,6 +8,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

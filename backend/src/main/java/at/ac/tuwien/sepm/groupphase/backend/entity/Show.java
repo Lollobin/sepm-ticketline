@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -19,7 +19,7 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showId;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     @ManyToMany
     @JoinTable(
@@ -55,7 +55,7 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return showId == show.showId
+        return Objects.equals(showId, show.showId)
             && Objects.equals(date, show.date)
             && Objects.equals(artistIds, show.artistIds)
             && Objects.equals(event, show.event);
@@ -74,11 +74,11 @@ public class Show {
         this.showId = showId;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

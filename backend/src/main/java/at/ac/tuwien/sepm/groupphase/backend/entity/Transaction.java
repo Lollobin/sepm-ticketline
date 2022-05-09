@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
 
     private String billPath;
 
@@ -57,7 +57,7 @@ public class Transaction {
             return false;
         }
         Transaction that = (Transaction) o;
-        return transactionId == that.transactionId
+        return Objects.equals(transactionId, that.transactionId)
             && Objects.equals(date, that.date)
             && Objects.equals(billPath, that.billPath)
             && Objects.equals(user, that.user)
@@ -77,11 +77,11 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
