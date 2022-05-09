@@ -6,13 +6,15 @@ import {AuthGuard} from './guards/auth.guard';
 import {MessageComponent} from './components/message/message.component';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
 import {RegistrationComponent} from "./components/registration/registration.component";
+import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'message', canActivate: [AuthGuard], component: MessageComponent},
   {path: 'seatingPlan', component: SeatingPlanComponent},
-  {path: 'registration', component: RegistrationComponent}
+  {path: 'registration', component: RegistrationComponent},
+  {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
