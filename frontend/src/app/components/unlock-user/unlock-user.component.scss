@@ -1,0 +1,62 @@
+/* Button
+
+Tags: Primary
+*/
+
+/* Auto layout */
+.button{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+
+  position: absolute;
+  width: 101px;
+  height: 32px;
+  right: 9px;
+  top: 8px;
+
+}
+
+table {
+  border-collapse: collapse;
+  vertical-align: middle;
+}
+
+.bottom-line {
+  border-bottom: 2px solid #AAAAAA;
+}
+
+#around{
+  width: 80%;
+  margin: 0 auto;
+}
+
+.mainHeader{
+  margin-top: 5%;
+  margin-bottom: 5%;
+  font-style: normal;
+  line-height: 26px;
+}
+
+.right{
+  text-align: right;
+  width: 15%;
+}
+
+.mid{
+  text-align: left;
+  width: 55%;
+}
+
+.left{
+  width: 30%;
+}
+
+.newButton{
+
+  width: 100%;
+  background-color: #074EE8;
+  font-size: larger;
+}

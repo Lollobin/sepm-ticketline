@@ -8,6 +8,7 @@ import { SeatingPlanComponent } from './components/seating-plan/seating-plan.com
 import {RegistrationComponent} from "./components/registration/registration.component";
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { CreateShowComponent } from './components/create-show/create-show.component';
+import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -15,7 +16,8 @@ const routes: Routes = [
   {path: 'message', canActivate: [AuthGuard], component: MessageComponent},
   {path: 'seatingPlan', component: SeatingPlanComponent},
   {path: 'registration', component: RegistrationComponent},
-  {path: 'seatingPlan', component: SeatingPlanComponent},
+  {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]},
+  {path: 'registration', component: RegistrationComponent},
   {path: 'events/create', component: CreateEventComponent},
   {path: 'events/:id/shows', component: CreateShowComponent}
 ];

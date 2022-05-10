@@ -16,6 +16,8 @@ import { SeatingPlanComponent } from './components/seating-plan/seating-plan.com
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { CreateShowComponent } from './components/create-show/create-show.component';
 import { RegistrationComponent } from './components/registration/registration.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { RegistrationComponent } from './components/registration/registration.co
     CreateEventComponent,
     CreateShowComponent,
     RegistrationComponent,
+    UnlockUserComponent
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,7 @@ import { RegistrationComponent } from './components/registration/registration.co
     HttpClientModule,
     NgbModule,
     FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
