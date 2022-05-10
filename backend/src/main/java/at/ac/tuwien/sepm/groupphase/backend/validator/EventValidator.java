@@ -12,27 +12,40 @@ public class EventValidator {
 
     public void checkIfEvenIsValid(Event event) {
 
-
         String exceptionString = "";
-        if (event.getName().isBlank() || isStringLengthInvalid(event.getName()) || isStringLengthInvalid(event.getCategory()) || isDurationInvalid(event.getDuration())) {
+        boolean first = true;
 
-            if (event.getName().isBlank()) {
-                exceptionString += "Name of event can not be empty ";
-            }
+        if (event.getName().isBlank()) {
+            exceptionString += "Name of event can not be empty ";
+            first = false;
+        }
 
-            if (isStringLengthInvalid(event.getName())) {
-                exceptionString += "Name of event is too long ";
+        if (isStringLengthInvalid(event.getName())) {
+            if (!first) {
+                exceptionString += "& ";
             }
-            if (isStringLengthInvalid(event.getCategory())) {
-                exceptionString += "Category contains too many characters";
-            }
+            exceptionString += "Name of event is too long ";
+            first = false;
+        }
 
-            if (isDurationInvalid(event.getDuration())) {
-                exceptionString += "Duration has to be at least 10 minutes and less than 6 hours (360 minutes)";
+        if (isStringLengthInvalid(event.getCategory())) {
+            if (!first) {
+                exceptionString += "& ";
             }
+            exceptionString += "Category contains too many characters";
+            first = false;
+        }
 
+        if (isDurationInvalid(event.getDuration())) {
+            if (!first) {
+                exceptionString += "& ";
+            }
+            exceptionString += "Duration has to be at least 10 minutes and less than 6 hours (360 minutes)";
+            first = false;
+        }
+
+        if (!first) {
             throw new ValidationException(exceptionString);
-
         }
     }
 
