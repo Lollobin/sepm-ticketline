@@ -66,7 +66,7 @@ public interface SeatingPlansApi {
         produces = { "application/json" }
     )
     default ResponseEntity<List<SeatingPlanDto>> seatingPlansGet(
-
+        
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
