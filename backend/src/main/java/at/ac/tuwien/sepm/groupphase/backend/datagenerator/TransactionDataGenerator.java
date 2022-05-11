@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,17 +85,17 @@ public class TransactionDataGenerator {
             userRepository.save(user2);
 
             Transaction transaction = new Transaction();
-            transaction.setDate(LocalDate.of(2005, 11, 20));
+            transaction.setDate(OffsetDateTime.of(2005, 11, 20, 0, 0, 0, 0, null));
             transaction.setUser(user);
             transactionRepository.save(transaction);
 
             Transaction transaction2 = new Transaction();
-            transaction2.setDate(LocalDate.of(2003, 5, 17));
+            transaction2.setDate(OffsetDateTime.of(2003, 5, 17, 0, 0, 0, 0, null));
             transaction2.setUser(user);
             transactionRepository.save(transaction2);
 
             Transaction transaction3 = new Transaction();
-            transaction3.setDate(LocalDate.of(2020, 3, 1));
+            transaction3.setDate(OffsetDateTime.of(2020, 3, 1, 0, 0, 0, 0, null));
             transaction3.setUser(user2);
             transactionRepository.save(transaction3);
         }

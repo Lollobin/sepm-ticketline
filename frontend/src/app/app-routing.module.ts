@@ -18,8 +18,8 @@ const routes: Routes = [
   {path: 'registration', component: RegistrationComponent},
   {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]},
   {path: 'registration', component: RegistrationComponent},
-  {path: 'events/create', component: CreateEventComponent},
-  {path: 'events/:id/shows', component: CreateShowComponent}
+  {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard]},
+  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

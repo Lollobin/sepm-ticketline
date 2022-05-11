@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Event, EventsService } from 'src/app/generated-sources/openapi';
-
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-create-event',
@@ -16,8 +16,10 @@ export class CreateEventComponent implements OnInit {
   eventForm: any;
   error = false;
   errorMessage = '';
+  role = '';
 
-  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
+    private authService: AuthService) { }
 
   get name() {
     return this.eventForm.get("name");
@@ -40,11 +42,12 @@ export class CreateEventComponent implements OnInit {
       "Classical", "Country", "EDM", "Jazz", "Oldies", "Pop", "Rap", "R&B", "Rock", "Techno"
     ];
     this.eventForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      category: ['', [Validators.required]],
-      duration: [120],
-      description: []
+      name: ['', [Validators.required, Validators.maxLength(255)]],
+      category: ['', [Validators.required, Validators.maxLength(255)]],
+      duration: [120, [Validators.min(10), Validators.max(360)]],
+      description: ['']
     });
+    this.role = this.authService.getUserRole();
   }
 
   secondsToHms(d): string {
@@ -59,6 +62,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   createEvent(): void {
+    console.log("POST http://localhost:8080/events " + JSON.stringify(this.eventForm.value));
     this.eventService.eventsPost(this.eventForm.value, 'response').subscribe(
       (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
@@ -66,6 +70,7 @@ export class CreateEventComponent implements OnInit {
         console.log(location);
         const id = location.split("/").pop();
         this.router.navigateByUrl("/events/" + id + "/shows");
+        this.error = false;
       },
       error => {
         console.log(error.message);
