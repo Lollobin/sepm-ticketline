@@ -1162,15 +1162,18 @@ components:
           type: string
           format: date-time
         event:
-          type: number
+          type: integer
         artists:
           type: array
           items:
-            type: number
+            type: integer
+        seatingPlan:
+          type: integer
       required:
         - date
         - event
         - artists
+        - seatingPlan
     ShowWithTicketsSold:
       type: object
       properties:
@@ -1180,7 +1183,7 @@ components:
           type: string
           format: date-time
         event:
-          type: number
+          type: integer
         ticketsSold:
           type: integer
         artists:

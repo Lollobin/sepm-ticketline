@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,8 +24,8 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return Objects.equals(sectorId == sector.sectorId) && Float.compare(sector.price, price) == 0
-            && Objects.equals(seatingPlanId, sector.seatingPlanId);
+        return Objects.equals(sectorId, sector.sectorId)
+            && Objects.equals(seatingPlan, sector.seatingPlan);
     }
 
     @Override

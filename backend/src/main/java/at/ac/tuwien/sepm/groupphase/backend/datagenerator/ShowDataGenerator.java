@@ -145,21 +145,21 @@ public class ShowDataGenerator {
             return;
         }
         Artist a1 = new Artist();
-        a1.setArtistId(1);
+        a1.setArtistId(Long.valueOf(1));
         a1.setFirstName("Al");
         a1.setLastName("Yankovic");
         a1.setKnownAs("Weird Al");
         artistRepository.save(a1);
 
         Event e1 = new Event();
-        e1.setEventId(1);
+        e1.setEventId(Long.valueOf(1));
         e1.setDuration(120);
         e1.setCategory("POP");
         e1.setName("Weird Al's cool tour");
         eventRepository.save(e1);
 
         Show show = new Show();
-        show.setShowId(1);
+        show.setShowId(Long.valueOf(1));
         show.setArtists(Set.of(a1));
         show.setDate(OffsetDateTime.now());
         show.setEvent(e1);

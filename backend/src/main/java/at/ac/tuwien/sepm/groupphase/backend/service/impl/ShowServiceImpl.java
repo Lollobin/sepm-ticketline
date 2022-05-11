@@ -31,8 +31,6 @@ public class ShowServiceImpl implements ShowService {
     private final ShowValidator showValidator;
     private final EventRepository eventRepository;
     private final ArtistRepository artistRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
 
     public ShowServiceImpl(ShowRepository showRepository, EventRepository eventRepository,
         ArtistRepository artistRepository, ShowValidator showValidator) {

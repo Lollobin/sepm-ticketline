@@ -15,5 +15,6 @@ export interface ShowWithoutId {
     date: string;
     event: number;
     artists: Array<number>;
+    seatingPlan: number;
 }
 

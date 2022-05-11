@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-public class EventEndpointTest {
+public class EventsEndpointTest {
     @Autowired
     private WebApplicationContext webAppContext;
     private MockMvc mockMvc;

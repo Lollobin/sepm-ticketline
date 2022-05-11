@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +29,14 @@ public class ShowWithoutIdDto   {
   private OffsetDateTime date;
 
   @JsonProperty("event")
-  private BigDecimal event;
+  private Integer event;
 
   @JsonProperty("artists")
   @Valid
-  private List<BigDecimal> artists = new ArrayList<>();
+  private List<Integer> artists = new ArrayList<>();
+
+  @JsonProperty("seatingPlan")
+  private Integer seatingPlan;
 
   public ShowWithoutIdDto date(OffsetDateTime date) {
     this.date = date;
@@ -55,7 +57,7 @@ public class ShowWithoutIdDto   {
     this.date = date;
   }
 
-  public ShowWithoutIdDto event(BigDecimal event) {
+  public ShowWithoutIdDto event(Integer event) {
     this.event = event;
     return this;
   }
@@ -64,22 +66,22 @@ public class ShowWithoutIdDto   {
    * Get event
    * @return event
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "event", required = true)
-  public BigDecimal getEvent() {
+  public Integer getEvent() {
     return event;
   }
 
-  public void setEvent(BigDecimal event) {
+  public void setEvent(Integer event) {
     this.event = event;
   }
 
-  public ShowWithoutIdDto artists(List<BigDecimal> artists) {
+  public ShowWithoutIdDto artists(List<Integer> artists) {
     this.artists = artists;
     return this;
   }
 
-  public ShowWithoutIdDto addArtistsItem(BigDecimal artistsItem) {
+  public ShowWithoutIdDto addArtistsItem(Integer artistsItem) {
     if (this.artists == null) {
       this.artists = new ArrayList<>();
     }
@@ -91,14 +93,33 @@ public class ShowWithoutIdDto   {
    * Get artists
    * @return artists
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "artists", required = true)
-  public List<BigDecimal> getArtists() {
+  public List<Integer> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<BigDecimal> artists) {
+  public void setArtists(List<Integer> artists) {
     this.artists = artists;
+  }
+
+  public ShowWithoutIdDto seatingPlan(Integer seatingPlan) {
+    this.seatingPlan = seatingPlan;
+    return this;
+  }
+
+  /**
+   * Get seatingPlan
+   * @return seatingPlan
+  */
+  @NotNull 
+  @Schema(name = "seatingPlan", required = true)
+  public Integer getSeatingPlan() {
+    return seatingPlan;
+  }
+
+  public void setSeatingPlan(Integer seatingPlan) {
+    this.seatingPlan = seatingPlan;
   }
 
   @Override
@@ -112,12 +133,13 @@ public class ShowWithoutIdDto   {
     ShowWithoutIdDto showWithoutId = (ShowWithoutIdDto) o;
     return Objects.equals(this.date, showWithoutId.date) &&
         Objects.equals(this.event, showWithoutId.event) &&
-        Objects.equals(this.artists, showWithoutId.artists);
+        Objects.equals(this.artists, showWithoutId.artists) &&
+        Objects.equals(this.seatingPlan, showWithoutId.seatingPlan);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(date, event, artists);
+    return Objects.hash(date, event, artists, seatingPlan);
   }
 
   @Override
@@ -127,6 +149,7 @@ public class ShowWithoutIdDto   {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    event: ").append(toIndentedString(event)).append("\n");
     sb.append("    artists: ").append(toIndentedString(artists)).append("\n");
+    sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
     sb.append("}");
     return sb.toString();
   }
