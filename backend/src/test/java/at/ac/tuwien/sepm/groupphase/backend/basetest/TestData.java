@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,34 @@ public interface TestData {
             }
         };
 
+    //Valid Event Data
+
+    String EVENT_NAME = "Tomorrowland";
+    BigDecimal EVENT_DURATION = BigDecimal.valueOf(249);
+    String EVENT_CATEGORY = "EDM";
+    String EVENT_CONTENT = "Tomorrowland is one of the largest music festivals in the world held in Boom, Belgium, organized and owned by the original founders, the brothers Beers.";
+
+    String EVENT2_NAME = "Festival";
+    BigDecimal EVENT2_DURATION = BigDecimal.valueOf(350);
+    String EVENT2_CATEGORY = "Pop";
+    String EVENT2_CONTENT = "Festival is a test festival";
+
+    String EVENT3_NAME = "Nova Rock";
+    BigDecimal EVENT3_DURATION = BigDecimal.valueOf(12);
+    String EVENT3_CATEGORY = "Rock";
+    String EVENT3_CONTENT = "Nova Rock is a famous festival";
+
+
+    //Invalid Event Data
+
+    String EVENT_INVALID_NAME = "   ";
+    BigDecimal EVENT_INVALID_DURATION_LOWER = BigDecimal.valueOf(9);
+    BigDecimal EVENT_INVALID_DURATION_UPPER = BigDecimal.valueOf(361);
+    String EVENT_INVALID_NAME_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
+    String EVENT_INVALID_CATEGORY_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
+
+
+
     String USER_FNAME = "John";
     String USER_LNAME = "Doe";
     GenderDto USER_GENDER_DTO = GenderDto.MALE;
@@ -51,13 +81,12 @@ public interface TestData {
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 
-    AddressDto ADDRESS_DTO =
-        new AddressDto()
-            .houseNumber(USER_HOUSE_NO)
-            .street(USER_STREET)
-            .zipCode(USER_ZIPCODE)
-            .city(USER_CITY)
-            .country(USER_CTRY);
+    AddressDto ADDRESS_DTO =new AddressDto()
+        .houseNumber(USER_HOUSE_NO)
+        .street(USER_STREET)
+        .zipCode(USER_ZIPCODE)
+        .city(USER_CITY)
+        .country(USER_CTRY);
 
     Address ADDRESS_ENTITY =
         new Address(USER_HOUSE_NO, USER_STREET, USER_ZIPCODE, USER_CITY, USER_CTRY);

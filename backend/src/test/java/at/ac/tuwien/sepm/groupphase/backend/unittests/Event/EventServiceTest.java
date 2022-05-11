@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
-public class EventServiceTest {
+class EventServiceTest {
 
     @Mock private EventRepository eventRepository;
     private final EventValidator eventValidator = new EventValidator();
@@ -58,10 +58,10 @@ public class EventServiceTest {
 
         Event capturedEvent = eventArgumentCaptor.getValue();
 
-        assertEquals(capturedEvent.getName(), EVENT_NAME);
-        assertEquals(capturedEvent.getDuration(), EVENT_DURATION.longValue());
-        assertEquals(capturedEvent.getCategory(), EVENT_CATEGORY);
-        assertEquals(capturedEvent.getContent(), EVENT_CONTENT);
+        assertEquals(EVENT_NAME, capturedEvent.getName());
+        assertEquals(EVENT_DURATION.longValue(), capturedEvent.getDuration());
+        assertEquals(EVENT_CATEGORY, capturedEvent.getCategory());
+        assertEquals(EVENT_CONTENT, capturedEvent.getContent());
 
     }
     @Test
@@ -109,7 +109,7 @@ public class EventServiceTest {
 
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class, () -> eventService.createEvent(eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave)));
-        Assertions.assertEquals("Name of event is too long Category contains too many characters", exception.getMessage());
+        Assertions.assertEquals("Name of event is too long & Category contains too many characters", exception.getMessage());
     }
 
 
