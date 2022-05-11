@@ -21,10 +21,10 @@ public interface ShowService {
     List<Show> findAll();
 
     /**
-     * finds show with given id in ShowRepository.
+     * Find a single show entry by id.
      *
-     * @param id of searched show
-     * @return show with given id
+     * @param id the id of the show entry
+     * @return the show entry
      */
-    Show findById(Long id);
+    Show findOne(Long id);
 }

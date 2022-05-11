@@ -74,7 +74,7 @@ public interface TicketsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"purchased\" : [ { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 }, { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 } ], \"reserved\" : [ { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 }, { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 } ] }";
+                    String exampleString = "{ \"purchased\" : [ { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 }, { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 } ], \"reserved\" : [ { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 }, { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

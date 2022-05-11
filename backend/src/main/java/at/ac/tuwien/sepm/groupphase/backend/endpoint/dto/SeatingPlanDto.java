@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -22,18 +21,18 @@ import javax.annotation.Generated;
 public class SeatingPlanDto   {
 
   @JsonProperty("seatingPlanId")
-  private Integer seatingPlanId;
+  private Long seatingPlanId;
 
   @JsonProperty("name")
   private String name;
 
   @JsonProperty("seatingPlanLayoutId")
-  private BigDecimal seatingPlanLayoutId;
+  private Long seatingPlanLayoutId;
 
   @JsonProperty("locationId")
-  private Integer locationId;
+  private Long locationId;
 
-  public SeatingPlanDto seatingPlanId(Integer seatingPlanId) {
+  public SeatingPlanDto seatingPlanId(Long seatingPlanId) {
     this.seatingPlanId = seatingPlanId;
     return this;
   }
@@ -44,11 +43,11 @@ public class SeatingPlanDto   {
   */
   @NotNull 
   @Schema(name = "seatingPlanId", required = true)
-  public Integer getSeatingPlanId() {
+  public Long getSeatingPlanId() {
     return seatingPlanId;
   }
 
-  public void setSeatingPlanId(Integer seatingPlanId) {
+  public void setSeatingPlanId(Long seatingPlanId) {
     this.seatingPlanId = seatingPlanId;
   }
 
@@ -71,7 +70,7 @@ public class SeatingPlanDto   {
     this.name = name;
   }
 
-  public SeatingPlanDto seatingPlanLayoutId(BigDecimal seatingPlanLayoutId) {
+  public SeatingPlanDto seatingPlanLayoutId(Long seatingPlanLayoutId) {
     this.seatingPlanLayoutId = seatingPlanLayoutId;
     return this;
   }
@@ -80,17 +79,17 @@ public class SeatingPlanDto   {
    * Get seatingPlanLayoutId
    * @return seatingPlanLayoutId
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "seatingPlanLayoutId", required = true)
-  public BigDecimal getSeatingPlanLayoutId() {
+  public Long getSeatingPlanLayoutId() {
     return seatingPlanLayoutId;
   }
 
-  public void setSeatingPlanLayoutId(BigDecimal seatingPlanLayoutId) {
+  public void setSeatingPlanLayoutId(Long seatingPlanLayoutId) {
     this.seatingPlanLayoutId = seatingPlanLayoutId;
   }
 
-  public SeatingPlanDto locationId(Integer locationId) {
+  public SeatingPlanDto locationId(Long locationId) {
     this.locationId = locationId;
     return this;
   }
@@ -101,11 +100,11 @@ public class SeatingPlanDto   {
   */
   @NotNull 
   @Schema(name = "locationId", required = true)
-  public Integer getLocationId() {
+  public Long getLocationId() {
     return locationId;
   }
 
-  public void setLocationId(Integer locationId) {
+  public void setLocationId(Long locationId) {
     this.locationId = locationId;
   }
 

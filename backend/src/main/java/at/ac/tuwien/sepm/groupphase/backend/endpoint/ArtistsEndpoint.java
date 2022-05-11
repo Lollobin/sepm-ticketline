@@ -1,25 +1,30 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ArtistsApi;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.NativeWebRequest;
 
 @RestController
 @RequestMapping("${openapi.ticketline.base-path:}")
 public class ArtistsEndpoint implements ArtistsApi {
 
-    private final NativeWebRequest request;
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
+    private final ArtistService artistService;
+    private final ArtistMapper artistMapper;
 
-    @Autowired
-    public ArtistsEndpoint(NativeWebRequest request) {
-        this.request = request;
+    public ArtistsEndpoint(ArtistService artistService, ArtistMapper artistMapper) {
+        this.artistService = artistService;
+        this.artistMapper = artistMapper;
     }
 
     @Override
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
+    public ResponseEntity<ArtistDto> artistsIdGet(Long id) {
+        LOGGER.info("GET artists/{}", id);
+        ArtistDto artist = this.artistMapper.artistToArtistDto(
+            artistService.findOne(id));
+        return ResponseEntity.ok(artist);
     }
 }

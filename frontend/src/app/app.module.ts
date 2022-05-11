@@ -18,6 +18,7 @@ import { CreateShowComponent } from './components/create-show/create-show.compon
 import { RegistrationComponent } from './components/registration/registration.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {UnlockUserComponent} from "./components/unlock-user/unlock-user.componen
     LoginComponent,
     MessageComponent,
     SeatingPlanComponent,
+    ErrorAlertComponent,
     CreateEventComponent,
     CreateShowComponent,
     RegistrationComponent,

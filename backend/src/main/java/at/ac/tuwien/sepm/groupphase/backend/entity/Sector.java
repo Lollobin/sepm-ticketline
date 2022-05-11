@@ -16,9 +16,6 @@ public class Sector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sectorId;
 
-    @Column(nullable = false)
-    private float price;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -28,53 +25,37 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return sectorId == sector.sectorId
-            && Float.compare(sector.price, price) == 0
+        return Objects.equals(sectorId == sector.sectorId) && Float.compare(sector.price, price) == 0
             && Objects.equals(seatingPlanId, sector.seatingPlanId);
     }
 
     @Override
     public String toString() {
-        return "Sector{"
-            + "sectorId="
-            + sectorId
-            + ", price="
-            + price
-            + ", seatingPlanId="
-            + seatingPlanId
-            + '}';
+        return "Sector{" + "sectorId=" + sectorId + ", seatingPlanId=" + seatingPlan + '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sectorId, price, seatingPlanId);
+        return Objects.hash(sectorId, seatingPlan);
     }
 
     @ManyToOne
     @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
-    private SeatingPlan seatingPlanId;
+    private SeatingPlan seatingPlan;
 
-    public Long getSectorId() {
+    public long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(Long sectorId) {
+    public void setSectorId(long sectorId) {
         this.sectorId = sectorId;
     }
 
-    public float getPrice() {
-        return price;
+    public SeatingPlan getSeatingPlan() {
+        return seatingPlan;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public SeatingPlan getSeatingPlanId() {
-        return seatingPlanId;
-    }
-
-    public void setSeatingPlanId(SeatingPlan seatingPlanId) {
-        this.seatingPlanId = seatingPlanId;
+    public void setSeatingPlan(SeatingPlan seatingPlan) {
+        this.seatingPlan = seatingPlan;
     }
 }

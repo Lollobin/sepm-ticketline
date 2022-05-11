@@ -1,20 +1,39 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.helpmapper.DateMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.helpmapper.ShowHelpMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
-import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
+import java.util.List;
+import java.util.Set;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = { DateMapper.class, ShowHelpMapper.class, EventServiceImpl.class })
+@Mapper
 public interface ShowMapper {
-
-    Show showDtoToShow(ShowDto showDto);
 
     ShowDto showToShowDto(Show show);
 
-    Show showWithoutIdDtoToShow(ShowWithoutIdDto showWithoutIdDto);
+    Show showDtoToShow(ShowDto showDto);
 
+    default Integer map(Event value) {
+        return Math.toIntExact(value.getEventId());
+    }
+
+    default Event map(Integer value) {
+        Event eventStub = new Event();
+        eventStub.setEventId(value);
+        return eventStub;
+    }
+
+    default List<Integer> map(Set<Artist> value) {
+        return value.stream().map(Artist::getArtistId).map(Math::toIntExact).toList();
+    }
+
+    default Set<Artist> map(List<Integer> value) {
+        return Set.of(value.stream().map(id -> {
+            Artist artist = new Artist();
+            artist.setArtistId(id);
+            return artist;
+        }).toArray(Artist[]::new));
+    }
 }

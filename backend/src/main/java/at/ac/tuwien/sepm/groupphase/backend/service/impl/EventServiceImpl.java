@@ -7,6 +7,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import at.ac.tuwien.sepm.groupphase.backend.validator.EventValidator;
+import java.util.Optional;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event findById(Long id) {
-        LOGGER.debug("Find event with id {}", id);
-        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event with ID " + id + " was not found"));
+    public Event findOne(Long id) {
+        LOGGER.info("Getting {}", id);
+        Optional<Event> event = eventRepository.findById(id);
+        Hibernate.initialize(event);
+        if (event.isPresent()) {
+            return event.get();
+        } else {
+            throw new NotFoundException(String.format("Could not find event with id %s", id));
+        }
     }
 
     @Override
