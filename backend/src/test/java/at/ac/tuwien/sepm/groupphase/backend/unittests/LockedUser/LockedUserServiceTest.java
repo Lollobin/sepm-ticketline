@@ -1,16 +1,24 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.LockedUser;
 
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.CustomUserDetailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.LockedServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.LockedStatusValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,15 +26,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.*;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER3_PASSWORD;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-@ExtendWith(MockitoExtension.class)
-public class LockedUserServiceTest {
+@ExtendWith({MockitoExtension.class})
+@ActiveProfiles("test")
+public class LockedUserServiceTest implements TestData {
 
     @Mock
     private UserRepository userRepository;
@@ -48,66 +52,63 @@ public class LockedUserServiceTest {
         userService = new CustomUserDetailService(
             userRepository, passwordEncoder, userEncodePasswordMapper, userValidator);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
+
+
     }
 
-//    @Test
-//    public void shouldThrowValidationExceptionDueToNullBody(){
-//
-//        ApplicationUser user = userRepository.findUserByEmail(USER_EMAIL);
-//
-//        assertThat(userRepository.existsById(user.getUserId())).isEqualTo(true);
-//
-//        ValidationException exception = Assertions.assertThrows(ValidationException.class, () -> lockedService.unlockApplicationUser(user.getUserId(), null));
-//        Assertions.assertEquals("Body for locking must be either true or false", exception.getMessage());
-//
-//    }
-
     @Test
-    public void shouldThrowNotFoundExceptionBecauseUserNotPresent(){
+    public void shouldThrowNotFoundExceptionBecauseUserNotPresent() {
 
-
-        NotFoundException exception = Assertions.assertThrows(NotFoundException.class, () -> lockedService.unlockApplicationUser(-100L, false));
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
+            () -> lockedService.unlockApplicationUser(-100L, false));
         Assertions.assertEquals("User with id -100 is not present", exception.getMessage());
 
     }
 
     @Test
-    public void shouldReturnAllLockedUsers(){
+    public void shouldReturnAllLockedUsers() {
+
+        List<ApplicationUser> fourUsers = saveThreeUsers();
+
+        when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
+
         List<ApplicationUser> lockedUsers = userService.findAll(true);
 
-        assertThat(lockedUsers.size()).isEqualTo(2);
+        assertThat(lockedUsers.size()).isEqualTo(3);
         assertThat(lockedUsers.get(0).isLockedAccount()).isEqualTo(true);
         assertThat(lockedUsers.get(0).getEmail()).isEqualTo(USER_EMAIL);
         assertThat(lockedUsers.get(0).getLastName()).isEqualTo(USER_LNAME);
 
         assertThat(lockedUsers.get(1).isLockedAccount()).isEqualTo(true);
         assertThat(lockedUsers.get(1).getEmail()).isEqualTo(USER2_EMAIL);
-        assertThat(lockedUsers.get(1).getFirstName()).isEqualTo(USER2_LNAME);
+        assertThat(lockedUsers.get(1).getFirstName()).isEqualTo(USER2_FNAME);
 
     }
 
     @Test
-    public void shouldChangeLockedToFalse(){
+    public void checkNumberOfCalledTimesToUnlock() {
+
+        List<ApplicationUser> fourUsers = saveThreeUsers();
+
+        when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
+
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fourUsers.get(0));
         ApplicationUser user = userService.findApplicationUserByEmail(USER_EMAIL);
 
-        assertThat(user.isLockedAccount()).isEqualTo(true);
-        assertThat(user.getEmail()).isEqualTo(USER_EMAIL);
-        assertThat(user.getFirstName()).isEqualTo(USER_FNAME);
-
+        when(userRepository.existsById(user.getUserId())).thenReturn(true);
+        doNothing().when(userRepository).unlockApplicationUser(false, user.getUserId());
         lockedService.unlockApplicationUser(user.getUserId(), false);
 
-        ApplicationUser updatedUser = userService.findApplicationUserByEmail(USER_EMAIL);
+        verify(userRepository, times(1)).existsById(user.getUserId());
+        verify(userRepository, times(1)).unlockApplicationUser(false, user.getUserId());
 
-        assertThat(user.getUserId()).isEqualTo(updatedUser.getUserId());
-        assertThat(user.getEmail()).isEqualTo(updatedUser.getEmail());
-
-        assertThat(updatedUser.isLockedAccount()).isEqualTo(false);
 
     }
 
 
-    private void saveThreeUsers() {
+    private List<ApplicationUser> saveThreeUsers() {
         ApplicationUser user1 = new ApplicationUser();
+        user1.setUserId(1);
         user1.setLockedAccount(true);
         user1.setFirstName(USER_FNAME);
         user1.setLastName(USER_LNAME);
@@ -120,9 +121,8 @@ public class LockedUserServiceTest {
         user1.setLoginTries(0);
         user1.setMustResetPassword(false);
 
-        userRepository.save(user1);
-
         ApplicationUser user2 = new ApplicationUser();
+        user2.setUserId(2);
         user2.setLockedAccount(true);
         user2.setFirstName(USER2_FNAME);
         user2.setLastName(USER2_LNAME);
@@ -135,9 +135,8 @@ public class LockedUserServiceTest {
         user2.setLoginTries(0);
         user2.setMustResetPassword(false);
 
-        userRepository.save(user2);
-
         ApplicationUser user3 = new ApplicationUser();
+        user3.setUserId(3);
         user3.setLockedAccount(true);
         user3.setFirstName(USER3_FNAME);
         user3.setLastName(USER3_LNAME);
@@ -150,9 +149,28 @@ public class LockedUserServiceTest {
         user3.setLoginTries(0);
         user3.setMustResetPassword(false);
 
-        userRepository.save(user3);
-    }
+        ApplicationUser user4 = new ApplicationUser();
+        user4.setUserId(4);
+        user4.setLockedAccount(false);
+        user4.setFirstName("nicht");
+        user4.setLastName("anzeigen");
+        user4.setGender(USER3_GENDER);
+        user4.setEmail("nicht@anzeigen.com");
+        user4.setAddress(ADDRESS4_ENTITY);
+        user4.setPassword(USER3_PASSWORD);
+        user4.setPassword("emptfeyByte");
+        user4.setHasAdministrativeRights(true);
+        user4.setLoginTries(0);
+        user4.setMustResetPassword(false);
 
+        List<ApplicationUser> allUsers = new ArrayList<>();
+        allUsers.add(user1);
+        allUsers.add(user2);
+        allUsers.add(user3);
+        allUsers.add(user4);
+
+        return allUsers;
+    }
 
 
 }

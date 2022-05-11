@@ -58,7 +58,7 @@ public interface TestData {
     String USER2_PASSWORD = "abc2312defghijkl";
     String USER2_STREET = "Gußhaus 1";
     String USER2_ZIPCODE = "1100";
-    String USER2_HOUSE_NO="3";
+    String USER2_HOUSE_NO = "3";
 
     String USER3_FNAME = "Selina";
     String USER3_LNAME = "Koller";
@@ -70,7 +70,9 @@ public interface TestData {
     String USER3_PASSWORD = "abc231232defghijkl";
     String USER3_STREET = "Favoriten 1";
     String USER3_ZIPCODE = "1100";
-    String USER3_HOUSE_NO="32";
+    String USER3_HOUSE_NO = "32";
+
+    String USER4_EMAIL = "nicht@anzeigen.com";
 
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
@@ -89,7 +91,12 @@ public interface TestData {
         new Address(USER_HOUSE_NO, USER_STREET, USER_ZIPCODE, USER_CITY, USER_CTRY);
 
 
-    Address ADDRESS2_ENTITY= new Address(USER2_HOUSE_NO,USER2_STREET, USER2_ZIPCODE,USER2_CITY,USER2_CTRY);
+    Address ADDRESS2_ENTITY = new Address(USER2_HOUSE_NO, USER2_STREET, USER2_ZIPCODE, USER2_CITY,
+        USER2_CTRY);
 
-    Address ADDRESS3_ENTITY= new Address(USER3_HOUSE_NO,USER3_STREET, USER3_ZIPCODE,USER3_CITY,USER3_CTRY);
+    Address ADDRESS3_ENTITY = new Address(USER3_HOUSE_NO, USER3_STREET, USER3_ZIPCODE, USER3_CITY,
+        USER3_CTRY);
+
+    Address ADDRESS4_ENTITY = new Address("USER4_HOUSE_NO", "USER4_STREET", "USER4_ZIPCODE",
+        "USER4_CITY", "USER4_CTRY");
 }
