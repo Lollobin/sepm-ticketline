@@ -21,8 +21,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-
 @RestController
 public class EventEndpoint implements EventsApi {
 

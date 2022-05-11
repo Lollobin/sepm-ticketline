@@ -14,8 +14,12 @@ export class CreateShowComponent implements OnInit {
 
   id: number;
   eventName: string;
+  eventCategory: string;
+  eventDuration: number;
+  eventDescription: string;
   showForm: any;
   error = false;
+  notFound = true;
   errorMessage = '';
   role = '';
 
@@ -45,6 +49,7 @@ export class CreateShowComponent implements OnInit {
       this.id = params["id"];
       this.showForm.value.id = this.id;
       console.log(this.id);
+      this.notFound = true;
       this.getDetails(this.id);
     });
     this.role = this.authService.getUserRole();
@@ -55,7 +60,11 @@ export class CreateShowComponent implements OnInit {
       next: data => {
         console.log("got event with id ", id);
         this.eventName = data.name;
+        this.eventCategory = data.category;
+        this.eventDuration = data.duration;
+        this.eventDescription = data.content;
         this.error = false;
+        this.notFound = false;
       },
       error: error => {
         console.error('Error fetching event', error.message);
@@ -91,6 +100,17 @@ export class CreateShowComponent implements OnInit {
         }
       }
     );
+  }
+
+  secondsToHms(d): string {
+    d = Number(d * 60);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+    const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
   }
 
   vanishError() {

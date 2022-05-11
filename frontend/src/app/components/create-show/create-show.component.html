@@ -1,6 +1,7 @@
 <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
     <strong>Error occured: </strong> {{ errorMessage }}
-    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+    <button *ngIf="!this.notFound" type="button" (click)="vanishError()" class="close" data-dismiss="alert"
+        aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -10,10 +11,32 @@
 </div>
 
 
-<div *ngIf="role === 'ADMIN'">
-    <p class="h2 form-margin form-group">Add new shows for event "{{this.eventName}}"</p>
+<div *ngIf="role === 'ADMIN' && !this.notFound">
+    <p class="h2 form-margin form-group">Add new shows for "{{this.eventName}}"</p>
 
     <form class="form-margin" [formGroup]="showForm">
+        <div class="form-group">
+            <small for="name" class="form-label text-muted">Event Name</small>
+            <div type="text" class="form-control" style="border-top: 0; border-left: 0; border-right: 0">{{this.eventName}}</div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <small for="inputCategory" class="form-label text-muted">Event Category</small>
+                <div class="form-control form-override" style="border-top: 0; border-left: 0; border-right: 0">{{this.eventCategory}}</div>
+            </div>
+            <div class="form-group col-md-6">
+                <small for="inputCategory" class="form-label text-muted">Event Duration</small>
+                <div class="form-control form-override" style="border-top: 0; border-left: 0; border-right: 0">{{this.secondsToHms(this.eventDuration)}}</div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="this.eventDescription">
+            <small class="form-label text-muted">Event Description</small>
+            <div class="form-control text-muted" style="border: 0">{{this.eventDescription}}</div>
+        </div>
+
+
+
+
         <div class="row">
             <div class="form-group col-md-6">
                 <small for="inputDate" class="form-label text-muted">Date</small>

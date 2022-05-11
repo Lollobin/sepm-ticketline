@@ -64,8 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * Use the @ExceptionHandler annotation to write handler for custom exceptions.
      */
     @ExceptionHandler(value = {ValidationException.class})
-    protected ResponseEntity<Object> handleValidationException(
-        ValidationException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleValidationException(RuntimeException ex, WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
