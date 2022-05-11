@@ -42,7 +42,8 @@ export class CreateShowComponent implements OnInit {
     this.showForm = this.formBuilder.group({
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
-      event: []
+      event: [],
+      seatingPlan: [1]
 
     });
     this.route.params.subscribe(params => {

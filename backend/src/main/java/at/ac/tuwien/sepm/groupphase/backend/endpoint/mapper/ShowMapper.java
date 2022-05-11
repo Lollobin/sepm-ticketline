@@ -5,12 +5,12 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
-import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
+import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = EventService.class)
+@Mapper(uses = EventServiceImpl.class)
 public interface ShowMapper {
 
     ShowDto showToShowDto(Show show);
