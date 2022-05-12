@@ -46,7 +46,7 @@ public class ShowsEndpoint implements ShowsApi {
         try {
             ShowDto newShowDto = showMapper.showToShowDto(
                 showService.createShow(
-                    showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
+                    showMapper.showWithoutIdDtoToShow(showWithoutIdDto), Long.valueOf(showWithoutIdDto.getSeatingPlan())
                 ));
 
             URI location = ServletUriComponentsBuilder

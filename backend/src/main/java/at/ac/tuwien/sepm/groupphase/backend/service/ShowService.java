@@ -9,9 +9,10 @@ public interface ShowService {
      * saves given show entity object to ShowRepository.
      *
      * @param show to be saved
+     * @param seatingPlanId that is associated with the show
      * @return entity show object that was saved with new id
      */
-    Show createShow(Show show);
+    Show createShow(Show show, Long seatingPlanId);
 
     /**
      * finds all shows in ShowRepository.
