@@ -1076,7 +1076,7 @@ components:
           $ref: "#/components/schemas/Gender"
         address:
           $ref: "#/components/schemas/Address"
-        isLocked:
+        lockedAccount:
           type: boolean
       required:
         - userId
@@ -1085,7 +1085,7 @@ components:
         - email
         - gender
         - address
-        - isLocked
+        - lockedAccount
     UserWithPassword:
       type: object
       properties:

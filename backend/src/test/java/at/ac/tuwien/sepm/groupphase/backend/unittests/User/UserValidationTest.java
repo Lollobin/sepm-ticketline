@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-
 @ExtendWith(MockitoExtension.class)
 class UserValidationTest implements TestData {
 
@@ -26,50 +25,56 @@ class UserValidationTest implements TestData {
     private UserValidator userValidator;
     private UserWithPasswordDto userToValidate;
 
-
     @BeforeEach
     void setUp() {
         userValidator = new UserValidator(addressValidator);
-        userToValidate = new UserWithPasswordDto()
-            .firstName(USER_FNAME)
-            .lastName(USER_LNAME)
-            .gender(USER_GENDER_DTO)
-            .email(USER_EMAIL)
-            .address(ADDRESS_DTO)
-            .password(USER_PASSWORD);
+        userToValidate =
+            new UserWithPasswordDto()
+                .firstName(USER_FNAME)
+                .lastName(USER_LNAME)
+                .gender(USER_GENDER_DTO)
+                .email(USER_EMAIL)
+                .address(ADDRESS_DTO)
+                .password(USER_PASSWORD);
     }
-
 
     @Test
     void shouldThrowValidationException_InvalidFirstName() {
         userToValidate.setFirstName("");
-        assertThrows(ValidationException.class, () -> userValidator.validateUserWithPasswordDto(userToValidate));
+        assertThrows(
+            ValidationException.class,
+            () -> userValidator.validateUserWithPasswordDto(userToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidLastName() {
         userToValidate.setLastName("");
-        assertThrows(ValidationException.class,
+        assertThrows(
+            ValidationException.class,
             () -> userValidator.validateUserWithPasswordDto(userToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidEmail() {
         userToValidate.setEmail("");
-        assertThrows(ValidationException.class,
+        assertThrows(
+            ValidationException.class,
             () -> userValidator.validateUserWithPasswordDto(userToValidate));
         userToValidate.setEmail("ooo");
-        assertThrows(ValidationException.class,
+        assertThrows(
+            ValidationException.class,
             () -> userValidator.validateUserWithPasswordDto(userToValidate));
     }
 
     @Test
     void shouldThrowValidationException_InvalidPassword() {
         userToValidate.setPassword("");
-        assertThrows(ValidationException.class,
+        assertThrows(
+            ValidationException.class,
             () -> userValidator.validateUserWithPasswordDto(userToValidate));
         userToValidate.setPassword("qq");
-        assertThrows(ValidationException.class,
+        assertThrows(
+            ValidationException.class,
             () -> userValidator.validateUserWithPasswordDto(userToValidate));
     }
 

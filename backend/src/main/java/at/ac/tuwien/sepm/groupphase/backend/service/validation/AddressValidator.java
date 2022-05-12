@@ -18,13 +18,11 @@ public class AddressValidator {
 
     private void validateZipCode(String zipCode) {
         validateNotEmpty(zipCode, "Check Zip Code! ");
-
     }
 
     private void validateHouseNo(String houseNumber) {
         validateNotEmpty(houseNumber, "Check House number! ");
     }
-
 
     private void validateCountry(String country) {
         validateNotEmpty(country, "Check Country! ");

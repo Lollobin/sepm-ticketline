@@ -100,6 +100,7 @@ public class Message {
 
 
     public static final class MessageBuilder {
+
         private Long id;
         private LocalDateTime publishedAt;
         private String title;

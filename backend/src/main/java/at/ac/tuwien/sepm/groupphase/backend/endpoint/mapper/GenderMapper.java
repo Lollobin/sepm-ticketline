@@ -12,9 +12,11 @@ public interface GenderMapper {
 
     GenderMapper INSTANCE = Mappers.getMapper(GenderMapper.class);
 
-    @ValueMappings({@ValueMapping(target = "MALE", source = "MALE"),
+    @ValueMappings({
+        @ValueMapping(target = "MALE", source = "MALE"),
         @ValueMapping(target = "FEMALE", source = "FEMALE"),
-        @ValueMapping(target = "OTHER", source = "OTHER")})
+        @ValueMapping(target = "OTHER", source = "OTHER")
+    })
     Gender genderDtoToGender(GenderDto genderDto);
 
     GenderDto genderToGenderDto(Gender gender);

@@ -77,6 +77,7 @@ public class SimpleMessageDto {
 
 
     public static final class SimpleMessageDtoBuilder {
+
         private Long id;
         private LocalDateTime publishedAt;
         private String title;

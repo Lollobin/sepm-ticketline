@@ -22,12 +22,7 @@ public class BookedInKey implements Serializable {
 
     @Override
     public String toString() {
-        return "BookedInKey{"
-            + "transactionId="
-            + transactionId
-            + ", ticketId="
-            + ticketId
-            + '}';
+        return "BookedInKey{" + "transactionId=" + transactionId + ", ticketId=" + ticketId + '}';
     }
 
     @Override
