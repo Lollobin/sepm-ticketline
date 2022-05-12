@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,7 +39,7 @@ public class ShowsEndpoint implements ShowsApi {
         return new ResponseEntity<>(showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
     }
 
-
+    @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto) {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);

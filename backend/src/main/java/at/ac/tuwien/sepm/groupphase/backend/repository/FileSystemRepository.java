@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class FileSystemRepository {
 
-    String resourcesDir = FileSystemRepository.class.getResource("/")
-        .getPath();
+    String resourcesDir = new File(FileSystemRepository.class.getResource("/")
+        .getFile()).getPath();
 
     public String save(byte[] content, String imageName) throws IOException {
         Path newFile = Paths.get(resourcesDir + new Date().getTime() + "-" + imageName);

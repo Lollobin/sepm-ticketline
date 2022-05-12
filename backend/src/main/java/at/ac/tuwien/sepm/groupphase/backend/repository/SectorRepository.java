@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, Long> {
 
-    List<Sector> findAllBySeatingPlanId(@Param("seatingPlanId") Long seatingPlanId);
+    List<Sector> findAllBySeatingPlan(@Param("seatingPlanId") Long seatingPlanId);
 
 }

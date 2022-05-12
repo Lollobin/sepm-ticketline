@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SectorPriceRepository extends JpaRepository<SectorPrice, SectorPriceId> {
 
-    SectorPrice getSectorPriceByShowIdAndSectorId(@Param("showId") Long showId, @Param("sectorId") Long sectorId);
+    SectorPrice getSectorPriceByShowAndSector(@Param("showId") Long showId, @Param("sectorId") Long sectorId);
 
 }

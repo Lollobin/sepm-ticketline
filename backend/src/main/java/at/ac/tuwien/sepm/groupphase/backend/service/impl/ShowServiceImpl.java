@@ -1,16 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
@@ -57,10 +52,10 @@ public class ShowServiceImpl implements ShowService {
 
         showValidator.checkIfShowCorrect(show);
 
-        List<Sector> sectors = sectorRepository.findAllBySeatingPlanId(seatingPlanId);
+        List<Sector> sectors = sectorRepository.findAllBySeatingPlan(seatingPlanId);
 
-        for (Sector sector : sectors){
-            List<Seat> seats = seatRepository.findBySectorId(sector.getSectorId());
+        for (Sector sector : sectors) {
+            List<Seat> seats = seatRepository.findBySector(sector.getSectorId());
             for (Seat seat : seats) {
                 Ticket ticket = new Ticket();
                 ticket.setSeat(seat);

@@ -8,8 +8,8 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class TransactionDataGenerator {
             address2.setStreet("TestStreet 1233");
             address2.setZipCode("219338");
             address2.setCity("test3City");
-            address2.setCountry("Aust3ria");
+            address2.setCountry("Austria");
             address2.setHouseNumber("2");
 
             ApplicationUser user = new ApplicationUser();
@@ -85,17 +85,17 @@ public class TransactionDataGenerator {
             userRepository.save(user2);
 
             Transaction transaction = new Transaction();
-            transaction.setDate(OffsetDateTime.of(2005, 11, 20, 0, 0, 0, 0, null));
+            transaction.setDate(OffsetDateTime.of(2005, 11, 20, 0, 0, 0, 0, ZoneOffset.of("+1")));
             transaction.setUser(user);
             transactionRepository.save(transaction);
 
             Transaction transaction2 = new Transaction();
-            transaction2.setDate(OffsetDateTime.of(2003, 5, 17, 0, 0, 0, 0, null));
+            transaction2.setDate(OffsetDateTime.of(2003, 5, 17, 0, 0, 0, 0, ZoneOffset.of("+1")));
             transaction2.setUser(user);
             transactionRepository.save(transaction2);
 
             Transaction transaction3 = new Transaction();
-            transaction3.setDate(OffsetDateTime.of(2020, 3, 1, 0, 0, 0, 0, null));
+            transaction3.setDate(OffsetDateTime.of(2020, 3, 1, 0, 0, 0, 0, ZoneOffset.of("+1")));
             transaction3.setUser(user2);
             transactionRepository.save(transaction3);
         }
