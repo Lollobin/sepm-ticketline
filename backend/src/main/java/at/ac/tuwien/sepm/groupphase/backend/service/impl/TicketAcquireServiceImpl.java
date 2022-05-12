@@ -49,9 +49,30 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
             //TODO: CHANGE TO CONFLICT ERROR and add ticket info
             throw new ValidationException("TICKETS NOT AVAILABLE");
         }
+        List<Ticket> updatedTickets = updateTicketStatus(
+            purchaseMode, ticketList);
+        FullTicketWithStatusDto fullTicketWithStatusDto = new FullTicketWithStatusDto();
+        List<TicketDto> fullTickets = updatedTickets.stream().map(this::ticketToTicketDto).toList();
+        if (purchaseMode) {
+            fullTicketWithStatusDto.setPurchased(fullTickets);
+        } else {
+            fullTicketWithStatusDto.setReserved(fullTickets);
+        }
+        return fullTicketWithStatusDto;
+    }
+
+    private TicketDto ticketToTicketDto(Ticket ticket) {
+            TicketDto ticketDto = new TicketDto();
+            ticketDto.setTicketId(ticket.getTicketId());
+            ticketDto.setSector(ticket.getSeat().getSector().getSectorId());
+            ticketDto.setSeatNumber(ticket.getSeat().getSeatNumber());
+            ticketDto.setRowNumber(ticket.getSeat().getRowNumber());
+            return ticketDto;
+    }
+
+    private List<Ticket> updateTicketStatus(boolean purchaseMode, List<Ticket> ticketList) {
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationFacade.getAuthentication().getPrincipal().toString());
-        LOGGER.info("{}", user);
         for (Ticket ticket : ticketList) {
             ticket.setReservedBy(user);
             if (purchaseMode) {
@@ -59,21 +80,7 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
             }
         }
         List<Ticket> updatedTickets = ticketRepository.saveAll(ticketList);
-        FullTicketWithStatusDto fullTicketWithStatusDto = new FullTicketWithStatusDto();
-        List<TicketDto> fullTickets = updatedTickets.stream().map((ticket) -> {
-            TicketDto ticketDto = new TicketDto();
-            ticketDto.setTicketId(ticket.getTicketId());
-            ticketDto.setSector(ticket.getSeat().getSector().getSectorId());
-            ticketDto.setSeatNumber(ticket.getSeat().getSeatNumber());
-            ticketDto.setRowNumber(ticket.getSeat().getRowNumber());
-            return ticketDto;
-        }).toList();
-        if (purchaseMode) {
-            fullTicketWithStatusDto.setPurchased(fullTickets);
-        } else {
-            fullTicketWithStatusDto.setReserved(fullTickets);
-        }
-        return fullTicketWithStatusDto;
+        return updatedTickets;
     }
 
     private List<Ticket> getUnavailableTickets(List<Ticket> ticketList) {
