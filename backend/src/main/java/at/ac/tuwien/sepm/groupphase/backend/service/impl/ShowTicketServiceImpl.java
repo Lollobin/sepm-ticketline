@@ -77,7 +77,6 @@ public class ShowTicketServiceImpl implements ShowTicketService {
             seats.add(element);
 
         }
-        LOGGER.info("Length: {}", getAllById(id, sectors).size());
         List<SectorDto> sectorDtos = getAllById(id, sectors).stream().map(sectorPrice -> {
             SectorDto sectorDto = new SectorDto();
             sectorDto.setSectorId(sectorPrice.getId().getSectorId());

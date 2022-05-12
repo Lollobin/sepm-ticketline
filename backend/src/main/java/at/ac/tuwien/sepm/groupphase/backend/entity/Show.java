@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +24,7 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showId;
 
+    @Column
     private OffsetDateTime date;
 
     @ManyToMany
