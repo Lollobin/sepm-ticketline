@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class MessageInquiryDto {
 
@@ -71,6 +71,7 @@ public class MessageInquiryDto {
 
 
     public static final class MessageInquiryDtoBuilder {
+
         private String title;
         private String summary;
         private String text;

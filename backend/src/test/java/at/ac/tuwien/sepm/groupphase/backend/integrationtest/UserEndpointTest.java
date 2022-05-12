@@ -33,22 +33,27 @@ class UserEndpointTest implements TestData {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private UserWithPasswordDto user = new UserWithPasswordDto().firstName(USER_FNAME)
-        .lastName(USER_LNAME).gender(USER_GENDER_DTO).email(USER_EMAIL).address(ADDRESS_DTO)
-        .password(USER_PASSWORD);
-
+    private UserWithPasswordDto user =
+        new UserWithPasswordDto()
+            .firstName(USER_FNAME)
+            .lastName(USER_LNAME)
+            .gender(USER_GENDER_DTO)
+            .email(USER_EMAIL)
+            .address(ADDRESS_DTO)
+            .password(USER_PASSWORD);
 
     @Test
     void givenNothing_whenPost_thenUserWithAllPropertiesAndId() throws Exception {
 
         String body = objectMapper.writeValueAsString(user);
 
-        MvcResult mvcResult = this.mockMvc.perform(
-                post(USERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
-            .andDo(print()).andReturn();
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(USERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .andDo(print())
+                .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
     }
 
     @Test
@@ -56,19 +61,21 @@ class UserEndpointTest implements TestData {
         user.email(null).gender(null).address(null).password(null).firstName(null).lastName(null);
         String body = objectMapper.writeValueAsString(user);
 
-        MvcResult mvcResult = this.mockMvc.perform(
-                post(USERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
-            .andDo(print()).andReturn();
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(USERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .andDo(print())
+                .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertAll(() -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
+        assertAll(
+            () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatus()),
             () -> {
-                //Reads the errors from the body
+                // Reads the errors from the body
                 String content = response.getContentAsString();
                 content = content.substring(content.indexOf('[') + 1, content.indexOf(']'));
                 String[] errors = content.split(",");
                 assertEquals(6, errors.length);
             });
     }
-
 }

@@ -20,6 +20,7 @@ public class SecurityPropertiesConfig {
     }
 
     public static class Auth {
+
         private String header;
         private String prefix;
         private String loginUri;
@@ -50,6 +51,7 @@ public class SecurityPropertiesConfig {
     }
 
     public static class Jwt {
+
         private String secret;
         private String type;
         private String issuer;

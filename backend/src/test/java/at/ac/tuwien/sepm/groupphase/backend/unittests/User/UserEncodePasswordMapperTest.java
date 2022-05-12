@@ -1,5 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.User;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
@@ -16,35 +23,35 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
-
 @ActiveProfiles("test")
-
 @ExtendWith(MockitoExtension.class)
 class UserEncodePasswordMapperTest implements TestData {
 
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private GenderMapper genderMapper;
-    @Mock private AddressMapper addressMapper;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private GenderMapper genderMapper;
+    @Mock
+    private AddressMapper addressMapper;
     private UserEncodePasswordMapper userEncodePasswordMapper;
 
     @BeforeEach
     void setUp() {
-        userEncodePasswordMapper = new UserEncodePasswordMapper(genderMapper, passwordEncoder, addressMapper);
+        userEncodePasswordMapper =
+            new UserEncodePasswordMapper(genderMapper, passwordEncoder, addressMapper);
     }
 
     @Test
     void whenUserWithPasswordDtoToAppUser_thenPasswordEncoderIsInvoked() {
 
-        UserWithPasswordDto userDto = new UserWithPasswordDto().firstName(USER_FNAME)
-            .lastName(USER_LNAME)
-            .gender(USER_GENDER_DTO)
-            .email(USER_EMAIL)
-            .address(ADDRESS_DTO)
-            .password(USER_PASSWORD);
+        UserWithPasswordDto userDto =
+            new UserWithPasswordDto()
+                .firstName(USER_FNAME)
+                .lastName(USER_LNAME)
+                .gender(USER_GENDER_DTO)
+                .email(USER_EMAIL)
+                .address(ADDRESS_DTO)
+                .password(USER_PASSWORD);
         when(passwordEncoder.encode("abcdefghijkl")).thenReturn("passwordisencoded");
         when(addressMapper.addressDtoToAddress(userDto.getAddress())).thenReturn(ADDRESS_ENTITY);
         when(genderMapper.genderDtoToGender(any(GenderDto.class))).thenReturn(Gender.MALE);
@@ -52,15 +59,18 @@ class UserEncodePasswordMapperTest implements TestData {
         userEncodePasswordMapper.userWithPasswordDtoToAppUser(userDto);
         verify(passwordEncoder, times(1)).encode("abcdefghijkl");
     }
+
     @Test
     void whenUserWithPasswordDtoToAppUser_thenGenderMapperIsInvoked() {
 
-        UserWithPasswordDto userDto = new UserWithPasswordDto().firstName(USER_FNAME)
-            .lastName(USER_LNAME)
-            .gender(USER_GENDER_DTO)
-            .email(USER_EMAIL)
-            .address(ADDRESS_DTO)
-            .password(USER_PASSWORD);
+        UserWithPasswordDto userDto =
+            new UserWithPasswordDto()
+                .firstName(USER_FNAME)
+                .lastName(USER_LNAME)
+                .gender(USER_GENDER_DTO)
+                .email(USER_EMAIL)
+                .address(ADDRESS_DTO)
+                .password(USER_PASSWORD);
         when(passwordEncoder.encode("abcdefghijkl")).thenReturn("passwordisencoded");
         when(addressMapper.addressDtoToAddress(userDto.getAddress())).thenReturn(ADDRESS_ENTITY);
         when(genderMapper.genderDtoToGender(any(GenderDto.class))).thenReturn(Gender.MALE);
@@ -72,29 +82,26 @@ class UserEncodePasswordMapperTest implements TestData {
     @Test
     void whenUserWithPasswordDtoToAppUser_thenDtoIsCorrectlyMapped() {
 
-        UserWithPasswordDto userDto = new UserWithPasswordDto()
-            .firstName(USER_FNAME)
-            .lastName(USER_LNAME)
-            .gender(USER_GENDER_DTO)
-            .email(USER_EMAIL)
-            .address(ADDRESS_DTO)
-            .password(USER_PASSWORD);
+        UserWithPasswordDto userDto =
+            new UserWithPasswordDto()
+                .firstName(USER_FNAME)
+                .lastName(USER_LNAME)
+                .gender(USER_GENDER_DTO)
+                .email(USER_EMAIL)
+                .address(ADDRESS_DTO)
+                .password(USER_PASSWORD);
         when(passwordEncoder.encode("abcdefghijkl")).thenReturn("passwordisencoded");
         when(addressMapper.addressDtoToAddress(userDto.getAddress())).thenReturn(ADDRESS_ENTITY);
         when(genderMapper.genderDtoToGender(any(GenderDto.class))).thenReturn(Gender.MALE);
 
-        ApplicationUser appUser= userEncodePasswordMapper.userWithPasswordDtoToAppUser(userDto);
+        ApplicationUser appUser = userEncodePasswordMapper.userWithPasswordDtoToAppUser(userDto);
 
         assertAll(
-            () -> assertEquals(userDto.getFirstName(),appUser.getFirstName()),
-            () -> assertEquals(userDto.getLastName(),appUser.getLastName()),
-            () -> assertEquals(userDto.getEmail(),appUser.getEmail()),
-            () -> assertEquals(Gender.MALE,appUser.getGender()),
-            () -> assertEquals(ADDRESS_ENTITY,appUser.getAddress()),
-            () -> assertEquals("passwordisencoded",appUser.getPassword())
-        );
-
+            () -> assertEquals(userDto.getFirstName(), appUser.getFirstName()),
+            () -> assertEquals(userDto.getLastName(), appUser.getLastName()),
+            () -> assertEquals(userDto.getEmail(), appUser.getEmail()),
+            () -> assertEquals(Gender.MALE, appUser.getGender()),
+            () -> assertEquals(ADDRESS_ENTITY, appUser.getAddress()),
+            () -> assertEquals("passwordisencoded", appUser.getPassword()));
     }
-
-
 }

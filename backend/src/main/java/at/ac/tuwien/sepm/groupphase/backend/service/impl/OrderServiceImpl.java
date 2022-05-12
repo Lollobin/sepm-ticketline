@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final TransactionRepository transactionRepository;
     private final AuthenticationFacade authenticationFacade;
 
-    public OrderServiceImpl(TransactionRepository transactionRepository,
-        AuthenticationFacade authenticationFacade) {
+    public OrderServiceImpl(
+        TransactionRepository transactionRepository, AuthenticationFacade authenticationFacade) {
         this.transactionRepository = transactionRepository;
         this.authenticationFacade = authenticationFacade;
     }
