@@ -899,7 +899,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Transaction"
+                  $ref: "#/components/schemas/Order"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -1494,5 +1494,31 @@ components:
         - city  
         - country  
         - zipCode  
-
-
+    Order:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/BookingType"
+        date:
+          type: string
+          format: date-time
+        eventName:
+          type: string
+        city:
+          type: string
+        locationName:
+          type: string
+        transactionId:
+          type: integer
+        ticketIds:
+          type: array
+          items:
+            type: integer
+      required:
+        - type
+        - date
+        - eventName
+        - city
+        - locationName
+        - transactionId
+        - ticketIds
