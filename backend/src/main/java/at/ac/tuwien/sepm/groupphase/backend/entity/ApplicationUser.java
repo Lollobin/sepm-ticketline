@@ -95,9 +95,7 @@ public class ApplicationUser {
             && Objects.equals(firstName, user.firstName)
             && Objects.equals(lastName, user.lastName)
             && gender == user.gender
-            && Objects.equals(address, user.address)
-            && Objects.equals(password, user.password)
-            && Objects.equals(articles, user.articles);
+            && Objects.equals(address, user.address) && Objects.equals(password, user.password) && Objects.equals(articles, user.articles);
     }
 
     @Override
@@ -130,11 +128,18 @@ public class ApplicationUser {
     private boolean lockedAccount;
 
     @ManyToMany
-    @JoinTable(
-        name = "ReadArticle",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "articleId"))
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
+    }
 
     public long getUserId() {
         return userId;
