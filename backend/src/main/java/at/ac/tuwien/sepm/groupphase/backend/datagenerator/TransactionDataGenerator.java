@@ -48,6 +48,7 @@ public class TransactionDataGenerator {
             address.setCountry("Austria");
             address.setHouseNumber("2");
 
+
             Address address2 = new Address();
             address2.setStreet("TestStreet 1233");
             address2.setZipCode("219338");

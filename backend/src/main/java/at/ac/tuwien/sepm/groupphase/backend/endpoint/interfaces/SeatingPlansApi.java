@@ -71,7 +71,7 @@ public interface SeatingPlansApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
+                    String exampleString = "{ \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -111,12 +111,12 @@ public interface SeatingPlansApi {
         produces = { "application/json" }
     )
     default ResponseEntity<SeatingPlanDto> seatingPlansIdGet(
-        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"seatingPlanLayoutId\" : 6.027456183070403, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
+                    String exampleString = "{ \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

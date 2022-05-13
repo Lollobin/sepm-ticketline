@@ -9,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Artist {
@@ -26,10 +30,9 @@ public class Artist {
     private String lastName;
 
     @ManyToMany
-    @JoinTable(
-        name = "PlaysIn",
-        joinColumns = @JoinColumn(name = "artistId"),
-        inverseJoinColumns = @JoinColumn(name = "showId"))
+    @Fetch(FetchMode.JOIN)
+    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "artistId"), inverseJoinColumns = @JoinColumn(name = "showId"))
     private Set<Show> shows;
 
     @Override
@@ -51,7 +54,7 @@ public class Artist {
 
     @Override
     public int hashCode() {
-        return Objects.hash(artistId, bandName, knownAs, firstName, lastName, shows);
+        return Objects.hash(artistId, bandName, knownAs, firstName, lastName);
     }
 
     @Override
