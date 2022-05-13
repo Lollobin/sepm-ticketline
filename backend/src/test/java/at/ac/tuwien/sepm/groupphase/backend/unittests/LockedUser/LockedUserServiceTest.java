@@ -92,6 +92,13 @@ public class LockedUserServiceTest implements TestData {
 
         when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
 
+        List<ApplicationUser> lockedUsers = userService.findAll(true);
+
+        assertThat(lockedUsers.size()).isEqualTo(3);
+        assertThat(lockedUsers.get(0).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUsers.get(1).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUsers.get(2).isLockedAccount()).isEqualTo(true);
+
         when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fourUsers.get(0));
         ApplicationUser user = userService.findApplicationUserByEmail(USER_EMAIL);
 
@@ -99,6 +106,7 @@ public class LockedUserServiceTest implements TestData {
         doNothing().when(userRepository).unlockApplicationUser(false, user.getUserId());
         lockedService.unlockApplicationUser(user.getUserId(), false);
 
+        verify(userRepository, times(1)).findByLockedAccountEquals(true);
         verify(userRepository, times(1)).existsById(user.getUserId());
         verify(userRepository, times(1)).unlockApplicationUser(false, user.getUserId());
 

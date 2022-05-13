@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,6 +60,9 @@ public class LockedUserEndpointTest {
     private UserRepository userRepository;
 
     @Autowired
+    private AddressRepository addressRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -69,6 +73,7 @@ public class LockedUserEndpointTest {
 
     @BeforeEach
     public void setup() {
+        userRepository.deleteAll();
 
     }
 
@@ -177,38 +182,6 @@ public class LockedUserEndpointTest {
 
 
     @Test
-    public void shouldSet422WhenContentNull() throws Exception {
-
-        saveThreeUsers();
-
-        ApplicationUser beforeChange = userRepository.findUserByEmail(USER_EMAIL);
-
-        assertThat(beforeChange.isLockedAccount()).isEqualTo(true);
-
-        String json = objectMapper.writeValueAsString(null);
-
-        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
-            .put("lockStatus/{id}", beforeChange.getUserId())
-            .header(
-                securityProperties.getAuthHeader(),
-                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-            .content(json)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON));
-
-        resultAction.andExpect(status().isUnprocessableEntity());
-
-        ApplicationUser afterChange = userRepository.findUserByEmail(USER_EMAIL);
-
-        assertThat(afterChange.isLockedAccount()).isEqualTo(false);
-        assertThat(afterChange.getUserId()).isEqualTo(beforeChange.getUserId());
-        assertThat(afterChange.getEmail()).isEqualTo(beforeChange.getEmail());
-
-        userRepository.deleteAll();
-
-    }
-
-    @Test
     public void shouldSet404WhenUserNotPresent() throws Exception {
 
         String json = objectMapper.writeValueAsString(false);
@@ -227,12 +200,15 @@ public class LockedUserEndpointTest {
 
 
     private void saveThreeUsers() {
+
         ApplicationUser user1 = new ApplicationUser();
         user1.setLockedAccount(true);
         user1.setFirstName(USER_FNAME);
         user1.setLastName(USER_LNAME);
         user1.setGender(USER_GENDER);
         user1.setEmail(USER_EMAIL);
+
+        ADDRESS_ENTITY.setAddressId(null);
         user1.setAddress(ADDRESS_ENTITY);
         user1.setPassword(USER_PASSWORD);
         user1.setPassword("emptyByte");
@@ -242,6 +218,7 @@ public class LockedUserEndpointTest {
 
         userRepository.save(user1);
 
+        ADDRESS2_ENTITY.setAddressId(null);
         ApplicationUser user2 = new ApplicationUser();
         user2.setLockedAccount(true);
         user2.setFirstName(USER2_FNAME);
@@ -257,6 +234,7 @@ public class LockedUserEndpointTest {
 
         userRepository.save(user2);
 
+        ADDRESS3_ENTITY.setAddressId(null);
         ApplicationUser user3 = new ApplicationUser();
         user3.setLockedAccount(true);
         user3.setFirstName(USER3_FNAME);
@@ -272,6 +250,7 @@ public class LockedUserEndpointTest {
 
         userRepository.save(user3);
 
+        ADDRESS4_ENTITY.setAddressId(null);
         ApplicationUser user4 = new ApplicationUser();
         user4.setLockedAccount(false);
         user4.setFirstName("nicht");
