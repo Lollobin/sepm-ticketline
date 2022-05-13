@@ -43,6 +43,9 @@ public class ApplicationUser {
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
+    public ApplicationUser() {
+    }
+
     @Override
     public String toString() {
         return "ApplicationUser{"
@@ -95,7 +98,8 @@ public class ApplicationUser {
             && Objects.equals(firstName, user.firstName)
             && Objects.equals(lastName, user.lastName)
             && gender == user.gender
-            && Objects.equals(address, user.address) && Objects.equals(password, user.password) && Objects.equals(articles, user.articles);
+            && Objects.equals(address, user.address) && Objects.equals(password, user.password)
+            && Objects.equals(articles, user.articles);
     }
 
     @Override
