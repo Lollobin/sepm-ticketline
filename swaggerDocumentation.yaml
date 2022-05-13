@@ -1138,7 +1138,7 @@ components:
           type: string
           format: date-time
         event:
-          $ref: "#/components/schemas/Event"
+          type: number
         artists:
           type: array
           items:
@@ -1302,12 +1302,9 @@ components:
           type: number
         sector:
           type: number
-        show:
-          $ref: "#/components/schemas/Show"
       required:
         - ticketId
         - sector
-        - show
     SeatWithBookingStatus:
       type: object
       properties:
