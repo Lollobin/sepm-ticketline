@@ -21,9 +21,9 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { FullTicketWithStatus } from '../model/fullTicketWithStatus';
 // @ts-ignore
-import { TicketStatus } from '../model/ticketStatus';
+import { Order } from '../model/order';
 // @ts-ignore
-import { Transaction } from '../model/transaction';
+import { TicketStatus } from '../model/ticketStatus';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -36,7 +36,7 @@ import { Configuration }                                     from '../configurat
 })
 export class TicketsService {
 
-    protected basePath = 'http://localhost';
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -148,9 +148,9 @@ export class TicketsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public ordersGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Transaction>>;
-    public ordersGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Transaction>>>;
-    public ordersGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Transaction>>>;
+    public ordersGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Order>>;
+    public ordersGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Order>>>;
+    public ordersGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Order>>>;
     public ordersGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -191,7 +191,7 @@ export class TicketsService {
             }
         }
 
-        return this.httpClient.get<Array<Transaction>>(`${this.configuration.basePath}/orders`,
+        return this.httpClient.get<Array<Order>>(`${this.configuration.basePath}/orders`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
