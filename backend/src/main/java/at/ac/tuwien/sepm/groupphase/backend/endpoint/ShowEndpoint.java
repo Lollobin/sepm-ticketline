@@ -64,12 +64,8 @@ public class ShowEndpoint implements ShowsApi {
     @Override
     public ResponseEntity<ShowDto> showsIdGet(Integer id) {
         LOGGER.info("GET /shows/{}", id);
-        try {
-            return ResponseEntity.ok(
-                showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+
+        return ResponseEntity.ok(showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
 
     }
 }
