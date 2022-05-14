@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.EventsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -21,17 +20,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-
 @RestController
 public class EventEndpoint implements EventsApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final EventService eventService;
     private final EventMapper eventMapper;
     private final NativeWebRequest request;
 
-    public EventEndpoint(EventService eventService, EventMapper eventMapper, NativeWebRequest request) {
+    public EventEndpoint(EventService eventService, EventMapper eventMapper,
+        NativeWebRequest request) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
         this.request = request;
@@ -45,7 +44,8 @@ public class EventEndpoint implements EventsApi {
     @Override
     public ResponseEntity<List<EventDto>> eventsGet(EventSearchDto search) {
         LOGGER.info("GET /events");
-        List<EventDto> eventDtos = eventService.findAll().stream().map(eventMapper::eventToEventDto).toList();
+        List<EventDto> eventDtos = eventService.findAll().stream().map(eventMapper::eventToEventDto)
+            .toList();
         return ResponseEntity.ok().body(eventDtos);
     }
 
@@ -53,23 +53,18 @@ public class EventEndpoint implements EventsApi {
     public ResponseEntity<Void> eventsPost(EventWithoutIdDto eventWithoutIdDto) {
         LOGGER.info("POST /events body: {}", eventWithoutIdDto);
 
-        try {
+        EventDto eventDto = eventMapper.eventToEventDto(
+            eventService.createEvent(
+                eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdDto)
+            ));
 
-            EventDto eventDto = eventMapper.eventToEventDto(
-                eventService.createEvent(
-                    eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdDto)
-                ));
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(eventDto.getEventId())
+            .toUri();
 
-            URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(eventDto.getEventId())
-                .toUri();
-
-            return ResponseEntity.created(location).build();
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
-        }
+        return ResponseEntity.created(location).build();
 
     }
 
@@ -77,7 +72,8 @@ public class EventEndpoint implements EventsApi {
     public ResponseEntity<EventDto> eventsIdGet(Integer id) {
         LOGGER.info("GET /events/{}", id);
         try {
-            return ResponseEntity.ok(eventMapper.eventToEventDto(eventService.findById(Long.valueOf(id))));
+            return ResponseEntity.ok(
+                eventMapper.eventToEventDto(eventService.findById(Long.valueOf(id))));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
