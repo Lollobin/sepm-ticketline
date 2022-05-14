@@ -18,7 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class LockerUserRepositoryTest {
+public class LockedUserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -36,9 +36,9 @@ public class LockerUserRepositoryTest {
         List<ApplicationUser> lockedUser =  userRepository.findByLockedAccountEquals(true);
 
         assertThat(lockedUser.size()).isEqualTo(3);
-        assertThat(lockedUser.get(0).isLockedAccount()).isEqualTo(true);
-        assertThat(lockedUser.get(1).isLockedAccount()).isEqualTo(true);
-        assertThat(lockedUser.get(2).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUser.get(0).isLockedAccount()).isTrue();
+        assertThat(lockedUser.get(1).isLockedAccount()).isTrue();
+        assertThat(lockedUser.get(2).isLockedAccount()).isTrue();
 
         Assertions.assertNotEquals(lockedUser.get(0), lockedUser.get(1));
         Assertions.assertNotEquals(lockedUser.get(1), lockedUser.get(2));
@@ -52,29 +52,29 @@ public class LockerUserRepositoryTest {
 
         List<ApplicationUser> allUsers = userRepository.findAll();
 
-        assertThat(allUsers.get(0).isLockedAccount()).isEqualTo(true);
+        assertThat(allUsers.get(0).isLockedAccount()).isTrue();
         long id = allUsers.get(0).getUserId();
 
         userRepository.unlockApplicationUser(false, id);
 
-        Optional<ApplicationUser> optionalApplicationUser = userRepository.findById(id);
+        ApplicationUser applicationUser = userRepository.findById(id).get();
 
 
-        assertThat(optionalApplicationUser.get().isLockedAccount()).isEqualTo(false);
-        assertThat(optionalApplicationUser.get().getEmail()).isEqualTo("admin@emaiwadwl.com");
+        assertThat(applicationUser.isLockedAccount()).isFalse();
+        assertThat(applicationUser.getEmail()).isEqualTo("admin@emaiwadwl.com");
 
-        assertThat(allUsers.get(2).isLockedAccount()).isEqualTo(true);
+        assertThat(allUsers.get(2).isLockedAccount()).isTrue();
         long id3 = allUsers.get(2).getUserId();
 
         userRepository.unlockApplicationUser(false, id3);
 
-        Optional<ApplicationUser> optionalApplicationUser3 = userRepository.findById(id3);
+        ApplicationUser applicationUser3 = userRepository.findById(id3).get();
 
 
-        assertThat(optionalApplicationUser3.get().isLockedAccount()).isEqualTo(false);
-        assertThat(optionalApplicationUser3.get().getEmail()).isEqualTo("afaefdmin@emaiw32adwl.com");
+        assertThat(applicationUser3.isLockedAccount()).isFalse();
+        assertThat(applicationUser3.getEmail()).isEqualTo("afaefdmin@emaiw32adwl.com");
 
-        assertThat(allUsers.get(3).isLockedAccount()).isEqualTo(false);
+        assertThat(allUsers.get(3).isLockedAccount()).isFalse();
         assertThat(allUsers.get(3).getEmail()).isEqualTo("user@email.com");
 
     }
