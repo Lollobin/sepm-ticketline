@@ -35,7 +35,7 @@ public class Show {
 
     @ManyToOne
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @Cascade( CascadeType.MERGE )
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
 
@@ -54,7 +54,7 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return showId == show.showId && Objects.equals(date, show.date) && Objects.equals(artists,
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
             show.artists) && Objects.equals(event, show.event);
     }
 

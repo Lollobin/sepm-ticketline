@@ -31,42 +31,10 @@ public class Seat {
             return false;
         }
         Seat seat = (Seat) o;
-        return seatId == seat.seatId
-            && rowNumber == seat.rowNumber
-            && seatNumber == seat.seatNumber
+        return Objects.equals(seatId, seat.seatId)
+            && Objects.equals(rowNumber, seat.rowNumber)
+            && Objects.equals(seatNumber, seat.seatNumber)
             && Objects.equals(sector, seat.sector);
-    }
-
-    public Long getSeatId() {
-        return seatId;
-    }
-
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
-    }
-
-    public Long getRowNumber() {
-        return rowNumber;
-    }
-
-    public void setRowNumber(Long rowNumber) {
-        this.rowNumber = rowNumber;
-    }
-
-    public Long getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(Long seatNumber) {
-        this.seatNumber = seatNumber;
-    }
-
-    public Sector getSector() {
-        return sector;
-    }
-
-    public void setSector(Sector sector) {
-        this.sector = sector;
     }
 
     @Override
@@ -92,27 +60,27 @@ public class Seat {
     @JoinColumn(name = "sectorId", referencedColumnName = "sectorId", nullable = false)
     private Sector sector;
 
-    public long getSeatId() {
+    public Long getSeatId() {
         return seatId;
     }
 
-    public void setSeatId(long seatId) {
+    public void setSeatId(Long seatId) {
         this.seatId = seatId;
     }
 
-    public long getRowNumber() {
+    public Long getRowNumber() {
         return rowNumber;
     }
 
-    public void setRowNumber(long rowNumber) {
+    public void setRowNumber(Long rowNumber) {
         this.rowNumber = rowNumber;
     }
 
-    public long getSeatNumber() {
+    public Long getSeatNumber() {
         return seatNumber;
     }
 
-    public void setSeatNumber(long seatNumber) {
+    public void setSeatNumber(Long seatNumber) {
         this.seatNumber = seatNumber;
     }
 
