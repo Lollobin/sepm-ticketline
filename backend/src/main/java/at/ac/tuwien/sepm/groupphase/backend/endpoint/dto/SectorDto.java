@@ -22,12 +22,12 @@ import javax.annotation.Generated;
 public class SectorDto   {
 
   @JsonProperty("sectorId")
-  private BigDecimal sectorId;
+  private Long sectorId;
 
   @JsonProperty("price")
   private BigDecimal price;
 
-  public SectorDto sectorId(BigDecimal sectorId) {
+  public SectorDto sectorId(Long sectorId) {
     this.sectorId = sectorId;
     return this;
   }
@@ -36,13 +36,13 @@ public class SectorDto   {
    * Get sectorId
    * @return sectorId
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "sectorId", required = true)
-  public BigDecimal getSectorId() {
+  public Long getSectorId() {
     return sectorId;
   }
 
-  public void setSectorId(BigDecimal sectorId) {
+  public void setSectorId(Long sectorId) {
     this.sectorId = sectorId;
   }
 

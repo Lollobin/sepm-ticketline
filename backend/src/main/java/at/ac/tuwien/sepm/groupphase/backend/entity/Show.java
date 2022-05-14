@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Show {
@@ -19,31 +24,25 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showId;
 
+    @Column
     private OffsetDateTime date;
 
     @ManyToMany
-    @JoinTable(
-        name = "PlaysIn",
-        joinColumns = @JoinColumn(name = "showId"),
-        inverseJoinColumns = @JoinColumn(name = "artistId"))
-    private Set<Artist> artistIds;
+    @Fetch(FetchMode.JOIN)
+    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
+    private Set<Artist> artists;
 
     @ManyToOne
+    @Fetch(FetchMode.JOIN)
+    @Cascade(CascadeType.MERGE)
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
 
     @Override
     public String toString() {
-        return "Show{"
-            + "showId="
-            + showId
-            + ", date="
-            + date
-            + ", artistIds="
-            + artistIds
-            + ", event="
-            + event
-            + '}';
+        return "Show{" + "showId=" + showId + ", date=" + date + ", artistIds=" + artists
+            + ", event=" + event + '}';
     }
 
     @Override
@@ -55,15 +54,13 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return Objects.equals(showId, show.showId)
-            && Objects.equals(date, show.date)
-            && Objects.equals(artistIds, show.artistIds)
-            && Objects.equals(event, show.event);
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
+            show.artists) && Objects.equals(event, show.event);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(showId, date, artistIds, event);
+        return Objects.hash(showId, date);
     }
 
     public Long getShowId() {
@@ -82,12 +79,12 @@ public class Show {
         this.date = date;
     }
 
-    public Set<Artist> getArtistIds() {
-        return artistIds;
+    public Set<Artist> getArtists() {
+        return artists;
     }
 
-    public void setArtistIds(Set<Artist> artistIds) {
-        this.artistIds = artistIds;
+    public void setArtists(Set<Artist> artists) {
+        this.artists = artists;
     }
 
     public Event getEvent() {

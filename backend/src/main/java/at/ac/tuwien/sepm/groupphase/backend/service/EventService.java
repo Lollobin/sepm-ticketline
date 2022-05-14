@@ -21,11 +21,11 @@ public interface EventService {
     List<Event> findAll();
 
     /**
-     * finds event with given id in EventRepository.
+     * Find a single event entry by id.
      *
-     * @param id of searched event
-     * @return event with given id
+     * @param id the id of the event entry
+     * @return the event entry
      */
-    Event findById(Long id);
+    Event findOne(Long id);
 
 }

@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.validator;
+package at.ac.tuwien.sepm.groupphase.backend.service.validation;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;

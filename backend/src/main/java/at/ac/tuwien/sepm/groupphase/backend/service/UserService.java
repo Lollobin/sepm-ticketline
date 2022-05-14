@@ -32,6 +32,7 @@ public interface UserService extends UserDetailsService {
      * Save a new User.
      *
      * @param user the user Object to be saved
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException when Validation fails because of Duplicate Email, invalid field values, or whitespace-only values.
      */
     void save(UserWithPasswordDto user);
 
