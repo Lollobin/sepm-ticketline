@@ -1,20 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.LockedUser;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -28,12 +26,11 @@ public class LockedUserRepositoryTest {
 
 
     @Test
-    public void shouldReturnAllLockedUsers(){
+    public void shouldReturnAllLockedUsers() {
 
         createUser();
 
-
-        List<ApplicationUser> lockedUser =  userRepository.findByLockedAccountEquals(true);
+        List<ApplicationUser> lockedUser = userRepository.findByLockedAccountEquals(true);
 
         assertThat(lockedUser.size()).isEqualTo(3);
         assertThat(lockedUser.get(0).isLockedAccount()).isTrue();
@@ -46,8 +43,9 @@ public class LockedUserRepositoryTest {
 
 
     }
+
     @Test
-    public void shouldChangeLockedToFalse(){
+    public void shouldChangeLockedToFalse() {
         createUser();
 
         List<ApplicationUser> allUsers = userRepository.findAll();
@@ -59,7 +57,6 @@ public class LockedUserRepositoryTest {
 
         ApplicationUser applicationUser = userRepository.findById(id).get();
 
-
         assertThat(applicationUser.isLockedAccount()).isFalse();
         assertThat(applicationUser.getEmail()).isEqualTo("admin@emaiwadwl.com");
 
@@ -70,7 +67,6 @@ public class LockedUserRepositoryTest {
 
         ApplicationUser applicationUser3 = userRepository.findById(id3).get();
 
-
         assertThat(applicationUser3.isLockedAccount()).isFalse();
         assertThat(applicationUser3.getEmail()).isEqualTo("afaefdmin@emaiw32adwl.com");
 
@@ -79,7 +75,7 @@ public class LockedUserRepositoryTest {
 
     }
 
-    private void createUser(){
+    private void createUser() {
         Address address = new Address();
         address.setStreet("TestStreet 123");
         address.setZipCode("21938");
@@ -115,8 +111,6 @@ public class LockedUserRepositoryTest {
         address4.setHouseNumber("2");
         addressRepository.save(address4);
 
-
-
         ApplicationUser user = new ApplicationUser();
         user.setEmail("admin@emaiwadwl.com");
         user.setFirstName("Admin");
@@ -140,7 +134,6 @@ public class LockedUserRepositoryTest {
         user4.setGender(Gender.FEMALE);
         user4.setAddress(address2);
 
-
         user4.setPassword((emptyByte));
         user4.setHasAdministrativeRights(true);
         user4.setLoginTries(0);
@@ -149,14 +142,12 @@ public class LockedUserRepositoryTest {
 
         userRepository.save(user4);
 
-
         ApplicationUser user3 = new ApplicationUser();
         user3.setEmail("afaefdmin@emaiw32adwl.com");
         user3.setFirstName("Admin");
         user3.setLastName("User");
         user3.setGender(Gender.FEMALE);
         user3.setAddress(address3);
-
 
         user3.setPassword(emptyByte);
         user3.setHasAdministrativeRights(true);
