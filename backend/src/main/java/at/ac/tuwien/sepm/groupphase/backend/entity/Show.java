@@ -35,7 +35,7 @@ public class Show {
 
     @ManyToOne
     @Fetch(FetchMode.JOIN)
-    @Cascade( CascadeType.MERGE )
+    @Cascade(CascadeType.MERGE)
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
 
