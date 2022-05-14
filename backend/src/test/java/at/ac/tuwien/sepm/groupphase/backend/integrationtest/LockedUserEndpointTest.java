@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,9 +59,6 @@ public class LockedUserEndpointTest {
     private UserRepository userRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -80,7 +76,7 @@ public class LockedUserEndpointTest {
     @Test
     public void shouldGetAllLockedUsers() throws Exception {
 
-        saveThreeUsers();
+        saveFourUsers();
 
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
@@ -95,12 +91,12 @@ public class LockedUserEndpointTest {
         List<UserDto> eventsResult = objectMapper.readerFor(UserDto.class).<UserDto>readValues(body)
             .readAll();
 
-        assertThat(eventsResult.size()).isEqualTo(3);
-        assertThat(eventsResult.get(0).getLockedAccount()).isEqualTo(true);
+        assertThat(eventsResult).asList().hasSize(3);
+        assertThat(eventsResult.get(0).getLockedAccount()).isTrue();
         assertThat(eventsResult.get(0).getEmail()).isEqualTo(USER_EMAIL);
         assertThat(eventsResult.get(0).getLastName()).isEqualTo(USER_LNAME);
 
-        assertThat(eventsResult.get(1).getLockedAccount()).isEqualTo(true);
+        assertThat(eventsResult.get(1).getLockedAccount()).isTrue();
         assertThat(eventsResult.get(1).getEmail()).isEqualTo(USER2_EMAIL);
         assertThat(eventsResult.get(1).getFirstName()).isEqualTo(USER2_FNAME);
 
@@ -124,11 +120,11 @@ public class LockedUserEndpointTest {
     @Test
     public void shouldChangeLockedStateToTrue() throws Exception {
 
-        saveThreeUsers();
+        saveFourUsers();
 
         ApplicationUser beforeChange = userRepository.findUserByEmail(USER_EMAIL);
 
-        assertThat(beforeChange.isLockedAccount()).isEqualTo(true);
+        assertThat(beforeChange.isLockedAccount()).isTrue();
 
         String json = objectMapper.writeValueAsString(false);
 
@@ -143,7 +139,7 @@ public class LockedUserEndpointTest {
 
         ApplicationUser afterChange = userRepository.findUserByEmail(USER_EMAIL);
 
-        assertThat(afterChange.isLockedAccount()).isEqualTo(false);
+        assertThat(afterChange.isLockedAccount()).isFalse();
         assertThat(afterChange.getUserId()).isEqualTo(beforeChange.getUserId());
         assertThat(afterChange.getEmail()).isEqualTo(beforeChange.getEmail());
 
@@ -153,11 +149,11 @@ public class LockedUserEndpointTest {
     @Test
     public void shouldReturn403DueToInvalidRoleToChangeLocked() throws Exception {
 
-        saveThreeUsers();
+        saveFourUsers();
 
         ApplicationUser beforeChange = userRepository.findUserByEmail(USER_EMAIL);
 
-        assertThat(beforeChange.isLockedAccount()).isEqualTo(true);
+        assertThat(beforeChange.isLockedAccount()).isTrue();
 
         String json = objectMapper.writeValueAsString(false);
 
@@ -175,7 +171,7 @@ public class LockedUserEndpointTest {
         assertThat(afterChange.getEmail()).isEqualTo(beforeChange.getEmail());
         assertThat(afterChange.getUserId()).isEqualTo(beforeChange.getUserId());
 
-        assertThat(afterChange.isLockedAccount()).isEqualTo(true);
+        assertThat(afterChange.isLockedAccount()).isTrue();
 
         userRepository.deleteAll();
     }
@@ -199,7 +195,7 @@ public class LockedUserEndpointTest {
     }
 
 
-    private void saveThreeUsers() {
+    private void saveFourUsers() {
 
         ApplicationUser user1 = new ApplicationUser();
         user1.setLockedAccount(true);
@@ -211,7 +207,6 @@ public class LockedUserEndpointTest {
         ADDRESS_ENTITY.setAddressId(null);
         user1.setAddress(ADDRESS_ENTITY);
         user1.setPassword(USER_PASSWORD);
-        user1.setPassword("emptyByte");
         user1.setHasAdministrativeRights(true);
         user1.setLoginTries(0);
         user1.setMustResetPassword(false);
@@ -227,7 +222,6 @@ public class LockedUserEndpointTest {
         user2.setEmail(USER2_EMAIL);
         user2.setAddress(ADDRESS2_ENTITY);
         user2.setPassword(USER2_PASSWORD);
-        user2.setPassword("emptfeyByte");
         user2.setHasAdministrativeRights(true);
         user2.setLoginTries(0);
         user2.setMustResetPassword(false);
@@ -243,7 +237,6 @@ public class LockedUserEndpointTest {
         user3.setEmail(USER3_EMAIL);
         user3.setAddress(ADDRESS3_ENTITY);
         user3.setPassword(USER3_PASSWORD);
-        user3.setPassword("emptfeyByte");
         user3.setHasAdministrativeRights(true);
         user3.setLoginTries(0);
         user3.setMustResetPassword(false);
@@ -259,7 +252,6 @@ public class LockedUserEndpointTest {
         user4.setEmail("nicht@anzeigen.com");
         user4.setAddress(ADDRESS4_ENTITY);
         user4.setPassword(USER3_PASSWORD);
-        user4.setPassword("emptfeyByte");
         user4.setHasAdministrativeRights(true);
         user4.setLoginTries(0);
         user4.setMustResetPassword(false);

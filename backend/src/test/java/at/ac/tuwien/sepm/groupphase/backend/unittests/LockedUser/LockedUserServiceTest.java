@@ -68,18 +68,18 @@ public class LockedUserServiceTest implements TestData {
     @Test
     public void shouldReturnAllLockedUsers() {
 
-        List<ApplicationUser> fourUsers = saveThreeUsers();
+        List<ApplicationUser> fourUsers = saveFourUsers();
 
         when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
 
         List<ApplicationUser> lockedUsers = userService.findAll(true);
 
         assertThat(lockedUsers.size()).isEqualTo(3);
-        assertThat(lockedUsers.get(0).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUsers.get(0).isLockedAccount()).isTrue();
         assertThat(lockedUsers.get(0).getEmail()).isEqualTo(USER_EMAIL);
         assertThat(lockedUsers.get(0).getLastName()).isEqualTo(USER_LNAME);
 
-        assertThat(lockedUsers.get(1).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUsers.get(1).isLockedAccount()).isTrue();
         assertThat(lockedUsers.get(1).getEmail()).isEqualTo(USER2_EMAIL);
         assertThat(lockedUsers.get(1).getFirstName()).isEqualTo(USER2_FNAME);
 
@@ -88,16 +88,16 @@ public class LockedUserServiceTest implements TestData {
     @Test
     public void checkNumberOfCalledTimesToUnlock() {
 
-        List<ApplicationUser> fourUsers = saveThreeUsers();
+        List<ApplicationUser> fourUsers = saveFourUsers();
 
         when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
 
         List<ApplicationUser> lockedUsers = userService.findAll(true);
 
         assertThat(lockedUsers.size()).isEqualTo(3);
-        assertThat(lockedUsers.get(0).isLockedAccount()).isEqualTo(true);
-        assertThat(lockedUsers.get(1).isLockedAccount()).isEqualTo(true);
-        assertThat(lockedUsers.get(2).isLockedAccount()).isEqualTo(true);
+        assertThat(lockedUsers.get(0).isLockedAccount()).isTrue();
+        assertThat(lockedUsers.get(1).isLockedAccount()).isTrue();
+        assertThat(lockedUsers.get(2).isLockedAccount()).isTrue();
 
         when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fourUsers.get(0));
         ApplicationUser user = userService.findApplicationUserByEmail(USER_EMAIL);
@@ -114,7 +114,7 @@ public class LockedUserServiceTest implements TestData {
     }
 
 
-    private List<ApplicationUser> saveThreeUsers() {
+    private List<ApplicationUser> saveFourUsers() {
         ApplicationUser user1 = new ApplicationUser();
         user1.setUserId(1);
         user1.setLockedAccount(true);
@@ -124,7 +124,6 @@ public class LockedUserServiceTest implements TestData {
         user1.setEmail(USER_EMAIL);
         user1.setAddress(ADDRESS_ENTITY);
         user1.setPassword(USER_PASSWORD);
-        user1.setPassword("emptyByte");
         user1.setHasAdministrativeRights(true);
         user1.setLoginTries(0);
         user1.setMustResetPassword(false);
@@ -138,7 +137,6 @@ public class LockedUserServiceTest implements TestData {
         user2.setEmail(USER2_EMAIL);
         user2.setAddress(ADDRESS2_ENTITY);
         user2.setPassword(USER2_PASSWORD);
-        user2.setPassword("emptfeyByte");
         user2.setHasAdministrativeRights(true);
         user2.setLoginTries(0);
         user2.setMustResetPassword(false);
@@ -152,7 +150,6 @@ public class LockedUserServiceTest implements TestData {
         user3.setEmail(USER3_EMAIL);
         user3.setAddress(ADDRESS3_ENTITY);
         user3.setPassword(USER3_PASSWORD);
-        user3.setPassword("emptfeyByte");
         user3.setHasAdministrativeRights(true);
         user3.setLoginTries(0);
         user3.setMustResetPassword(false);
@@ -166,7 +163,6 @@ public class LockedUserServiceTest implements TestData {
         user4.setEmail("nicht@anzeigen.com");
         user4.setAddress(ADDRESS4_ENTITY);
         user4.setPassword(USER3_PASSWORD);
-        user4.setPassword("emptfeyByte");
         user4.setHasAdministrativeRights(true);
         user4.setLoginTries(0);
         user4.setMustResetPassword(false);
