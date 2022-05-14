@@ -1,23 +1,94 @@
 <div>
-  <h2 class="h2">Order overview</h2>
+  <h2 class="h2 mt-3">Upcoming Events</h2>
 </div>
 
 <div>
   <table class="table">
-    <caption>Overview of all your orders</caption>
     <thead>
     <tr>
-      <th scope="col">Order Date</th>
-      <th scope="col">Ticket Information</th>
+      <th scope="col">Date</th>
       <th scope="col">Event</th>
+      <th scope="col">Ticket Information</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <td>24.02.2021</td>
-      <td>2 Tickets <br> €232,00</td>
-      <td>The Rolling Stones - Sixty <br> 15.07.2022 - 18:30 - Vienna, Ernst Happel Stadion</td>
+    <tr *ngFor="let order of orders"
+        [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
+      <ng-template
+          [ngIf]="dateInFuture(order.date) && (order.type==='purchase'|| order.type ==='reservation')">
+
+
+        <td>{{ order.date | date }} <br> {{ order.date | date:'HH:mm' }}</td>
+        <td>{{ order.artists.join(', ') + " - " + order.eventName }} <br>
+          {{ order.city + ", " + order.locationName }}</td>
+        <td>
+          {{ order.ticketIds.length }}
+          <ng-template [ngIf]="order.type === 'purchase' || order.type === 'cancellation'">
+            <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="tickets">
+              Ticket
+            </ng-template>
+            <ng-template #tickets>Tickets</ng-template>
+          </ng-template>
+
+          <ng-template [ngIf]="order.type === 'reservation' || order.type === 'dereservation'">
+            <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="reservations">
+              Reservation
+            </ng-template>
+            <ng-template #reservations>Reservations</ng-template>
+          </ng-template>
+
+          <ng-template [ngIf]="order.type === 'cancellation' || order.type === 'dereservation'">
+            <br>(cancelled)
+          </ng-template>
+        </td>
+      </ng-template>
     </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <h2 class="h2 mt-3">All Orders</h2>
+</div>
+
+<div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Event</th>
+      <th scope="col">Ticket Information</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let order of orders"
+        [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
+      <td>{{ order.date | date }} <br> {{ order.date | date:'HH:mm' }}</td>
+      <td>{{ order.artists.join(', ') + " - " + order.eventName }} <br>
+        {{ order.city + ", " + order.locationName }}</td>
+      <td>
+        {{ order.ticketIds.length }}
+        <ng-template [ngIf]="order.type === 'purchase' || order.type === 'cancellation'">
+          <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="tickets">
+            Ticket
+          </ng-template>
+          <ng-template #tickets>Tickets</ng-template>
+        </ng-template>
+
+        <ng-template [ngIf]="order.type === 'reservation' || order.type === 'dereservation'">
+          <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="reservations">
+            Reservation
+          </ng-template>
+          <ng-template #reservations>Reservations</ng-template>
+        </ng-template>
+
+        <ng-template [ngIf]="order.type === 'cancellation' || order.type === 'dereservation'">
+          <br>(cancelled)
+        </ng-template>
+      </td>
+    </tr>
+
     </tbody>
   </table>
 </div>
