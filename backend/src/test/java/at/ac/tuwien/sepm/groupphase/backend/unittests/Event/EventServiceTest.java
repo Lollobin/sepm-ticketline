@@ -7,7 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
-import at.ac.tuwien.sepm.groupphase.backend.validator.EventValidator;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
