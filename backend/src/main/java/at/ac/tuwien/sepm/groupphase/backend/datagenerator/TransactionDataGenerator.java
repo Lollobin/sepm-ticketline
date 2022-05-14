@@ -90,12 +90,12 @@ public class TransactionDataGenerator {
             transactionRepository.save(transaction);
 
             Transaction transaction2 = new Transaction();
-            transaction2.setDate(LocalDate.of(2005, 11, 20));
+            transaction2.setDate(LocalDate.of(2003, 5, 17));
             transaction2.setUser(user);
             transactionRepository.save(transaction2);
 
             Transaction transaction3 = new Transaction();
-            transaction3.setDate(LocalDate.of(2005, 11, 20));
+            transaction3.setDate(LocalDate.of(2020, 3, 1));
             transaction3.setUser(user2);
             transactionRepository.save(transaction3);
         }
