@@ -4,7 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.UsersApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
-import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -27,13 +27,13 @@ public class UsersEndpoint implements UsersApi {
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserService userService;
     private final UserMapper userMapper;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationUtil authenticationUtil;
 
     public UsersEndpoint(
-        UserService userService, UserMapper userMapper, AuthenticationFacade authenticationFacade) {
+        UserService userService, UserMapper userMapper, AuthenticationUtil authenticationUtil) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.authenticationFacade = authenticationFacade;
+        this.authenticationUtil = authenticationUtil;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class UsersEndpoint implements UsersApi {
     public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked) {
         LOGGER.info("GET /users, filterLocked set to: {}", filterLocked);
 
-        if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
+        if (authenticationUtil.getAuthentication() instanceof AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

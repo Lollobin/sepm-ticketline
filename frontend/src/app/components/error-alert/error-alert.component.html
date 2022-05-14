@@ -1,0 +1,10 @@
+<div *ngIf="isOpen" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error! </strong> {{ errorMessage }}
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    (click)="vanishError()"
+    aria-label="Close"
+  ></button>
+</div>

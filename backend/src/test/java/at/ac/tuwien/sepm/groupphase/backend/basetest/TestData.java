@@ -3,7 +3,10 @@ package at.ac.tuwien.sepm.groupphase.backend.basetest;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,7 @@ public interface TestData {
     String BASE_URI = "/api/v1";
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
     String USERS_BASE_URI = "/users";
+    String ORDERS_BASE_URI = "/orders";
 
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES =
@@ -48,6 +52,7 @@ public interface TestData {
     String USER_ZIPCODE = "1010";
     String USER_HOUSE_NO = "3";
 
+    LocalDate TRANSACTION_DATE = LocalDate.of(2020, 12, 7);
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 

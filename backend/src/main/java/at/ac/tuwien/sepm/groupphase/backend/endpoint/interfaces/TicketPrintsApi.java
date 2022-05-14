@@ -68,7 +68,7 @@ public interface TicketPrintsApi {
         produces = { "application/pdf" }
     )
     default ResponseEntity<org.springframework.core.io.Resource> ticketPrintsIdGet(
-        @Parameter(name = "id", description = "ID of the ticket that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the ticket that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
