@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -23,7 +22,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 public class ShowEndpoint implements ShowsApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final ShowService showService;
     private final ShowMapper showMapper;
 
@@ -36,7 +36,8 @@ public class ShowEndpoint implements ShowsApi {
     @Override
     public ResponseEntity<List<ShowDto>> showsGet(ShowSearchDto search) {
         LOGGER.info("GET /shows");
-        return new ResponseEntity<>(showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
+        return new ResponseEntity<>(
+            showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
     }
 
 
@@ -44,22 +45,18 @@ public class ShowEndpoint implements ShowsApi {
     public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto) {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
 
-        try {
-            ShowDto newShowDto = showMapper.showToShowDto(
-                showService.createShow(
-                    showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
-                ));
+        ShowDto newShowDto = showMapper.showToShowDto(
+            showService.createShow(
+                showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
+            ));
 
-            URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                    .path("/{id}")
-                        .buildAndExpand(newShowDto.getShowId())
-                            .toUri();
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(newShowDto.getShowId())
+            .toUri();
 
-            return ResponseEntity.created(location).build();
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
-        }
+        return ResponseEntity.created(location).build();
 
 
     }
@@ -68,7 +65,8 @@ public class ShowEndpoint implements ShowsApi {
     public ResponseEntity<ShowDto> showsIdGet(Integer id) {
         LOGGER.info("GET /shows/{}", id);
         try {
-            return ResponseEntity.ok(showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
+            return ResponseEntity.ok(
+                showMapper.showToShowDto(showService.findById(Long.valueOf(id))));
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
