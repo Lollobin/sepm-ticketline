@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     List<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount);
 
     @Transactional
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.lockedAccount = ?1 where a.userId = ?2")
     void unlockApplicationUser(boolean lockedAccount, long userId);
 }
