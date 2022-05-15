@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LockStatusApi;
-import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationFacade;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.LockedService;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -22,11 +22,11 @@ public class LockedEndpoint implements LockStatusApi {
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final LockedService lockedService;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationUtil authenticationUtil;
 
-    public LockedEndpoint(LockedService lockedService, AuthenticationFacade authenticationFacade) {
+    public LockedEndpoint(LockedService lockedService, AuthenticationUtil authenticationUtil) {
         this.lockedService = lockedService;
-        this.authenticationFacade = authenticationFacade;
+        this.authenticationUtil = authenticationUtil;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -34,7 +34,7 @@ public class LockedEndpoint implements LockStatusApi {
     public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
         LOGGER.info("PUT /lockStatus/{}", id);
 
-        if (authenticationFacade.getAuthentication() instanceof AnonymousAuthenticationToken) {
+        if (authenticationUtil.getAuthentication() instanceof AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         lockedService.unlockApplicationUser(Long.valueOf(id), body);

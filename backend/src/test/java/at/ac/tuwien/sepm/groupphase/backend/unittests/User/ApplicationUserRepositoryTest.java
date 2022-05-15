@@ -25,6 +25,8 @@ class ApplicationUserRepositoryTest implements TestData {
         testuser.setLastName(USER_LNAME);
         testuser.setGender(USER_GENDER);
         testuser.setEmail(USER_EMAIL);
+
+        ADDRESS_ENTITY.setAddressId(null);
         testuser.setAddress(ADDRESS_ENTITY);
         testuser.setPassword(ENCODED_USER_PASSWORD_EXAMPLE);
         userRepository.save(testuser);
