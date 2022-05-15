@@ -1,19 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Show;
 
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_NAME;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CONTENT;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_DURATION;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW2_DATE;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW3_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALID_DATE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,10 +24,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,7 +92,6 @@ public class ShowServiceTest {
         showToSave.setArtists(null);
         showToSave.setDate(SHOW_DATE);
 
-
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
 
         eventService.createEvent(fakePersistedEvent);
@@ -125,8 +110,6 @@ public class ShowServiceTest {
 
     @Test
     void shouldThrowValidationExceptionDueToDateInPast() {
-
-
 
         fakePersistedEvent.setEventId(1L);
         fakePersistedEvent.setCategory(EVENT_CATEGORY);
@@ -150,7 +133,6 @@ public class ShowServiceTest {
         showToSave.setEvent(showsEvent);
         showToSave.setArtists(null);
         showToSave.setDate(SHOW_INVALID_DATE);
-
 
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
 

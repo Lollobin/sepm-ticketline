@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
@@ -48,6 +49,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ExtendWith(SpringExtension.class)
@@ -101,8 +103,8 @@ public class ShowEndpointTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<ShowDto> showDtos = Arrays.asList(objectMapper.readValue(response.getContentAsString(), ShowDto[].class));
-
+        List<ShowDto> showDtos = Arrays.asList(
+            objectMapper.readValue(response.getContentAsString(), ShowDto[].class));
 
         assertThat(showDtos).hasSize(3);
         assertThat(showDtos.get(0).getDate()).isEqualTo(SHOW_DATE);
@@ -142,7 +144,7 @@ public class ShowEndpointTest {
     public void shouldReturn404DueToNotPresentShow() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/events/-100")
+                .get("/shows/-100")
                 .header(
                     securityProperties.getAuthHeader(),
                     jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES))
@@ -151,6 +153,67 @@ public class ShowEndpointTest {
 
     }
 
+    @Test
+    public void shouldReturn403DueToInvalidRole() throws Exception {
+
+        Event event1 = new Event();
+        event1.setCategory(EVENT_CATEGORY);
+        event1.setContent(EVENT_CONTENT);
+        event1.setName(EVENT_NAME);
+        event1.setDuration(EVENT_DURATION);
+
+        eventRepository.save(event1);
+
+        ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
+        showDtoToSave.setDate(SHOW_DATE);
+        showDtoToSave.setEvent(event1.getEventId().intValue());
+
+        String json = objectMapper.writeValueAsString(showDtoToSave);
+
+        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
+            .post("/shows")
+            .header(
+                securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES))
+            .content(json)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+
+        assertThat(showRepository.findAll()).hasSize(0);
+
+    }
+
+    @Test
+    public void shouldSaveNewShow() throws Exception {
+
+        Event event1 = new Event();
+        event1.setCategory(EVENT_CATEGORY);
+        event1.setContent(EVENT_CONTENT);
+        event1.setName(EVENT_NAME);
+        event1.setDuration(EVENT_DURATION);
+
+        eventRepository.save(event1);
+
+        ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
+        showDtoToSave.setDate(SHOW_DATE);
+        showDtoToSave.setEvent(event1.getEventId().intValue());
+
+        String json = objectMapper.writeValueAsString(showDtoToSave);
+
+        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
+            .post("/shows")
+            .header(
+                securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+            .content(json)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+        assertThat(showRepository.findAll()).hasSize(1);
+        assertThat(showRepository.findAll().get(0).getDate()).isEqualTo(SHOW_DATE);
+
+
+    }
 
 
     private void saveThreeShowsAndEvents() {
