@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthenticationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthorizationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -18,9 +20,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collections;
-import java.util.List;
-
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -31,9 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenizer jwtTokenizer;
 
     @Autowired
-    public SecurityConfig(UserService userService,
+    public SecurityConfig(
+        UserService userService,
         PasswordEncoder passwordEncoder,
-        SecurityProperties securityProperties, JwtTokenizer jwtTokenizer) {
+        SecurityProperties securityProperties,
+        JwtTokenizer jwtTokenizer) {
         this.userService = userService;
         this.securityProperties = securityProperties;
         this.passwordEncoder = passwordEncoder;
@@ -42,13 +43,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-            .csrf().disable()
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties,
-                jwtTokenizer))
+        http.cors()
+            .and()
+            .csrf()
+            .disable()
+            .addFilter(
+                new JwtAuthenticationFilter(authenticationManager(), securityProperties,
+                    jwtTokenizer))
             .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
 
-        //enable h2-console
+        // enable h2-console
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }
@@ -61,15 +65,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final List<String> permitAll = Collections.singletonList("*");
-        final List<String> permitMethods = List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
-            HttpMethod.PUT.name(),
-            HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
-            HttpMethod.HEAD.name(),
-            HttpMethod.TRACE.name());
+        final List<String> permitMethods =
+            List.of(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name(),
+                HttpMethod.HEAD.name(),
+                HttpMethod.TRACE.name());
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(permitAll);
         configuration.setAllowedOrigins(permitAll);
         configuration.setAllowedMethods(permitMethods);
+        configuration.addExposedHeader("Location");
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

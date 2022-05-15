@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,9 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public interface UserService extends UserDetailsService {
 
     /**
-     * Find a user in the context of Spring Security based on the email address
-     * <br>
-     * For more information have a look at this tutorial: https://www.baeldung.com/spring-security-authentication-with-a-database
+     * Find a user in the context of Spring Security based on the email address <br> For more
+     * information have a look at this tutorial: https://www.baeldung.com/spring-security-authentication-with-a-database
      *
      * @param email the email address
      * @return a Spring Security user
@@ -28,11 +28,19 @@ public interface UserService extends UserDetailsService {
      */
     ApplicationUser findApplicationUserByEmail(String email);
 
-
     /**
      * Save a new User.
      *
      * @param user the user Object to be saved
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException when Validation fails because of Duplicate Email, invalid field values, or whitespace-only values.
      */
     void save(UserWithPasswordDto user);
+
+    /**
+     * * Find all users whose locked status is according to the parameter.
+     *
+     * @param filterLocked true searches for locked users, false searches for all users.
+     * @return all users based on param
+     */
+    List<ApplicationUser> findAll(Boolean filterLocked);
 }

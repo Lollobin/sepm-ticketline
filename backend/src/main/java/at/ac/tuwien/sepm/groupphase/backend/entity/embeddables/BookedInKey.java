@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class BookedInKey implements Serializable {
 
-    private long transactionId;
-    private long ticketId;
+    private Long transactionId;
+    private Long ticketId;
 
     @Override
     public boolean equals(Object o) {
@@ -22,12 +22,7 @@ public class BookedInKey implements Serializable {
 
     @Override
     public String toString() {
-        return "BookedInKey{"
-            + "transactionId="
-            + transactionId
-            + ", ticketId="
-            + ticketId
-            + '}';
+        return "BookedInKey{" + "transactionId=" + transactionId + ", ticketId=" + ticketId + '}';
     }
 
     @Override

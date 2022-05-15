@@ -43,14 +43,41 @@ public class ApplicationUser {
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
+    public ApplicationUser() {
+    }
+
     @Override
     public String toString() {
-        return "ApplicationUser{" + "userId=" + userId + ", email='" + email + '\''
-            + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", gender="
-            + gender + ", " + address + '\'' + ", password=" + password
-            + ", hasAdministrativeRights=" + hasAdministrativeRights + ", loginTries=" + loginTries
-            + ", mustResetPassword=" + mustResetPassword + ", lockedAccount=" + lockedAccount
-            + ", articles=" + articles + '}';
+        return "ApplicationUser{"
+            + "userId="
+            + userId
+            + ", email='"
+            + email
+            + '\''
+            + ", firstName='"
+            + firstName
+            + '\''
+            + ", lastName='"
+            + lastName
+            + '\''
+            + ", gender="
+            + gender
+            + ", "
+            + address
+            + '\''
+            + ", password="
+            + password
+            + ", hasAdministrativeRights="
+            + hasAdministrativeRights
+            + ", loginTries="
+            + loginTries
+            + ", mustResetPassword="
+            + mustResetPassword
+            + ", lockedAccount="
+            + lockedAccount
+            + ", articles="
+            + articles
+            + '}';
     }
 
     @Override
@@ -62,20 +89,34 @@ public class ApplicationUser {
             return false;
         }
         ApplicationUser user = (ApplicationUser) o;
-        return userId == user.userId && hasAdministrativeRights == user.hasAdministrativeRights
-            && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
-            && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
-            && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName)
-            && gender == user.gender && Objects.equals(address, user.address) && Objects.equals(
-            password, user.password) && Objects.equals(articles, user.articles);
+        return userId == user.userId
+            && hasAdministrativeRights == user.hasAdministrativeRights
+            && loginTries == user.loginTries
+            && mustResetPassword == user.mustResetPassword
+            && lockedAccount == user.lockedAccount
+            && Objects.equals(email, user.email)
+            && Objects.equals(firstName, user.firstName)
+            && Objects.equals(lastName, user.lastName)
+            && gender == user.gender
+            && Objects.equals(address, user.address) && Objects.equals(password, user.password)
+            && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, firstName, lastName, gender, address,
-            hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount, articles,
+        return Objects.hash(
+            userId,
+            email,
+            firstName,
+            lastName,
+            gender,
+            address,
+            hasAdministrativeRights,
+            loginTries,
+            mustResetPassword,
+            lockedAccount,
+            articles,
             password);
-
     }
 
     @Column(nullable = false)
@@ -93,6 +134,16 @@ public class ApplicationUser {
     @ManyToMany
     @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
+    }
 
     public long getUserId() {
         return userId;

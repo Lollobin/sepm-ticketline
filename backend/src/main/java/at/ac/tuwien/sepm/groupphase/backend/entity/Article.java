@@ -17,7 +17,7 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long articleId;
+    private Long articleId;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -32,7 +32,10 @@ public class Article {
     private String text;
 
     @ManyToMany
-    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "articleId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+    @JoinTable(
+        name = "ReadArticle",
+        joinColumns = @JoinColumn(name = "articleId"),
+        inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<ApplicationUser> users;
 
     @Override
@@ -44,10 +47,12 @@ public class Article {
             return false;
         }
         Article article = (Article) o;
-        return articleId == article.articleId && Objects.equals(title, article.title)
-            && Objects.equals(creationDate, article.creationDate) && Objects.equals(summary,
-            article.summary) && Objects.equals(text, article.text) && Objects.equals(users,
-            article.users);
+        return Objects.equals(articleId, article.articleId)
+            && Objects.equals(title, article.title)
+            && Objects.equals(creationDate, article.creationDate)
+            && Objects.equals(summary, article.summary)
+            && Objects.equals(text, article.text)
+            && Objects.equals(users, article.users);
     }
 
     @Override
@@ -57,16 +62,30 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Article{" + "articleId=" + articleId + ", title='" + title + '\''
-            + ", creationDate=" + creationDate + ", summary='" + summary + '\'' + ", text='" + text
-            + '\'' + ", users=" + users + '}';
+        return "Article{"
+            + "articleId="
+            + articleId
+            + ", title='"
+            + title
+            + '\''
+            + ", creationDate="
+            + creationDate
+            + ", summary='"
+            + summary
+            + '\''
+            + ", text='"
+            + text
+            + '\''
+            + ", users="
+            + users
+            + '}';
     }
 
-    public long getArticleId() {
+    public Long getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(long articleId) {
+    public void setArticleId(Long articleId) {
         this.articleId = articleId;
     }
 

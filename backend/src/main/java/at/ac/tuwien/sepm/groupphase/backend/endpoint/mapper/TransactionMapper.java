@@ -15,7 +15,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface TransactionMapper {
 
-
     default OffsetDateTime map(LocalDate localDate) {
         return OffsetDateTime.of(localDate, LocalTime.MIDNIGHT, ZoneOffset.UTC);
     }

@@ -1,23 +1,20 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, find, groupBy, mapValues, noop } from "lodash";
-import { Application, Container, Graphics, Rectangle, Text, TextStyle } from "pixi.js";
+import { countBy, find, groupBy, noop } from "lodash";
+import { Application } from "pixi.js";
 import {
   Artist,
+  ArtistsService,
   Event,
+  EventsService,
+  SeatingPlansService,
   SeatWithBookingStatus,
-  Sector,
   Show,
   ShowInformation,
+  ShowsService,
 } from "src/app/generated-sources/openapi";
-import {
-  SeatingPlan,
-  drawSeatingPlan,
-  generateSeatId,
-  generateStandingAreaId,
-} from "./seatingPlanGraphics";
-import sample from "./sampleStructure.json";
-import sampleData from "./sampleShowInformation.json";
+import { SeatingPlan, drawSeatingPlan } from "./seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
+import { ActivatedRoute } from "@angular/router";
 
 interface SeatBookingInformation {
   color: number;
@@ -38,53 +35,115 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   getValues = Object.values;
 
+  pixiApplication: Application;
   hoverInfo: { seatNumber: number; rowNumber: number; price: number; color: number } | undefined =
     undefined;
-  showInformation: ShowInformation = sampleData;
+  showInformation: ShowInformation;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
-  seatingPlan: SeatingPlan = sample;
+  seatingPlan: SeatingPlan;
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
-  show: Show = { showId: 1234, date: new Date().toLocaleString(), event: 1234, artists: [12] };
+  show: Show;
   event: Event = {
-    eventId: 1234,
-    name: "Rock am Berg",
-    category: "Zeltfest",
-    duration: 144,
-    content:
-      "This festival contains many different artists, mainly carlus and hios gang. This is very good. " +
-      "I like that. Can we have more like this? " +
-      "I Hope no one notices this sample text. You know, I like sample text. It makes me feel good. Anyways, enjoy the demo!",
+    eventId: 0,
+    name: "",
+    category: "",
+    duration: 0,
+    content: "",
   };
-  artists: Artist[] = [
-    { artistId: 12, bandName: "Carlos Rock Band" },
-    { artistId: 133, firstName: "Karlo", lastName: "Steinband" },
-  ];
-  constructor() {}
-  ngOnInit(): void {
-    //TODO: Add retreival of necessary data here (when backend is implemented)
-    this.showInformation.sectors.forEach((sector) => {
-      this.sectorPriceMap[sector.sectorId] = sector.price;
+  error = undefined;
+  artists: Artist[] = [];
+  constructor(
+    private showsService: ShowsService,
+    private artistsService: ArtistsService,
+    private eventsService: EventsService,
+    private seatingPlansService: SeatingPlansService,
+    private route: ActivatedRoute
+  ) {}
+  async ngOnInit() {
+    this.route.paramMap.subscribe({
+      next: (params) => {
+        if (isNaN(+params.get("showId"))) {
+          this.error = new Error("Could not process ID in parameter");
+          return;
+        }
+        const showId = +params.get("showId");
+        this.showsService.showsIdGet(showId).subscribe({
+          next: (show) => {
+            this.show = show;
+            this.retreiveArtists(show);
+            this.retreiveEvent(show);
+            this.retreiveSeatingPlan(show);
+          },
+          error: (error) => this.setError(error),
+        });
+      },
+      error: (error) => this.setError(error),
     });
-    this.calculateSectorBookingInformation();
   }
   ngAfterViewInit() {
-    const app = new Application({
-      width: this.seatingPlan.general.width,
-      height: this.seatingPlan.general.height,
+    this.pixiApplication = new Application({
       antialias: true,
       backgroundAlpha: 0,
     });
+  }
+  retreiveEvent(show: Show) {
+    this.eventsService.eventsIdGet(show.event).subscribe({
+      next: (event) => {
+        this.event = event;
+      },
+      error: (error) => this.setError(error),
+    });
+  }
+  retreiveArtists(show: Show) {
+    this.artists = [];
+    for (const artistId of show.artists) {
+      this.artistsService.artistsIdGet(artistId).subscribe({
+        next: (artist) => {
+          this.artists.push(artist);
+        },
+        error: (error) => this.setError(error),
+      });
+    }
+  }
+  retreiveSeatingPlan(show: Show) {
+    this.showsService.showTicketsIdGet(show.showId).subscribe({
+      next: (showInformation) => {
+        this.showInformation = showInformation;
+        this.seatingPlansService
+          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId)
+          .subscribe({
+            next: async (seatingPlan) => {
+              this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
+              this.showInformation.sectors.forEach((sector) => {
+                this.sectorPriceMap[sector.sectorId] = sector.price;
+              });
+              this.calculateSectorBookingInformation();
+              this.initializeSeatingPlan();
+            },
+            error: (error) => this.setError(error),
+          });
+      },
+      error: (error) => this.setError(error),
+    });
+  }
+  setError(error: any) {
+    this.error = error;
+  }
+  initializeSeatingPlan() {
+    this.pixiApplication.stage.removeChildren();
+    this.pixiApplication.view.width = this.seatingPlan.general.width;
+    this.pixiApplication.view.height = this.seatingPlan.general.height;
     document.addEventListener("mousemove", (event) => {
       this.infoOverlay.nativeElement.style.left = event.x + 20 + "px";
       this.infoOverlay.nativeElement.style.top = event.y + "px";
       return event;
     });
-    this.pixiContainer.nativeElement.appendChild(app.view);
-    drawSeatingPlan(app.stage, this.seatingPlan);
+    this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
+    drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     applyShowInformation(
-      app.stage,
+      this.pixiApplication.stage,
       this.showInformation,
       {
         mouseover: this.seatHover.bind(this),

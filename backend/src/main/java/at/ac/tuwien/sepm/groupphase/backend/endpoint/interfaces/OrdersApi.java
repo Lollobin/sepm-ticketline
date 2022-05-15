@@ -68,7 +68,7 @@ public interface OrdersApi {
         produces = { "application/json" }
     )
     default ResponseEntity<List<OrderDto>> ordersGet(
-        
+
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

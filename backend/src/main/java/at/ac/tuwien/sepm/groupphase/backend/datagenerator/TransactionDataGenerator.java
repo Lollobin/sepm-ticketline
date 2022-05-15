@@ -15,19 +15,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-//TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
+// TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
 @Component
 public class TransactionDataGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
-    public TransactionDataGenerator(TransactionRepository transactionRepository,
+    public TransactionDataGenerator(
+        TransactionRepository transactionRepository,
         UserRepository userRepository,
         AddressRepository addressRepository) {
         this.transactionRepository = transactionRepository;
@@ -45,9 +46,15 @@ public class TransactionDataGenerator {
             address.setZipCode("21938");
             address.setCity("testCity");
             address.setCountry("Austria");
-            address.setHouseNumber("3");
+            address.setHouseNumber("2");
 
-            addressRepository.save(address);
+
+            Address address2 = new Address();
+            address2.setStreet("TestStreet 1233");
+            address2.setZipCode("219338");
+            address2.setCity("test3City");
+            address2.setCountry("Aust3ria");
+            address2.setHouseNumber("2");
 
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@email.com");
@@ -69,7 +76,7 @@ public class TransactionDataGenerator {
             user2.setFirstName("Admin");
             user2.setLastName("User");
             user2.setGender(Gender.MALE);
-            user2.setAddress(address);
+            user2.setAddress(address2);
             user2.setPassword("password");
             user2.setHasAdministrativeRights(true);
             user2.setLoginTries(0);

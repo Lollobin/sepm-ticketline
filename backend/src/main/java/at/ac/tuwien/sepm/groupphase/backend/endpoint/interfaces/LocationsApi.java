@@ -114,7 +114,7 @@ public interface LocationsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<LocationDto> locationsIdGet(
-        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

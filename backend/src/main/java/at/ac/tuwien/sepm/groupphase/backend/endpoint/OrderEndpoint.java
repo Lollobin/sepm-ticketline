@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class OrderEndpoint implements OrdersApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final OrderService orderService;
     private final TransactionMapper transactionMapper;
 

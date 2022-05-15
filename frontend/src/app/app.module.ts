@@ -13,6 +13,12 @@ import {MessageComponent} from './components/message/message.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {httpInterceptorProviders} from './interceptors';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
+import { CreateEventComponent } from './components/create-event/create-event.component';
+import { CreateShowComponent } from './components/create-show/create-show.component';
+import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
+import { RegistrationComponent } from './components/registration/registration.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
 
 @NgModule({
@@ -24,7 +30,12 @@ import { OrderOverviewComponent } from './components/order-overview/order-overvi
     LoginComponent,
     MessageComponent,
     SeatingPlanComponent,
-    OrderOverviewComponent,
+    CreateEventComponent,
+    CreateShowComponent,
+    ErrorAlertComponent,
+    RegistrationComponent,
+    UnlockUserComponent,
+    OrderOverviewComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +44,7 @@ import { OrderOverviewComponent } from './components/order-overview/order-overvi
     HttpClientModule,
     NgbModule,
     FormsModule,
+    FontAwesomeModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
