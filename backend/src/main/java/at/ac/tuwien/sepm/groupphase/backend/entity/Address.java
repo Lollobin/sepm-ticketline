@@ -29,7 +29,8 @@ public class Address {
     @Column(nullable = false, length = 100)
     private String country;
 
-    public Address(String houseNumber, String street, String zipCode, String city, String country) {
+    public Address(String houseNumber, String street, String zipCode, String city,
+        String country) {
         this.houseNumber = houseNumber;
         this.street = street;
         this.zipCode = zipCode;
@@ -90,15 +91,13 @@ public class Address {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("");
-        sb.append("addressId=").append(addressId);
-        sb.append(", number='").append(houseNumber).append('\'');
-        sb.append(", street='").append(street).append('\'');
-        sb.append(", zipCode='").append(zipCode).append('\'');
-        sb.append(", city='").append(city).append('\'');
-        sb.append(", country='").append(country).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "" + "addressId=" + addressId
+            + ", number='" + houseNumber + '\''
+            + ", street='" + street + '\''
+            + ", zipCode='" + zipCode + '\''
+            + ", city='" + city + '\''
+            + ", country='" + country + '\''
+            + '}';
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transactionId;
+    private Long transactionId;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -57,7 +57,7 @@ public class Transaction {
             return false;
         }
         Transaction that = (Transaction) o;
-        return transactionId == that.transactionId
+        return Objects.equals(transactionId, that.transactionId)
             && Objects.equals(date, that.date)
             && Objects.equals(billPath, that.billPath)
             && Objects.equals(user, that.user)
@@ -69,11 +69,11 @@ public class Transaction {
         return Objects.hash(transactionId, date, billPath, user, bookedIns);
     }
 
-    public long getTransactionId() {
+    public Long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(long transactionId) {
+    public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
     }
 

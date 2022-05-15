@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +29,11 @@ public class ShowWithoutIdDto   {
   private OffsetDateTime date;
 
   @JsonProperty("event")
-  private BigDecimal event;
+  private Integer event;
 
   @JsonProperty("artists")
   @Valid
-  private List<BigDecimal> artists = new ArrayList<>();
+  private List<Integer> artists = new ArrayList<>();
 
   public ShowWithoutIdDto date(OffsetDateTime date) {
     this.date = date;
@@ -55,7 +54,7 @@ public class ShowWithoutIdDto   {
     this.date = date;
   }
 
-  public ShowWithoutIdDto event(BigDecimal event) {
+  public ShowWithoutIdDto event(Integer event) {
     this.event = event;
     return this;
   }
@@ -64,22 +63,22 @@ public class ShowWithoutIdDto   {
    * Get event
    * @return event
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "event", required = true)
-  public BigDecimal getEvent() {
+  public Integer getEvent() {
     return event;
   }
 
-  public void setEvent(BigDecimal event) {
+  public void setEvent(Integer event) {
     this.event = event;
   }
 
-  public ShowWithoutIdDto artists(List<BigDecimal> artists) {
+  public ShowWithoutIdDto artists(List<Integer> artists) {
     this.artists = artists;
     return this;
   }
 
-  public ShowWithoutIdDto addArtistsItem(BigDecimal artistsItem) {
+  public ShowWithoutIdDto addArtistsItem(Integer artistsItem) {
     if (this.artists == null) {
       this.artists = new ArrayList<>();
     }
@@ -91,13 +90,13 @@ public class ShowWithoutIdDto   {
    * Get artists
    * @return artists
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "artists", required = true)
-  public List<BigDecimal> getArtists() {
+  public List<Integer> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<BigDecimal> artists) {
+  public void setArtists(List<Integer> artists) {
     this.artists = artists;
   }
 

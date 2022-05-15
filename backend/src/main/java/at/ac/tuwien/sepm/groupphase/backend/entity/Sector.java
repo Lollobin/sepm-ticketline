@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,10 +13,7 @@ public class Sector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long sectorId;
-
-    @Column(nullable = false)
-    private float price;
+    private Long sectorId;
 
     @Override
     public boolean equals(Object o) {
@@ -28,53 +24,36 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return sectorId == sector.sectorId
-            && Float.compare(sector.price, price) == 0
-            && Objects.equals(seatingPlanId, sector.seatingPlanId);
+        return sectorId == sector.sectorId && Objects.equals(seatingPlan, sector.seatingPlan);
     }
 
     @Override
     public String toString() {
-        return "Sector{"
-            + "sectorId="
-            + sectorId
-            + ", price="
-            + price
-            + ", seatingPlanId="
-            + seatingPlanId
-            + '}';
+        return "Sector{" + "sectorId=" + sectorId + ", seatingPlanId=" + seatingPlan + '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sectorId, price, seatingPlanId);
+        return Objects.hash(sectorId, seatingPlan);
     }
 
     @ManyToOne
     @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
-    private SeatingPlan seatingPlanId;
+    private SeatingPlan seatingPlan;
 
-    public long getSectorId() {
+    public Long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(long sectorId) {
+    public void setSectorId(Long sectorId) {
         this.sectorId = sectorId;
     }
 
-    public float getPrice() {
-        return price;
+    public SeatingPlan getSeatingPlan() {
+        return seatingPlan;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public SeatingPlan getSeatingPlanId() {
-        return seatingPlanId;
-    }
-
-    public void setSeatingPlanId(SeatingPlan seatingPlanId) {
-        this.seatingPlanId = seatingPlanId;
+    public void setSeatingPlan(SeatingPlan seatingPlan) {
+        this.seatingPlan = seatingPlan;
     }
 }

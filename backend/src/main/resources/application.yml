@@ -2,6 +2,7 @@ logging:
   file.name: ./log/backend.log
   level:
     root: INFO
+    at.ac.tuwien.sepm.groupphase.backend: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 
 spring:
@@ -21,6 +22,10 @@ spring:
     open-in-view: false
   h2:
     console.enabled: true
+
+server:
+  error:
+    include-message: always
 
 security:
   auth:

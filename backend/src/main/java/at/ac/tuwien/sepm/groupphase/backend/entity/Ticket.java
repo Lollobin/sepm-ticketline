@@ -15,7 +15,7 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketId;
+    private Long ticketId;
 
     @ManyToOne
     @JoinColumn(name = "reservedBy", referencedColumnName = "userId")
@@ -76,11 +76,11 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket")
     private Set<BookedIn> bookedIns;
 
-    public long getTicketId() {
+    public Long getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(long ticketId) {
+    public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
 

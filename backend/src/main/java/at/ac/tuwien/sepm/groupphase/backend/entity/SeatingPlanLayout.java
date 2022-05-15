@@ -12,7 +12,7 @@ public class SeatingPlanLayout {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seatingPlanLayoutId;
+    private Long seatingPlanLayoutId;
 
     @Override
     public boolean equals(Object o) {
@@ -46,7 +46,7 @@ public class SeatingPlanLayout {
     @Column(nullable = false)
     private String seatingLayoutPath;
 
-    public long getSeatingPlanLayoutId() {
+    public Long getSeatingPlanLayoutId() {
         return seatingPlanLayoutId;
     }
 
