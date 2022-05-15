@@ -21,7 +21,7 @@ public class LoginEndpointTest {
 
     @Disabled
     @Test
-    void whenMissingCredentials_ThenUnsuccessfulLogin_andStatus401() {
+    void whenMissingCredentials_thenUnsuccessfulLogin_andStatus401() {
     }
 
     @Disabled
