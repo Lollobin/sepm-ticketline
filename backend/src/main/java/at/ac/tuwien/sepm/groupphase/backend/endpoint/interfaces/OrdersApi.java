@@ -5,7 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -52,7 +52,7 @@ public interface OrdersApi {
         summary = "Shows orders for the user possessing the token",
         tags = { "tickets" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  TransactionDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  OrderDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "404", description = "The user with the given token was not found"),
@@ -67,13 +67,13 @@ public interface OrdersApi {
         value = "/orders",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<TransactionDto>> ordersGet(
+    default ResponseEntity<List<OrderDto>> ordersGet(
         
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"invoiceItems\" : [ { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 } }, { \"priceAtBookingTime\" : 6.027456183070403, \"ticket\" : { \"rowNumber\" : 6.027456183070403, \"sector\" : 5.962133916683182, \"ticketId\" : 0.8008281904610115, \"seatNumber\" : 1.4658129805029452 } } ], \"transactionId\" : 0 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"locationName\" : \"locationName\", \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"transactionId\" : 0, \"ticketIds\" : [ 6, 6 ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
