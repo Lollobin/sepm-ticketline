@@ -12,38 +12,30 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let order of orders"
-        [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
+    <tr *ngFor="let order of orders">
       <ng-template
           [ngIf]="dateInFuture(order.date) && (order.type==='purchase'|| order.type ==='reservation')">
-
-
         <td>{{ order.date | date }} <br> {{ order.date | date:'HH:mm' }}</td>
         <td>{{ order.artists.join(', ') + " - " + order.eventName }} <br>
           {{ order.city + ", " + order.locationName }}</td>
         <td>
           {{ order.ticketIds.length }}
-          <ng-template [ngIf]="order.type === 'purchase' || order.type === 'cancellation'">
+          <ng-template [ngIf]="order.type === 'purchase'">
             <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="tickets">
               Ticket
             </ng-template>
             <ng-template #tickets>Tickets</ng-template>
           </ng-template>
 
-          <ng-template [ngIf]="order.type === 'reservation' || order.type === 'dereservation'">
+          <ng-template [ngIf]="order.type === 'reservation'">
             <ng-template [ngIf]="order.ticketIds.length === 1" [ngIfElse]="reservations">
               Reservation
             </ng-template>
             <ng-template #reservations>Reservations</ng-template>
           </ng-template>
-
-          <ng-template [ngIf]="order.type === 'cancellation' || order.type === 'dereservation'">
-            <br>(cancelled)
-          </ng-template>
         </td>
       </ng-template>
     </tr>
-
     </tbody>
   </table>
 </div>

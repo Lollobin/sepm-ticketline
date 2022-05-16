@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {Order, TicketsService} from "../../generated-sources/openapi";
-import sampleOrders from "./sampleOrders.json";
 
 @Component({
   selector: "app-order-overview",
@@ -15,13 +14,9 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: Add retreival of necessary data here (when backend is implemented)
-    // @ts-ignore
-    this.orders = sampleOrders;
-    /*
     this.ticketService.ordersGet().subscribe({
       next: data => {
-        this.transactions = data;
+        this.orders = data;
       },
       error: error => {
         console.error("Error getting orders", error.message);
@@ -30,7 +25,6 @@ export class OrderOverviewComponent implements OnInit {
         console.log("Received orders");
       }
     });
-     */
   }
 
   dateInFuture(date: string) {

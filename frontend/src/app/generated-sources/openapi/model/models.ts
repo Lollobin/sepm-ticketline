@@ -13,6 +13,7 @@ export * from './invoiceItem';
 export * from './location';
 export * from './locationSearch';
 export * from './locationWithoutId';
+export * from './order';
 export * from './seatWithBookingStatus';
 export * from './seatingPlan';
 export * from './seatingPlanWithoutId';
