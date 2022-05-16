@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EventsService, Show, ShowsService } from 'src/app/generated-sources/openapi';
 import { AuthService } from 'src/app/services/auth.service';
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-create-show',
@@ -22,6 +23,7 @@ export class CreateShowComponent implements OnInit {
   notFound = true;
   errorMessage = '';
   role = '';
+  faCircleQuestion = faCircleQuestion;
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: AuthService) { }
