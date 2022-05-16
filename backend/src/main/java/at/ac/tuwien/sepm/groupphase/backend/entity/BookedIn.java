@@ -16,16 +16,16 @@ import javax.persistence.MapsId;
 public class BookedIn {
 
     @EmbeddedId
-    private BookedInKey id;
+    BookedInKey id = new BookedInKey();
 
     @ManyToOne
     @MapsId("transactionId")
-    @JoinColumn(name = "transactionId")
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @ManyToOne
     @MapsId("ticketId")
-    @JoinColumn(name = "ticketId")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     @Column(nullable = false, length = 16)
