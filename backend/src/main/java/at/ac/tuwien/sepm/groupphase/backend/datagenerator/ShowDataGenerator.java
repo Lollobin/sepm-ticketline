@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
+import at.ac.tuwien.sepm.groupphase.backend.entity.BookedIn;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -11,9 +13,13 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.BookedInRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
@@ -24,10 +30,13 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -57,6 +66,9 @@ public class ShowDataGenerator {
     private final TicketRepository ticketRepository;
     private final SectorPriceRepository sectorPriceRepository;
     private final FileSystemRepository fileSystemRepository;
+    private final UserRepository userRepository;
+    private final BookedInRepository bookedInRepository;
+    private final TransactionRepository transactionRepository;
 
     public ShowDataGenerator(ShowRepository showRepository, ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
@@ -64,7 +76,10 @@ public class ShowDataGenerator {
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
         SeatingPlanRepository seatingPlanRepository, SectorRepository sectorRepository,
         SeatRepository seatRepository, TicketRepository ticketRepository,
-        SectorPriceRepository sectorPriceRepository, FileSystemRepository fileSystemRepository) {
+        SectorPriceRepository sectorPriceRepository, FileSystemRepository fileSystemRepository,
+        UserRepository userRepository,
+        BookedInRepository bookedInRepository,
+        TransactionRepository transactionRepository) {
         this.showRepository = showRepository;
         this.artistRepository = artistRepository;
         this.eventRepository = eventRepository;
@@ -77,6 +92,9 @@ public class ShowDataGenerator {
         this.ticketRepository = ticketRepository;
         this.sectorPriceRepository = sectorPriceRepository;
         this.fileSystemRepository = fileSystemRepository;
+        this.userRepository = userRepository;
+        this.bookedInRepository = bookedInRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     private Ticket generateTicket(Show show, Seat seat) {
@@ -190,6 +208,7 @@ public class ShowDataGenerator {
                 ticketRepository.save(ticket);
             }
         }
+        generateTransactions();
     }
 
     private SectorPrice generateSectorPrice(Sector sector, Show show) {
@@ -199,5 +218,97 @@ public class ShowDataGenerator {
         sectorPrice.setShow(show);
         sectorPrice.setPrice(BigDecimal.valueOf((Math.random() + 1) * 255));
         return sectorPrice;
+    }
+
+    // TODO: move to separate class
+    private void generateTransactions() {
+        if (!transactionRepository.findAll().isEmpty()) {
+            LOGGER.debug("order already generated");
+        } else {
+            Address address = new Address();
+            address.setStreet("TestStreet 123");
+            address.setZipCode("21938");
+            address.setCity("testCity");
+            address.setCountry("Austria");
+            address.setHouseNumber("2");
+
+            Address address2 = new Address();
+            address2.setStreet("TestStreet 1233");
+            address2.setZipCode("219338");
+            address2.setCity("test3City");
+            address2.setCountry("Aust3ria");
+            address2.setHouseNumber("2");
+
+            ApplicationUser user = new ApplicationUser();
+            user.setEmail("admin@email.com");
+            user.setFirstName("Admin");
+            user.setLastName("User");
+            user.setGender(Gender.FEMALE);
+            user.setAddress(address);
+
+            user.setPassword("password");
+            user.setHasAdministrativeRights(true);
+            user.setLoginTries(0);
+            user.setMustResetPassword(false);
+            user.setLockedAccount(false);
+
+            userRepository.save(user);
+
+            ApplicationUser user2 = new ApplicationUser();
+            user2.setEmail("user@email.com");
+            user2.setFirstName("Admin");
+            user2.setLastName("User");
+            user2.setGender(Gender.MALE);
+            user2.setAddress(address2);
+            user2.setPassword("password");
+            user2.setHasAdministrativeRights(true);
+            user2.setLoginTries(0);
+            user2.setMustResetPassword(false);
+            user2.setLockedAccount(false);
+            userRepository.save(user2);
+
+            Ticket ticket1 = ticketRepository.getById(1L);
+            Ticket ticket2 = ticketRepository.getById(2L);
+
+            //Buy Ticket 1
+            Transaction transaction1 = new Transaction();
+            transaction1.setDate(LocalDate.of(2005, 11, 20));
+            transaction1.setUser(user);
+            transactionRepository.save(transaction1);
+
+            BookedIn bookedIn1 = new BookedIn();
+            bookedIn1.setBookingType(BookingType.PURCHASE);
+            bookedIn1.setTransaction(transaction1);
+            bookedIn1.setPriceAtBookingTime(22.3f);
+            bookedIn1.setTicket(ticket1);
+            bookedInRepository.save(bookedIn1);
+
+            //Cancel Ticket 1
+            Transaction transaction2 = new Transaction();
+            transaction2.setDate(LocalDate.of(2005, 11, 30));
+            transaction2.setUser(user);
+            transactionRepository.save(transaction2);
+
+            BookedIn bookedIn2 = new BookedIn();
+            bookedIn2.setBookingType(BookingType.CANCELLATION);
+            bookedIn2.setTransaction(transaction2);
+            bookedIn2.setPriceAtBookingTime(22.3f);
+            bookedIn2.setTicket(ticket1);
+            bookedInRepository.save(bookedIn2);
+
+            //Reserve Ticket 2
+            Transaction transaction3 = new Transaction();
+            transaction3.setDate(LocalDate.of(2006, 3, 1));
+            transaction3.setUser(user);
+            transactionRepository.save(transaction3);
+
+            BookedIn bookedIn3 = new BookedIn();
+            bookedIn3.setBookingType(BookingType.RESERVATION);
+            bookedIn3.setTransaction(transaction3);
+            bookedIn3.setPriceAtBookingTime(22.3f);
+            bookedIn3.setTicket(ticket2);
+            bookedInRepository.save(bookedIn3);
+
+        }
     }
 }

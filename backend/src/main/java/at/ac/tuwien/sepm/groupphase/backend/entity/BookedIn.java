@@ -53,7 +53,7 @@ public class BookedIn {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transaction, ticket, bookingType, priceAtBookingTime);
+        return Objects.hash(id, bookingType, priceAtBookingTime);
     }
 
     @Override

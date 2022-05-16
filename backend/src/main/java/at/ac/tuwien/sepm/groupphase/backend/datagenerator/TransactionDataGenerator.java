@@ -5,6 +5,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.BookedInRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
@@ -18,25 +23,42 @@ import org.springframework.stereotype.Component;
 // TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
 @Component
+
 public class TransactionDataGenerator {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TransactionRepository transactionRepository;
+    private final BookedInRepository bookedInRepository;
+    private final TicketRepository ticketRepository;
+    private final ShowRepository showRepository;
+    private final EventRepository eventRepository;
+    private final ArtistRepository artistRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
+
     public TransactionDataGenerator(
         TransactionRepository transactionRepository,
+        BookedInRepository bookedInRepository,
+        TicketRepository ticketRepository,
+        ShowRepository showRepository,
+        EventRepository eventRepository,
+        ArtistRepository artistRepository,
         UserRepository userRepository,
         AddressRepository addressRepository) {
         this.transactionRepository = transactionRepository;
+        this.bookedInRepository = bookedInRepository;
+        this.ticketRepository = ticketRepository;
+        this.showRepository = showRepository;
+        this.eventRepository = eventRepository;
+        this.artistRepository = artistRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
     }
 
-    @PostConstruct
+    //@PostConstruct
     private void generateTransaction() {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
@@ -47,7 +69,6 @@ public class TransactionDataGenerator {
             address.setCity("testCity");
             address.setCountry("Austria");
             address.setHouseNumber("2");
-
 
             Address address2 = new Address();
             address2.setStreet("TestStreet 1233");
