@@ -19,6 +19,7 @@ import { ErrorAlertComponent } from './components/error-alert/error-alert.compon
 import { RegistrationComponent } from './components/registration/registration.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import {AuthService} from "./generated-sources/openapi";
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import {UnlockUserComponent} from "./components/unlock-user/unlock-user.componen
     FormsModule,
     FontAwesomeModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

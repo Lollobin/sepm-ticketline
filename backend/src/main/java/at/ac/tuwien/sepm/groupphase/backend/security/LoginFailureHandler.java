@@ -32,6 +32,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException, ServletException {
+
         if (exception.getMessage().startsWith("Bad credentials for user: ")) {
             String exmsg = "Bad credentials for user: ";
             String email = exception.getMessage().substring(exmsg.length());
