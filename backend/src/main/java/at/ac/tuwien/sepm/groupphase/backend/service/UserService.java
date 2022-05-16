@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserService extends UserDetailsService {
 
+
     /**
      * Find a user in the context of Spring Security based on the email address <br> For more
      * information have a look at this tutorial: https://www.baeldung.com/spring-security-authentication-with-a-database
@@ -43,4 +44,25 @@ public interface UserService extends UserDetailsService {
      * @return all users based on param
      */
     List<ApplicationUser> findAll(Boolean filterLocked);
+
+    /**
+     * Increase the Number of failed login attempts by one.
+     *
+     * @param user whose login attempt number will be increased
+     */
+    void increaseNumberOfFailedLoginAttempts(ApplicationUser user);
+
+    /**
+     * Set the lockedAccount field to true.
+     *
+     * @param user whose account will be locked
+     */
+    void lockUser(ApplicationUser user);
+
+    /**
+     * Reset the number of failed login attempts of user to zero.
+     *
+     * @param user whose login attempts will be reset
+     */
+    void resetNumberOfFailedLoginAttempts(ApplicationUser user);
 }

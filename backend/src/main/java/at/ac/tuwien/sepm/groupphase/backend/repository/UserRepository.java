@@ -34,4 +34,19 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.lockedAccount = ?1, a.loginTries=0 where a.userId = ?2")
     void unlockApplicationUser(boolean lockedAccount, long userId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update ApplicationUser a set a.loginTries = a.loginTries+1 where a.email = :email")
+    void increaseNumberOfFailedLoginAttempts(@Param("email") String email);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update ApplicationUser a set a.lockedAccount = true where a.email = :email")
+    void lockApplicationUser(@Param("email") String email);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update ApplicationUser a set a.loginTries = 0 where a.email = :email")
+    void resetNumberOfFailedLoginAttempts(@Param("email") String email);
 }
