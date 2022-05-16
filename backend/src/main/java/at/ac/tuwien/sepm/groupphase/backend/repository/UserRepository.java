@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
@@ -19,8 +20,8 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     ApplicationUser findUserByEmail(String email);
 
     /**
-     * Saves a new User and the encapsuled Address entity to the database.
-     * All repository ooperations are cascaded to the Address entity.
+     * Saves a new User and the encapsuled Address entity to the database. All repository
+     * ooperations are cascaded to the Address entity.
      *
      * @param user Entity to be saved
      * @return Saved User with the generated ids for the User and the persisted Address Entity
@@ -31,6 +32,6 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("update ApplicationUser a set a.lockedAccount = ?1 where a.userId = ?2")
+    @Query("update ApplicationUser a set a.lockedAccount = ?1, a.loginTries=0 where a.userId = ?2")
     void unlockApplicationUser(boolean lockedAccount, long userId);
 }
