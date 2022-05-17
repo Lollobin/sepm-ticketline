@@ -73,9 +73,6 @@ public class Artist {
             + '\''
             + ", lastName='"
             + lastName
-            + '\''
-            + ", shows="
-            + shows
             + '}';
     }
 

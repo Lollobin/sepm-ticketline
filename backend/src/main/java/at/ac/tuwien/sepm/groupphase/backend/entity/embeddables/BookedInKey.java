@@ -29,4 +29,20 @@ public class BookedInKey implements Serializable {
     public int hashCode() {
         return Objects.hash(transactionId, ticketId);
     }
+
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
 }
