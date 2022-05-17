@@ -171,12 +171,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       })
       .subscribe({
         next: (response) => {
-          console.log("YOU BOUGHT THEM TICkETS");
           console.log(response);
         },
         error: (error) => {
-          this.setError(error)
-        }
+          this.setError(error);
+        },
       });
   }
   confirmReservation() {
