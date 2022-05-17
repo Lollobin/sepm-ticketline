@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketStatusDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -57,7 +58,8 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
             authenticationFacade.getAuthentication().getPrincipal().toString());
         List<Ticket> updatedTickets = updateTicketStatus(
             purchaseMode, ticketList, user);
-        this.orderService.generateTransaction(ticketList, user);
+        this.orderService.generateTransaction(ticketList, user,
+            purchaseMode ? BookingType.PURCHASE : BookingType.RESERVATION);
 
         FullTicketWithStatusDto fullTicketWithStatusDto = new FullTicketWithStatusDto();
         List<TicketDto> fullTickets = updatedTickets.stream().map(this::ticketToTicketDto).toList();

@@ -49,14 +49,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void generateTransaction(List<Ticket> tickets, ApplicationUser user) {
+    public void generateTransaction(List<Ticket> tickets, ApplicationUser user, BookingType bookingType) {
         Transaction transaction = new Transaction();
         transaction.setDate(OffsetDateTime.now().toLocalDate());
         transaction.setUser(user);
         //TODO: ADD GENERATION OF BILL
-        transaction.setBillPath("");
-        //TODO: GENERATE BOOKING TYPE
-        BookingType bookingType = BookingType.PURCHASE;
+        transaction.setBillPath(null);
         this.transactionRepository.save(transaction);
         Set<BookedIn> bookings = tickets.stream().map(ticket -> {
             BookedInKey key = new BookedInKey();
