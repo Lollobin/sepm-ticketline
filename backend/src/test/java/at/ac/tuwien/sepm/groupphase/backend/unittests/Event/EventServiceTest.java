@@ -12,7 +12,6 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -20,7 +19,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
-import java.math.BigDecimal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +38,7 @@ class EventServiceTest {
     private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
     private final Event fakePersistedEvent = new Event();
-    private final EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
+    private final Event eventToSave = new Event();
 
     @Spy
     private EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
@@ -54,16 +52,16 @@ class EventServiceTest {
 
 
     @Test
-    void shouldSaveNewEvent() {
+    void should_CreateNewEvent_When_EventIsValid() {
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
 
-        eventWithoutIdToSave.setName(EVENT_NAME);
-        eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
-        eventWithoutIdToSave.setContent(EVENT_CONTENT);
+        eventToSave.setName(EVENT_NAME);
+        eventToSave.setDuration(EVENT_DURATION);
+        eventToSave.setCategory(EVENT_CATEGORY);
+        eventToSave.setContent(EVENT_CONTENT);
 
-        eventService.createEvent(eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave));
+        eventService.createEvent(eventToSave);
 
         verify(eventRepository).save(eventArgumentCaptor.capture());
 
@@ -77,42 +75,40 @@ class EventServiceTest {
     }
 
     @Test
-    void shouldNotSaveEventDueToName() {
+    void should_NotCreateEvent_When_NameIsBlank() {
 
-        eventWithoutIdToSave.setName(EVENT_INVALID_NAME);
-        eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
-        eventWithoutIdToSave.setContent(EVENT_CONTENT);
+        eventToSave.setName(EVENT_INVALID_NAME);
+        eventToSave.setDuration(EVENT_DURATION);
+        eventToSave.setCategory(EVENT_CATEGORY);
+        eventToSave.setContent(EVENT_CONTENT);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
             () -> eventService.createEvent(
-                eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave)));
+                eventToSave));
         Assertions.assertEquals("Name of event can not be empty ", exception.getMessage());
 
     }
 
     @Test
-    void shouldNotSaveEventDueToDuration() {
+    void should_NotCreateEvent_When_DurationUnder10OrLongerThan360Minutes() {
 
-        eventWithoutIdToSave.setName(EVENT_NAME);
-        eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_INVALID_DURATION_LOWER));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
-        eventWithoutIdToSave.setContent(EVENT_CONTENT);
+        eventToSave.setName(EVENT_NAME);
+        eventToSave.setDuration(EVENT_INVALID_DURATION_LOWER);
+        eventToSave.setCategory(EVENT_CATEGORY);
+        eventToSave.setContent(EVENT_CONTENT);
 
         //testing if duration can be lower than 10
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-            () -> eventService.createEvent(
-                eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave)));
+            () -> eventService.createEvent(eventToSave));
         Assertions.assertEquals(
             "Duration has to be at least 10 minutes and less than 6 hours (360 minutes)",
             exception.getMessage());
 
         //testing if duration can be higher than 360
 
-        eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_INVALID_DURATION_UPPER));
+        eventToSave.setDuration(EVENT_INVALID_DURATION_UPPER);
         exception = Assertions.assertThrows(ValidationException.class,
-            () -> eventService.createEvent(
-                eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave)));
+            () -> eventService.createEvent(eventToSave));
         Assertions.assertEquals(
             "Duration has to be at least 10 minutes and less than 6 hours (360 minutes)",
             exception.getMessage());
@@ -121,16 +117,15 @@ class EventServiceTest {
     }
 
     @Test
-    void shouldNotSaveEventDueToLength() {
+    void should_NotCreateEvent_When_NameTooLong() {
 
-        eventWithoutIdToSave.setName(EVENT_INVALID_NAME_LENGTH);
-        eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
-        eventWithoutIdToSave.setCategory(EVENT_INVALID_CATEGORY_LENGTH);
-        eventWithoutIdToSave.setContent(EVENT_CONTENT);
+        eventToSave.setName(EVENT_INVALID_NAME_LENGTH);
+        eventToSave.setDuration(EVENT_DURATION);
+        eventToSave.setCategory(EVENT_INVALID_CATEGORY_LENGTH);
+        eventToSave.setContent(EVENT_CONTENT);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-            () -> eventService.createEvent(
-                eventMapper.eventWithoutIdDtoToEvent(eventWithoutIdToSave)));
+            () -> eventService.createEvent(eventToSave));
         Assertions.assertEquals("Name of event is too long & Category contains too many characters",
             exception.getMessage());
     }

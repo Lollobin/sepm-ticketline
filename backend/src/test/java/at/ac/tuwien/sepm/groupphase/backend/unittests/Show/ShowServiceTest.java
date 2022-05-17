@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
@@ -34,7 +33,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ShowServiceTest {
+class ShowServiceTest {
 
     @Mock
     private EventRepository eventRepository;
@@ -43,7 +42,6 @@ public class ShowServiceTest {
     private ShowRepository showRepository;
     private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
-    private final ShowWithoutIdDto showWithoutIdDto = new ShowWithoutIdDto();
     private final Event fakePersistedEvent = new Event();
     private final Show fakePersistedShow = new Show();
     private final EventValidator eventValidator = new EventValidator();
@@ -61,7 +59,7 @@ public class ShowServiceTest {
     }
 
     @Test
-    void shouldSaveNewEvent() {
+    void should_CreateNewShow_When_ShowIsValid() {
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(
             Event.class);
@@ -104,12 +102,12 @@ public class ShowServiceTest {
         verify(showRepository).save(showArgumentCaptor.capture());
 
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
-        assertThat(showArgumentCaptor.getValue().getArtists()).isEqualTo(null);
+        assertThat(showArgumentCaptor.getValue().getArtists()).isNull();
         assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
     }
 
     @Test
-    void shouldThrowValidationExceptionDueToDateInPast() {
+    void should_ThrowValidationException_When_DateInPast() {
 
         fakePersistedEvent.setEventId(1L);
         fakePersistedEvent.setCategory(EVENT_CATEGORY);

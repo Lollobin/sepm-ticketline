@@ -30,7 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class ShowRepositoryTest {
+class ShowRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
@@ -39,7 +39,7 @@ public class ShowRepositoryTest {
     private ShowRepository showRepository;
 
     @Test
-    public void shouldSaveNewEvent() {
+    void should_CreateNewShow_When_ShowIsValid() {
         Event testEvent = new Event();
         testEvent.setName(EVENT_NAME);
         testEvent.setDuration(EVENT_DURATION);
@@ -63,7 +63,7 @@ public class ShowRepositoryTest {
 
         assertThat(show1.getEvent().getEventId()).isEqualTo(event.getEventId());
         assertThat(show1.getDate()).isEqualTo(SHOW_DATE);
-        assertThat(show1.getArtists()).isEqualTo(null);
+        assertThat(show1.getArtists()).isNull();
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
@@ -71,7 +71,7 @@ public class ShowRepositoryTest {
     }
 
     @Test
-    public void shouldFindShowById() {
+    void should_FindShowById_When_ShowPresent() {
 
         saveThreeShowsAndEvents();
         List<Show> allShows = showRepository.findAll();
@@ -91,7 +91,7 @@ public class ShowRepositoryTest {
     }
 
     @Test
-    public void shouldReturnAllStoredShows() {
+    void should_ReturnAllStoredShows_When_RepoNotEmpty() {
 
         saveThreeShowsAndEvents();
         List<Show> allShows = showRepository.findAll();
@@ -100,17 +100,17 @@ public class ShowRepositoryTest {
         assertThat(allShows.get(0).getEvent().getName()).isEqualTo(EVENT_NAME);
         assertThat(allShows.get(0).getEvent().getContent()).isEqualTo(EVENT_CONTENT);
         assertThat(allShows.get(0).getDate()).isEqualTo(SHOW_DATE);
-        assertThat(allShows.get(0).getArtists()).isEqualTo(null);
+        assertThat(allShows.get(0).getArtists()).isNull();
 
         assertThat(allShows.get(1).getEvent().getName()).isEqualTo(EVENT2_NAME);
         assertThat(allShows.get(1).getEvent().getContent()).isEqualTo(EVENT2_CONTENT);
         assertThat(allShows.get(1).getDate()).isEqualTo(SHOW2_DATE);
-        assertThat(allShows.get(1).getArtists()).isEqualTo(null);
+        assertThat(allShows.get(1).getArtists()).isNull();
 
         assertThat(allShows.get(2).getEvent().getDuration()).isEqualTo(EVENT3_DURATION);
         assertThat(allShows.get(2).getEvent().getContent()).isEqualTo(EVENT3_CONTENT);
         assertThat(allShows.get(2).getDate()).isEqualTo(SHOW3_DATE);
-        assertThat(allShows.get(2).getArtists()).isEqualTo(null);
+        assertThat(allShows.get(2).getArtists()).isNull();
 
         showRepository.deleteAll();
         eventRepository.deleteAll();

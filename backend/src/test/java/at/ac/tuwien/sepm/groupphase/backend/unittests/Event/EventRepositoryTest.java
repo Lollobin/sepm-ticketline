@@ -25,13 +25,13 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class EventRepositoryTest {
+class EventRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
 
     @Test
-    public void shouldSaveNewEvent() {
+    void should_CreateNewEvent_When_EventIsValid() {
         Event testEvent = new Event();
         testEvent.setName(EVENT_NAME);
         testEvent.setDuration(EVENT_DURATION);
@@ -48,7 +48,7 @@ public class EventRepositoryTest {
     }
 
     @Test
-    public void shouldStoreAllEvents() {
+    void should_CreateAllEvents_When_EventAreValid() {
         Event event1 = new Event();
         Event event2 = new Event();
         Event event3 = new Event();
@@ -80,7 +80,7 @@ public class EventRepositoryTest {
     }
 
     @Test
-    public void shouldFindEventById() {
+    void should_FindEventById_When_EventIsPresent() {
         Event event2 = new Event();
         Event event3 = new Event();
 

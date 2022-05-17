@@ -22,7 +22,6 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
@@ -56,7 +55,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class ShowEndpointTest {
+class ShowEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -85,7 +84,7 @@ public class ShowEndpointTest {
     }
 
     @Test
-    public void shouldReturnAllStoredShows() throws Exception {
+    void should_ReturnAllStoredShows_When_RepoNotEmpty() throws Exception {
 
         saveThreeShowsAndEvents();
 
@@ -96,7 +95,6 @@ public class ShowEndpointTest {
                         .header(
                             securityProperties.getAuthHeader(),
                             jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-                .andDo(print())
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
@@ -108,14 +106,17 @@ public class ShowEndpointTest {
 
         assertThat(showDtos).hasSize(3);
         assertThat(showDtos.get(0).getDate()).isEqualTo(SHOW_DATE);
+        assertThat(showDtos.get(0).getShowId()).isEqualTo(1);
         assertThat(showDtos.get(1).getDate()).isEqualTo(SHOW2_DATE);
+        assertThat(showDtos.get(1).getShowId()).isEqualTo(2);
         assertThat(showDtos.get(2).getDate()).isEqualTo(SHOW3_DATE);
+        assertThat(showDtos.get(2).getShowId()).isEqualTo(3);
 
 
     }
 
     @Test
-    public void shouldReturnShowById() throws Exception {
+    void should_ReturnShowById_When_ShowIsPresent() throws Exception {
 
         saveThreeShowsAndEvents();
 
@@ -129,7 +130,6 @@ public class ShowEndpointTest {
                     .header(
                         securityProperties.getAuthHeader(),
                         jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
@@ -141,7 +141,7 @@ public class ShowEndpointTest {
     }
 
     @Test
-    public void shouldReturn404DueToNotPresentShow() throws Exception {
+    void shouldReturn404DueToNotPresentShow() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/shows/-100")
@@ -154,7 +154,7 @@ public class ShowEndpointTest {
     }
 
     @Test
-    public void shouldReturn403DueToInvalidRole() throws Exception {
+    void should_Return403_When_RoleIsInvalid() throws Exception {
 
         Event event1 = new Event();
         event1.setCategory(EVENT_CATEGORY);
@@ -179,12 +179,12 @@ public class ShowEndpointTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
 
-        assertThat(showRepository.findAll()).hasSize(0);
+        assertThat(showRepository.findAll()).isEmpty();
 
     }
 
     @Test
-    public void shouldSaveNewShow() throws Exception {
+    void should_CreateNewShow_When_ShowDtoIsValid() throws Exception {
 
         Event event1 = new Event();
         event1.setCategory(EVENT_CATEGORY);

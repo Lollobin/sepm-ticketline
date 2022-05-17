@@ -20,8 +20,6 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
@@ -51,7 +49,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class EventEndpointTest {
+class EventEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -75,7 +73,7 @@ public class EventEndpointTest {
     }
 
     @Test
-    public void shouldReturnAllStoredEvents() throws Exception {
+    void should_ReturnAllStoredEvents_When_RepoNotEmpty() throws Exception {
 
         saveThreeValidEvents();
 
@@ -103,11 +101,16 @@ public class EventEndpointTest {
         assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT3_CATEGORY);
         assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT3_CONTENT);
 
+        assertThat(eventResult.get(0).getEventId()).isEqualTo(1);
+        assertThat(eventResult.get(1).getEventId()).isEqualTo(2);
+        assertThat(eventResult.get(2).getEventId()).isEqualTo(3);
     }
 
     @Test
-    public void shouldSaveAEventWithCode201() throws Exception {
+    void should_createEventWithResponse201AndLocationHeader_When_EventDtoIsValid()
+        throws Exception {
 
+        eventRepository.deleteAll();
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_NAME);
         eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
@@ -116,7 +119,7 @@ public class EventEndpointTest {
 
         String json = objectMapper.writeValueAsString(eventWithoutIdToSave);
 
-        mockMvc.perform(MockMvcRequestBuilders
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                 .post("/events")
                 .header(
                     securityProperties.getAuthHeader(),
@@ -124,12 +127,22 @@ public class EventEndpointTest {
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
+            .andReturn();
+
+        List<Event> savedEvents = eventRepository.findAll();
+        assertThat(savedEvents).hasSize(1);
+        assertThat(savedEvents.get(0).getName()).isEqualTo(EVENT_NAME);
+        Long id = savedEvents.get(0).getEventId();
+
+        MockHttpServletResponse response = result.getResponse();
+        assertThat(response.getStatus()).isEqualTo(201);
+        assertThat(response.getRedirectedUrl()).isEqualTo("http://localhost/events/" + id);
+
 
     }
 
     @Test
-    public void shouldReturn403DueToInvalidRole() throws Exception {
+    void should_ReturnStatus403_When_RoleIsInvalid() throws Exception {
 
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_NAME);
@@ -148,11 +161,10 @@ public class EventEndpointTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden());
-
     }
 
     @Test
-    public void shouldReturnEventById() throws Exception {
+    void should_ReturnEventById_When_EventIsPresent() throws Exception {
 
         saveThreeValidEvents();
 
@@ -166,7 +178,6 @@ public class EventEndpointTest {
                     .header(
                         securityProperties.getAuthHeader(),
                         jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-            .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
@@ -179,7 +190,7 @@ public class EventEndpointTest {
     }
 
     @Test
-    public void shouldReturn404DueToNotPresentEvent() throws Exception {
+    void should_Return404_When_EventNotPresent() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/events/-100")
@@ -192,7 +203,7 @@ public class EventEndpointTest {
 
 
     @Test
-    public void invalidJSONShouldReturnCode422() throws Exception {
+    void should_Return422_When_JsonIsInvalid() throws Exception {
 
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_INVALID_NAME);
