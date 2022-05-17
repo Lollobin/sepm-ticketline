@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, find, groupBy, noop } from "lodash";
+import { countBy, find, groupBy, map, noop } from "lodash";
 import { Application } from "pixi.js";
 import {
   Artist,
@@ -11,6 +11,7 @@ import {
   Show,
   ShowInformation,
   ShowsService,
+  TicketsService,
 } from "src/app/generated-sources/openapi";
 import { SeatingPlan, drawSeatingPlan } from "./seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
@@ -59,6 +60,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private artistsService: ArtistsService,
     private eventsService: EventsService,
     private seatingPlansService: SeatingPlansService,
+    private ticketsService: TicketsService,
     private route: ActivatedRoute
   ) {}
   async ngOnInit() {
@@ -162,11 +164,33 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   }
   confirmPurchase() {
     //TODO: Add redirect to bill and show purchase overview
-    console.log("YOU BOUGHT THEM TICkETS");
+    this.ticketsService
+      .ticketsPost({
+        reserved: [],
+        purchased: map(this.chosenSeats, (seatId) => seatId.seatId),
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          this.setError(error);
+        },
+      });
   }
   confirmReservation() {
     //TODO: Add redirect to "reservation"-bill and show purchase overview
-    console.log("YOU RESERVED THEM TICKETS");
+    this.ticketsService
+      .ticketsPost({
+        reserved: map(this.chosenSeats, (seatId) => seatId.seatId),
+        purchased: [],
+      })
+      .subscribe({
+        next: (response) => {
+          console.log("YOU RESERVED THEM TICKETS");
+          console.log(response);
+        },
+      });
   }
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
