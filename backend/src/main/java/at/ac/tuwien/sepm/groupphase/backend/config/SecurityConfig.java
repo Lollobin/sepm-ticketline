@@ -64,11 +64,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //h2-console enable..
             .antMatchers("/h2-console/**").permitAll()
 
+            //please add your route here if it should be included in the "Public View" for nonauthenticated users.
             .antMatchers(HttpMethod.GET, "/events/**").permitAll()
             .antMatchers(HttpMethod.GET, "/shows/**").permitAll()
             .antMatchers(HttpMethod.GET, "/artists/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/locations/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/seatingPlan/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/topShows").permitAll()
+            .antMatchers(HttpMethod.GET, "/seatingPlanLayouts").permitAll()
+
+
+            //for login and registration
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
+
 
             .anyRequest().authenticated();
 
