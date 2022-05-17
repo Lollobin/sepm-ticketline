@@ -22,6 +22,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         this.userService = userService;
     }
 
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
         HttpServletResponse response, FilterChain chain,

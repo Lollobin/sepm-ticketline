@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.security;
 
+import static at.ac.tuwien.sepm.groupphase.backend.config.Constants.GENERIC_LOGIN_FAILURE_MSG;
+
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserLoginDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AuthRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -50,9 +52,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(
         HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        UserLoginDto user = null;
+        AuthRequestDto user = null;
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), UserLoginDto.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), AuthRequestDto.class);
             // Compares the user with CustomUserDetailService#loadUserByUsername and check if the
             // credentials are correct
             return authenticationManager.authenticate(
@@ -62,11 +64,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (BadCredentialsException e) {
             if (user != null && user.getEmail() != null) {
                 LOGGER.error("Unsuccessful authentication attempt for user {}", user.getEmail());
-                throw new BadCredentialsException("Bad credentials for user: " + user.getEmail(), e);
+                throw new BadCredentialsException("Bad credentials for user: " + user.getEmail(),
+                    e);
             }
-            throw new BadCredentialsException("Bad credentials!", e);
+            throw new BadCredentialsException(GENERIC_LOGIN_FAILURE_MSG, e);
         } catch (LockedException e) {
-            throw new LockedException(e.getMessage() + ". Please contact your administrator!", e);
+            throw new LockedException(GENERIC_LOGIN_FAILURE_MSG, e);
 
         }
     }

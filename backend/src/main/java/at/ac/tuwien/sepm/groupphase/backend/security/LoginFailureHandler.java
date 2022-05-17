@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.security;
 
+import static at.ac.tuwien.sepm.groupphase.backend.config.Constants.GENERIC_LOGIN_FAILURE_MSG;
+
 import at.ac.tuwien.sepm.groupphase.backend.config.Constants;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -36,26 +40,27 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         if (exception.getMessage().startsWith("Bad credentials for user: ")) {
             String exmsg = "Bad credentials for user: ";
             String email = exception.getMessage().substring(exmsg.length());
+            ApplicationUser user = null;
+            try {
+                user = userService.findApplicationUserByEmail(email);
 
-            if (email != null) {
-                ApplicationUser user = userService.findApplicationUserByEmail(email);
-                if (user != null) {
-                    // check if the user still has attempts left
-                    if (user.getLoginTries() < Constants.MAX_FAILED_LOGIN_ATTEMPTS - 1
-                        && !user.isHasAdministrativeRights()) {
-                        userService.increaseNumberOfFailedLoginAttempts(user);
-                    } else {
-                        userService.lockUser(user);
-                        exception = new LockedException(
-                            "Due to repeatedly entering a false password, your account has been locked. Please contact your administrator!");
-                    }
-
+            } catch (NotFoundException e) {
+                exception = new BadCredentialsException(GENERIC_LOGIN_FAILURE_MSG);
+            }
+            if (user != null) {
+                if (user.getLoginTries() < Constants.MAX_FAILED_LOGIN_ATTEMPTS - 1
+                    && !user.isHasAdministrativeRights()) {
+                    userService.increaseNumberOfFailedLoginAttempts(user);
+                } else {
+                    userService.lockUser(user);
+                    exception = new LockedException(
+                        GENERIC_LOGIN_FAILURE_MSG);
                 }
             }
         }
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(exception.getMessage());
+        response.getWriter().write(GENERIC_LOGIN_FAILURE_MSG);
         LOGGER.debug("Invalid authentication attempt: {}", exception.getMessage());
     }
 
