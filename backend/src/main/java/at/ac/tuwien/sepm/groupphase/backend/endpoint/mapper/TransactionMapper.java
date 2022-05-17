@@ -41,7 +41,8 @@ public interface TransactionMapper {
         Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
 
         orderDto.setType(bookingTypeToBookingTypeDto(bookedIn.getBookingType()));
-        orderDto.setDate(show.getDate());
+        orderDto.setTransactionDate(transaction.getDate());
+        orderDto.setShowDate(show.getDate());
         orderDto.setArtists(show.getArtists().stream().map(Artist::getKnownAs).toList());
         orderDto.setEventName(event.getName());
         orderDto.setCity(location.getAddress().getCity());

@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,7 @@ public interface TestData {
 
     String USER4_EMAIL = "nicht@anzeigen.com";
 
-    LocalDate TRANSACTION_DATE = LocalDate.of(2020, 12, 7);
+    OffsetDateTime TRANSACTION_DATE = OffsetDateTime.of(2020, 12, 7,0,0,0,0, ZoneOffset.UTC);
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 

@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -21,7 +21,7 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private OffsetDateTime date;
 
     private String billPath;
 
@@ -29,7 +29,7 @@ public class Transaction {
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private ApplicationUser user;
 
-    @OneToMany(mappedBy = "transaction", fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.EAGER)
     private Set<BookedIn> bookedIns;
 
     @Override
@@ -78,11 +78,11 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 
