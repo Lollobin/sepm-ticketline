@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullTicketWithStatusDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketStatusDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
@@ -28,18 +29,19 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
     private final AuthenticationUtil authenticationFacade;
     private final UserRepository userRepository;
     private final OrderService orderService;
-
+    private final TicketMapper ticketMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
 
     public TicketAcquireServiceImpl(PurchaseValidator purchaseValidator,
         TicketRepository ticketRepository, AuthenticationUtil authenticationFacade,
-        UserRepository userRepository, OrderService orderService) {
+        UserRepository userRepository, OrderService orderService, TicketMapper ticketMapper) {
         this.purchaseValidator = purchaseValidator;
         this.ticketRepository = ticketRepository;
         this.authenticationFacade = authenticationFacade;
         this.userRepository = userRepository;
         this.orderService = orderService;
+        this.ticketMapper = ticketMapper;
     }
 
     @Override
@@ -60,22 +62,13 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
             purchaseMode ? BookingType.PURCHASE : BookingType.RESERVATION);
 
         FullTicketWithStatusDto fullTicketWithStatusDto = new FullTicketWithStatusDto();
-        List<TicketDto> fullTickets = updatedTickets.stream().map(this::ticketToTicketDto).toList();
+        List<TicketDto> fullTickets = updatedTickets.stream().map(ticketMapper::ticketToTicketDto).toList();
         if (purchaseMode) {
             fullTicketWithStatusDto.setPurchased(fullTickets);
         } else {
             fullTicketWithStatusDto.setReserved(fullTickets);
         }
         return fullTicketWithStatusDto;
-    }
-
-    private TicketDto ticketToTicketDto(Ticket ticket) {
-        TicketDto ticketDto = new TicketDto();
-        ticketDto.setTicketId(ticket.getTicketId());
-        ticketDto.setSector(ticket.getSeat().getSector().getSectorId());
-        ticketDto.setSeatNumber(ticket.getSeat().getSeatNumber());
-        ticketDto.setRowNumber(ticket.getSeat().getRowNumber());
-        return ticketDto;
     }
 
     private List<Ticket> updateTicketStatus(boolean purchaseMode, List<Ticket> ticketList,
