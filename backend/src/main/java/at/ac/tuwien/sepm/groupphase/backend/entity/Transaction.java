@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false)
-    private OffsetDateTime date;
+    private LocalDate date;
 
     private String billPath;
 
@@ -77,11 +77,11 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public OffsetDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(OffsetDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

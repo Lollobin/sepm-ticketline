@@ -2,8 +2,9 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Event, EventsService } from 'src/app/generated-sources/openapi';
+import { Event, EventsService, EventWithoutId } from 'src/app/generated-sources/openapi';
 import { AuthService } from 'src/app/services/auth.service';
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-create-event',
@@ -17,6 +18,8 @@ export class CreateEventComponent implements OnInit {
   error = false;
   errorMessage = '';
   role = '';
+  eventWithoutId: EventWithoutId = {name: ""};
+  faCircleQuestion = faCircleQuestion;
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
     private authService: AuthService) { }
@@ -62,8 +65,13 @@ export class CreateEventComponent implements OnInit {
   }
 
   createEvent(): void {
-    this.eventService.eventsPost(this.eventForm.value, 'response').subscribe(
-      (res: HttpResponse<Event>) => {
+    this.eventWithoutId.name = this.eventForm.value.name;
+    this.eventWithoutId.category = this.eventForm.value.category;
+    this.eventWithoutId.duration = this.eventForm.value.duration;
+    this.eventWithoutId.content = this.eventForm.value.description;
+    console.log("POST http://localhost:8080/events " + JSON.stringify(this.eventWithoutId));
+    this.eventService.eventsPost(this.eventWithoutId, 'response').subscribe({
+      next: (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
         console.log("Succesfully created event");
         console.log(location);
@@ -71,7 +79,7 @@ export class CreateEventComponent implements OnInit {
         this.router.navigateByUrl("/events/" + id + "/shows");
         this.error = false;
       },
-      error => {
+      error: error => {
         console.log(error.message);
         this.error = true;
         if (typeof error.error === 'object') {
@@ -79,7 +87,7 @@ export class CreateEventComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
-      }
+      }}
     );
   }
 
