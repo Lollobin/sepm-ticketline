@@ -73,8 +73,5 @@ public class OrderServiceImpl implements OrderService {
             return bookedIn;
         }).collect(Collectors.toSet());
         this.bookedInRepository.saveAll(bookings);
-        this.bookedInRepository.flush();
-        transaction.setBookedIns(bookings);
-        this.transactionRepository.save(transaction);
     }
 }
