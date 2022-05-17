@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.CustomUserDetailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -128,5 +129,35 @@ class ApplicationUserServiceTest implements TestData {
             // In this test we want to make sure that the repository.save() is not called after
         }
         verify(userRepository, times(0)).save(any());
+    }
+
+    @Disabled
+    @Test
+     void whenUserWithMailExist_thenLoadUserByUsernameReturnsUser() {
+    }
+
+    @Disabled
+    @Test
+    void whenUserWithMailNotExists_ThenThrowUserNotFoundException() {
+    }
+
+    @Disabled
+    @Test
+    void whenIncreaseNumberOfFailedAttempts_thenUserRepoIncreaseNumberOfFailedAttempts() {
+    }
+
+    @Disabled
+    @Test
+    void whenResetFailedLoginAttempts_thenUserRepoResetFailedAttempts() {
+    }
+
+    @Disabled
+    @Test
+    void whenUserShouldBeLocked_thenUserRepoLockUser() {
+    }
+
+    @Disabled
+    @Test
+    void whenUserIsLocked_thenLoadUserReturnsLockedUserDetails() {
     }
 }

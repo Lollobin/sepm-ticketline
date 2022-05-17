@@ -1,42 +1,75 @@
-<p class="h2 form-margin form-group">Add new shows for event "{{this.eventName}}"</p>
-
 <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Validation Errors: </strong> {{ errorMessage }}
-    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
+    <strong>Error occured: </strong> {{ errorMessage }}
+    <button *ngIf="!this.notFound" type="button" (click)="vanishError()" class="close" data-dismiss="alert"
+        aria-label="Close">
+        <span aria-hidden="true">&times;</span>
     </button>
-  </div>
-  
-<form class="form-margin" [formGroup]="showForm">
-    <div class="row">
-        <div class="form-group col-md-6">
-            <small for="inputDate" class="form-label text-muted">Date</small>
-            <input id="inputDate" class="form-control form-override" [class.is-invalid]="!this.date.valid"
-                [class.is-valid]="this.date.valid" formControlName="date" type="date" placeholder="yyyy-mm-dd">
-            <div *ngIf="!this.date.valid" class="invalid-feedback" style="display: block">
-                <div *ngIf="this.date.errors.required">Date is required!</div>
-                <div *ngIf="!this.date.errors.required">Date is invalid!</div>
-            </div>
-        </div>
-        <div class="form-group col-md-6">
-            <small for="inputTime" class="form-label text-muted">Time</small>
-            <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time"
-                [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
-            <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
-                <div *ngIf="this.time.errors.required">Time is required!</div>
-                <div *ngIf="!this.time.errors.required">Time is invalid!</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <small for="inputLocation" class="form-label text-muted">Location Name</small>
-    </div>
-    <div class="form-group">
-        <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
-    </div>
-    <div class="form-group">
-        <small for="inputArtists" class="form-label text-muted">Artists</small>
-    </div>
-    <button type="submit" class="btn btn-primary" (click)="createShow()" [disabled]="!showForm.valid">Submit</button>
+</div>
 
-</form>
+<div *ngIf="role !== 'ADMIN'" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Authentication error: </strong> Only admins are allowed to create shows for events
+</div>
+
+
+<div *ngIf="role === 'ADMIN' && !this.notFound">
+    <p class="h2 form-margin form-group"><fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faCircleQuestion" data-bs-toggle="tooltip"
+        data-placement="bottom" title="In this step a specific show is created. It specifies the given event and gives it a date, a location, a seating plan and artists."> </fa-icon>
+    Add shows to "{{this.eventName}}"</p>
+
+    <form class="form-margin" [formGroup]="showForm">
+        <div class="form-group">
+            <small for="name" class="form-label text-muted">Event Name</small>
+            <div type="text" class="form-control" style="border-top: 0; border-left: 0; border-right: 0">
+                {{this.eventName}}</div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <small for="inputCategory" class="form-label text-muted">Event Category</small>
+                <div class="form-control form-override"
+                    style="border-top: 0; border-left: 0; border-right: 0; margin-bottom: 20px;">{{this.eventCategory}}
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <small for="inputCategory" class="form-label text-muted">Event Duration</small>
+                <div class="form-control form-override" style="border-top: 0; border-left: 0; border-right: 0">
+                    {{this.secondsToHms(this.eventDuration)}}</div>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <small for="inputDate" class="form-label text-muted">Date</small>
+                <input id="inputDate" class="form-control form-override" [class.is-invalid]="!this.date.valid"
+                    [class.is-valid]="this.date.valid" formControlName="date" type="date" placeholder="yyyy-mm-dd">
+                <div *ngIf="!this.date.valid" class="invalid-feedback" style="display: block">
+                    <div *ngIf="this.date.errors.required">Date is required!</div>
+                    <div *ngIf="!this.date.errors.required">Date is invalid!</div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <small for="inputTime" class="form-label text-muted">Time</small>
+                <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time"
+                    [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
+                <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
+                    <div *ngIf="this.time.errors.required">Time is required!</div>
+                    <div *ngIf="!this.time.errors.required">Time is invalid!</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <small for="inputLocation" class="form-label text-muted">Location Name</small>
+        </div>
+        <div class="form-group">
+            <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
+        </div>
+        <div class="form-group">
+            <small for="inputArtists" class="form-label text-muted">Artists</small>
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="createShow()"
+            [disabled]="!showForm.valid">Submit</button>
+
+    </form>
+</div>

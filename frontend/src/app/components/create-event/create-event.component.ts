@@ -2,8 +2,9 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Event, EventsService } from 'src/app/generated-sources/openapi';
-
+import { Event, EventsService, EventWithoutId } from 'src/app/generated-sources/openapi';
+import { AuthService } from 'src/app/services/auth.service';
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-create-event',
@@ -16,8 +17,12 @@ export class CreateEventComponent implements OnInit {
   eventForm: any;
   error = false;
   errorMessage = '';
+  role = '';
+  eventWithoutId: EventWithoutId = {name: ""};
+  faCircleQuestion = faCircleQuestion;
 
-  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
+    private authService: AuthService) { }
 
   get name() {
     return this.eventForm.get("name");
@@ -40,11 +45,12 @@ export class CreateEventComponent implements OnInit {
       "Classical", "Country", "EDM", "Jazz", "Oldies", "Pop", "Rap", "R&B", "Rock", "Techno"
     ];
     this.eventForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      category: ['', [Validators.required]],
-      duration: [120],
-      description: []
+      name: ['', [Validators.required, Validators.maxLength(255)]],
+      category: ['', [Validators.required, Validators.maxLength(255)]],
+      duration: [120, [Validators.min(10), Validators.max(360)]],
+      description: ['']
     });
+    this.role = this.authService.getUserRole();
   }
 
   secondsToHms(d): string {
@@ -59,15 +65,21 @@ export class CreateEventComponent implements OnInit {
   }
 
   createEvent(): void {
-    this.eventService.eventsPost(this.eventForm.value, 'response').subscribe(
-      (res: HttpResponse<Event>) => {
+    this.eventWithoutId.name = this.eventForm.value.name;
+    this.eventWithoutId.category = this.eventForm.value.category;
+    this.eventWithoutId.duration = this.eventForm.value.duration;
+    this.eventWithoutId.content = this.eventForm.value.description;
+    console.log("POST http://localhost:8080/events " + JSON.stringify(this.eventWithoutId));
+    this.eventService.eventsPost(this.eventWithoutId, 'response').subscribe({
+      next: (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
         console.log("Succesfully created event");
         console.log(location);
         const id = location.split("/").pop();
         this.router.navigateByUrl("/events/" + id + "/shows");
+        this.error = false;
       },
-      error => {
+      error: error => {
         console.log(error.message);
         this.error = true;
         if (typeof error.error === 'object') {
@@ -75,7 +87,7 @@ export class CreateEventComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
-      }
+      }}
     );
   }
 

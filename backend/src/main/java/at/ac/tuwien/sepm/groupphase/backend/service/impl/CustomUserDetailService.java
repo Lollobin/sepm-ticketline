@@ -32,7 +32,6 @@ public class CustomUserDetailService implements UserService {
     private final UserEncodePasswordMapper encodePasswordMapper;
     private final UserValidator userValidator;
 
-
     @Autowired
     public CustomUserDetailService(
         UserRepository userRepository,
