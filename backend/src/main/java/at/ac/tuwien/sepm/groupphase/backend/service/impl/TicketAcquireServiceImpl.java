@@ -52,11 +52,9 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
             authenticationFacade.getAuthentication().getPrincipal().toString());
         List<Ticket> unavailableTickets = getUnavailableTickets(ticketList, user);
         if (!unavailableTickets.isEmpty()) {
-            //TODO: CHANGE TO CONFLICT ERROR and add ticket info
-            throw new ValidationException("TICKETS NOT AVAILABLE");
+            throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
         }
-        List<Ticket> updatedTickets = updateTicketStatus(
-            purchaseMode, ticketList, user);
+        List<Ticket> updatedTickets = updateTicketStatus(purchaseMode, ticketList, user);
         this.orderService.generateTransaction(ticketList, user,
             purchaseMode ? BookingType.PURCHASE : BookingType.RESERVATION);
 
@@ -95,9 +93,8 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
     private List<Ticket> getUnavailableTickets(List<Ticket> ticketList, ApplicationUser user) {
         List<Ticket> unavailableTickets = new ArrayList<>();
         for (Ticket ticket : ticketList) {
-            if (ticket.getPurchasedBy() != null || (
-                ticket.getReservedBy() != null
-                    && ticket.getReservedBy().getUserId() != user.getUserId())) {
+            if (ticket.getPurchasedBy() != null || (ticket.getReservedBy() != null
+                && ticket.getReservedBy().getUserId() != user.getUserId())) {
                 unavailableTickets.add(ticket);
             }
         }

@@ -28,7 +28,7 @@ export class ErrorAlertComponent implements OnInit {
     if (error instanceof Error) {
       this.errorMessage = error.message;
     } else if (typeof error.error === "object") {
-      this.errorMessage = error.error.error;
+      this.errorMessage = error.error.message;
     } else {
       this.errorMessage = error.error;
     }

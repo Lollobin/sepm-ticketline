@@ -174,6 +174,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           console.log("YOU BOUGHT THEM TICkETS");
           console.log(response);
         },
+        error: (error) => {
+          this.setError(error)
+        }
       });
   }
   confirmReservation() {
