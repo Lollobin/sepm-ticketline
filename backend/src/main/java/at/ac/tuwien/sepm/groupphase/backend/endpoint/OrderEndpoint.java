@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController()
+@RestController
 public class OrderEndpoint implements OrdersApi {
 
     private static final Logger LOGGER =
@@ -30,6 +30,6 @@ public class OrderEndpoint implements OrdersApi {
     public ResponseEntity<List<OrderDto>> ordersGet() {
         LOGGER.info("GET /orders");
         return ResponseEntity.ok(
-            transactionMapper.transActionToOrderDto((orderService.findAllByCurrentUser())));
+            transactionMapper.transActionToOrderDto(orderService.findAllByCurrentUser()));
     }
 }

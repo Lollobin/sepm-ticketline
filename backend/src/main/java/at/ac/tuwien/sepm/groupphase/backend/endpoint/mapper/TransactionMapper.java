@@ -11,19 +11,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.mapstruct.Mapper;
 
 @Mapper
 public interface TransactionMapper {
-
-    default OffsetDateTime map(LocalDate localDate) {
-        return OffsetDateTime.of(localDate, LocalTime.MIDNIGHT, ZoneOffset.UTC);
-    }
 
     TransactionDto transActionToTransactionDto(Transaction transaction);
 

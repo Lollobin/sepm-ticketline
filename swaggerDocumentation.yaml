@@ -933,6 +933,30 @@ paths:
           description: The given transaction id was not found
         500:
           $ref: "#/components/responses/500-internal-error"
+  /ticketInfo:
+    get:
+      tags:
+        - tickets
+      summary: Gets all future tickets of user possessing the token
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TicketWithShowInfo"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The user with the given token was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
 components:
   parameters:
     userId:
@@ -1306,7 +1330,8 @@ components:
       type: object
       properties:
         ticketId:
-          type: number
+          type: integer
+          format: int64
         rowNumber:
           type: integer
           format: int64
@@ -1518,7 +1543,10 @@ components:
       properties:
         type:
           $ref: "#/components/schemas/BookingType"
-        date:
+        transactionDate:
+          type: string
+          format: date-time
+        showDate:
           type: string
           format: date-time
         artists:
@@ -1546,3 +1574,35 @@ components:
         - locationName
         - transactionId
         - ticketIds
+    TicketWithShowInfo:
+      type: object
+      properties:
+        ticket:
+          $ref: "#/components/schemas/Ticket"
+        type:
+          type: string
+          enum:
+            - purchased
+            - reserved
+        showDate:
+          type: string
+          format: date-time
+        artists:
+          type: array
+          items:
+            type: string
+        eventName:
+          type: string
+        city:
+          type: string
+        locationName:
+          type: string
+      required:
+        - ticket
+        - type
+        - showDate
+        - artists
+        - eventName
+        - city
+        - locationName
+        

@@ -13,4 +13,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         + " WHERE s.show_id = (:showId)",
         nativeQuery = true)
     public List<Ticket> findByShowId(@Param("showId") Long showId);
+
+    List<Ticket> findAllByPurchasedByEmailOrReservedByEmail(String purchasedByEmail, String reservedByEmail);
 }

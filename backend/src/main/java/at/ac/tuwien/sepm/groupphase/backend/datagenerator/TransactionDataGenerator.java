@@ -14,7 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import javax.annotation.PostConstruct;
+import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -105,8 +105,9 @@ public class TransactionDataGenerator {
             user2.setLockedAccount(false);
             userRepository.save(user2);
 
+            /*
             Transaction transaction = new Transaction();
-            transaction.setDate(LocalDate.of(2005, 11, 20));
+            transaction.setDate(OffsetDateTime.of(2005, 11, 20));
             transaction.setUser(user);
             transactionRepository.save(transaction);
 
@@ -119,6 +120,8 @@ public class TransactionDataGenerator {
             transaction3.setDate(LocalDate.of(2020, 3, 1));
             transaction3.setUser(user2);
             transactionRepository.save(transaction3);
+
+             */
         }
     }
 }
