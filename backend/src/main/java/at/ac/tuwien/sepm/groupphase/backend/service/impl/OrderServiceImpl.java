@@ -49,7 +49,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void generateTransaction(List<Ticket> tickets, ApplicationUser user, BookingType bookingType) {
+    public void generateTransaction(List<Ticket> tickets, ApplicationUser user,
+        BookingType bookingType) {
+        LOGGER.debug("Generate Transaction for tickets {} with user {} of type {}", tickets, user,
+            bookingType);
+
         Transaction transaction = new Transaction();
         transaction.setDate(OffsetDateTime.now().toLocalDate());
         transaction.setUser(user);

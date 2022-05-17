@@ -44,6 +44,7 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
 
     @Override
     public FullTicketWithStatusDto acquireTickets(TicketStatusDto ticketsToAcquire) {
+        LOGGER.debug("Started ticket acquisition with following tickets: {}", ticketsToAcquire);
         boolean purchaseMode = ticketsToAcquire.getReserved().isEmpty();
         this.purchaseValidator.validateTicketInformation(ticketsToAcquire);
         List<Ticket> ticketList = ticketRepository.findAllById(
