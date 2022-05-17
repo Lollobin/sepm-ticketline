@@ -50,6 +50,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void generateTransaction(List<Ticket> tickets, ApplicationUser user, BookingType bookingType) {
+        if(tickets.isEmpty()){
+            return;
+        }
         Transaction transaction = new Transaction();
         transaction.setDate(OffsetDateTime.now().toLocalDate());
         transaction.setUser(user);
