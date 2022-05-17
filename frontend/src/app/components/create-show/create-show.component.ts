@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EventsService, Show, ShowsService } from 'src/app/generated-sources/openapi';
-import { AuthService } from 'src/app/services/auth.service';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import {CustomAuthService} from "../../services/custom-auth.service";
 
 @Component({
   selector: 'app-create-show',
@@ -26,7 +26,7 @@ export class CreateShowComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
-    private route: ActivatedRoute, private authService: AuthService) { }
+    private route: ActivatedRoute, private authService: CustomAuthService) { }
 
   get date() {
     return this.showForm.get("date");

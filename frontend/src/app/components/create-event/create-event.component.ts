@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Event, EventsService, EventWithoutId } from 'src/app/generated-sources/openapi';
-import { AuthService } from 'src/app/services/auth.service';
+
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import {CustomAuthService} from "../../services/custom-auth.service";
 
 @Component({
   selector: 'app-create-event',
@@ -22,7 +23,7 @@ export class CreateEventComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
-    private authService: AuthService) { }
+    private authService: CustomAuthService) { }
 
   get name() {
     return this.eventForm.get("name");
