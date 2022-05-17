@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -139,7 +138,6 @@ public interface TestData {
     //Valid Show Data
 
 
-
     OffsetDateTime SHOW_DATE = OffsetDateTime.of(LocalDateTime.of(2024, 5, 12, 5, 45),
         zoneOffSet);
 
@@ -150,10 +148,8 @@ public interface TestData {
         zoneOffSet);
 
 
-
     OffsetDateTime SHOW_INVALID_DATE = OffsetDateTime.of(LocalDateTime.now().minusMinutes(10),
         zoneOffSet);
-
 
 
 }
