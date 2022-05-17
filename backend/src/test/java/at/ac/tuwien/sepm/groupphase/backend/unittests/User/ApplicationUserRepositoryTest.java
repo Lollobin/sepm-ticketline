@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,6 +26,8 @@ class ApplicationUserRepositoryTest implements TestData {
         testuser.setLastName(USER_LNAME);
         testuser.setGender(USER_GENDER);
         testuser.setEmail(USER_EMAIL);
+
+        ADDRESS_ENTITY.setAddressId(null);
         testuser.setAddress(ADDRESS_ENTITY);
         testuser.setPassword(ENCODED_USER_PASSWORD_EXAMPLE);
         userRepository.save(testuser);
@@ -46,4 +49,20 @@ class ApplicationUserRepositoryTest implements TestData {
         assertEquals(USER_CITY, returns.getAddress().getCity());
         assertEquals(USER_CTRY, returns.getAddress().getCountry());
     }
+
+    @Disabled
+    @Test
+    void shouldIncreaseFailedLoginAttemptsByOne() {
+    }
+
+    @Disabled
+    @Test
+    void shouldResetFailedLoginAttempts() {
+    }
+
+    @Disabled
+    @Test
+    void shouldLockUser() {
+    }
+
 }

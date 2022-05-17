@@ -15,7 +15,7 @@ public class SeatingPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seatingPlanId;
+    private Long seatingPlanId;
 
     @Column(nullable = false)
     private String name;
@@ -66,11 +66,11 @@ public class SeatingPlan {
         nullable = false)
     private SeatingPlanLayout seatingPlanLayout;
 
-    public long getSeatingPlanId() {
+    public Long getSeatingPlanId() {
         return seatingPlanId;
     }
 
-    public void setSeatingPlanId(long seatingPlanId) {
+    public void setSeatingPlanId(Long seatingPlanId) {
         this.seatingPlanId = seatingPlanId;
     }
 

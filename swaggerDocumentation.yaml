@@ -1162,11 +1162,11 @@ components:
           type: string
           format: date-time
         event:
-          type: number
+          type: integer
         artists:
           type: array
           items:
-            type: number
+            type: integer
       required:
         - date
         - event
@@ -1180,7 +1180,7 @@ components:
           type: string
           format: date-time
         event:
-          type: number
+          type: integer
         ticketsSold:
           type: integer
         artists:

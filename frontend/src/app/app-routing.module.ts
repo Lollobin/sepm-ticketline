@@ -6,6 +6,8 @@ import {AuthGuard} from './guards/auth.guard';
 import {MessageComponent} from './components/message/message.component';
 import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
 import {RegistrationComponent} from "./components/registration/registration.component";
+import { CreateEventComponent } from './components/create-event/create-event.component';
+import { CreateShowComponent } from './components/create-show/create-show.component';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 
 const routes: Routes = [
@@ -14,7 +16,10 @@ const routes: Routes = [
   {path: 'message', canActivate: [AuthGuard], component: MessageComponent},
   {path: 'buyTickets/:showId', component: SeatingPlanComponent},
   {path: 'registration', component: RegistrationComponent},
-  {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]}
+  {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]},
+  {path: 'registration', component: RegistrationComponent},
+  {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard]},
+  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

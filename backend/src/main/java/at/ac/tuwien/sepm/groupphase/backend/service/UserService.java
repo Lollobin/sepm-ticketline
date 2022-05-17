@@ -32,6 +32,7 @@ public interface UserService extends UserDetailsService {
      * Save a new User.
      *
      * @param user the user Object to be saved
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException when Validation fails because of Duplicate Email, invalid field values, or whitespace-only values.
      */
     void save(UserWithPasswordDto user);
 
@@ -42,4 +43,27 @@ public interface UserService extends UserDetailsService {
      * @return all users based on param
      */
     List<ApplicationUser> findAll(Boolean filterLocked);
+
+    /**
+     * Increase the Number of failed login attempts by one.
+     *
+     * @param user whose login attempt number will be increased
+     */
+    void increaseNumberOfFailedLoginAttempts(ApplicationUser user);
+
+    /**
+     * Set the lockedAccount field to true.
+     *
+     * @param user whose account will be locked
+     */
+    void lockUser(ApplicationUser user);
+
+    /**
+     * Reset the number of failed login attempts of user to zero.
+     *
+     * @param user whose login attempts will be reset
+     */
+    void resetNumberOfFailedLoginAttempts(ApplicationUser user);
+
+
 }

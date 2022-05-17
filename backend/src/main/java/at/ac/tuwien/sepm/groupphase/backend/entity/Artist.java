@@ -19,7 +19,7 @@ public class Artist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long artistId;
+    private Long artistId;
 
     private String bandName;
 
@@ -79,11 +79,11 @@ public class Artist {
             + '}';
     }
 
-    public long getArtistId() {
+    public Long getArtistId() {
         return artistId;
     }
 
-    public void setArtistId(long artistId) {
+    public void setArtistId(Long artistId) {
         this.artistId = artistId;
     }
 

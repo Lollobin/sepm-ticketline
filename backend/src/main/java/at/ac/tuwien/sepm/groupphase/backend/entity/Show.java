@@ -22,7 +22,7 @@ public class Show {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long showId;
+    private Long showId;
 
     @Column
     private OffsetDateTime date;
@@ -35,7 +35,7 @@ public class Show {
 
     @ManyToOne
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @Cascade(CascadeType.MERGE)
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
 
@@ -54,7 +54,7 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return showId == show.showId && Objects.equals(date, show.date) && Objects.equals(artists,
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
             show.artists) && Objects.equals(event, show.event);
     }
 
@@ -63,11 +63,11 @@ public class Show {
         return Objects.hash(showId, date);
     }
 
-    public long getShowId() {
+    public Long getShowId() {
         return showId;
     }
 
-    public void setShowId(long showId) {
+    public void setShowId(Long showId) {
         this.showId = showId;
     }
 

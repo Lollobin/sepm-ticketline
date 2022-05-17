@@ -13,7 +13,7 @@ public class Sector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long sectorId;
+    private Long sectorId;
 
     @Override
     public boolean equals(Object o) {
@@ -41,11 +41,11 @@ public class Sector {
     @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
     private SeatingPlan seatingPlan;
 
-    public long getSectorId() {
+    public Long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(long sectorId) {
+    public void setSectorId(Long sectorId) {
         this.sectorId = sectorId;
     }
 

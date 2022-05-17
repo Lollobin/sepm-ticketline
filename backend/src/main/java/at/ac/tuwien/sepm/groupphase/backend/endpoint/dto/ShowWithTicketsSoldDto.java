@@ -33,7 +33,7 @@ public class ShowWithTicketsSoldDto   {
   private OffsetDateTime date;
 
   @JsonProperty("event")
-  private BigDecimal event;
+  private Integer event;
 
   @JsonProperty("ticketsSold")
   private Integer ticketsSold;
@@ -80,7 +80,7 @@ public class ShowWithTicketsSoldDto   {
     this.date = date;
   }
 
-  public ShowWithTicketsSoldDto event(BigDecimal event) {
+  public ShowWithTicketsSoldDto event(Integer event) {
     this.event = event;
     return this;
   }
@@ -89,13 +89,13 @@ public class ShowWithTicketsSoldDto   {
    * Get event
    * @return event
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "event", required = true)
-  public BigDecimal getEvent() {
+  public Integer getEvent() {
     return event;
   }
 
-  public void setEvent(BigDecimal event) {
+  public void setEvent(Integer event) {
     this.event = event;
   }
 
