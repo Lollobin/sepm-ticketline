@@ -48,14 +48,13 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
         this.purchaseValidator.validateTicketInformation(ticketsToAcquire);
         List<Ticket> ticketList = ticketRepository.findAllById(
             purchaseMode ? ticketsToAcquire.getPurchased() : ticketsToAcquire.getReserved());
-
-        List<Ticket> unavailableTickets = getUnavailableTickets(ticketList);
+        ApplicationUser user = this.userRepository.findUserByEmail(
+            authenticationFacade.getAuthentication().getPrincipal().toString());
+        List<Ticket> unavailableTickets = getUnavailableTickets(ticketList, user);
         if (!unavailableTickets.isEmpty()) {
             //TODO: CHANGE TO CONFLICT ERROR and add ticket info
             throw new ValidationException("TICKETS NOT AVAILABLE");
         }
-        ApplicationUser user = this.userRepository.findUserByEmail(
-            authenticationFacade.getAuthentication().getPrincipal().toString());
         List<Ticket> updatedTickets = updateTicketStatus(
             purchaseMode, ticketList, user);
         this.orderService.generateTransaction(ticketList, user,
@@ -93,10 +92,12 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
         return updatedTickets;
     }
 
-    private List<Ticket> getUnavailableTickets(List<Ticket> ticketList) {
+    private List<Ticket> getUnavailableTickets(List<Ticket> ticketList, ApplicationUser user) {
         List<Ticket> unavailableTickets = new ArrayList<>();
         for (Ticket ticket : ticketList) {
-            if (!(ticket.getPurchasedBy() == null || ticket.getReservedBy() == null)) {
+            if (ticket.getPurchasedBy() != null || (
+                ticket.getReservedBy() != null
+                    && ticket.getReservedBy().getUserId() != user.getUserId())) {
                 unavailableTickets.add(ticket);
             }
         }
