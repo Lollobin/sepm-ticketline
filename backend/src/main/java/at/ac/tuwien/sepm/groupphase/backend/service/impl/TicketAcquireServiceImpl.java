@@ -60,7 +60,7 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
         if (!unavailableTickets.isEmpty()) {
             throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
         }
-        
+
         List<Ticket> updatedTickets = updateTicketStatus(purchaseMode, ticketList, user);
         this.orderService.generateTransaction(ticketList, user,
             purchaseMode ? BookingType.PURCHASE : BookingType.RESERVATION);
