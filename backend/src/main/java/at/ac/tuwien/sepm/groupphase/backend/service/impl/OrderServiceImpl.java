@@ -25,15 +25,15 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl implements OrderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+            MethodHandles.lookup().lookupClass());
     private final TransactionRepository transactionRepository;
     private final AuthenticationUtil authenticationFacade;
     private final SectorPriceRepository sectorPriceRepository;
     private final BookedInRepository bookedInRepository;
 
     public OrderServiceImpl(
-        TransactionRepository transactionRepository, AuthenticationUtil authenticationFacade,
-        SectorPriceRepository sectorPriceRepository, BookedInRepository bookedInRepository) {
+            TransactionRepository transactionRepository, AuthenticationUtil authenticationFacade,
+            SectorPriceRepository sectorPriceRepository, BookedInRepository bookedInRepository) {
         this.transactionRepository = transactionRepository;
         this.authenticationFacade = authenticationFacade;
         this.sectorPriceRepository = sectorPriceRepository;
@@ -49,14 +49,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void generateTransaction(List<Ticket> tickets, ApplicationUser user, BookingType bookingType) {
-        if(tickets.isEmpty()){
+    public void generateTransaction(List<Ticket> tickets, ApplicationUser user,
+            BookingType bookingType) {
+        LOGGER.debug("Generate Transaction for tickets {} with user {} of type {}", tickets, user,
+                bookingType);
+        if (tickets.isEmpty()) {
             return;
         }
         Transaction transaction = new Transaction();
         transaction.setDate(OffsetDateTime.now().toLocalDate());
         transaction.setUser(user);
-        //TODO: ADD GENERATION OF BILL
+        // TODO: ADD GENERATION OF BILL
         transaction.setBillPath(null);
         this.transactionRepository.save(transaction);
         Set<BookedIn> bookings = tickets.stream().map(ticket -> {
@@ -69,8 +72,8 @@ public class OrderServiceImpl implements OrderService {
             bookedIn.setBookingType(bookingType);
             bookedIn.setTicket(ticket);
             SectorPrice sectorPrice = this.sectorPriceRepository.findOneByShowIdBySectorId(
-                ticket.getShow().getShowId(),
-                ticket.getSeat().getSector().getSectorId());
+                    ticket.getShow().getShowId(),
+                    ticket.getSeat().getSector().getSectorId());
             bookedIn.setPriceAtBookingTime(sectorPrice.getPrice());
 
             return bookedIn;

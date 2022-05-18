@@ -52,8 +52,6 @@ public class Ticket {
             + seat
             + ", show="
             + show
-            + ", bookedIns="
-            + bookedIns
             + '}';
     }
 
