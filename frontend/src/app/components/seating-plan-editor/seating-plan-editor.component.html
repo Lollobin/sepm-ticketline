@@ -1,1 +1,9 @@
-<p>seating-plan-editor works!</p>
+<div class="screenBounded border border-dark border-2">
+  <div #pixiContainer></div>
+</div>
+
+<div #infoOverlay class="position-absolute" [hidden]="hoverInfo === undefined">
+  <div *ngIf="hoverInfo !== undefined" class="border bg-white p-2 border-2">
+    <div>{{ hoverInfo }}</div>
+  </div>
+</div>
