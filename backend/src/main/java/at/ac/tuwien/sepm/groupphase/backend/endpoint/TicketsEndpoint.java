@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullTicketWithStatusDto
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketStatusDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.TicketsApi;
 import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquisitionService;
-import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquireService;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

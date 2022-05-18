@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.basetest;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public interface TestData {
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
     String USERS_BASE_URI = "/users";
     String ORDERS_BASE_URI = "/orders";
-
+    String TICEKTS_BASE_URI = "/tickets";
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES =
         new ArrayList<>() {
@@ -150,6 +151,12 @@ public interface TestData {
 
     OffsetDateTime SHOW_INVALID_DATE = OffsetDateTime.of(LocalDateTime.now().minusMinutes(10),
         zoneOffSet);
+
+
+    //Valid Ticket Data
+    Long TICKET_ID = 1L;
+    ApplicationUser TICKET_PURCHASED_BY = null;
+    ApplicationUser TICKET_RESERVED_BY = null;
 
 
 }

@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullTicketWithStatusDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketStatusDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TicketMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TicketMapperImpl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
@@ -47,6 +49,7 @@ public class TicketAcquisitionServiceTest {
     @Mock
     private OrderService orderService;
 
+    private final TicketMapper ticketMapper = new TicketMapperImpl();
     @Mock
     private Authentication authentication;
     AtomicLong atomicLong;
@@ -54,7 +57,7 @@ public class TicketAcquisitionServiceTest {
     @BeforeEach
     void setUp() {
         ticketAcquisitionService = new TicketAcquisitionServiceImpl(purchaseValidator,
-            ticketRepository, authenticationFacade, userRepository, orderService);
+            ticketRepository, authenticationFacade, userRepository, orderService, ticketMapper);
         atomicLong = new AtomicLong();
     }
 
