@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {AuthRequest} from '../../dtos/auth-request';
 
@@ -19,13 +19,19 @@ export class LoginComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  returnUrl: string;
+
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
+  ngOnInit() {
+    //if login successful we will redirect here
+    this.returnUrl= this.route.snapshot.queryParams['redirectUrl'] || '/';
+  }
   /**
    * Form validation will start after the method is called, additionally an AuthRequest will be sent
    */
@@ -49,7 +55,7 @@ export class LoginComponent implements OnInit {
     this.authService.loginUser(authRequest).subscribe({
       next: () => {
         console.log('Successfully logged in user: ' + authRequest.email);
-        this.router.navigate(['/message']);
+        this.router.navigate([this.returnUrl]);
       },
       error: error => {
         console.log('Could not log in due to:');
@@ -71,7 +77,5 @@ export class LoginComponent implements OnInit {
     this.error = false;
   }
 
-  ngOnInit() {
-  }
 
 }
