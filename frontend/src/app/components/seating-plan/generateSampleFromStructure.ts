@@ -4,7 +4,7 @@
  */
 
 import { ShowInformation } from "src/app/generated-sources/openapi";
-import { SeatingPlan } from "./seatingPlanGraphics";
+import { SeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 
 const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlan => {
   const seatingPlan: SeatingPlan = {
