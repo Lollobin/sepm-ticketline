@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
+import at.ac.tuwien.sepm.groupphase.backend.entity.BookedIn;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -12,7 +13,9 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
@@ -34,6 +37,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -65,8 +69,6 @@ public class ShowDataGenerator {
     private final UserRepository userRepository;
     private final BookedInRepository bookedInRepository;
     private final TransactionRepository transactionRepository;
-
-    //private ApplicationUser user;
 
     public ShowDataGenerator(ShowRepository showRepository, ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
@@ -178,7 +180,7 @@ public class ShowDataGenerator {
         Show show = new Show();
         show.setShowId(1L);
         show.setArtists(Set.of(a1));
-        show.setDate(OffsetDateTime.now());
+        show.setDate(OffsetDateTime.of(2023, 11, 4, 20, 30, 0, 0, ZoneOffset.UTC));
         show.setEvent(e1);
 
         showRepository.save(show);
@@ -194,7 +196,6 @@ public class ShowDataGenerator {
 
         SeatingPlan seatingPlan = generateSeatingPlan(location, seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
-
 
         Address address2 = new Address();
         address2.setStreet("TestStreet 1233");
@@ -225,11 +226,81 @@ public class ShowDataGenerator {
                 Seat seat = generateSeat(sector);
                 seatRepository.save(seat);
                 Ticket ticket = generateTicket(show, seat);
-                ticket.setPurchasedBy(user);
-                ticketRepository.save(ticket);
+
+                if (i == 0 && j == 0) {
+                    //Buy and cancel ticket
+                    ticketRepository.save(ticket);
+
+                    Transaction transaction1 = new Transaction();
+                    transaction1.setDate(
+                        OffsetDateTime.of(2019, 11, 12, 14, 10, 0, 0, ZoneOffset.UTC));
+                    transaction1.setUser(user);
+                    transactionRepository.save(transaction1);
+
+                    BookedIn bookedIn1 = new BookedIn();
+                    bookedIn1.setBookingType(BookingType.PURCHASE);
+                    bookedIn1.setTransaction(transaction1);
+                    bookedIn1.setPriceAtBookingTime(22.3f);
+                    bookedIn1.setTicket(ticket);
+                    bookedInRepository.save(bookedIn1);
+
+                    //Cancel Ticket 1
+                    Transaction transaction2 = new Transaction();
+                    transaction2.setDate(
+                        OffsetDateTime.of(2019, 11, 24, 16, 23, 0, 0, ZoneOffset.UTC));
+                    transaction2.setUser(user);
+                    transactionRepository.save(transaction2);
+
+                    BookedIn bookedIn2 = new BookedIn();
+                    bookedIn2.setBookingType(BookingType.CANCELLATION);
+                    bookedIn2.setTransaction(transaction2);
+                    bookedIn2.setPriceAtBookingTime(22.3f);
+                    bookedIn2.setTicket(ticket);
+                    bookedInRepository.save(bookedIn2);
+                } else if (i == 0 && j == 1) {
+                    //Reserve Ticket
+                    ticket.setReservedBy(user);
+                    ticketRepository.save(ticket);
+
+                    //Reserve Ticket 2
+                    Transaction transaction = new Transaction();
+                    transaction.setDate(
+                        OffsetDateTime.of(2020, 3, 1, 12, 37, 0, 0, ZoneOffset.UTC));
+                    transaction.setUser(user);
+                    transactionRepository.save(transaction);
+
+                    BookedIn bookedIn = new BookedIn();
+                    bookedIn.setBookingType(BookingType.RESERVATION);
+                    bookedIn.setTransaction(transaction);
+                    bookedIn.setPriceAtBookingTime(22.3f);
+                    bookedIn.setTicket(ticket);
+                    bookedInRepository.save(bookedIn);
+
+                } else if (i == 0 && j == 2) {
+                    //Buy Ticket
+                    ticket.setPurchasedBy(user);
+                    ticketRepository.save(ticket);
+
+                    //Reserve Ticket 2
+                    Transaction transaction = new Transaction();
+                    transaction.setDate(
+                        OffsetDateTime.of(2020, 3, 12, 13, 10, 0, 0, ZoneOffset.UTC));
+                    transaction.setUser(user);
+                    transactionRepository.save(transaction);
+
+                    BookedIn bookedIn = new BookedIn();
+                    bookedIn.setBookingType(BookingType.PURCHASE);
+                    bookedIn.setTransaction(transaction);
+                    bookedIn.setPriceAtBookingTime(22.3f);
+                    bookedIn.setTicket(ticket);
+                    bookedInRepository.save(bookedIn);
+                } else {
+                    ticketRepository.save(ticket);
+                }
+
+
             }
         }
-        //generateTransactions();
     }
 
     private SectorPrice generateSectorPrice(Sector sector, Show show) {
@@ -240,81 +311,4 @@ public class ShowDataGenerator {
         sectorPrice.setPrice(BigDecimal.valueOf((Math.random() + 1) * 255));
         return sectorPrice;
     }
-
-    /*
-    // TODO: move to separate class
-    public void generateTransactions() {
-        if (!transactionRepository.findAll().isEmpty()) {
-            LOGGER.debug("order already generated");
-        } else {
-            Address address2 = new Address();
-            address2.setStreet("TestStreet 1233");
-            address2.setZipCode("219338");
-            address2.setCity("test3City");
-            address2.setCountry("Aust3ria");
-            address2.setHouseNumber("2");
-
-            addressRepository.save(address2);
-
-            ApplicationUser user2 = new ApplicationUser();
-            user2.setEmail("user@email.com");
-            user2.setFirstName("Admin");
-            user2.setLastName("User");
-            user2.setGender(Gender.MALE);
-            user2.setAddress(address2);
-            user2.setPassword("password");
-            user2.setHasAdministrativeRights(true);
-            user2.setLoginTries(0);
-            user2.setMustResetPassword(false);
-            user2.setLockedAccount(false);
-            userRepository.save(user2);
-
-            final Ticket ticket1 = ticketRepository.getById(1L);
-            Ticket ticket2 = ticketRepository.getById(2L);
-
-            //Buy Ticket 1
-            Transaction transaction1 = new Transaction();
-            transaction1.setDate(OffsetDateTime.of(2005, 11, 20, 0, 0, 0, 0, ZoneOffset.UTC));
-            transaction1.setUser(user);
-            transactionRepository.save(transaction1);
-
-            BookedIn bookedIn1 = new BookedIn();
-            bookedIn1.setBookingType(BookingType.PURCHASE);
-            bookedIn1.setTransaction(transaction1);
-            bookedIn1.setPriceAtBookingTime(22.3f);
-            bookedIn1.setTicket(ticket1);
-            bookedInRepository.save(bookedIn1);
-
-            //Cancel Ticket 1
-            Transaction transaction2 = new Transaction();
-            transaction2.setDate(OffsetDateTime.of(2005, 11, 30, 0, 0, 0, 0, ZoneOffset.UTC));
-            transaction2.setUser(user);
-            transactionRepository.save(transaction2);
-
-            BookedIn bookedIn2 = new BookedIn();
-            bookedIn2.setBookingType(BookingType.CANCELLATION);
-            bookedIn2.setTransaction(transaction2);
-            bookedIn2.setPriceAtBookingTime(22.3f);
-            bookedIn2.setTicket(ticket1);
-            bookedInRepository.save(bookedIn2);
-
-            //Reserve Ticket 2
-            Transaction transaction3 = new Transaction();
-            transaction3.setDate(OffsetDateTime.of(2006, 3, 1, 0, 0, 0, 0, ZoneOffset.UTC));
-            transaction3.setUser(user);
-            transactionRepository.save(transaction3);
-
-            BookedIn bookedIn3 = new BookedIn();
-            bookedIn3.setBookingType(BookingType.RESERVATION);
-            bookedIn3.setTransaction(transaction3);
-            bookedIn3.setPriceAtBookingTime(22.3f);
-            bookedIn3.setTicket(ticket2);
-            bookedInRepository.save(bookedIn3);
-
-        }
-
-
-    }
-
-     */
 }
