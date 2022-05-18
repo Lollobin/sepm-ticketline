@@ -4,13 +4,18 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface TestData {
+
+    ZoneId zone = ZoneId.of("Europe/Berlin");
+    ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
     Long ID = 1L;
     String TEST_NEWS_TITLE = "Title";
@@ -38,32 +43,6 @@ public interface TestData {
                 add("ROLE_USER");
             }
         };
-
-    //Valid Event Data
-
-    String EVENT_NAME = "Tomorrowland";
-    BigDecimal EVENT_DURATION = BigDecimal.valueOf(249);
-    String EVENT_CATEGORY = "EDM";
-    String EVENT_CONTENT = "Tomorrowland is one of the largest music festivals in the world held in Boom, Belgium, organized and owned by the original founders, the brothers Beers.";
-
-    String EVENT2_NAME = "Festival";
-    BigDecimal EVENT2_DURATION = BigDecimal.valueOf(350);
-    String EVENT2_CATEGORY = "Pop";
-    String EVENT2_CONTENT = "Festival is a test festival";
-
-    String EVENT3_NAME = "Nova Rock";
-    BigDecimal EVENT3_DURATION = BigDecimal.valueOf(12);
-    String EVENT3_CATEGORY = "Rock";
-    String EVENT3_CONTENT = "Nova Rock is a famous festival";
-
-
-    //Invalid Event Data
-
-    String EVENT_INVALID_NAME = "   ";
-    BigDecimal EVENT_INVALID_DURATION_LOWER = BigDecimal.valueOf(9);
-    BigDecimal EVENT_INVALID_DURATION_UPPER = BigDecimal.valueOf(361);
-    String EVENT_INVALID_NAME_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
-    String EVENT_INVALID_CATEGORY_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
 
 
     String USER_FNAME = "John";
@@ -130,5 +109,47 @@ public interface TestData {
 
     Address ADDRESS4_ENTITY = new Address("USER4_HOUSE_NO", "USER4_STREET", "USER4_ZIPCODE",
         "USER4_CITY", "USER4_CTRY");
+
+    //Valid Event Data
+
+    String EVENT_NAME = "Tomorrowland";
+    long EVENT_DURATION = 249L;
+    String EVENT_CATEGORY = "EDM";
+    String EVENT_CONTENT = "Tomorrowland is one of the largest music festivals in the world held in Boom, Belgium, organized and owned by the original founders, the brothers Beers.";
+
+    String EVENT2_NAME = "Festival";
+    long EVENT2_DURATION = 350L;
+    String EVENT2_CATEGORY = "Pop";
+    String EVENT2_CONTENT = "Festival is a test festival";
+
+    String EVENT3_NAME = "Nova Rock";
+    long EVENT3_DURATION = 12L;
+    String EVENT3_CATEGORY = "Rock";
+    String EVENT3_CONTENT = "Nova Rock is a famous festival";
+
+    //Invalid Event Data
+
+    String EVENT_INVALID_NAME = "   ";
+    long EVENT_INVALID_DURATION_LOWER = 9L;
+    long EVENT_INVALID_DURATION_UPPER = 361L;
+    String EVENT_INVALID_NAME_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
+    String EVENT_INVALID_CATEGORY_LENGTH = "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestejfk";
+
+    //Valid Show Data
+
+
+    OffsetDateTime SHOW_DATE = OffsetDateTime.of(LocalDateTime.of(2024, 5, 12, 5, 45),
+        zoneOffSet);
+
+    OffsetDateTime SHOW3_DATE = OffsetDateTime.of(LocalDateTime.of(2019, 9, 3, 5, 45),
+        zoneOffSet);
+
+    OffsetDateTime SHOW2_DATE = OffsetDateTime.of(LocalDateTime.of(2019, 7, 5, 5, 45),
+        zoneOffSet);
+
+
+    OffsetDateTime SHOW_INVALID_DATE = OffsetDateTime.of(LocalDateTime.now().minusMinutes(10),
+        zoneOffSet);
+
 
 }

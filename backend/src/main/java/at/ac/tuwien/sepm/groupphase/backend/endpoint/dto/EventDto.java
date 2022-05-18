@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 public class EventDto   {
 
   @JsonProperty("eventId")
-  private Integer eventId;
+  private Long eventId;
 
   @JsonProperty("name")
   private String name;
@@ -36,7 +36,7 @@ public class EventDto   {
   @JsonProperty("content")
   private String content;
 
-  public EventDto eventId(Integer eventId) {
+  public EventDto eventId(Long eventId) {
     this.eventId = eventId;
     return this;
   }
@@ -47,11 +47,11 @@ public class EventDto   {
   */
   @NotNull 
   @Schema(name = "eventId", required = true)
-  public Integer getEventId() {
+  public Long getEventId() {
     return eventId;
   }
 
-  public void setEventId(Integer eventId) {
+  public void setEventId(Long eventId) {
     this.eventId = eventId;
   }
 
