@@ -15,7 +15,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
   pixiApplication: Application;
   seatingPlan: SeatingPlan;
-  hoverInfo = false;
+  hoverInfo = undefined;
   @Input() set showInformation(showInformation: ShowInformation) {
     this.seatingPlan = generateFromShowInfo(showInformation);
     this.initializeSeatingPlan();

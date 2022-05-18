@@ -1,4 +1,36 @@
-<div></div>
-<div>
+<div *ngIf="page == 1">
+  <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+    <ngb-panel *ngFor="let sector of sectors; index as index">
+      <ng-template ngbPanelTitle>
+        <div style="color: {{ sector.color }}">
+          <span *ngIf="sector.standingSector">Standing&nbsp;</span>
+          <span>Sector {{ index }}</span>
+          <span *ngIf="sector.description">: {{ sector.description }}</span>
+          <span *ngIf="sector.price"> - {{ convertToCurrency(sector.price) }}</span>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="form-margin">
+          <input type="text" class="form-control col" [(ngModel)]="sector.description" />
+          <div class="d-flex">
+            <span class="input-group-text">€</span>
+            <input type="number" class="form-control" [(ngModel)]="sector.price" />
+          </div>
+          <div class="form-group d-flex">
+            <input type="color" class="form-control" [(ngModel)]="sector.color" />
+          </div>
+          <div class="d-flex">
+            <span class="input-group-text">Number of seats</span>
+            <input type="number" class="form-control" [(ngModel)]="sector.seatCount" />
+          </div>
+          <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
+          <button class="btn-danger col-auto" (click)="removeSector(index)">Remove sector</button>
+        </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <button class="btn btn-primary" (click)="addSector()">Add sector</button>
+</div>
+<div *ngIf="page == 2" style="width: 100%; height: 90vh">
   <app-seating-plan-editor></app-seating-plan-editor>
 </div>
