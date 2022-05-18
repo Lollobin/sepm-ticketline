@@ -71,7 +71,7 @@ class TransactionRepositoryTest implements TestData {
         entityManager.flush();
         entityManager.clear();
 
-        List<Transaction> found = transactionRepository.findAllByUserEmail(USER_EMAIL);
+        List<Transaction> found = transactionRepository.findAllByUserEmailOrderByDateDesc(USER_EMAIL);
 
         assertAll(
             () -> assertEquals(1, found.size()),

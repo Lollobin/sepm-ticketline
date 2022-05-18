@@ -49,7 +49,7 @@ class OrderServiceTest implements TestData {
 
         transactionsToReturn.add(transaction);
 
-        when(transactionRepository.findAllByUserEmail(USER_EMAIL)).thenReturn(transactionsToReturn);
+        when(transactionRepository.findAllByUserEmailOrderByDateDesc(USER_EMAIL)).thenReturn(transactionsToReturn);
         when(authenticationFacade.getEmail()).thenReturn(USER_EMAIL);
 
         List<Transaction> found = orderService.findAllByCurrentUser();

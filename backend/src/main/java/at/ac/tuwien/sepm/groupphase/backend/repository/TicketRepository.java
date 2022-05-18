@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,23 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         + " NATURAL JOIN show s"
         + " WHERE s.show_id = (:showId)",
         nativeQuery = true)
-    public List<Ticket> findByShowId(@Param("showId") Long showId);
+    List<Ticket> findByShowId(@Param("showId") Long showId);
 
-    List<Ticket> findAllByPurchasedByEmailOrReservedByEmail(String purchasedByEmail, String reservedByEmail);
+    /**
+     * Returns all tickets that are reserved or purchased by the user with the given email. Only
+     * returns tickets for shows after the given date.
+     *
+     * <p>purchasedByEmail and reservedByEmail should be the same
+     *
+     * <p>dateTime1 and dateTime2 should be the same
+     *
+     * @param purchasedByEmail email of the user of which to return the tickets
+     * @param dateTime1        usually set to today/yesterday
+     * @param reservedByEmail  same as purchasedByEmail
+     * @param dateTime2        usually set to today/yesterday
+     * @return tickets by user
+     */
+    List<Ticket> findAllByPurchasedByEmailAndShowDateAfterOrReservedByEmailAndShowDateAfterOrderByShowDateAsc(
+        String purchasedByEmail, OffsetDateTime dateTime1, String reservedByEmail,
+        OffsetDateTime dateTime2);
 }

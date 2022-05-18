@@ -23,7 +23,8 @@ public class BookedInKey implements Serializable {
             return false;
         }
         BookedInKey that = (BookedInKey) o;
-        return transactionId == that.transactionId && ticketId == that.ticketId;
+        return Objects.equals(transactionId, that.transactionId) && Objects.equals(ticketId,
+            that.ticketId);
     }
 
     @Override
@@ -34,9 +35,6 @@ public class BookedInKey implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(transactionId, ticketId);
-    }
-
-    public BookedInKey() {
     }
 
     public Long getTransactionId() {
