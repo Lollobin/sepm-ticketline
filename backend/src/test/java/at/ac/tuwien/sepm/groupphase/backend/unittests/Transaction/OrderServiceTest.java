@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
+import at.ac.tuwien.sepm.groupphase.backend.repository.BookedInRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -29,13 +31,17 @@ class OrderServiceTest implements TestData {
     private TransactionRepository transactionRepository;
     @Mock
     private AuthenticationUtil authenticationFacade;
+    @Mock
+    private SectorPriceRepository sectorPriceRepository;
+    @Mock
+    private BookedInRepository bookedInRepository;
     private OrderService orderService;
 
     private final List<Transaction> transactionsToReturn = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderServiceImpl(transactionRepository, authenticationFacade);
+        orderService = new OrderServiceImpl(transactionRepository, authenticationFacade, sectorPriceRepository, bookedInRepository);
     }
 
     @Test
