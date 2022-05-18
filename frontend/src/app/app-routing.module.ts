@@ -9,6 +9,7 @@ import {RegistrationComponent} from "./components/registration/registration.comp
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { CreateShowComponent } from './components/create-show/create-show.component';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import { LocationCreatorComponent } from './components/location-creator/location-creator.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard]},
   {path: 'registration', component: RegistrationComponent},
   {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard]},
-  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard]}
+  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard]},
+  {path: 'locations/create', component: LocationCreatorComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

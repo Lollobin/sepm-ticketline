@@ -1,25 +1,26 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Application } from 'pixi.js';
-import { Show, ShowInformation } from 'src/app/generated-sources/openapi';
-import { drawSeatingPlan, SeatingPlan } from 'src/app/shared_modules/seatingPlanGraphics';
-import { applyShowInformation } from '../seating-plan/seatingPlanEvents';
-import { generateFromShowInfo } from './generateSampleFromStructure';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { Application } from "pixi.js";
+import { Show, ShowInformation } from "src/app/generated-sources/openapi";
+import { drawSeatingPlan, SeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
+import { applyShowInformation } from "../seating-plan/seatingPlanEvents";
+import { generateFromShowInfo } from "./generateSampleFromStructure";
 
 @Component({
-  selector: 'app-seating-plan-editor',
-  templateUrl: './seating-plan-editor.component.html',
-  styleUrls: ['./seating-plan-editor.component.scss']
+  selector: "app-seating-plan-editor",
+  templateUrl: "./seating-plan-editor.component.html",
+  styleUrls: ["./seating-plan-editor.component.scss"],
 })
 export class SeatingPlanEditorComponent implements AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
   pixiApplication: Application;
-  seatingPlan: SeatingPlan
+  seatingPlan: SeatingPlan;
+  hoverInfo = false;
   @Input() set showInformation(showInformation: ShowInformation) {
     this.seatingPlan = generateFromShowInfo(showInformation);
-    this.initializeSeatingPlan()
+    this.initializeSeatingPlan();
   }
-  constructor() { }
+  constructor() {}
   initializeSeatingPlan() {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlan.general.width;
