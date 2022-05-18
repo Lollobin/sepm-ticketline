@@ -20,6 +20,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UnlockUserComponent } from "./components/unlock-user/unlock-user.component";
 import { SeatingPlanEditorComponent } from "./components/seating-plan-editor/seating-plan-editor.component";
+import { LocationCreatorComponent } from './components/location-creator/location-creator.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { SeatingPlanEditorComponent } from "./components/seating-plan-editor/sea
     RegistrationComponent,
     UnlockUserComponent,
     SeatingPlanEditorComponent,
+    LocationCreatorComponent,
   ],
   imports: [
     BrowserModule,
