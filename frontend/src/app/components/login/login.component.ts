@@ -30,8 +30,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     //if login successful we will redirect here
-    this.returnUrl= this.route.snapshot.queryParams['redirectUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['redirectUrl'] || '/';
   }
+
   /**
    * Form validation will start after the method is called, additionally an AuthRequest will be sent
    */
@@ -44,6 +45,7 @@ export class LoginComponent implements OnInit {
       console.log('Invalid input');
     }
   }
+
 
   /**
    * Send authentication data to the authService. If the authentication was successfully, the user will be forwarded to the message page

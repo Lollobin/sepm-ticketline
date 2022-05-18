@@ -34,7 +34,7 @@
 
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" name="password" formControlName="password" class="form-control"
+              <input (keydown.enter)="loginUser()" type="password" name="password" formControlName="password" class="form-control"
                      id="password"
                      placeholder="Password">
               <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
