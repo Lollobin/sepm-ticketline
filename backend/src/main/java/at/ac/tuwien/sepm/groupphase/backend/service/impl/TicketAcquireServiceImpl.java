@@ -47,22 +47,27 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
     @Override
     public FullTicketWithStatusDto acquireTickets(TicketStatusDto ticketsToAcquire) {
         LOGGER.debug("Started ticket acquisition with following tickets: {}", ticketsToAcquire);
+
         boolean purchaseMode = ticketsToAcquire.getReserved().isEmpty();
         this.purchaseValidator.validateTicketInformation(ticketsToAcquire);
+
         List<Ticket> ticketList = ticketRepository.findAllById(
             purchaseMode ? ticketsToAcquire.getPurchased() : ticketsToAcquire.getReserved());
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationFacade.getAuthentication().getPrincipal().toString());
         List<Ticket> unavailableTickets = getUnavailableTickets(ticketList, user);
+
         if (!unavailableTickets.isEmpty()) {
             throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
         }
+        
         List<Ticket> updatedTickets = updateTicketStatus(purchaseMode, ticketList, user);
         this.orderService.generateTransaction(ticketList, user,
             purchaseMode ? BookingType.PURCHASE : BookingType.RESERVATION);
 
         FullTicketWithStatusDto fullTicketWithStatusDto = new FullTicketWithStatusDto();
-        List<TicketDto> fullTickets = updatedTickets.stream().map(ticketMapper::ticketToTicketDto).toList();
+        List<TicketDto> fullTickets = updatedTickets.stream().map(ticketMapper::ticketToTicketDto)
+            .toList();
         if (purchaseMode) {
             fullTicketWithStatusDto.setPurchased(fullTickets);
         } else {
