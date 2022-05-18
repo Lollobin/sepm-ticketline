@@ -1,24 +1,25 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {HeaderComponent} from './components/header/header.component';
-import {FooterComponent} from './components/footer/footer.component';
-import {HomeComponent} from './components/home/home.component';
-import {LoginComponent} from './components/login/login.component';
-import {MessageComponent} from './components/message/message.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {httpInterceptorProviders} from './interceptors';
-import { SeatingPlanComponent } from './components/seating-plan/seating-plan.component';
-import { CreateEventComponent } from './components/create-event/create-event.component';
-import { CreateShowComponent } from './components/create-show/create-show.component';
-import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
-import { RegistrationComponent } from './components/registration/registration.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { HeaderComponent } from "./components/header/header.component";
+import { FooterComponent } from "./components/footer/footer.component";
+import { HomeComponent } from "./components/home/home.component";
+import { LoginComponent } from "./components/login/login.component";
+import { MessageComponent } from "./components/message/message.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { httpInterceptorProviders } from "./interceptors";
+import { SeatingPlanComponent } from "./components/seating-plan/seating-plan.component";
+import { CreateEventComponent } from "./components/create-event/create-event.component";
+import { CreateShowComponent } from "./components/create-show/create-show.component";
+import { ErrorAlertComponent } from "./components/error-alert/error-alert.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { UnlockUserComponent } from "./components/unlock-user/unlock-user.component";
+import { SeatingPlanEditorComponent } from "./components/seating-plan-editor/seating-plan-editor.component";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {UnlockUserComponent} from "./components/unlock-user/unlock-user.componen
     CreateShowComponent,
     ErrorAlertComponent,
     RegistrationComponent,
-    UnlockUserComponent
+    UnlockUserComponent,
+    SeatingPlanEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,10 +44,9 @@ import {UnlockUserComponent} from "./components/unlock-user/unlock-user.componen
     HttpClientModule,
     NgbModule,
     FormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   providers: [httpInterceptorProviders],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}
