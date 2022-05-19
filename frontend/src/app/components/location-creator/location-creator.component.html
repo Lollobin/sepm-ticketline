@@ -24,9 +24,26 @@
       </ng-template>
     </ngb-panel>
   </ngb-accordion>
-  <button class="btn btn-primary" style="width: 100%;" (click)="addSector()">Add Sector</button>
+  <button class="btn btn-primary" style="width: 100%" (click)="addSector()">Add Sector</button>
   <button class="btn btn-success mr-0" (click)="nextPage()">Next Page</button>
 </div>
-<div *ngIf="page == 2" style="width: 100%; height: 90vh">
+<div *ngIf="page == 2" class="d-flex container-fluid">
+  <div style="width: 20%; overflow: auto">
+    <h3>Tools</h3>
+    <div>
+      <div>
+        <button class="btn btn-primary">Select all</button>
+        <button class="btn btn-danger">Remove selection</button>
+      </div>
+      <div class="my-1">
+        <select>
+          <option>HE</option>
+          <option>DU</option>
+        </select>
+        <button class="btn btn-primary">Select sector</button>
+      </div>
+    </div>
+    <h3>Info</h3>
+  </div>
   <app-seating-plan-editor [sectors]="sectors"></app-seating-plan-editor>
 </div>
