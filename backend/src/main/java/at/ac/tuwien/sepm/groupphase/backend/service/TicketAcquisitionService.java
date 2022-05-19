@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullTicketWithStatusDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketStatusDto;
 
-public interface TicketAcquireService {
+public interface TicketAcquisitionService {
 
     /**
      * Checks if tickets are available and either purchases them or reserves them.
