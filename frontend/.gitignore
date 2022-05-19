@@ -40,3 +40,4 @@ testem.log
 Thumbs.db
 
 git_push.sh
+./.openapi-generator/swaggerDocumentation.yaml-default.sha256

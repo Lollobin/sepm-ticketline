@@ -12,7 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
-import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquireService;
+import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquisitionService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.PurchaseValidator;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TicketAcquireServiceImpl implements TicketAcquireService {
+public class TicketAcquisitionServiceImpl implements TicketAcquisitionService {
 
     private final PurchaseValidator purchaseValidator;
     private final TicketRepository ticketRepository;
@@ -33,7 +33,7 @@ public class TicketAcquireServiceImpl implements TicketAcquireService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
 
-    public TicketAcquireServiceImpl(PurchaseValidator purchaseValidator,
+    public TicketAcquisitionServiceImpl(PurchaseValidator purchaseValidator,
         TicketRepository ticketRepository, AuthenticationUtil authenticationFacade,
         UserRepository userRepository, OrderService orderService, TicketMapper ticketMapper) {
         this.purchaseValidator = purchaseValidator;
