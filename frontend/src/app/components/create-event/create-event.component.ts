@@ -70,7 +70,6 @@ export class CreateEventComponent implements OnInit {
     this.eventWithoutId.category = this.eventForm.value.category;
     this.eventWithoutId.duration = this.eventForm.value.duration;
     this.eventWithoutId.content = this.eventForm.value.description;
-    console.log("POST http://localhost:8080/events " + JSON.stringify(this.eventWithoutId));
     this.eventService.eventsPost(this.eventWithoutId, 'response').subscribe({
       next: (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
