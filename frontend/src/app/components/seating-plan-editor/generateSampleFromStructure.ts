@@ -3,8 +3,74 @@
  * Will be incorporated when create of floor plan is possible as "AutoLayout" functionality
  */
 
+import { uniqueId } from "lodash";
 import { ShowInformation } from "src/app/generated-sources/openapi";
-import { SeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
+import { SeatingPlan, SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
+
+const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlan => {
+  const seatingPlan: SeatingPlan = {
+    general: {
+      width: 1000,
+      height: 1000,
+    },
+    seats: createSeatsFromBuilder(sectors),
+    sectors: createSectorsFromBuilder(sectors),
+    staticElements: [],
+  };
+  return seatingPlan;
+};
+
+const parseColor = (color: string): number => {
+  return Number.parseInt(color.substring(1), 16)
+};
+
+const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["sectors"] =>
+  sectors.map((sector, index) => {
+    console.log(parseColor(sector.color))
+    if (sector.standingSector) {
+      return {
+        location: { x: index * 110, y: 10, w: 100, h: 100 },
+        noSeats: true,
+        id: index,
+        color: parseColor(sector.color),
+      };
+    }
+    return {
+      noSeats: false,
+      id: index,
+      color: parseColor(sector.color),
+    };
+  });
+
+const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["seats"] => {
+  const seats: SeatingPlan["seats"] = [];
+  sectors.forEach((sector, index) => {
+    let seatCount = 0;
+    while (seatCount < sector.seatCount) {
+      const sideLength = 100;
+      const blockGap = 10;
+      const seatWidth = 10;
+      const seatGap = 5;
+      const seatWithGap = seatWidth + seatGap;
+      seats.push({
+        id: +uniqueId(),
+        sectorId: index,
+        location: !sector.standingSector
+          ? {
+              x:
+                index * (blockGap + sideLength) +
+                (seatCount % Math.floor(sideLength / seatWithGap)) * seatWithGap,
+              y: 10 + Math.floor(seatCount / Math.floor(sideLength / seatWithGap)) * seatWithGap,
+              w: seatWidth,
+              h: seatWidth,
+            }
+          : undefined,
+      });
+      seatCount++;
+    }
+  });
+  return seats;
+};
 
 const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlan => {
   const seatingPlan: SeatingPlan = {
@@ -32,16 +98,10 @@ const createSeats = (showInformation: ShowInformation): SeatingPlan["seats"] =>
 const createSectors = (showInformation: ShowInformation): SeatingPlan["sectors"] => {
   const standingSectors: { [sectorId: number]: true } = {};
   showInformation.seats.forEach((seat) => {
-    console.log(
-      seat.rowNumber,
-      seat.seatNumber,
-      seat.rowNumber === undefined || seat.seatNumber === undefined
-    );
     if (seat.rowNumber === undefined || seat.seatNumber === undefined) {
       standingSectors[seat.sector] = true;
     }
   });
-  console.log(standingSectors);
   return showInformation.sectors.map((sector, index) => ({
     id: sector.sectorId,
     noSeats: !!standingSectors[sector.sectorId],
@@ -52,4 +112,4 @@ const createSectors = (showInformation: ShowInformation): SeatingPlan["sectors"]
   }));
 };
 
-export { generateFromShowInfo };
+export { generateFromShowInfo, generateFromSectorBuilder };

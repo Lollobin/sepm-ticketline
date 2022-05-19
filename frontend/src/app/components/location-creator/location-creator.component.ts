@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Show, ShowInformation } from "src/app/generated-sources/openapi";
-import { Sector } from "src/app/shared_modules/seatingPlanGraphics";
+import { Sector, SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
@@ -13,21 +13,33 @@ export class LocationCreatorComponent implements OnInit {
   constructor() {}
   faXmark = faXmark;
   showInformation: ShowInformation;
-  sectors: {
-    price: number;
-    color: string;
-    standingSector: boolean;
-    description: string;
-    seatCount: number;
-  }[] = [];
+  sectors: SectorBuilder[] = [];
   ngOnInit(): void {
     this.page = 1;
     this.sectors.push({
       price: 12.5,
-      color: "#aaaaaa",
+      color: "#0000AA",
       standingSector: true,
       description: "",
-      seatCount: 0,
+      seatCount: 15,
+    },{
+      price: 12.5,
+      color: "#AAAA00",
+      standingSector: true,
+      description: "",
+      seatCount: 80,
+    }, {
+      price: 12.5,
+      color: "#00AA00",
+      standingSector: false,
+      description: "",
+      seatCount: 100,
+    }, {
+      price: 15.5,
+      color: "#AA0000",
+      standingSector: false,
+      description: "",
+      seatCount: 100,
     });
   }
   removeSector(index: number) {
@@ -36,11 +48,14 @@ export class LocationCreatorComponent implements OnInit {
   addSector() {
     this.sectors.push({
       price: 0,
-      color: "#aaaaaa",
+      color: "#000000",
       standingSector: true,
       description: "",
       seatCount: 0,
     });
+  }
+  nextPage() {
+    this.page++
   }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });

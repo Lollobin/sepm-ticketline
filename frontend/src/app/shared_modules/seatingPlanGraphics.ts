@@ -46,6 +46,14 @@ interface SeatingPlan {
   staticElements: Array<StaticElement>;
 }
 
+interface SectorBuilder {
+  price: number;
+  color: string;
+  standingSector: boolean;
+  description: string;
+  seatCount: number;
+}
+
 const generateSeatId = (id: number) => `seat${id}`;
 const generateStandingAreaId = (id: number) => `standingArea${id}`;
 
@@ -232,4 +240,5 @@ export {
   SeatingPlan,
   Sector,
   SectorWithLocation,
+  SectorBuilder
 };

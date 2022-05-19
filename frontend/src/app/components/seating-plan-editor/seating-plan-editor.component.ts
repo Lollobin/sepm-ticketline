@@ -1,9 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { Application } from "pixi.js";
 import { Show, ShowInformation } from "src/app/generated-sources/openapi";
-import { drawSeatingPlan, SeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
+import {
+  drawSeatingPlan,
+  SeatingPlan,
+  SectorBuilder,
+} from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "../seating-plan/seatingPlanEvents";
-import { generateFromShowInfo } from "./generateSampleFromStructure";
+import { generateFromSectorBuilder, generateFromShowInfo } from "./generateSampleFromStructure";
 
 @Component({
   selector: "app-seating-plan-editor",
@@ -16,9 +20,11 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   pixiApplication: Application;
   seatingPlan: SeatingPlan;
   hoverInfo = undefined;
-  @Input() set showInformation(showInformation: ShowInformation) {
-    this.seatingPlan = generateFromShowInfo(showInformation);
-    this.initializeSeatingPlan();
+  @Input() set sectors(sectors: SectorBuilder[]) {
+    this.seatingPlan = generateFromSectorBuilder(sectors);
+    if (this.pixiApplication) {
+      this.initializeSeatingPlan();
+    }
   }
   constructor() {}
   initializeSeatingPlan() {
@@ -38,5 +44,8 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       antialias: true,
       backgroundAlpha: 0,
     });
+    if (this.seatingPlan) {
+      this.initializeSeatingPlan();
+    }
   }
 }

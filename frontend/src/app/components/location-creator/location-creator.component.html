@@ -29,8 +29,9 @@
       </ng-template>
     </ngb-panel>
   </ngb-accordion>
-  <button class="btn btn-primary" (click)="addSector()">Add sector</button>
+  <button class="btn btn-primary" style="width: 100%;" (click)="addSector()">Add Sector</button>
+  <button class="btn btn-success mr-0" (click)="nextPage()">Next Page</button>
 </div>
 <div *ngIf="page == 2" style="width: 100%; height: 90vh">
-  <app-seating-plan-editor></app-seating-plan-editor>
+  <app-seating-plan-editor [sectors]="sectors"></app-seating-plan-editor>
 </div>
