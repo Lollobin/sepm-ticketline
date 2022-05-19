@@ -47,7 +47,6 @@ interface SeatingPlan {
 }
 
 interface SectorBuilder {
-  price: number;
   color: string;
   standingSector: boolean;
   description: string;

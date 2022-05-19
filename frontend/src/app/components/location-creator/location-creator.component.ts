@@ -17,25 +17,21 @@ export class LocationCreatorComponent implements OnInit {
   ngOnInit(): void {
     this.page = 1;
     this.sectors.push({
-      price: 12.5,
       color: "#0000AA",
       standingSector: true,
       description: "",
       seatCount: 15,
     },{
-      price: 12.5,
       color: "#AAAA00",
       standingSector: true,
       description: "",
       seatCount: 80,
     }, {
-      price: 12.5,
       color: "#00AA00",
       standingSector: false,
       description: "",
       seatCount: 100,
     }, {
-      price: 15.5,
       color: "#AA0000",
       standingSector: false,
       description: "",
@@ -47,7 +43,6 @@ export class LocationCreatorComponent implements OnInit {
   }
   addSector() {
     this.sectors.push({
-      price: 0,
       color: "#000000",
       standingSector: true,
       description: "",

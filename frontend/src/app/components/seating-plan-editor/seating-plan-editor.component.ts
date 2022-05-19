@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { forEach } from "lodash";
 import { Application, Container, Graphics } from "pixi.js";
-import { Show, ShowInformation } from "src/app/generated-sources/openapi";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
 import {
   drawSeatingPlan,
@@ -10,7 +9,6 @@ import {
   SeatingPlan,
   SectorBuilder,
 } from "src/app/shared_modules/seatingPlanGraphics";
-import { applyShowInformation } from "../seating-plan/seatingPlanEvents";
 import { generateFromSectorBuilder, generateFromShowInfo } from "./generateSampleFromStructure";
 
 @Component({
