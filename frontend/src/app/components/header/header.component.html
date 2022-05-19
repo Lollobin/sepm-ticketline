@@ -26,7 +26,7 @@
       <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/"
          (click)="authService.logoutUser()">Logout</a>
     </ul>
-    <ul *ngIf="authService.getUserRole() === 'ADMIN'" class="nav navbar-nav ms-auto ">
+    <ul *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN'" class="nav navbar-nav ms-auto ">
       <button *ngIf="!adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()" routerLink="/admin">Switch
         to Admin View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
