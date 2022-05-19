@@ -2,13 +2,13 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.BookedInKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
@@ -20,12 +20,10 @@ public class BookedIn {
 
     @ManyToOne
     @MapsId("transactionId")
-    @JoinColumn(name = "transactionId")
     private Transaction transaction;
 
     @ManyToOne
     @MapsId("ticketId")
-    @JoinColumn(name = "ticketId")
     private Ticket ticket;
 
     @Column(nullable = false, length = 16)
@@ -33,28 +31,7 @@ public class BookedIn {
     private BookingType bookingType;
 
     @Column(nullable = false)
-    private float priceAtBookingTime;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BookedIn bookedIn = (BookedIn) o;
-        return Float.compare(bookedIn.priceAtBookingTime, priceAtBookingTime) == 0
-            && Objects.equals(id, bookedIn.id)
-            && Objects.equals(transaction, bookedIn.transaction)
-            && Objects.equals(ticket, bookedIn.ticket)
-            && bookingType == bookedIn.bookingType;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, transaction, ticket, bookingType, priceAtBookingTime);
-    }
+    private BigDecimal priceAtBookingTime;
 
     @Override
     public String toString() {
@@ -70,6 +47,23 @@ public class BookedIn {
             + ", priceAtBookingTime="
             + priceAtBookingTime
             + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BookedIn bookedIn = (BookedIn) o;
+        return Objects.equals(id, bookedIn.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public BookedInKey getId() {
@@ -104,11 +98,11 @@ public class BookedIn {
         this.bookingType = bookingType;
     }
 
-    public float getPriceAtBookingTime() {
+    public BigDecimal getPriceAtBookingTime() {
         return priceAtBookingTime;
     }
 
-    public void setPriceAtBookingTime(float priceAtBookingTime) {
+    public void setPriceAtBookingTime(BigDecimal priceAtBookingTime) {
         this.priceAtBookingTime = priceAtBookingTime;
     }
 }

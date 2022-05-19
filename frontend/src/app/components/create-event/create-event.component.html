@@ -10,7 +10,9 @@
 </div>
 
 <div *ngIf="role === 'ADMIN'">
-    <p class="h2 form-margin form-group">Create a new event</p>
+    <p class="h2 form-margin form-group"><fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faCircleQuestion" data-bs-toggle="tooltip"
+            data-placement="bottom" title="In this step an event is created, to which we can later add specific shows that act as specific implementations of an event. The show specifies an event. After creating an event you get redirected to the add shows screen."> </fa-icon>
+        Create a new event</p>         
     <form class="form-margin" [formGroup]="eventForm">
         <div class="form-group">
             <small for="name" class="form-label text-muted">Name</small>

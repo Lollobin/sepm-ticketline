@@ -6,7 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import at.ac.tuwien.sepm.groupphase.backend.validator.EventValidator;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EventServiceImpl implements EventService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final EventRepository eventRepository;
     private final EventValidator eventValidator;
 

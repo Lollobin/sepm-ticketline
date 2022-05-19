@@ -31,11 +31,34 @@ public class Seat {
             return false;
         }
         Seat seat = (Seat) o;
-        return seatId == seat.seatId
-            && rowNumber == seat.rowNumber
-            && seatNumber == seat.seatNumber
+        return Objects.equals(seatId, seat.seatId)
+            && Objects.equals(rowNumber, seat.rowNumber)
+            && Objects.equals(seatNumber, seat.seatNumber)
             && Objects.equals(sector, seat.sector);
     }
+
+    @Override
+    public String toString() {
+        return "Seat{"
+            + "seatId="
+            + seatId
+            + ", rowNumber="
+            + rowNumber
+            + ", seatNumber="
+            + seatNumber
+            + ", sector="
+            + sector
+            + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seatId, rowNumber, seatNumber, sector);
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "sectorId", referencedColumnName = "sectorId", nullable = false)
+    private Sector sector;
 
     public Long getSeatId() {
         return seatId;
@@ -68,28 +91,4 @@ public class Seat {
     public void setSector(Sector sector) {
         this.sector = sector;
     }
-
-    @Override
-    public String toString() {
-        return "Seat{"
-            + "seatId="
-            + seatId
-            + ", rowNumber="
-            + rowNumber
-            + ", seatNumber="
-            + seatNumber
-            + ", sector="
-            + sector
-            + '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(seatId, rowNumber, seatNumber, sector);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "sectorId", referencedColumnName = "sectorId", nullable = false)
-    private Sector sector;
-
 }

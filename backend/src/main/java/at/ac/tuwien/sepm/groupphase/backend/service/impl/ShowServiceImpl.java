@@ -13,7 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import at.ac.tuwien.sepm.groupphase.backend.validator.ShowValidator;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
 import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;

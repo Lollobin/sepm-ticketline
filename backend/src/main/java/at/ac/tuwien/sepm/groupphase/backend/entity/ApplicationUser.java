@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class ApplicationUser {
@@ -42,6 +44,9 @@ public class ApplicationUser {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
+
+    public ApplicationUser() {
+    }
 
     @Override
     public String toString() {
@@ -95,8 +100,7 @@ public class ApplicationUser {
             && Objects.equals(firstName, user.firstName)
             && Objects.equals(lastName, user.lastName)
             && gender == user.gender
-            && Objects.equals(address, user.address)
-            && Objects.equals(password, user.password)
+            && Objects.equals(address, user.address) && Objects.equals(password, user.password)
             && Objects.equals(articles, user.articles);
     }
 
@@ -130,11 +134,19 @@ public class ApplicationUser {
     private boolean lockedAccount;
 
     @ManyToMany
-    @JoinTable(
-        name = "ReadArticle",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "articleId"))
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
+    }
 
     public long getUserId() {
         return userId;

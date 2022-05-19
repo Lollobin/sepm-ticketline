@@ -54,10 +54,8 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return Objects.equals(showId, show.showId)
-            && Objects.equals(date, show.date)
-            && Objects.equals(artists, show.artists)
-            && Objects.equals(event, show.event);
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
+            show.artists) && Objects.equals(event, show.event);
     }
 
     @Override

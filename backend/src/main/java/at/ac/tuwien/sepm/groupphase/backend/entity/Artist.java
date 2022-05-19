@@ -46,9 +46,10 @@ public class Artist {
         Artist artist = (Artist) o;
         return Objects.equals(artistId, artist.artistId)
             && Objects.equals(bandName, artist.bandName)
-            && Objects.equals(knownAs, artist.knownAs) && Objects.equals(firstName,
-            artist.firstName) && Objects.equals(lastName, artist.lastName) && Objects.equals(shows,
-            artist.shows);
+            && Objects.equals(knownAs, artist.knownAs)
+            && Objects.equals(firstName, artist.firstName)
+            && Objects.equals(lastName, artist.lastName)
+            && Objects.equals(shows, artist.shows);
     }
 
     @Override
@@ -58,9 +59,21 @@ public class Artist {
 
     @Override
     public String toString() {
-        return "Artist{" + "artistId=" + artistId + ", bandName='" + bandName + '\'' + ", knownAs='"
-            + knownAs + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\''
-            + ", shows=" + shows + '}';
+        return "Artist{"
+            + "artistId="
+            + artistId
+            + ", bandName='"
+            + bandName
+            + '\''
+            + ", knownAs='"
+            + knownAs
+            + '\''
+            + ", firstName='"
+            + firstName
+            + '\''
+            + ", lastName='"
+            + lastName
+            + '}';
     }
 
     public Long getArtistId() {

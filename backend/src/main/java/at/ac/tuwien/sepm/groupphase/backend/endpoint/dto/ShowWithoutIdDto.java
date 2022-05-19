@@ -35,9 +35,6 @@ public class ShowWithoutIdDto   {
   @Valid
   private List<Integer> artists = new ArrayList<>();
 
-  @JsonProperty("seatingPlan")
-  private Integer seatingPlan;
-
   public ShowWithoutIdDto date(OffsetDateTime date) {
     this.date = date;
     return this;
@@ -47,7 +44,7 @@ public class ShowWithoutIdDto   {
    * Get date
    * @return date
   */
-  @NotNull @Valid 
+  @NotNull @Valid
   @Schema(name = "date", required = true)
   public OffsetDateTime getDate() {
     return date;
@@ -66,7 +63,7 @@ public class ShowWithoutIdDto   {
    * Get event
    * @return event
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "event", required = true)
   public Integer getEvent() {
     return event;
@@ -93,7 +90,7 @@ public class ShowWithoutIdDto   {
    * Get artists
    * @return artists
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "artists", required = true)
   public List<Integer> getArtists() {
     return artists;
@@ -101,25 +98,6 @@ public class ShowWithoutIdDto   {
 
   public void setArtists(List<Integer> artists) {
     this.artists = artists;
-  }
-
-  public ShowWithoutIdDto seatingPlan(Integer seatingPlan) {
-    this.seatingPlan = seatingPlan;
-    return this;
-  }
-
-  /**
-   * Get seatingPlan
-   * @return seatingPlan
-  */
-  @NotNull 
-  @Schema(name = "seatingPlan", required = true)
-  public Integer getSeatingPlan() {
-    return seatingPlan;
-  }
-
-  public void setSeatingPlan(Integer seatingPlan) {
-    this.seatingPlan = seatingPlan;
   }
 
   @Override
@@ -133,13 +111,12 @@ public class ShowWithoutIdDto   {
     ShowWithoutIdDto showWithoutId = (ShowWithoutIdDto) o;
     return Objects.equals(this.date, showWithoutId.date) &&
         Objects.equals(this.event, showWithoutId.event) &&
-        Objects.equals(this.artists, showWithoutId.artists) &&
-        Objects.equals(this.seatingPlan, showWithoutId.seatingPlan);
+        Objects.equals(this.artists, showWithoutId.artists);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(date, event, artists, seatingPlan);
+    return Objects.hash(date, event, artists);
   }
 
   @Override
@@ -149,7 +126,6 @@ public class ShowWithoutIdDto   {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    event: ").append(toIndentedString(event)).append("\n");
     sb.append("    artists: ").append(toIndentedString(artists)).append("\n");
-    sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
     sb.append("}");
     return sb.toString();
   }

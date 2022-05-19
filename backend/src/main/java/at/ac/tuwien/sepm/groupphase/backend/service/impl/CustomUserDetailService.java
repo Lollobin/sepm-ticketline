@@ -102,4 +102,20 @@ public class CustomUserDetailService implements UserService {
 
         return userRepository.findByLockedAccountEquals(isLocked);
     }
+
+    @Override
+    public void increaseNumberOfFailedLoginAttempts(ApplicationUser user) {
+
+    }
+
+    @Override
+    public void lockUser(ApplicationUser user) {
+
+    }
+
+    @Override
+    public void resetNumberOfFailedLoginAttempts(
+        ApplicationUser user) {
+
+    }
 }
