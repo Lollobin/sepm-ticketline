@@ -51,3 +51,5 @@ buildNumber.properties
 
 ### VS Code ###
 .vscode/
+
+./.openapi-generator/swaggerDocumentation.yaml-default.sha256

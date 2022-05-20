@@ -1126,6 +1126,7 @@ components:
       properties:
         eventId:
           type: integer
+          format: int64
         name:
           type: string
         duration:
@@ -1142,6 +1143,7 @@ components:
       properties:
         showId:
           type: integer
+          format: int64
         date:
           type: string
           format: date-time
@@ -1306,7 +1308,8 @@ components:
       type: object
       properties:
         ticketId:
-          type: number
+          type: integer
+          format: int64
         rowNumber:
           type: integer
           format: int64
@@ -1456,10 +1459,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
         purchased:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - reserved
         - purchased
