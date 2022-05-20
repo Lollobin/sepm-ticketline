@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,4 +34,13 @@ public class ArtistServiceImpl implements ArtistService {
             throw new NotFoundException(String.format("Could not find event with id %s", id));
         }
     }
+
+    @Override
+    public Page<Artist> search(String search,
+        Pageable pageable) {
+        
+        return artistRepository.search(search, pageable);
+    }
+
+
 }
