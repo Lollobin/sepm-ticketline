@@ -26,23 +26,28 @@ public interface TransactionMapper {
     default OrderDto transActionToOrderDto(Transaction transaction) {
         OrderDto orderDto = new OrderDto();
 
-        BookedIn bookedIn = transaction.getBookedIns().iterator().next();
-        Ticket ticket = bookedIn.getTicket();
-        Show show = ticket.getShow();
-        Event event = show.getEvent();
-        Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
-
-        orderDto.setType(bookingTypeToBookingTypeDto(bookedIn.getBookingType()));
         orderDto.setTransactionDate(transaction.getDate());
-        orderDto.setShowDate(show.getDate());
-        orderDto.setArtists(show.getArtists().stream().map(Artist::getKnownAs).toList());
-        orderDto.setEventName(event.getName());
-        orderDto.setCity(location.getAddress().getCity());
-        orderDto.setLocationName(location.getName());
         orderDto.setTransactionId(Math.toIntExact(transaction.getTransactionId()));
-        orderDto.setTicketIds(
-            transaction.getBookedIns().stream().map(BookedIn::getTicket).map(Ticket::getTicketId)
-                .map(Math::toIntExact).toList());
+
+        // Usually every correct transaction has bookedIns. This is a workaround to make creating test cases easier
+        if (!transaction.getBookedIns().isEmpty()) {
+            BookedIn bookedIn = transaction.getBookedIns().iterator().next();
+            Ticket ticket = bookedIn.getTicket();
+            Show show = ticket.getShow();
+            Event event = show.getEvent();
+            Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
+
+            orderDto.setType(bookingTypeToBookingTypeDto(bookedIn.getBookingType()));
+            orderDto.setShowDate(show.getDate());
+            orderDto.setArtists(show.getArtists().stream().map(Artist::getKnownAs).toList());
+            orderDto.setEventName(event.getName());
+            orderDto.setCity(location.getAddress().getCity());
+            orderDto.setLocationName(location.getName());
+            orderDto.setTicketIds(
+                transaction.getBookedIns().stream().map(BookedIn::getTicket)
+                    .map(Ticket::getTicketId)
+                    .map(Math::toIntExact).toList());
+        }
 
         return orderDto;
     }

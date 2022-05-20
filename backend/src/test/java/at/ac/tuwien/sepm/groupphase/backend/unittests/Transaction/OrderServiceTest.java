@@ -39,7 +39,7 @@ class OrderServiceTest implements TestData {
     }
 
     @Test
-    void whenExistingUser_thenTransactionsByUserShouldBeFound() {
+    void whenExistingUser_thenOrdersByUserShouldBeFound() {
         ApplicationUser loggedInUser = new ApplicationUser();
         loggedInUser.setEmail(USER_EMAIL);
 
