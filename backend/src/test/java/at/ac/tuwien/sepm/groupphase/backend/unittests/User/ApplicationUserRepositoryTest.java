@@ -5,8 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,30 +20,21 @@ class ApplicationUserRepositoryTest implements TestData {
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeEach
+    void setup() {
+        userRepository.deleteAll();
+    }
+
     @Test
     void shouldSaveOneUser() {
-        ApplicationUser testuser = new ApplicationUser();
-        testuser.setFirstName(USER_FNAME);
-        testuser.setLastName(USER_LNAME);
-        testuser.setGender(USER_GENDER);
-        testuser.setEmail(USER_EMAIL);
-
-        ADDRESS_ENTITY.setAddressId(null);
-        testuser.setAddress(ADDRESS_ENTITY);
-        testuser.setPassword(ENCODED_USER_PASSWORD_EXAMPLE);
+        ApplicationUser testuser = generateAppUserWithGenericDetails();
         userRepository.save(testuser);
         assertThat(testuser.getUserId()).isNotZero();
     }
 
     @Test
     void shouldSaveTheAddress() {
-        ApplicationUser testuser = new ApplicationUser();
-        testuser.setFirstName(USER_FNAME);
-        testuser.setLastName(USER_LNAME);
-        testuser.setGender(USER_GENDER);
-        testuser.setEmail(USER_EMAIL);
-        testuser.setAddress(ADDRESS_ENTITY2);
-        testuser.setPassword(ENCODED_USER_PASSWORD_EXAMPLE);
+        ApplicationUser testuser = generateAppUserWithGenericDetails();
         ApplicationUser returns = userRepository.save(testuser);
         assertEquals(USER_HOUSE_NO, returns.getAddress().getHouseNumber());
         assertEquals(USER_STREET, returns.getAddress().getStreet());
@@ -50,19 +42,46 @@ class ApplicationUserRepositoryTest implements TestData {
         assertEquals(USER_CTRY, returns.getAddress().getCountry());
     }
 
-    @Disabled
+
     @Test
     void shouldIncreaseFailedLoginAttemptsByOne() {
+
+        ApplicationUser testUserBefore = saveGenericUser(generateAppUserWithGenericDetails());
+        userRepository.increaseNumberOfFailedLoginAttempts(testUserBefore.getEmail());
+        ApplicationUser testUserAfter = userRepository.findUserByEmail(testUserBefore.getEmail());
+        assertThat(testUserAfter.getLoginTries() - testUserBefore.getLoginTries()).isOne();
     }
 
-    @Disabled
     @Test
     void shouldResetFailedLoginAttempts() {
+        ApplicationUser testUserBefore = generateAppUserWithGenericDetails();
+        testUserBefore.setLoginTries(2);
+        saveGenericUser(testUserBefore);
+
+        userRepository.resetNumberOfFailedLoginAttempts(testUserBefore.getEmail());
+        ApplicationUser testUserAfter = userRepository.findUserByEmail(testUserBefore.getEmail());
+        assertThat(testUserAfter.getLoginTries()).isZero();
+
     }
 
-    @Disabled
     @Test
     void shouldLockUser() {
+        ApplicationUser testUserBefore = generateAppUserWithGenericDetails();
+        saveGenericUser(testUserBefore);
+        userRepository.lockApplicationUser(testUserBefore.getEmail());
+        ApplicationUser testUserAfter = userRepository.findUserByEmail(testUserBefore.getEmail());
+        assertThat(testUserAfter.isLockedAccount()).isTrue();
+
     }
 
+    private ApplicationUser generateAppUserWithGenericDetails() {
+        ADDRESS_ENTITY.setAddressId(null);
+
+        return new ApplicationUser(USER_EMAIL, USER_FNAME, USER_LNAME, Gender.MALE,
+            ADDRESS_ENTITY, ENCODED_USER_PASSWORD_EXAMPLE);
+    }
+
+    private ApplicationUser saveGenericUser(ApplicationUser user) {
+        return userRepository.save(user);
+    }
 }

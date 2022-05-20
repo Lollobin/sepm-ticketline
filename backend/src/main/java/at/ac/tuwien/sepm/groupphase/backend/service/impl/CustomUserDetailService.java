@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,27 +48,41 @@ public class CustomUserDetailService implements UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.debug("Load all user by email");
         ApplicationUser applicationUser = new ApplicationUser();
+        //this is kept for easier development purposes (=hardcoded users)
+        String encodedTestPassword = passwordEncoder.encode("password");
         if (email.equals("admin@email.com")) {
             applicationUser.setEmail("admin@email.com");
-
+            applicationUser.setPassword(encodedTestPassword);
             applicationUser.setHasAdministrativeRights(true);
+            applicationUser.setLockedAccount(false);
         } else if (email.equals("user@email.com")) {
             applicationUser.setEmail("user@email.com");
-
+            applicationUser.setPassword(encodedTestPassword);
             applicationUser.setHasAdministrativeRights(false);
+            applicationUser.setLockedAccount(false);
         } else {
-            throw new UsernameNotFoundException("User does not exist");
+
+            LOGGER.debug("Load user by email");
+            try {
+                applicationUser = findApplicationUserByEmail(email);
+            } catch (NotFoundException e) {
+                throw new UsernameNotFoundException(e.getMessage(), e);
+            }
         }
         List<GrantedAuthority> grantedAuthorities;
-
         if (applicationUser.isHasAdministrativeRights()) {
-            grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
+            grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN",
+                "ROLE_USER");
         } else {
             grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
         }
 
-        return new User(
-            applicationUser.getEmail(), passwordEncoder.encode("password"), grantedAuthorities);
+        UserBuilder retrievedUser = User.builder();
+        retrievedUser.username(applicationUser.getEmail())
+            .password(applicationUser.getPassword())
+            .authorities(grantedAuthorities)
+            .accountLocked(applicationUser.isLockedAccount());
+        return retrievedUser.build();
     }
 
     @Override
@@ -103,19 +118,21 @@ public class CustomUserDetailService implements UserService {
         return userRepository.findByLockedAccountEquals(isLocked);
     }
 
+
     @Override
     public void increaseNumberOfFailedLoginAttempts(ApplicationUser user) {
+        userRepository.increaseNumberOfFailedLoginAttempts(user.getEmail());
 
     }
 
     @Override
     public void lockUser(ApplicationUser user) {
-
+        userRepository.lockApplicationUser(user.getEmail());
     }
 
     @Override
     public void resetNumberOfFailedLoginAttempts(
         ApplicationUser user) {
-
+        userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
     }
 }

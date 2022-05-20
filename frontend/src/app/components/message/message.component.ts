@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, TemplateRef} from '@angular/core';
 import {MessageService} from '../../services/message.service';
 import {Message} from '../../dtos/message';
 import {NgbModal, NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
-import {FormBuilder, NgForm} from '@angular/forms';
-import {AuthService} from '../../services/auth.service';
+import {FormBuilder} from '@angular/forms';
+import {CustomAuthService} from '../../services/custom-auth.service';
 
 @Component({
   selector: 'app-message',
@@ -25,7 +25,7 @@ export class MessageComponent implements OnInit {
               private ngbPaginationConfig: NgbPaginationConfig,
               private formBuilder: FormBuilder,
               private cd: ChangeDetectorRef,
-              private authService: AuthService,
+              private authService: CustomAuthService,
               private modalService: NgbModal) {
   }
 
