@@ -20,7 +20,8 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   returnUrl: string;
 
-  constructor(private formBuilder: FormBuilder, private authService: CustomAuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(private formBuilder: FormBuilder, private authService: CustomAuthService,
+              private router: Router, private route: ActivatedRoute) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
