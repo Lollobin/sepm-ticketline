@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
@@ -48,17 +47,17 @@ public class ShowsEndpoint implements ShowsApi {
     public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto) {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
 
-        Show mappedShow;
+        ShowDto newShowDto;
         try {
-            mappedShow = showMapper.showWithoutIdDtoToShow(showWithoutIdDto);
-        } catch (NotFoundException e){
+            newShowDto = showMapper.showToShowDto(
+                showService.createShow(
+                    showMapper.showWithoutIdDtoToShow(showWithoutIdDto),
+                    Long.valueOf(showWithoutIdDto.getSeatingPlan()),
+                    showWithoutIdDto.getSectorPrices()
+                ));
+        } catch (NotFoundException e) {
             throw new ConflictException(e.getMessage());
         }
-
-        ShowDto newShowDto = showMapper.showToShowDto(
-            showService.createShow(
-                mappedShow, Long.valueOf(showWithoutIdDto.getSeatingPlan())
-            ));
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()

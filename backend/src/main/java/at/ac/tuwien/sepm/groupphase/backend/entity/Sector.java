@@ -15,6 +15,13 @@ public class Sector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sectorId;
 
+    public Sector(Long sectorId) {
+        this.sectorId = sectorId;
+    }
+
+    public Sector() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

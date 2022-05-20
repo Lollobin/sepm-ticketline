@@ -49,7 +49,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(value = ConflictException.class)
-    protected ResponseEntity<Object> handleConflictException(RuntimeException ex, WebRequest request){
+    protected ResponseEntity<Object> handleConflictException(RuntimeException ex, WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);

@@ -1171,11 +1171,16 @@ components:
             type: integer
         seatingPlan:
           type: integer
+        sectorPrices:
+          type: array
+          items:
+            $ref: "#/components/schemas/SectorPrice"
       required:
         - date
         - event
         - artists
         - seatingPlan
+        - sectorPrices
     ShowWithTicketsSold:
       type: object
       properties:
@@ -1521,3 +1526,12 @@ components:
         - city
         - country
         - zipCode
+    SectorPrice:
+      type: object
+      properties:
+        sectorId:
+          type: integer
+          format: int64
+        price: 
+          type: number
+          format: float
