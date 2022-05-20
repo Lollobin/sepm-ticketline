@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static at.ac.tuwien.sepm.groupphase.backend.config.Constants.GENERIC_LOGIN_FAILURE_MSG;
+import static at.ac.tuwien.sepm.groupphase.backend.config.Constants.MAX_FAILED_LOGIN_ATTEMPTS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,15 +49,14 @@ class LoginEndpointTest implements TestData {
     @Autowired
     private UserService userService;
 
-    private UserWithPasswordDto user;
     private AuthRequestDto loginDto;
-    private String LOGIN_BASE_URI = "/login";
+    private final String LOGIN_BASE_URI = "/login";
 
     @BeforeEach
     public void beforeEach() {
         userRepository.deleteAll();
         ADDRESS_ENTITY.setAddressId(null);
-        user = new UserWithPasswordDto().email(USER_EMAIL).firstName(USER_FNAME)
+        UserWithPasswordDto user = new UserWithPasswordDto().email(USER_EMAIL).firstName(USER_FNAME)
             .lastName(USER_LNAME).gender(GenderDto.FEMALE).address(ADDRESS_DTO)
             .password(USER_PASSWORD);
 
@@ -133,7 +133,7 @@ class LoginEndpointTest implements TestData {
     @Test
     void when5WrongLogins_thenUserLocked_andStatus401() throws Exception {
         loginDto.setPassword("I am wrong");
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < MAX_FAILED_LOGIN_ATTEMPTS; i++) {
 
             String body = objectMapper.writeValueAsString(loginDto);
             MvcResult mvcResult =
