@@ -158,5 +158,6 @@ public interface TestData {
     ApplicationUser TICKET_PURCHASED_BY = null;
     ApplicationUser TICKET_RESERVED_BY = null;
 
+    String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
 
 }

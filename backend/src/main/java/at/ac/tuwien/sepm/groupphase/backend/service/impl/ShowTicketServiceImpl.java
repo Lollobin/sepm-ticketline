@@ -67,6 +67,7 @@ public class ShowTicketServiceImpl implements ShowTicketService {
             Sector sector = seat.getSector();
             element.setSector(sector.getSectorId());
             sectors.putIfAbsent(sector.getSectorId(), sector);
+            LOGGER.debug(String.valueOf(sector));
             SeatingPlan seatingPlan = sector.getSeatingPlan();
 
             seatingPlanDto.setSeatingPlanLayoutId(
@@ -86,6 +87,7 @@ public class ShowTicketServiceImpl implements ShowTicketService {
 
         showInformation.setSeats(seats);
         showInformation.setSectors(sectorDtos);
+        LOGGER.debug(sectorDtos.toString());
         showInformation.setSeatingPlan(seatingPlanDto);
         return showInformation;
     }

@@ -197,8 +197,6 @@ public class ShowDataGenerator {
         sectorPrice.setId(new SectorPriceId(sector.getSectorId(), show.getShowId()));
         sectorPrice.setSector(sector);
         sectorPrice.setShow(show);
-        sectorPrice.setSector(sector);
-        sectorPrice.setShow(show);
         sectorPrice.setPrice(BigDecimal.valueOf((Math.random() + 1) * 255));
         return sectorPrice;
     }

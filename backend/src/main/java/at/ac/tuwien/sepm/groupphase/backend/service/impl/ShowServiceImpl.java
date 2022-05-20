@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,15 +31,18 @@ public class ShowServiceImpl implements ShowService {
     private final SectorRepository sectorRepository;
     private final SeatRepository seatRepository;
     private final TicketRepository ticketRepository;
+    private final SeatingPlanRepository seatingPlanRepository;
 
+    @Autowired
     public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator,
         SectorRepository sectorRepository, SeatRepository seatRepository,
-        TicketRepository ticketRepository) {
+        TicketRepository ticketRepository, SeatingPlanRepository seatingPlanRepository) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
         this.sectorRepository = sectorRepository;
         this.seatRepository = seatRepository;
         this.ticketRepository = ticketRepository;
+        this.seatingPlanRepository = seatingPlanRepository;
     }
 
 
@@ -52,10 +58,14 @@ public class ShowServiceImpl implements ShowService {
 
         showValidator.checkIfShowCorrect(show);
 
-        List<Sector> sectors = sectorRepository.findAllBySeatingPlan(seatingPlanId);
+        SeatingPlan seatingPlan = seatingPlanRepository.getById(seatingPlanId);
+
+        List<Sector> sectors = sectorRepository.findAllBySeatingPlan(seatingPlan);
+
+        show = showRepository.save(show);
 
         for (Sector sector : sectors) {
-            List<Seat> seats = seatRepository.findBySector(sector.getSectorId());
+            List<Seat> seats = seatRepository.findBySector(sector);
             for (Seat seat : seats) {
                 Ticket ticket = new Ticket();
                 ticket.setSeat(seat);
@@ -64,7 +74,7 @@ public class ShowServiceImpl implements ShowService {
             }
         }
 
-        return showRepository.save(show);
+        return show;
     }
 
     @Override

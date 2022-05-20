@@ -1169,10 +1169,13 @@ components:
           type: array
           items:
             type: integer
+        seatingPlan:
+          type: integer
       required:
         - date
         - event
         - artists
+        - seatingPlan
     ShowWithTicketsSold:
       type: object
       properties:

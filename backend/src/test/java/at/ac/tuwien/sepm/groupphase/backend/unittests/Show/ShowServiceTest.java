@@ -16,7 +16,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
@@ -40,6 +44,15 @@ class ShowServiceTest {
 
     @Mock
     private ShowRepository showRepository;
+    @Mock
+    private SectorRepository sectorRepository;
+    @Mock
+    private SeatRepository seatRepository;
+    @Mock
+    private TicketRepository ticketRepository;
+    @Mock
+    private SeatingPlanRepository seatingPlanRepository;
+
     private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
     private final Event fakePersistedEvent = new Event();
@@ -54,7 +67,8 @@ class ShowServiceTest {
     @BeforeEach
     void setUp() {
         eventService = new EventServiceImpl(eventRepository, eventValidator);
-        showService = new ShowServiceImpl(showRepository, showValidator);
+        showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
+            seatRepository, ticketRepository, seatingPlanRepository);
         showRepository.deleteAll();
     }
 
@@ -98,7 +112,7 @@ class ShowServiceTest {
 
         when(showRepository.save(showToSave)).thenReturn(fakePersistedShow);
 
-        showService.createShow(showToSave);
+        showService.createShow(showToSave, 1L);
         verify(showRepository).save(showArgumentCaptor.capture());
 
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
@@ -136,7 +150,7 @@ class ShowServiceTest {
 
         eventService.createEvent(fakePersistedEvent);
 
-        assertThrows(ValidationException.class, () -> showService.createShow(showToSave));
+        assertThrows(ValidationException.class, () -> showService.createShow(showToSave, 1L));
 
     }
 

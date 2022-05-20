@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +18,5 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
         nativeQuery = true)
     public List<Ticket> findByShowId();
 
-    public List<Seat> findBySector(@Param("sectorId") Long sectorId);
+    public List<Seat> findBySector(@Param("sectorId") Sector sectorId);
 }

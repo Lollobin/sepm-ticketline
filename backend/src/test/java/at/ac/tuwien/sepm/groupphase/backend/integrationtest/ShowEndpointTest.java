@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADDRESS_ENTITY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.DEFAULT_USER;
@@ -15,6 +16,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEG
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEATINGPLANLAYOUT_PATH;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW2_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW3_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
@@ -27,9 +29,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,6 +75,18 @@ class ShowEndpointTest {
 
     @Autowired
     private ShowRepository showRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private SeatingPlanLayoutRepository seatingPlanLayoutRepository;
+
+    @Autowired
+    private SeatingPlanRepository seatingPlanRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -164,9 +186,28 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
+        Address address = ADDRESS_ENTITY;
+        address = addressRepository.save(address);
+
+        Location location = new Location();
+        location.setName("Filip's Cool Location");
+        location.setAddress(address);
+        locationRepository.save(location);
+
+        SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
+        seatingPlanLayout.setSeatingLayoutPath(SEATINGPLANLAYOUT_PATH);
+        seatingPlanLayoutRepository.save(seatingPlanLayout);
+
+        SeatingPlan seatingPlan = new SeatingPlan();
+        seatingPlan.setName("Filip's Corresponding Seating Plan");
+        seatingPlan.setLocation(location);
+        seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
+        seatingPlanRepository.save(seatingPlan);
+
         ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
         showDtoToSave.setDate(SHOW_DATE);
         showDtoToSave.setEvent(event1.getEventId().intValue());
+        showDtoToSave.setSeatingPlan(Math.toIntExact(seatingPlan.getSeatingPlanId()));
 
         String json = objectMapper.writeValueAsString(showDtoToSave);
 
@@ -194,9 +235,28 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
+        Address address = ADDRESS_ENTITY;
+        address = addressRepository.save(address);
+
+        Location location = new Location();
+        location.setName("Filip's Cool Location");
+        location.setAddress(address);
+        locationRepository.save(location);
+
+        SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
+        seatingPlanLayout.setSeatingLayoutPath(SEATINGPLANLAYOUT_PATH);
+        seatingPlanLayoutRepository.save(seatingPlanLayout);
+
+        SeatingPlan seatingPlan = new SeatingPlan();
+        seatingPlan.setName("Filip's Corresponding Seating Plan");
+        seatingPlan.setLocation(location);
+        seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
+        seatingPlan = seatingPlanRepository.save(seatingPlan);
+
         ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
         showDtoToSave.setDate(SHOW_DATE);
         showDtoToSave.setEvent(event1.getEventId().intValue());
+        showDtoToSave.setSeatingPlan(Math.toIntExact(seatingPlan.getSeatingPlanId()));
 
         String json = objectMapper.writeValueAsString(showDtoToSave);
 
