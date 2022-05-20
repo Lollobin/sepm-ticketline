@@ -20,6 +20,7 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 import { AdminComponent } from './components/admin/admin.component';
+import {AuthService} from "./generated-sources/openapi";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,7 @@ import { AdminComponent } from './components/admin/admin.component';
     FormsModule,
     FontAwesomeModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

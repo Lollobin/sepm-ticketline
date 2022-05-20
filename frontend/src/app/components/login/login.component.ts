@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
+import {CustomAuthService} from '../../services/custom-auth.service';
 import {AuthRequest} from '../../dtos/auth-request';
 
 
@@ -18,10 +18,9 @@ export class LoginComponent implements OnInit {
   // Error flag
   error = false;
   errorMessage = '';
-
   returnUrl: string;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(private formBuilder: FormBuilder, private authService: CustomAuthService, private router: Router, private route: ActivatedRoute) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -45,7 +44,6 @@ export class LoginComponent implements OnInit {
       console.log('Invalid input');
     }
   }
-
 
   /**
    * Send authentication data to the authService. If the authentication was successfully, the user will be forwarded to the message page

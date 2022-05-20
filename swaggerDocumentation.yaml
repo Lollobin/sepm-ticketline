@@ -22,7 +22,7 @@ paths:
         200:
           description: Returns the JWT token on success
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         401:
