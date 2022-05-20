@@ -17,6 +17,11 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTE
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEATINGPLANLAYOUT_PATH;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEAT_ID1;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEAT_ID2;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEAT_ID3;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SECTOR_ID1;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SECTOR_ID2;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW2_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW3_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
@@ -27,22 +32,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,6 +103,18 @@ class ShowEndpointTest {
     private SeatingPlanRepository seatingPlanRepository;
 
     @Autowired
+    private SectorPriceRepository sectorPriceRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private SectorRepository sectorRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
@@ -99,10 +125,16 @@ class ShowEndpointTest {
 
     @BeforeEach
     public void setup() {
+        ticketRepository.deleteAll();
+        seatRepository.deleteAll();
+        sectorPriceRepository.deleteAll();
         showRepository.deleteAll();
         eventRepository.deleteAll();
-
-
+        sectorRepository.deleteAll();
+        seatingPlanRepository.deleteAll();
+        seatingPlanLayoutRepository.deleteAll();
+        locationRepository.deleteAll();
+        addressRepository.deleteAll();
     }
 
     @Test
@@ -253,10 +285,40 @@ class ShowEndpointTest {
         seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
         seatingPlan = seatingPlanRepository.save(seatingPlan);
 
+        Sector sector1 = new Sector(SECTOR_ID1);
+        sector1.setSeatingPlan(seatingPlan);
+        Sector sector2 = new Sector(SECTOR_ID2);
+        sector2.setSeatingPlan(seatingPlan);
+        sector1 = sectorRepository.save(sector1);
+        sector2 = sectorRepository.save(sector2);
+
+        Seat seat1 = new Seat();
+        seat1.setSeatId(SEAT_ID1);
+        seat1.setSector(sector1);
+        Seat seat2 = new Seat();
+        seat2.setSeatId(SEAT_ID2);
+        seat2.setSector(sector2);
+        Seat seat3 = new Seat();
+        seat3.setSeatId(SEAT_ID3);
+        seat3.setSector(sector2);
+        seat1 = seatRepository.save(seat1);
+        seat2 = seatRepository.save(seat2);
+        seat3 = seatRepository.save(seat3);
+
         ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
         showDtoToSave.setDate(SHOW_DATE);
         showDtoToSave.setEvent(event1.getEventId().intValue());
         showDtoToSave.setSeatingPlan(Math.toIntExact(seatingPlan.getSeatingPlanId()));
+        List<SectorPriceDto> sectorPriceDtos = new ArrayList<>();
+        SectorPriceDto sectorPriceDto1 = new SectorPriceDto();
+        sectorPriceDto1.setPrice(100F);
+        sectorPriceDto1.setSectorId(sector1.getSectorId());
+        sectorPriceDtos.add(sectorPriceDto1);
+        SectorPriceDto sectorPriceDto2 = new SectorPriceDto();
+        sectorPriceDto2.setPrice(200F);
+        sectorPriceDto2.setSectorId(sector2.getSectorId());
+        sectorPriceDtos.add(sectorPriceDto2);
+        showDtoToSave.setSectorPrices(sectorPriceDtos);
 
         String json = objectMapper.writeValueAsString(showDtoToSave);
 
@@ -272,7 +334,13 @@ class ShowEndpointTest {
         assertThat(showRepository.findAll()).hasSize(1);
         assertThat(showRepository.findAll().get(0).getDate()).isEqualTo(SHOW_DATE);
 
+        assertThat(sectorPriceRepository.findAll()).hasSize(2);
+        assertThat(sectorPriceRepository.findAll().get(0).getPrice()).isEqualTo("100.00");
 
+        assertThat(ticketRepository.findAll()).hasSize(3);
+        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(seat1.getSeatId());
+        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(seat2.getSeatId());
+        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(seat3.getSeatId());
     }
 
 

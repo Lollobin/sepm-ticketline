@@ -24,6 +24,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
@@ -139,17 +140,17 @@ class ShowServiceTest {
         List<Seat> seats = new ArrayList<>();
 
         Sector sector = new Sector();
-        sector.setSectorId(Long.valueOf(1));
+        sector.setSectorId(1L);
         sectors.get().add(sector);
 
         SectorPriceDto sectorPriceDto = new SectorPriceDto();
-        sectorPriceDto.setSectorId(Long.valueOf(1));
-        sectorPriceDto.setPrice(Float.valueOf(1));
+        sectorPriceDto.setSectorId(1L);
+        sectorPriceDto.setPrice(1F);
         sectorPriceDtos.add(sectorPriceDto);
 
         for (int i = 0; i < 3; i++) {
             Seat seat = new Seat();
-            seat.setSeatId(Long.valueOf(i + 1));
+            seat.setSeatId((long) (i + 1));
             seats.add(seat);
         }
 
@@ -205,4 +206,47 @@ class ShowServiceTest {
 
     }
 
+    @Test
+    void whenSeatingPlanDoesNotExist_shouldThrowNotFoundException() {
+
+        Show showToSave = new Show();
+
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
+
+        showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
+        showToSave.setDate(SHOW_DATE);
+
+        when(seatingPlanRepository.findById(any())).thenReturn(Optional.ofNullable(null));
+
+        assertThrows(NotFoundException.class,
+            () -> showService.createShow(showToSave, 1L, null));
+
+    }
+
+    @Test
+    void whenSectorDoesNotExist_shouldThrowNotFoundException() {
+
+        Show showToSave = new Show();
+
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
+
+        showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
+        showToSave.setDate(SHOW_DATE);
+
+        when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
+
+        assertThrows(NotFoundException.class,
+            () -> showService.createShow(showToSave, 1L, null));
+
+    }
 }

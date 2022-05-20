@@ -69,7 +69,7 @@ public class ShowServiceImpl implements ShowService {
         showValidator.checkIfShowCorrect(show);
 
         Optional<SeatingPlan> seatingPlan = seatingPlanRepository.findById(seatingPlanId);
-        if (!seatingPlan.isPresent()) {
+        if (seatingPlan.isEmpty()) {
             throw new NotFoundException(
                 String.format("Could not find seatingPlan with id %s", seatingPlanId));
         }
@@ -122,7 +122,7 @@ public class ShowServiceImpl implements ShowService {
         }
     }
 
-    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos, List<Sector> sectors){
+    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos, List<Sector> sectors) {
         List<SectorPrice> sectorPrices = new ArrayList<>();
         for (Sector sector : sectors) {
             boolean found = false;
