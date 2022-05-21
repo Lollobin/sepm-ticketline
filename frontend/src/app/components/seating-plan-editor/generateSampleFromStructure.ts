@@ -26,7 +26,6 @@ const parseColor = (color: string): number => {
 
 const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["sectors"] =>
   sectors.map((sector, index) => {
-    console.log(parseColor(sector.color))
     if (sector.standingSector) {
       return {
         location: { x: index * 110, y: 10, w: 100, h: 100 },

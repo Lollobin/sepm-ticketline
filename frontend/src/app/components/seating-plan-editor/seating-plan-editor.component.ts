@@ -80,6 +80,33 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     }
   }
 
+  selectAllSeats() {
+    this.seatingPlan.seats.forEach((seat) => {
+      const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
+      const seatCover = this.pixiApplication.stage.getChildByName(
+        `${generateSeatId(seat.id)}_cover`
+      );
+      if (!seatGraphics) {
+        return;
+      }
+      this.selectSeat(seatGraphics as Graphics, seatCover as Graphics);
+    });
+  }
+  selectSeatInSector(sectorId: number) {
+    this.seatingPlan.seats.forEach((seat) => {
+      const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
+      const seatCover = this.pixiApplication.stage.getChildByName(
+        `${generateSeatId(seat.id)}_cover`
+      );
+      if (!seatGraphics) {
+        return;
+      }
+      if (seat.sectorId === sectorId) {
+        this.selectSeat(seatGraphics as Graphics, seatCover as Graphics);
+      }
+    });
+  }
+
   selectSeat(seatGraphics: Graphics, seatCover: Graphics) {
     this.selectedElements[seatGraphics.name] = {
       seatGraphics: seatGraphics as Graphics,

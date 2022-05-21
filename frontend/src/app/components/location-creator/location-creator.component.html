@@ -32,15 +32,29 @@
     <h3>Tools</h3>
     <div>
       <div>
-        <button class="btn btn-primary">Select all</button>
-        <button class="btn btn-danger">Remove selection</button>
+        <button class="btn btn-primary" (click)="seatingPlanEditor.selectAllSeats()">
+          Select all
+        </button>
+        <button class="btn btn-danger" (click)="seatingPlanEditor.deselectAllSeats()">
+          Remove selection
+        </button>
       </div>
-      <div class="my-1">
-        <select>
-          <option>HE</option>
-          <option>DU</option>
+      <div class="my-1 d-flex">
+        <select [(ngModel)]="selectedSector" class="form-select">
+          <option *ngFor="let sector of sectors; index as index" value="{{ index }}" [hidden]="sector.standingSector" [disabled]="sector.standingSector">
+            <div style="color: {{ sector.color }}">
+              <span *ngIf="sector.standingSector">Standing&nbsp;</span>
+              <span>Sector {{ index }}</span>
+              <span *ngIf="sector.description">: {{ sector.description }}</span>
+            </div>
+          </option>
         </select>
-        <button class="btn btn-primary">Select sector</button>
+        <button
+          class="btn btn-primary"
+          (click)="seatingPlanEditor.selectSeatInSector(+selectedSector)"
+        >
+          Select
+        </button>
       </div>
     </div>
     <h3>Info</h3>

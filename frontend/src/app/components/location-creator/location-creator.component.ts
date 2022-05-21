@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Show, ShowInformation } from "src/app/generated-sources/openapi";
 import { Sector, SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
 
 @Component({
   selector: "app-location-creator",
@@ -14,6 +15,8 @@ export class LocationCreatorComponent implements OnInit {
   faXmark = faXmark;
   showInformation: ShowInformation;
   sectors: SectorBuilder[] = [];
+  selectedSector:number
+  @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
   ngOnInit(): void {
     this.page = 1;
     this.sectors.push({
