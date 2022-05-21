@@ -56,7 +56,7 @@ public class UserDataGenerator {
         user.setLoginTries(0);
         user.setMustResetPassword(false);
         user.setLockedAccount(false);
-        userRepository.save(admin);
+        userRepository.save(user);
 
     }
 
