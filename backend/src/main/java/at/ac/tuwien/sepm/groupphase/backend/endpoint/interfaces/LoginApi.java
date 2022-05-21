@@ -59,7 +59,7 @@ public interface LoginApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/login",
-        produces = { "application/json" },
+        produces = { "text/plain" },
         consumes = { "application/json" }
     )
     default ResponseEntity<String> loginPost(

@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthenticationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtAuthorizationFilter;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
+import at.ac.tuwien.sepm.groupphase.backend.security.LoginFailureHandler;
+import at.ac.tuwien.sepm.groupphase.backend.security.LoginSuccessHandler;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -28,17 +31,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final SecurityProperties securityProperties;
     private final JwtTokenizer jwtTokenizer;
+    private final LoginFailureHandler failureCustomHandler;
+    private final LoginSuccessHandler successCustomHandler;
 
     @Autowired
     public SecurityConfig(
         UserService userService,
         PasswordEncoder passwordEncoder,
         SecurityProperties securityProperties,
-        JwtTokenizer jwtTokenizer) {
+        JwtTokenizer jwtTokenizer,
+        LoginFailureHandler failureCustomHandler,
+        LoginSuccessHandler successCustomHandler) {
         this.userService = userService;
         this.securityProperties = securityProperties;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
+        this.failureCustomHandler = failureCustomHandler;
+        this.successCustomHandler = successCustomHandler;
     }
 
     @Override
@@ -47,12 +56,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .csrf()
             .disable()
-            .addFilter(
-                new JwtAuthenticationFilter(authenticationManager(), securityProperties,
-                    jwtTokenizer))
-            .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
 
-        // enable h2-console
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+            .authorizeRequests()
+            //h2-console enable..
+            .antMatchers("/h2-console/**").permitAll()
+
+            //please add your route here if it should be included in the "Public View" for nonauthenticated users.
+            .antMatchers(HttpMethod.GET, "/events/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/shows/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/artists/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/locations/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/seatingPlan/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/topShows").permitAll()
+            .antMatchers(HttpMethod.GET, "/seatingPlanLayouts").permitAll()
+
+
+            //for login and registration
+            .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/users").permitAll()
+
+
+            .anyRequest().authenticated();
+
+        JwtAuthenticationFilter customFilter = new JwtAuthenticationFilter(authenticationManager(),
+            securityProperties, jwtTokenizer, failureCustomHandler, successCustomHandler);
+
+        http.addFilter(customFilter)
+            .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties))
+
+        ;
+
+        // enable h2-console (also check for antmatchers above for h2-console when removing)
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }

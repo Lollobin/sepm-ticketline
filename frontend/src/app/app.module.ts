@@ -21,6 +21,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UnlockUserComponent } from "./components/unlock-user/unlock-user.component";
 import { SeatingPlanEditorComponent } from "./components/seating-plan-editor/seating-plan-editor.component";
 import { LocationCreatorComponent } from './components/location-creator/location-creator.component';
+import {AuthService} from "./generated-sources/openapi";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { LocationCreatorComponent } from './components/location-creator/location
     FormsModule,
     FontAwesomeModule,
   ],
-  providers: [httpInterceptorProviders],
-  bootstrap: [AppComponent],
+  providers: [httpInterceptorProviders, AuthService],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

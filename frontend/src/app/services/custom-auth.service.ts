@@ -3,6 +3,7 @@ import {AuthRequest} from '../dtos/auth-request';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
+import { AuthService} from "../generated-sources/openapi";
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
 import {Globals} from '../global/globals';
@@ -10,11 +11,11 @@ import {Globals} from '../global/globals';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class CustomAuthService {
 
-  private authBaseUri: string = this.globals.backendUri + '/authentication';
+ // private authBaseUri: string = this.globals.backendUri + '/authentication';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private generatedAuthService: AuthService) {
   }
 
   /**
@@ -23,8 +24,9 @@ export class AuthService {
    * @param authRequest User data
    */
   loginUser(authRequest: AuthRequest): Observable<string> {
-    return this.httpClient.post(this.authBaseUri, authRequest, {responseType: 'text'})
-      .pipe(
+    console.log(authRequest);
+    return this.generatedAuthService.loginPost(authRequest)
+    .pipe(
         tap((authResponse: string) => this.setToken(authResponse))
       );
   }
@@ -63,7 +65,10 @@ export class AuthService {
   }
 
   private setToken(authResponse: string) {
-    localStorage.setItem('authToken', authResponse);
+    const str ="Bearer ";
+    const token = authResponse.substring(str.length);
+    console.log(token);
+    localStorage.setItem('authToken', token);
   }
 
   private getTokenExpirationDate(token: string): Date {
