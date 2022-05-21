@@ -27,7 +27,6 @@ public class MessageDataGenerator {
         this.messageRepository = messageRepository;
     }
 
-    @PostConstruct
     private void generateMessage() {
         if (messageRepository.findAll().size() > 0) {
             LOGGER.debug("message already generated");

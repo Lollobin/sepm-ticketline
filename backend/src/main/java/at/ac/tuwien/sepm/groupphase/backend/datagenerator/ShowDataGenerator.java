@@ -138,7 +138,6 @@ public class ShowDataGenerator {
         return address;
     }
 
-    @PostConstruct
     private void generateData() throws IOException {
         if (!showRepository.findAll().isEmpty()) {
             LOGGER.info("shows already generated");

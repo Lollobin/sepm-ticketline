@@ -36,7 +36,6 @@ public class TransactionDataGenerator {
         this.addressRepository = addressRepository;
     }
 
-    @PostConstruct
     private void generateTransaction() {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
