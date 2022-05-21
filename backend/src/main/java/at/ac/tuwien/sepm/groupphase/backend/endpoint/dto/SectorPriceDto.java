@@ -35,8 +35,8 @@ public class SectorPriceDto   {
    * Get sectorId
    * @return sectorId
   */
-  
-  @Schema(name = "sectorId", required = false)
+  @NotNull 
+  @Schema(name = "sectorId", required = true)
   public Long getSectorId() {
     return sectorId;
   }
@@ -54,8 +54,8 @@ public class SectorPriceDto   {
    * Get price
    * @return price
   */
-  
-  @Schema(name = "price", required = false)
+  @NotNull 
+  @Schema(name = "price", required = true)
   public Float getPrice() {
     return price;
   }

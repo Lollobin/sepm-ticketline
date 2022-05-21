@@ -750,7 +750,7 @@ paths:
         - BearerAuth: []
       responses:
         200:
-          description: Successful retreival of artists
+          description: Successful retreival of seating plans
           content:
             application/json:
               schema:
@@ -781,6 +781,30 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         404:
           description: The seating plan with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlans/{id}/sectors:
+    get:
+      tags:
+        - seatingPlans
+      summary: Gets all sectors of the seating plan with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/seatingPlanId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of sectors of seating plan with the given ID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sector"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The seating plan with the given ID was not found or has no sectors
         500:
           $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
@@ -1535,3 +1559,6 @@ components:
         price: 
           type: number
           format: float
+      required:
+        - sectorId
+        - price

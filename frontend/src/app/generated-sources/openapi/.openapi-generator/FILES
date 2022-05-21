@@ -35,6 +35,7 @@ model/seatWithBookingStatus.ts
 model/seatingPlan.ts
 model/seatingPlanWithoutId.ts
 model/sector.ts
+model/sectorPrice.ts
 model/show.ts
 model/showInformation.ts
 model/showSearch.ts
