@@ -109,6 +109,24 @@ public class ShowDataGenerator {
         return seatingPlan;
     }
 
+    private SeatingPlan generateSeatingPlan2(Location location,
+        SeatingPlanLayout seatingPlanLayout) {
+        SeatingPlan seatingPlan = new SeatingPlan();
+        seatingPlan.setName("Hall B");
+        seatingPlan.setLocation(location);
+        seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
+        return seatingPlan;
+    }
+
+    private SeatingPlan generateSeatingPlan3(Location location,
+        SeatingPlanLayout seatingPlanLayout) {
+        SeatingPlan seatingPlan = new SeatingPlan();
+        seatingPlan.setName("Hall C");
+        seatingPlan.setLocation(location);
+        seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
+        return seatingPlan;
+    }
+
     private SeatingPlanLayout generateSeatingPlanLayout() throws IOException {
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
         FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
@@ -177,6 +195,19 @@ public class ShowDataGenerator {
 
         SeatingPlan seatingPlan = generateSeatingPlan(location, seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
+        SeatingPlan seatingPlan2 = generateSeatingPlan2(location, seatingPlanLayout);
+        seatingPlanRepository.save(seatingPlan2);
+        SeatingPlan seatingPlan3 = generateSeatingPlan3(location, seatingPlanLayout);
+        seatingPlanRepository.save(seatingPlan3);
+
+        Sector sector2 = generateSector(seatingPlan2);
+        sectorRepository.save(sector2);
+        SectorPrice sectorPrice2 = generateSectorPrice(sector2, show);
+        sectorPriceRepository.save(sectorPrice2);
+        Seat seat2 = generateSeat(sector2);
+        seatRepository.save(seat2);
+        Ticket ticket2 = generateTicket(show, seat2);
+        ticketRepository.save(ticket2);
 
         for (int i = 0; i < 5; i++) {
             Sector sector = generateSector(seatingPlan);
@@ -188,6 +219,19 @@ public class ShowDataGenerator {
                 seatRepository.save(seat);
                 Ticket ticket = generateTicket(show, seat);
                 ticketRepository.save(ticket);
+            }
+        }
+
+        for (int i = 0; i < 8; i++) {
+            Sector sector3 = generateSector(seatingPlan3);
+            sectorRepository.save(sector3);
+            SectorPrice sectorPrice3 = generateSectorPrice(sector3, show);
+            sectorPriceRepository.save(sectorPrice3);
+            for (int j = 0; j < 8; j++) {
+                Seat seat3 = generateSeat(sector3);
+                seatRepository.save(seat3);
+                Ticket ticket3 = generateTicket(show, seat3);
+                ticketRepository.save(ticket3);
             }
         }
     }

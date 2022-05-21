@@ -56,7 +56,7 @@
             <div class="form-group col-md-6">
                 <small for="inputTime" class="form-label text-muted">Time</small>
                 <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time"
-                    [class.fail]="!this.time.valid" [class.success]="this.time.valid">
+                    [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
                 <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
                     <div *ngIf="this.time.errors.required">Time is required!</div>
                     <div *ngIf="!this.time.errors.required">Time is invalid!</div>
@@ -73,13 +73,13 @@
         </div>
         <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>
-            <div class="form-control form-override" style="height: 62px; border: 0"></div>
+            <div class="invalid-feedback" style="display: block">Please select a seating plan first!</div>
         </div>
         <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices in €</small>
             <div class="container">
                 <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan">
-                    <small class="col form-label text-muted input-icon input-icon-right"
+                    <small class="col-md-3 form-label text-muted input-icon input-icon-right"
                         *ngFor="let field of sectors; let i = index">
                         Sector {{i + 1}}
                         <span>
@@ -90,7 +90,7 @@
                     </small>
                     <div *ngIf="!this.sectorForm.valid && this.showForm.value.seatingPlan" class="invalid-feedback"
                         style="display: block">
-                        <div>Correct prices are required for every Sector</div>
+                        <div>Correct prices are required for every sector</div>
                     </div>
 
                 </div>
@@ -110,7 +110,7 @@
         </div>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
             [disabled]="!this.showForm.valid || !this.sectorForm.valid">Submit</button>
-        <button type="submit" class="btn btn-primary form-group" (click)="fillFormSeatingPlan()">Set seatingPlan to 1 or 2 (to test render button)</button>
+        <button type="submit" class="btn btn-primary form-group" (click)="fillFormSeatingPlan()">Set seatingPlan to 1,2 or 3 (to test render button)</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>

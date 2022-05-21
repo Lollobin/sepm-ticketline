@@ -62,7 +62,7 @@ export class CreateShowComponent implements OnInit {
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
       event: [],
-      seatingPlan: [1],
+      seatingPlan: [''],
       sectorPrices: []
     });
     this.route.params.subscribe(params => {
@@ -181,10 +181,14 @@ export class CreateShowComponent implements OnInit {
   }
 
   fillFormSeatingPlan() {
-    if (this.showForm.value.seatingPlan === 2) {
+    if (this.showForm.value.seatingPlan === 0){
       this.showForm.value.seatingPlan = 1;
-    } else {
+    } else if (this.showForm.value.seatingPlan === 1) {
       this.showForm.value.seatingPlan = 2;
+    } else if (this.showForm.value.seatingPlan === 2) {
+      this.showForm.value.seatingPlan = 3;
+    } else {
+      this.showForm.value.seatingPlan = 1;
     }
   }
 }
