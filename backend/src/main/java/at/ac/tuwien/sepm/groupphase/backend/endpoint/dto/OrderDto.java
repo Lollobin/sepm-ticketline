@@ -28,9 +28,13 @@ public class OrderDto   {
   @JsonProperty("type")
   private BookingTypeDto type;
 
-  @JsonProperty("date")
+  @JsonProperty("transactionDate")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private OffsetDateTime date;
+  private OffsetDateTime transactionDate;
+
+  @JsonProperty("showDate")
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime showDate;
 
   @JsonProperty("artists")
   @Valid
@@ -71,23 +75,42 @@ public class OrderDto   {
     this.type = type;
   }
 
-  public OrderDto date(OffsetDateTime date) {
-    this.date = date;
+  public OrderDto transactionDate(OffsetDateTime transactionDate) {
+    this.transactionDate = transactionDate;
     return this;
   }
 
   /**
-   * Get date
-   * @return date
+   * Get transactionDate
+   * @return transactionDate
   */
-  @NotNull @Valid 
-  @Schema(name = "date", required = true)
-  public OffsetDateTime getDate() {
-    return date;
+  @Valid 
+  @Schema(name = "transactionDate", required = false)
+  public OffsetDateTime getTransactionDate() {
+    return transactionDate;
   }
 
-  public void setDate(OffsetDateTime date) {
-    this.date = date;
+  public void setTransactionDate(OffsetDateTime transactionDate) {
+    this.transactionDate = transactionDate;
+  }
+
+  public OrderDto showDate(OffsetDateTime showDate) {
+    this.showDate = showDate;
+    return this;
+  }
+
+  /**
+   * Get showDate
+   * @return showDate
+  */
+  @Valid 
+  @Schema(name = "showDate", required = false)
+  public OffsetDateTime getShowDate() {
+    return showDate;
+  }
+
+  public void setShowDate(OffsetDateTime showDate) {
+    this.showDate = showDate;
   }
 
   public OrderDto artists(List<String> artists) {
@@ -230,7 +253,8 @@ public class OrderDto   {
     }
     OrderDto order = (OrderDto) o;
     return Objects.equals(this.type, order.type) &&
-        Objects.equals(this.date, order.date) &&
+        Objects.equals(this.transactionDate, order.transactionDate) &&
+        Objects.equals(this.showDate, order.showDate) &&
         Objects.equals(this.artists, order.artists) &&
         Objects.equals(this.eventName, order.eventName) &&
         Objects.equals(this.city, order.city) &&
@@ -241,7 +265,7 @@ public class OrderDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, date, artists, eventName, city, locationName, transactionId, ticketIds);
+    return Objects.hash(type, transactionDate, showDate, artists, eventName, city, locationName, transactionId, ticketIds);
   }
 
   @Override
@@ -249,7 +273,8 @@ public class OrderDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class OrderDto {\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
-    sb.append("    date: ").append(toIndentedString(date)).append("\n");
+    sb.append("    transactionDate: ").append(toIndentedString(transactionDate)).append("\n");
+    sb.append("    showDate: ").append(toIndentedString(showDate)).append("\n");
     sb.append("    artists: ").append(toIndentedString(artists)).append("\n");
     sb.append("    eventName: ").append(toIndentedString(eventName)).append("\n");
     sb.append("    city: ").append(toIndentedString(city)).append("\n");

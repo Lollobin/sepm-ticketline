@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -22,7 +21,7 @@ import javax.annotation.Generated;
 public class TicketDto   {
 
   @JsonProperty("ticketId")
-  private BigDecimal ticketId;
+  private Long ticketId;
 
   @JsonProperty("rowNumber")
   private Long rowNumber;
@@ -33,7 +32,7 @@ public class TicketDto   {
   @JsonProperty("sector")
   private Long sector;
 
-  public TicketDto ticketId(BigDecimal ticketId) {
+  public TicketDto ticketId(Long ticketId) {
     this.ticketId = ticketId;
     return this;
   }
@@ -42,13 +41,13 @@ public class TicketDto   {
    * Get ticketId
    * @return ticketId
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "ticketId", required = true)
-  public BigDecimal getTicketId() {
+  public Long getTicketId() {
     return ticketId;
   }
 
-  public void setTicketId(BigDecimal ticketId) {
+  public void setTicketId(Long ticketId) {
     this.ticketId = ticketId;
   }
 

@@ -25,6 +25,7 @@ export * from './showWithTicketsSold';
 export * from './showWithoutId';
 export * from './ticket';
 export * from './ticketStatus';
+export * from './ticketWithShowInfo';
 export * from './topShowSearch';
 export * from './transaction';
 export * from './user';

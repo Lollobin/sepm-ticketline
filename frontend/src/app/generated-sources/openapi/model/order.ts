@@ -14,7 +14,8 @@ import { BookingType } from './bookingType';
 
 export interface Order { 
     type: BookingType;
-    date: string;
+    transactionDate?: string;
+    showDate?: string;
     artists: Array<string>;
     eventName: string;
     city: string;
