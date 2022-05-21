@@ -48,7 +48,7 @@ const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["seats"] 
     while (seatCount < sector.seatCount) {
       const sideLength = 100;
       const blockGap = 10;
-      const seatWidth = 10;
+      const seatWidth = 16;
       const seatGap = 5;
       const seatWithGap = seatWidth + seatGap;
       seats.push({

@@ -31,17 +31,19 @@ interface StaticElement {
   location: Location;
 }
 
+interface Seat {
+  id: number;
+  sectorId: number;
+  location?: Location;
+}
+
 interface SeatingPlan {
   general: {
     [key: string]: string | number;
     width: number;
     height: number;
   };
-  seats: Array<{
-    id: number;
-    sectorId: number;
-    location?: Location;
-  }>;
+  seats: Array<Seat>;
   sectors: Array<Sector | SectorWithLocation>;
   staticElements: Array<StaticElement>;
 }
@@ -88,8 +90,8 @@ const drawSeats = (stage: Container, seatingPlan: SeatingPlan) => {
   }
 };
 const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlan) => {
-  const standingAreas = (
-    seatingPlan.sectors.filter((sector) => sector.noSeats)
+  const standingAreas = seatingPlan.sectors.filter(
+    (sector) => sector.noSeats
   ) as Array<SectorWithLocation>;
   const seatCounts = countBy(seatingPlan.seats, "sectorId");
   for (const standingArea of standingAreas) {
@@ -224,10 +226,11 @@ const drawText = (text: string, fontSize: number, maxWidth: number) => {
 };
 const drawArea = (location: Location, color: Color, radius: number) => {
   const areaGraphics = new Graphics();
+  const lineWidth = 3;
   areaGraphics
     .beginFill(color.baseColor)
-    .lineStyle({ width: 3, color: color.strokeColor, alignment: 1 })
-    .setTransform(location.x, location.y)
+    .lineStyle({ width: lineWidth, color: color.strokeColor, alignment: 0 })
+    .setTransform(location.x, location.y )
     .drawRoundedRect(0, 0, location.w, location.h, radius);
   return areaGraphics;
 };
@@ -239,5 +242,7 @@ export {
   SeatingPlan,
   Sector,
   SectorWithLocation,
-  SectorBuilder
+  SectorBuilder,
+  Seat,
+  StaticElement,
 };

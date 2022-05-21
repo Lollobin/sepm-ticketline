@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  EventEmitter,
+} from "@angular/core";
 import { forEach } from "lodash";
 import { Application, Container, Graphics } from "pixi.js";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
@@ -6,8 +15,11 @@ import {
   drawSeatingPlan,
   generateSeatId,
   generateStandingAreaId,
+  Seat,
   SeatingPlan,
   SectorBuilder,
+  SectorWithLocation,
+  StaticElement,
 } from "src/app/shared_modules/seatingPlanGraphics";
 import { generateFromSectorBuilder, generateFromShowInfo } from "./generateSampleFromStructure";
 
@@ -29,6 +41,9 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       this.initializeSeatingPlan();
     }
   }
+
+  @Output() clickElement = new EventEmitter<SectorWithLocation | Seat | StaticElement>();
+
   dragging = "";
   dragStartEventData = null;
   constructor() {}
@@ -46,6 +61,30 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
   }
 
+  syncModelWithGraphics() {
+    this.seatingPlan.seats.forEach(seat => {
+      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
+      if(!seatGraphics){
+        return
+      }
+      seat.location.h = seatGraphics.getBounds().height
+      seat.location.w = seatGraphics.getBounds().width
+      seat.location.x = seatGraphics.getBounds().x
+      seat.location.y = seatGraphics.getBounds().y
+    });
+    this.seatingPlan.sectors.forEach(sector => {
+      const sectorGraphics = this.pixiApplication.stage.getChildByName(generateStandingAreaId(sector.id));
+      if (!sectorGraphics) {
+        return;
+      }
+      const standingSector = sector as SectorWithLocation 
+      standingSector.location.h = sectorGraphics.getBounds().height
+      standingSector.location.w = sectorGraphics.getBounds().width
+      standingSector.location.x = sectorGraphics.getBounds().x
+      standingSector.location.y = sectorGraphics.getBounds().y
+    });
+  }
+
   onDragStart(graphics: Graphics) {
     graphics.alpha = 0.5;
     this.dragging = graphics.name;
@@ -54,6 +93,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   onDragEnd(graphics: Graphics) {
     graphics.alpha = 1;
     this.dragging = "";
+    this.syncModelWithGraphics();
   }
 
   onDragMove(event, graphics: Graphics, cover?: Graphics) {
@@ -79,13 +119,15 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       }
     }
   }
+  getSeatGraphicsAndCover(seat: Seat) {
+    const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
+    const seatCover = this.pixiApplication.stage.getChildByName(`${generateSeatId(seat.id)}_cover`);
+    return { seatGraphics, seatCover };
+  }
 
   selectAllSeats() {
     this.seatingPlan.seats.forEach((seat) => {
-      const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
-      const seatCover = this.pixiApplication.stage.getChildByName(
-        `${generateSeatId(seat.id)}_cover`
-      );
+      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
       if (!seatGraphics) {
         return;
       }
@@ -94,10 +136,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   }
   selectSeatInSector(sectorId: number) {
     this.seatingPlan.seats.forEach((seat) => {
-      const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
-      const seatCover = this.pixiApplication.stage.getChildByName(
-        `${generateSeatId(seat.id)}_cover`
-      );
+      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
       if (!seatGraphics) {
         return;
       }
@@ -139,6 +178,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         click: () => {},
       });
       seatGraphics.on("click", (event) => {
+        this.clickElement.emit(seat);
         if (event.data.originalEvent.ctrlKey) {
           !this.selectedElements[seatGraphics.name]
             ? this.selectSeat(seatGraphics as Graphics, seatCover as Graphics)
@@ -166,7 +206,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         mouseover: () => {},
         mouseout: () => {},
         click: () => {
-          console.log(sector.id);
+          this.clickElement.emit(sector as SectorWithLocation);
         },
       });
       sectorGraphics

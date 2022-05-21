@@ -58,6 +58,12 @@
       </div>
     </div>
     <h3>Info</h3>
+    <div *ngIf="chosenElement">
+      x: {{chosenElement.location.x}}
+      y: {{chosenElement.location.y}}
+      w: {{chosenElement.location.w}}
+      h: {{chosenElement.location.h}}
+    </div>
   </div>
-  <app-seating-plan-editor [sectors]="sectors"></app-seating-plan-editor>
+  <app-seating-plan-editor [sectors]="sectors" (clickElement)="handleChosenElement($event)"></app-seating-plan-editor>
 </div>
