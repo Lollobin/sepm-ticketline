@@ -1601,7 +1601,6 @@ components:
         - city
         - country
         - zipCode
-<<<<<<< swaggerDocumentation.yaml
     SectorPrice:
       type: object
       properties:
