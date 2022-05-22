@@ -55,7 +55,7 @@
             </div>
             <div class="form-group col-md-6">
                 <small for="inputTime" class="form-label text-muted">Time</small>
-                <input class="form-control form-override" type="time" id="appt" name="appt" formControlName="time"
+                <input class="form-control form-override" type="time" formControlName="time"
                     [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
                 <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
                     <div *ngIf="this.time.errors.required">Time is required!</div>
@@ -69,6 +69,8 @@
             </div>
             <div class="form-group col-md-6">
                 <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
+                <input class="form-control form-override" type="seatingPlan" formControlName="seatingPlan"
+                    [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
             </div>
         </div>
         <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
@@ -95,7 +97,7 @@
                     </div>
 
                 </div>
-                <div
+                <!-- <div
                     *ngIf="(this.showForm.value.seatingPlan && (!this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan))">
                     <button class="invalid-feedback btn btn-warning" style="display: block"
                         (click)="getSectorsOfSeatingPlan(this.showForm.value.seatingPlan)">
@@ -104,7 +106,7 @@
                     <div class="invalid-feedback" style="display: block">
                         <div>Sectors have to be rendered to set prices!</div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="form-group">

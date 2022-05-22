@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice, ShowWithoutId } from 'src/app/generated-sources/openapi';
@@ -72,6 +72,13 @@ export class CreateShowComponent implements OnInit {
       this.getDetails(this.eventId);
     });
     this.role = this.authService.getUserRole();
+
+    this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
+      console.log(val);
+      if (val !== ""){
+        this.getSectorsOfSeatingPlan(val);
+      }
+    });
   }
 
   getDetails(id: number): void {
@@ -158,6 +165,9 @@ export class CreateShowComponent implements OnInit {
   }
 
   getSectorsOfSeatingPlan(id: number) {
+    if (id === null){
+      return;
+    }
     this.seatingPlansService.seatingPlansIdSectorsGet(id).subscribe({
       next: data => {
         console.log("Succesfully got sectors of seatingPlan with id", id);
