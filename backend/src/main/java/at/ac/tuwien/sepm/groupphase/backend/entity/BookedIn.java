@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.BookedInKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -33,7 +34,7 @@ public class BookedIn {
     private BookingType bookingType;
 
     @Column(nullable = false)
-    private float priceAtBookingTime;
+    private BigDecimal priceAtBookingTime;
 
     @Override
     public boolean equals(Object o) {
@@ -44,11 +45,8 @@ public class BookedIn {
             return false;
         }
         BookedIn bookedIn = (BookedIn) o;
-        return Float.compare(bookedIn.priceAtBookingTime, priceAtBookingTime) == 0
-            && Objects.equals(id, bookedIn.id)
-            && Objects.equals(transaction, bookedIn.transaction)
-            && Objects.equals(ticket, bookedIn.ticket)
-            && bookingType == bookedIn.bookingType;
+        return Objects.equals(id, bookedIn.id) && bookingType == bookedIn.bookingType
+            && Objects.equals(priceAtBookingTime, bookedIn.priceAtBookingTime);
     }
 
     @Override
@@ -104,11 +102,11 @@ public class BookedIn {
         this.bookingType = bookingType;
     }
 
-    public float getPriceAtBookingTime() {
+    public BigDecimal getPriceAtBookingTime() {
         return priceAtBookingTime;
     }
 
-    public void setPriceAtBookingTime(float priceAtBookingTime) {
+    public void setPriceAtBookingTime(BigDecimal priceAtBookingTime) {
         this.priceAtBookingTime = priceAtBookingTime;
     }
 }

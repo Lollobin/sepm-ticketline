@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
             return;
         }
         Transaction transaction = new Transaction();
-        transaction.setDate(OffsetDateTime.now().toLocalDate());
+        transaction.setDate(OffsetDateTime.now());
         transaction.setUser(user);
         // TODO: ADD GENERATION OF BILL
         transaction.setBillPath(null);

@@ -240,7 +240,7 @@ public class ShowDataGenerator {
                     BookedIn bookedIn1 = new BookedIn();
                     bookedIn1.setBookingType(BookingType.PURCHASE);
                     bookedIn1.setTransaction(transaction1);
-                    bookedIn1.setPriceAtBookingTime(22.3f);
+                    bookedIn1.setPriceAtBookingTime(BigDecimal.valueOf(22.3));
                     bookedIn1.setTicket(ticket);
                     bookedInRepository.save(bookedIn1);
 
@@ -254,7 +254,7 @@ public class ShowDataGenerator {
                     BookedIn bookedIn2 = new BookedIn();
                     bookedIn2.setBookingType(BookingType.CANCELLATION);
                     bookedIn2.setTransaction(transaction2);
-                    bookedIn2.setPriceAtBookingTime(22.3f);
+                    bookedIn2.setPriceAtBookingTime(BigDecimal.valueOf(22.3));
                     bookedIn2.setTicket(ticket);
                     bookedInRepository.save(bookedIn2);
                 } else if (i == 0 && j == 1) {
@@ -272,7 +272,7 @@ public class ShowDataGenerator {
                     BookedIn bookedIn = new BookedIn();
                     bookedIn.setBookingType(BookingType.RESERVATION);
                     bookedIn.setTransaction(transaction);
-                    bookedIn.setPriceAtBookingTime(22.3f);
+                    bookedIn.setPriceAtBookingTime(BigDecimal.valueOf(22.3f));
                     bookedIn.setTicket(ticket);
                     bookedInRepository.save(bookedIn);
 
@@ -291,7 +291,7 @@ public class ShowDataGenerator {
                     BookedIn bookedIn = new BookedIn();
                     bookedIn.setBookingType(BookingType.PURCHASE);
                     bookedIn.setTransaction(transaction);
-                    bookedIn.setPriceAtBookingTime(22.3f);
+                    bookedIn.setPriceAtBookingTime(BigDecimal.valueOf(22.3f));
                     bookedIn.setTicket(ticket);
                     bookedInRepository.save(bookedIn);
                 } else {
