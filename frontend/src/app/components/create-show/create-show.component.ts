@@ -188,17 +188,4 @@ export class CreateShowComponent implements OnInit {
       }
     });
   }
-
-  // TODO: remove this method after implementing form for location and seating plan
-  fillFormSeatingPlan() {
-    if (this.showForm.value.seatingPlan === 0){
-      this.showForm.value.seatingPlan = 1;
-    } else if (this.showForm.value.seatingPlan === 1) {
-      this.showForm.value.seatingPlan = 2;
-    } else if (this.showForm.value.seatingPlan === 2) {
-      this.showForm.value.seatingPlan = 3;
-    } else {
-      this.showForm.value.seatingPlan = 1;
-    }
-  }
 }

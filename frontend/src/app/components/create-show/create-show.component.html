@@ -114,8 +114,6 @@
         </div>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
             [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan">Submit</button>
-        <button type="submit" class="btn btn-light form-group" (click)="fillFormSeatingPlan()">Set seatingPlan to 1,2
-            or 3 (to test render button)</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>
