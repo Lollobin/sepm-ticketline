@@ -158,5 +158,14 @@ public interface TestData {
     ApplicationUser TICKET_PURCHASED_BY = null;
     ApplicationUser TICKET_RESERVED_BY = null;
 
+    String ARTIST_FIRSTNAME = "Ferdinand";
+    String ARTIST_LASTNAME = "Bauer";
+    String ARTIST_KNOWNAS = "Ferbl";
+    String ARTIST_BANDNAME = "Ferdies Jungs";
+
+    String ARTIST2_FIRSTNAME = "Friedrich";
+    String ARTIST2_LASTNAME = "Bauer";
+    String ARTIST2_KNOWNAS = "Friedl";
+    String ARTIST2_BANDNAME = "Ferdies Jungs";
 
 }

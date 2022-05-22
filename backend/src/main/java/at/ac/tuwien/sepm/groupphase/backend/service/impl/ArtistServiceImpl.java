@@ -21,9 +21,11 @@ public class ArtistServiceImpl implements ArtistService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
     private final ArtistRepository artistRepository;
+    private final ArtistMapper artistMapper;
 
-    public ArtistServiceImpl(ArtistRepository artistRepository) {
+    public ArtistServiceImpl(ArtistRepository artistRepository, ArtistMapper artistMapper) {
         this.artistRepository = artistRepository;
+        this.artistMapper = artistMapper;
     }
 
     @Override
@@ -45,5 +47,25 @@ public class ArtistServiceImpl implements ArtistService {
         return setArtistResultDto(artistPage);
     }
 
+    @Override
+    public ArtistsSearchResultDto findAll(Pageable pageable) {
+        LOGGER.debug("getting all artists with pageable: {}", pageable);
 
+        Page<Artist> artistPage = artistRepository.findAll(pageable);
+
+        return setArtistResultDto(artistPage);
+    }
+
+    private ArtistsSearchResultDto setArtistResultDto(Page<Artist> artistPage) {
+        LOGGER.trace("Setting ArtistResultDto values");
+        ArtistsSearchResultDto searchResultDto = new ArtistsSearchResultDto();
+
+        searchResultDto.setArtists(
+            artistPage.getContent().stream().map(artistMapper::artistToArtistDto).toList());
+        searchResultDto.setNumberOfResults(artistPage.getNumberOfElements());
+        searchResultDto.setCurrentPage(artistPage.getNumber());
+        searchResultDto.setPagesTotal(artistPage.getTotalPages());
+
+        return searchResultDto;
+    }
 }
