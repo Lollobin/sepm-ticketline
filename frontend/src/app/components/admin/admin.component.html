@@ -1,0 +1,7 @@
+<div class="jumbotron mt-5">
+  <h1 class="display-4">Admin View</h1>
+  <hr class="my-4">
+  <div *ngIf="authService.isLoggedIn()&&authService.getUserRole() === 'ADMIN' ">
+    <p>Usermanagement, Eventcreation and Newscreation takes place here. </p>
+  </div>
+</div>

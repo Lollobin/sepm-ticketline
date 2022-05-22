@@ -9,11 +9,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query(value = "SELECT * FROM ticket t"
-        + " NATURAL JOIN show s"
-        + " WHERE s.show_id = (:showId)",
-        nativeQuery = true)
-    List<Ticket> findByShowId(@Param("showId") Long showId);
+    /**
+     * Finds all tickets by a show ID.
+     *
+     * @param showId The id of the show to find
+     * @return The list of tickets in a show
+     */
+    @Query(value = "SELECT * FROM ticket t" + " NATURAL JOIN show s"
+        + " WHERE s.show_id = (:showId)", nativeQuery = true)
+    public List<Ticket> findByShowId(@Param("showId") Long showId);
 
     /**
      * Returns all tickets that are currently reserved or purchased by the user with the given

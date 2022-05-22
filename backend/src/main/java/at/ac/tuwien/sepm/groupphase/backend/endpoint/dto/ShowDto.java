@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 public class ShowDto   {
 
   @JsonProperty("showId")
-  private Integer showId;
+  private Long showId;
 
   @JsonProperty("date")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -38,7 +38,7 @@ public class ShowDto   {
   @Valid
   private List<Integer> artists = new ArrayList<>();
 
-  public ShowDto showId(Integer showId) {
+  public ShowDto showId(Long showId) {
     this.showId = showId;
     return this;
   }
@@ -49,11 +49,11 @@ public class ShowDto   {
   */
   @NotNull 
   @Schema(name = "showId", required = true)
-  public Integer getShowId() {
+  public Long getShowId() {
     return showId;
   }
 
-  public void setShowId(Integer showId) {
+  public void setShowId(Long showId) {
     this.showId = showId;
   }
 

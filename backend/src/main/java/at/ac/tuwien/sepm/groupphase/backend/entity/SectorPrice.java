@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
-
 import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

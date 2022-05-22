@@ -44,8 +44,6 @@ public class Transaction {
             + '\''
             + ", user="
             + user
-            + ", bookedIns="
-            + bookedIns
             + '}';
     }
 

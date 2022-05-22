@@ -22,7 +22,7 @@ paths:
         200:
           description: Returns the JWT token on success
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         401:
@@ -1150,6 +1150,7 @@ components:
       properties:
         eventId:
           type: integer
+          format: int64
         name:
           type: string
         duration:
@@ -1166,6 +1167,7 @@ components:
       properties:
         showId:
           type: integer
+          format: int64
         date:
           type: string
           format: date-time
@@ -1481,10 +1483,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
         purchased:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - reserved
         - purchased

@@ -20,6 +20,8 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
+import { AdminComponent } from './components/admin/admin.component';
+import {AuthService} from "./generated-sources/openapi";
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { OrderOverviewComponent } from './components/order-overview/order-overvi
     ErrorAlertComponent,
     RegistrationComponent,
     UnlockUserComponent,
+    AdminComponent,
+    UnlockUserComponent,
     OrderOverviewComponent
   ],
   imports: [
@@ -46,7 +50,7 @@ import { OrderOverviewComponent } from './components/order-overview/order-overvi
     FormsModule,
     FontAwesomeModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
