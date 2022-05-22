@@ -2,16 +2,19 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AddressDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArticleDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArticleWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistsSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AuthRequestDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/BookingTypeDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/FullTicketWithStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/GenderDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/InvoiceItemDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanDto.java
@@ -20,6 +23,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SectorDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowInformationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithTicketsSoldDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketDto.java

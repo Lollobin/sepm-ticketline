@@ -23,6 +23,8 @@ import { Location } from '../model/location';
 // @ts-ignore
 import { LocationSearch } from '../model/locationSearch';
 // @ts-ignore
+import { LocationSearchResult } from '../model/locationSearchResult';
+// @ts-ignore
 import { LocationWithoutId } from '../model/locationWithoutId';
 
 // @ts-ignore
@@ -94,28 +96,36 @@ export class LocationsService {
      * Searches for locations depending on parameters
      * Filters data depending on the query parameters. When no query parameters are given, all locations are returned
      * @param search 
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
+     * @param sort 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public locationsGet(search?: LocationSearch, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Location>>;
-    public locationsGet(search?: LocationSearch, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Location>>>;
-    public locationsGet(search?: LocationSearch, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Location>>>;
-    public locationsGet(search?: LocationSearch, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<LocationSearchResult>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<LocationSearchResult>>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<LocationSearchResult>>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
+        if (sort !== undefined && sort !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>sort, 'sort');
+        }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (BearerAuth) required
-        localVarCredential = this.configuration.lookupCredential('BearerAuth');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -146,7 +156,7 @@ export class LocationsService {
             }
         }
 
-        return this.httpClient.get<Array<Location>>(`${this.configuration.basePath}/locations`,
+        return this.httpClient.get<LocationSearchResult>(`${this.configuration.basePath}/locations`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
