@@ -37,7 +37,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     List<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount);
 
     /**
-     * Unlocks a user.
+     * Unlocks a user and resets number of failed attempts.
      *
      * @param lockedAccount if false user will be unlocked and loginTries will be reset to 0
      *                      (locking not yet implemented)
@@ -48,16 +48,32 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     @Query("update ApplicationUser a set a.lockedAccount = ?1, a.loginTries=0 where a.userId = ?2")
     void unlockApplicationUser(boolean lockedAccount, long userId);
 
+
+    /**
+     * Increase the number of failed attempts of a user by 1.
+     *
+     * @param email unique user
+     */
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.loginTries = a.loginTries+1 where a.email = :email")
     void increaseNumberOfFailedLoginAttempts(@Param("email") String email);
 
+    /**
+     * Locks a user account.
+     *
+     * @param email mail of user account to be locked
+     */
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.lockedAccount = true where a.email = :email")
     void lockApplicationUser(@Param("email") String email);
 
+    /**
+     * Resets number of failed login attempts of user.
+     *
+     * @param email mail of the user.
+     */
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.loginTries = 0 where a.email = :email")
