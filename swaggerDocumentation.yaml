@@ -730,6 +730,7 @@ paths:
           name: sort
           schema:
             type: string
+            default: ASC
             enum:
               - ASC 
               - DESC 
