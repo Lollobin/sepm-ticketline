@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
@@ -155,8 +156,9 @@ class ShowEndpointTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<ShowDto> showDtos = Arrays.asList(
-            objectMapper.readValue(response.getContentAsString(), ShowDto[].class));
+        ShowSearchResultDto resultDto =
+            objectMapper.readValue(response.getContentAsString(), ShowSearchResultDto.class);
+        List<ShowDto> showDtos = resultDto.getShows();
 
         assertThat(showDtos).hasSize(3);
         assertThat(showDtos.get(0).getDate()).isEqualTo(SHOW_DATE);

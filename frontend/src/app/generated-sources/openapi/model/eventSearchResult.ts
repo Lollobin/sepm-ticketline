@@ -9,12 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Event } from './event';
 
 
-export interface ShowSearch { 
-    event?: string;
-    date?: string;
-    price?: number;
-    seatingPlan?: number;
+export interface EventSearchResult { 
+    events?: Array<Event>;
+    currentPage?: number;
+    numberOfResults?: number;
+    pagesTotal?: number;
 }
 
