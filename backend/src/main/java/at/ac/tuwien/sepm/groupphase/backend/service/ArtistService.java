@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistsSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ArtistService {
@@ -14,5 +14,7 @@ public interface ArtistService {
      */
     Artist findOne(Long id);
 
-    Page<Artist> search(String search, Pageable pageable);
+    ArtistsSearchResultDto search(String search, Pageable pageable);
+
+    ArtistsSearchResultDto findAll(Pageable pageable);
 }

@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistsSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ArtistMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
@@ -36,10 +38,11 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Page<Artist> search(String search,
-        Pageable pageable) {
-        
-        return artistRepository.search(search, pageable);
+    public ArtistsSearchResultDto search(String search, Pageable pageable) {
+        LOGGER.debug("Getting artists which contain search term: {}", search);
+        Page<Artist> artistPage = artistRepository.search(search, pageable);
+
+        return setArtistResultDto(artistPage);
     }
 
 
