@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 public class ShowSearchDto   {
 
   @JsonProperty("event")
-  private Integer event;
+  private String event;
 
   @JsonProperty("date")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -36,13 +36,7 @@ public class ShowSearchDto   {
   @JsonProperty("seatingPlan")
   private Integer seatingPlan;
 
-  @JsonProperty("location")
-  private Integer location;
-
-  @JsonProperty("artist")
-  private Integer artist;
-
-  public ShowSearchDto event(Integer event) {
+  public ShowSearchDto event(String event) {
     this.event = event;
     return this;
   }
@@ -53,11 +47,11 @@ public class ShowSearchDto   {
   */
   
   @Schema(name = "event", required = false)
-  public Integer getEvent() {
+  public String getEvent() {
     return event;
   }
 
-  public void setEvent(Integer event) {
+  public void setEvent(String event) {
     this.event = event;
   }
 
@@ -118,44 +112,6 @@ public class ShowSearchDto   {
     this.seatingPlan = seatingPlan;
   }
 
-  public ShowSearchDto location(Integer location) {
-    this.location = location;
-    return this;
-  }
-
-  /**
-   * Get location
-   * @return location
-  */
-  
-  @Schema(name = "location", required = false)
-  public Integer getLocation() {
-    return location;
-  }
-
-  public void setLocation(Integer location) {
-    this.location = location;
-  }
-
-  public ShowSearchDto artist(Integer artist) {
-    this.artist = artist;
-    return this;
-  }
-
-  /**
-   * Get artist
-   * @return artist
-  */
-  
-  @Schema(name = "artist", required = false)
-  public Integer getArtist() {
-    return artist;
-  }
-
-  public void setArtist(Integer artist) {
-    this.artist = artist;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -168,14 +124,12 @@ public class ShowSearchDto   {
     return Objects.equals(this.event, showSearch.event) &&
         Objects.equals(this.date, showSearch.date) &&
         Objects.equals(this.price, showSearch.price) &&
-        Objects.equals(this.seatingPlan, showSearch.seatingPlan) &&
-        Objects.equals(this.location, showSearch.location) &&
-        Objects.equals(this.artist, showSearch.artist);
+        Objects.equals(this.seatingPlan, showSearch.seatingPlan);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(event, date, price, seatingPlan, location, artist);
+    return Objects.hash(event, date, price, seatingPlan);
   }
 
   @Override
@@ -186,8 +140,6 @@ public class ShowSearchDto   {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
-    sb.append("    location: ").append(toIndentedString(location)).append("\n");
-    sb.append("    artist: ").append(toIndentedString(artist)).append("\n");
     sb.append("}");
     return sb.toString();
   }

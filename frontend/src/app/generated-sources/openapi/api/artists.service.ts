@@ -20,6 +20,8 @@ import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
 import { Artist } from '../model/artist';
+// @ts-ignore
+import { ArtistsSearchResult } from '../model/artistsSearchResult';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -90,28 +92,36 @@ export class ArtistsService {
      * Searches for artists depending on parameters
      * Filters data depending on the query parameters. When no query parameters are given, all artists are returned
      * @param search Finds artists that either have their first, last, band name or their alias containing the search string
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
+     * @param sort 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public artistsGet(search?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Artist>>;
-    public artistsGet(search?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Artist>>>;
-    public artistsGet(search?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Artist>>>;
-    public artistsGet(search?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ArtistsSearchResult>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ArtistsSearchResult>>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ArtistsSearchResult>>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
+        if (sort !== undefined && sort !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>sort, 'sort');
+        }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (BearerAuth) required
-        localVarCredential = this.configuration.lookupCredential('BearerAuth');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -142,7 +152,7 @@ export class ArtistsService {
             }
         }
 
-        return this.httpClient.get<Array<Artist>>(`${this.configuration.basePath}/artists`,
+        return this.httpClient.get<ArtistsSearchResult>(`${this.configuration.basePath}/artists`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

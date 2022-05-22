@@ -438,24 +438,38 @@ paths:
         - events
       summary: Searches for events depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all events are returned
-      security:
-        - BearerAuth: []
       parameters:
         - name: search
           in: query
           schema:
             $ref: "#/components/schemas/EventSearch"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC 
+              - DESC     
+
       responses:
         200:
           description: Successful retreival of articles
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
+                  $ref: "#/components/schemas/EventSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /events/{id}:
@@ -516,24 +530,37 @@ paths:
         - shows
       summary: Searches for shows depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all shows are returned
-      security:
-        - BearerAuth: []
       parameters:
         - name: search
           in: query
           schema:
             $ref: "#/components/schemas/ShowSearch"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC 
+              - DESC    
       responses:
         200:
           description: Successful retreival of articles
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Show"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
+                  $ref: "#/components/schemas/ShowSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /shows/{id}:
@@ -620,24 +647,37 @@ paths:
         - locations
       summary: Searches for locations depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all locations are returned
-      security:
-        - BearerAuth: []
       parameters:
         - name: search
           in: query
           schema:
             $ref: "#/components/schemas/LocationSearch"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC 
+              - DESC 
       responses:
         200:
           description: Successful retreival of locations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Location"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
+                  $ref: "#/components/schemas/LocationSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}:
@@ -668,25 +708,38 @@ paths:
         - artists
       summary: Searches for artists depending on parameters
       description: Filters data depending on the query parameters. When no query parameters are given, all artists are returned
-      security:
-        - BearerAuth: []
       parameters:
-        - name: search
-          in: query
+        - in: query
+          name: search
           description: Finds artists that either have their first, last, band name or their alias containing the search string
           schema:
             type: string
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC 
+              - DESC 
       responses:
         200:
           description: Successful retreival of artists
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Artist"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
+                  $ref: "#/components/schemas/ArtistsSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /artists/{id}:
@@ -1405,8 +1458,6 @@ components:
           type: string
         duration:
           type: integer
-        content:
-          type: string
     TopShowSearch:
       type: object
       properties:
@@ -1422,17 +1473,13 @@ components:
       type: object
       properties:
         event:
-          type: integer
+          type: string
         date:
           type: string
           format: date-time
         price:
           type: number
         seatingPlan:
-          type: integer
-        location:
-          type: integer
-        artist:
           type: integer
     LocationSearch:
       type: object
@@ -1518,3 +1565,55 @@ components:
         - city
         - country
         - zipCode
+    ArtistsSearchResult:
+      type: object
+      properties:
+        artists: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Artist"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+    LocationSearchResult:
+      type: object
+      properties:
+        locations: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+    EventSearchResult:
+      type: object
+      properties:
+        events: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+    ShowSearchResult:
+      type: object
+      properties:
+        shows: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Show"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
