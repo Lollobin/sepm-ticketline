@@ -10,7 +10,7 @@ Cypress.Commands.add('loginAdmin', () => {
 
 Cypress.Commands.add('createMessage', (msg) => {
     cy.fixture('settings').then(settings => {
-        cy.contains('a', 'Message');
+        cy.contains('a', 'Message').click();
         cy.contains('button', 'Add message').click();
         cy.get('input[name="title"]').type('title' +  msg);
         cy.get('textarea[name="summary"]').type('summary' +  msg);
