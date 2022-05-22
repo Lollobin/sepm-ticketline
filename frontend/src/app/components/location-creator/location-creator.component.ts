@@ -70,8 +70,13 @@ export class LocationCreatorComponent implements OnInit {
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
+  checkIsSeat(element: any){
+    return Object.keys(element).includes("sectorId")
+  }
+  checkIsSector(element: any){
+    return Object.keys(element).includes("noSeats")
+  }
   handleChosenElement(element: Seat | StaticElement | SectorWithLocation) {
-    console.log(element);
     this.chosenElement = element;
   }
 }

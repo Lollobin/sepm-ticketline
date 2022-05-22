@@ -41,7 +41,12 @@
       </div>
       <div class="my-1 d-flex">
         <select [(ngModel)]="selectedSector" class="form-select">
-          <option *ngFor="let sector of sectors; index as index" value="{{ index }}" [hidden]="sector.standingSector" [disabled]="sector.standingSector">
+          <option
+            *ngFor="let sector of sectors; index as index"
+            value="{{ index }}"
+            [hidden]="sector.standingSector"
+            [disabled]="sector.standingSector"
+          >
             <div style="color: {{ sector.color }}">
               <span *ngIf="sector.standingSector">Standing&nbsp;</span>
               <span>Sector {{ index }}</span>
@@ -59,11 +64,59 @@
     </div>
     <h3>Info</h3>
     <div *ngIf="chosenElement">
-      x: {{chosenElement.location.x}}
-      y: {{chosenElement.location.y}}
-      w: {{chosenElement.location.w}}
-      h: {{chosenElement.location.h}}
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title">
+            <h4>Location</h4>
+          </div>
+          <div class="card-text">
+            <div class="input-group">
+              <span class="input-group-text">x</span>
+              <input
+                type="number"
+                value="{{ chosenElement.location.x }}"
+                class="form-control"
+                id="xLocation"
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">y</span>
+
+              <input
+                type="number"
+                value="{{ chosenElement.location.y }}"
+                class="form-control"
+                id="yLocation"
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">width</span>
+
+              <input
+                type="number"
+                value="{{ chosenElement.location.w }}"
+                class="form-control"
+                id="wLocation"
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">height</span>
+
+              <input
+                type="number"
+                value="{{ chosenElement.location.h }}"
+                class="form-control"
+                id="hLocation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="card-footer"><button class="btn btn-success mr-0 ml-auto">Apply</button></div>
+      </div>
     </div>
   </div>
-  <app-seating-plan-editor [sectors]="sectors" (clickElement)="handleChosenElement($event)"></app-seating-plan-editor>
+  <app-seating-plan-editor
+    [sectors]="sectors"
+    (clickElement)="handleChosenElement($event)"
+  ></app-seating-plan-editor>
 </div>
