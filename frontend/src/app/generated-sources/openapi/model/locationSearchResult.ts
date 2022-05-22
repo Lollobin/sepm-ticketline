@@ -9,12 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Location } from './location';
 
 
-export interface ShowSearch { 
-    event?: string;
-    date?: string;
-    price?: number;
-    seatingPlan?: number;
+export interface LocationSearchResult { 
+    locations?: Array<Location>;
+    currentPage?: number;
+    numberOfResults?: number;
+    pagesTotal?: number;
 }
 

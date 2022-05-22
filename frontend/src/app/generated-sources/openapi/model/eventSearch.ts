@@ -15,6 +15,5 @@ export interface EventSearch {
     name?: string;
     category?: string;
     duration?: number;
-    content?: string;
 }
 
