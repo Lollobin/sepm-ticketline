@@ -46,7 +46,7 @@ public interface ArtistsApi {
      * @param search Finds artists that either have their first, last, band name or their alias containing the search string (optional)
      * @param pageSize Number of items on requested page (optional, default to 10)
      * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
-     * @param sort  (optional)
+     * @param sort  (optional, default to ASC)
      * @return Successful retreival of artists (status code 200)
      *         or Internal Server Error (status code 500)
      */
@@ -68,7 +68,7 @@ public interface ArtistsApi {
         @Parameter(name = "search", description = "Finds artists that either have their first, last, band name or their alias containing the search string", schema = @Schema(description = "")) @Valid @RequestParam(value = "search", required = false) String search,
         @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
-        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" })) @Valid @RequestParam(value = "sort", required = false) String sort
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

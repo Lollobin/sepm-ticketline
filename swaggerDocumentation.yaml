@@ -461,7 +461,8 @@ paths:
             type: string
             enum:
               - ASC 
-              - DESC     
+              - DESC
+            default: ASC     
 
       responses:
         200:
@@ -553,7 +554,8 @@ paths:
             type: string
             enum:
               - ASC 
-              - DESC    
+              - DESC
+            default: ASC   
       responses:
         200:
           description: Successful retreival of articles
@@ -671,6 +673,7 @@ paths:
             enum:
               - ASC 
               - DESC 
+            default: ASC
       responses:
         200:
           description: Successful retreival of locations
@@ -732,7 +735,8 @@ paths:
             type: string
             enum:
               - ASC 
-              - DESC 
+              - DESC
+            default: ASC 
       responses:
         200:
           description: Successful retreival of artists
