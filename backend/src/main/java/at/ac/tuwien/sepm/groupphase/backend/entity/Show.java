@@ -29,7 +29,7 @@ public class Show {
 
     @ManyToMany
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @Cascade({CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
     private Set<Artist> artists;
 
@@ -54,7 +54,8 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date)
+            && Objects.equals(artists,
             show.artists) && Objects.equals(event, show.event);
     }
 

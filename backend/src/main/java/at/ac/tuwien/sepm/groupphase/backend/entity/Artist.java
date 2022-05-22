@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -29,10 +27,9 @@ public class Artist {
 
     private String lastName;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "artists")
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
-    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "artistId"), inverseJoinColumns = @JoinColumn(name = "showId"))
+    @Cascade({CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE})
     private Set<Show> shows;
 
     @Override
