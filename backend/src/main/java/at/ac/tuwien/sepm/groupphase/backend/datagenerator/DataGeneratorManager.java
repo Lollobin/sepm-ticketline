@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ public class DataGeneratorManager {
     private static final int NUMBER_OF_ARTISTS = 50;
     private static final int NUMBER_OF_EVENTS = 30;
     private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 10;
+    private static final int NUMBER_OF_LOCATIONS = 10;
+    private static final int MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION = 5;
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -23,17 +26,31 @@ public class DataGeneratorManager {
     private final ArtistDataGenerator artistDataGenerator;
     private final EventDataGenerator eventDataGenerator;
     private final ShowDataGenerator showDataGenerator;
+    private final LocationDataGenerator locationDataGenerator;
+    private final SeatingPlanLayoutDataGenerator seatingPlanLayoutDataGenerator;
+    private final SeatingPlanDataGenerator seatingPlanDataGenerator;
+    private final SectorDataGenerator sectorDataGenerator;
+    private final SeatDataGenerator seatDataGenerator;
 
     public DataGeneratorManager(
         UserDataGenerator userDataGenerator,
         ArtistDataGenerator artistDataGenerator,
         EventDataGenerator eventDataGenerator,
-        ShowDataGenerator showDataGenerator) {
+        ShowDataGenerator showDataGenerator,
+        LocationDataGenerator locationDataGenerator,
+        SeatingPlanLayoutDataGenerator seatingPlanLayoutDataGenerator,
+        SeatingPlanDataGenerator seatingPlanDataGenerator,
+        SectorDataGenerator sectorDataGenerator,
+        SeatDataGenerator seatDataGenerator) {
         this.userDataGenerator = userDataGenerator;
         this.artistDataGenerator = artistDataGenerator;
         this.eventDataGenerator = eventDataGenerator;
         this.showDataGenerator = showDataGenerator;
-
+        this.locationDataGenerator = locationDataGenerator;
+        this.seatingPlanLayoutDataGenerator = seatingPlanLayoutDataGenerator;
+        this.seatingPlanDataGenerator = seatingPlanDataGenerator;
+        this.sectorDataGenerator = sectorDataGenerator;
+        this.seatDataGenerator = seatDataGenerator;
     }
 
     @PostConstruct
@@ -43,6 +60,15 @@ public class DataGeneratorManager {
         artistDataGenerator.generateArtists(NUMBER_OF_ARTISTS);
         eventDataGenerator.generateEvents(NUMBER_OF_EVENTS);
         showDataGenerator.generateShows(MAX_NUMBER_OF_SHOWS_PER_EVENT);
+        locationDataGenerator.generateLocations(NUMBER_OF_LOCATIONS);
+        try {
+            seatingPlanLayoutDataGenerator.generateSeatingPlanLayouts();
+        } catch (IOException e) {
+            LOGGER.error("error generating seatingPlanLayouts", e);
+        }
+        seatingPlanDataGenerator.generateSeatingPlans(MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION);
+        sectorDataGenerator.generateSectors();
+        seatDataGenerator.generateSeats();
     }
 
 }

@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -18,10 +17,14 @@ public class UserDataGenerator {
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    private final AddressDataGenerator addressDataGenerator;
     private final UserRepository userRepository;
     private final Faker faker = new Faker();
 
-    public UserDataGenerator(UserRepository userRepository) {
+    public UserDataGenerator(
+        AddressDataGenerator addressDataGenerator,
+        UserRepository userRepository) {
+        this.addressDataGenerator = addressDataGenerator;
         this.userRepository = userRepository;
     }
 
@@ -66,7 +69,7 @@ public class UserDataGenerator {
         user.setFirstName(faker.name().firstName());
         user.setLastName(faker.name().lastName());
         user.setGender(faker.options().option(Gender.class));
-        user.setAddress(generateRandomAddress());
+        user.setAddress(addressDataGenerator.generateRandomAddress());
         user.setPassword(faker.internet().password(10, 30));
         // TODO: find better way to generate data for following fields
         user.setHasAdministrativeRights(false);
@@ -74,15 +77,5 @@ public class UserDataGenerator {
         user.setMustResetPassword(false);
         user.setLockedAccount(false);
         return user;
-    }
-
-    private Address generateRandomAddress() {
-        Address address = new Address();
-        address.setHouseNumber(faker.address().buildingNumber());
-        address.setStreet(faker.address().streetName());
-        address.setCity(faker.address().city());
-        address.setCountry(faker.address().country());
-        address.setZipCode(faker.address().zipCode());
-        return address;
     }
 }
