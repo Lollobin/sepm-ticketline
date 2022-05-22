@@ -76,17 +76,18 @@
             <div class="invalid-feedback" style="display: block">Please select a seating plan first!</div>
         </div>
         <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
-            <small for="inputArtists" class="form-label text-muted">Sector Prices in €</small>
+            <small for="inputArtists" class="form-label text-muted">Sector Prices</small>
             <div class="container">
                 <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan">
                     <small class="col-md-3 form-label text-muted input-icon input-icon-right"
                         *ngFor="let field of sectors; let i = index">
                         Sector {{i + 1}}
-                        <span>
+                        <div class="input-group">
+                            <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
                             <input [class.is-valid]="this.sectorForm.valid" [class.is-invalid]="!this.sectorForm.valid"
                                 [formControlName]="'sector'+field.sectorId" class="form-control currency"
-                                style="text-align: right" name="currency" type="number" min="0.01">
-                        </span>
+                                style="text-align: right" name="currency" type="number" min="0.01" />
+                        </div>
                     </small>
                     <div *ngIf="!this.sectorForm.valid && this.showForm.value.seatingPlan" class="invalid-feedback"
                         style="display: block">
@@ -94,7 +95,8 @@
                     </div>
 
                 </div>
-                <div *ngIf="(this.showForm.value.seatingPlan && (!this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan))">
+                <div
+                    *ngIf="(this.showForm.value.seatingPlan && (!this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan))">
                     <button class="invalid-feedback btn btn-warning" style="display: block"
                         (click)="getSectorsOfSeatingPlan(this.showForm.value.seatingPlan)">
                         Click here to render the sectors
@@ -109,8 +111,9 @@
             <small for="inputArtists" class="form-label text-muted">Artists</small>
         </div>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
-            [disabled]="!this.showForm.valid || !this.sectorForm.valid">Submit</button>
-        <button type="submit" class="btn btn-primary form-group" (click)="fillFormSeatingPlan()">Set seatingPlan to 1,2 or 3 (to test render button)</button>
+            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan">Submit</button>
+        <button type="submit" class="btn btn-light form-group" (click)="fillFormSeatingPlan()">Set seatingPlan to 1,2
+            or 3 (to test render button)</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>

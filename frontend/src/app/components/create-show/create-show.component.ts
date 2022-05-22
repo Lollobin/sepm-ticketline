@@ -111,14 +111,13 @@ export class CreateShowComponent implements OnInit {
     }
     this.showWithoutId.artists = this.showForm.value.artists;
     this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan;
-    console.log(this.showForm.artists);
-    console.log(this.showForm.seatingPlan);
     console.log("POST http://localhost:8080/shows " + JSON.stringify(this.showWithoutId));
     this.showService.showsPost(this.showWithoutId, 'response').subscribe({
       next: data => {
         console.log("Succesfully created show");
         console.log(data.headers.get('Location'));
         this.error = false;
+        this.clearForm();
       },
       error: error => {
         console.log("Error creating event", error.message);
@@ -149,11 +148,11 @@ export class CreateShowComponent implements OnInit {
 
   clearForm() {
     this.showForm.reset();
+    this.sectorForm.reset();
   }
 
   createGroup(sectors: Sector[]) {
     const group = this.formBuilder.group({});
-    console.log(JSON.stringify(this.sectors));
     this.sectors.forEach(control => group.addControl("sector" + control.sectorId, this.formBuilder.control('', Validators.required)));
     return group;
   }
@@ -166,7 +165,7 @@ export class CreateShowComponent implements OnInit {
         this.sectorForm = this.createGroup(data);
         this.error = false;
         this.gotFromSeatingPlan = id;
-        console.log(JSON.stringify(this.sectors));
+        this.showWithoutId.sectorPrices = [];
       },
       error: error => {
         console.log("Error getting sectors of seatingPlan with id", id);
@@ -180,6 +179,7 @@ export class CreateShowComponent implements OnInit {
     });
   }
 
+  // TODO: remove this method after implementing form for location and seating plan
   fillFormSeatingPlan() {
     if (this.showForm.value.seatingPlan === 0){
       this.showForm.value.seatingPlan = 1;
