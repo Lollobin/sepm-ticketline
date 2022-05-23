@@ -39,7 +39,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class ArtistServiceTest {
+class ArtistServiceTest {
 
     @Mock
     private ArtistRepository artistRepository;
@@ -116,7 +116,7 @@ public class ArtistServiceTest {
         artists1.add(artist1);
 
         List<Artist> artists2 = new ArrayList<>();
-        artists1.add(artist2);
+        artists2.add(artist2);
 
         List<Artist> artists3 = new ArrayList<>();
         artists3.add(artist1);
@@ -130,12 +130,12 @@ public class ArtistServiceTest {
         Page<Artist> artistPage4 = new PageImpl<>(new ArrayList<>());
 
         when(artistRepository.search(ARTIST_FIRSTNAME, pageable)).thenReturn(artistPage1);
-        when(artistRepository.search(ARTIST2_FIRSTNAME, pageable)).thenReturn(artistPage2);
+        when(artistRepository.search(ARTIST2_LASTNAME, pageable)).thenReturn(artistPage2);
         when(artistRepository.search(ARTIST_BANDNAME, pageable)).thenReturn(artistPage3);
         when(artistRepository.search(ARTIST_INVALIDNAME, pageable)).thenReturn(artistPage4);
 
         ArtistsSearchResultDto artistsSearchResultDto1 = artistService.search(ARTIST_FIRSTNAME, pageable);
-        ArtistsSearchResultDto artistsSearchResultDto2 = artistService.search(ARTIST2_BANDNAME, pageable);
+        ArtistsSearchResultDto artistsSearchResultDto2 = artistService.search(ARTIST2_LASTNAME, pageable);
         ArtistsSearchResultDto artistsSearchResultDto3 = artistService.search(ARTIST_BANDNAME, pageable);
         ArtistsSearchResultDto artistsSearchResultDto4 = artistService.search(ARTIST_INVALIDNAME, pageable);
 
@@ -143,14 +143,17 @@ public class ArtistServiceTest {
             () -> assertEquals(artistsSearchResultDto1.getArtists().size(), 1),
             () -> assertEquals(artistsSearchResultDto1.getArtists().get(0).getFirstName(), artist1.getFirstName()),
             () -> assertEquals(artistsSearchResultDto1.getArtists().get(0).getLastName(), artist1.getLastName()),
+
             () -> assertEquals(artistsSearchResultDto2.getArtists().size(), 1),
             () -> assertEquals(artistsSearchResultDto2.getArtists().get(0).getFirstName(), artist2.getFirstName()),
             () -> assertEquals(artistsSearchResultDto2.getArtists().get(0).getLastName(), artist2.getLastName()),
+
             () -> assertEquals(artistsSearchResultDto3.getArtists().size(), 2),
             () -> assertEquals(artistsSearchResultDto3.getArtists().get(0).getFirstName(), artist1.getFirstName()),
             () -> assertEquals(artistsSearchResultDto3.getArtists().get(0).getLastName(), artist1.getLastName()),
             () -> assertEquals(artistsSearchResultDto3.getArtists().get(1).getFirstName(), artist2.getFirstName()),
             () -> assertEquals(artistsSearchResultDto3.getArtists().get(1).getLastName(), artist2.getLastName()),
+
             () -> assertThat(artistsSearchResultDto4.getArtists()).isEmpty()
         );
     }

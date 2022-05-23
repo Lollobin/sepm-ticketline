@@ -737,7 +737,6 @@ paths:
             enum:
               - ASC 
               - DESC
-            default: ASC 
       responses:
         200:
           description: Successful retreival of artists
