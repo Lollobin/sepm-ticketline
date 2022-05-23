@@ -27,7 +27,7 @@ public interface TransactionMapper {
         OrderDto orderDto = new OrderDto();
 
         orderDto.setTransactionDate(transaction.getDate());
-        orderDto.setTransactionId(Math.toIntExact(transaction.getTransactionId()));
+        orderDto.setTransactionId(transaction.getTransactionId());
 
         // Usually every correct transaction has bookedIns. This is a workaround to make creating test cases easier
         if (!transaction.getBookedIns().isEmpty()) {
@@ -46,7 +46,7 @@ public interface TransactionMapper {
             orderDto.setTicketIds(
                 transaction.getBookedIns().stream().map(BookedIn::getTicket)
                     .map(Ticket::getTicketId)
-                    .map(Math::toIntExact).toList());
+                    .toList());
         }
 
         return orderDto;
