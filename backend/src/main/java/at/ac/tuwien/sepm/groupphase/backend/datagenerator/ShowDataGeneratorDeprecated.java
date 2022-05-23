@@ -39,7 +39,7 @@ import org.springframework.util.ResourceUtils;
 //TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
 @Component
-public class ShowDataGenerator_Deprecated {
+public class ShowDataGeneratorDeprecated {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
@@ -57,7 +57,8 @@ public class ShowDataGenerator_Deprecated {
     private final SectorPriceRepository sectorPriceRepository;
     private final FileSystemRepository fileSystemRepository;
 
-    public ShowDataGenerator_Deprecated(ShowRepository showRepository, ArtistRepository artistRepository,
+    public ShowDataGeneratorDeprecated(ShowRepository showRepository,
+        ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
         LocationRepository locationRepository,
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
