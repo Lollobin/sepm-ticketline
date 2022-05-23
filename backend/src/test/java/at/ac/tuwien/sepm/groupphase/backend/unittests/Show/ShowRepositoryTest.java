@@ -51,19 +51,16 @@ class ShowRepositoryTest {
         Show show1 = new Show();
 
         show1.setEvent(event);
-        show1.setArtists(null);
         show1.setDate(SHOW_DATE);
 
         showRepository.save(show1);
 
         assertNotNull(show1.getShowId());
         assertThat(show1).hasFieldOrPropertyWithValue("date", SHOW_DATE);
-        assertThat(show1).hasFieldOrPropertyWithValue("artists", null);
         assertThat(show1).hasFieldOrPropertyWithValue("event", show1.getEvent());
 
         assertThat(show1.getEvent().getEventId()).isEqualTo(event.getEventId());
         assertThat(show1.getDate()).isEqualTo(SHOW_DATE);
-        assertThat(show1.getArtists()).isNull();
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
@@ -83,7 +80,6 @@ class ShowRepositoryTest {
         assertThat(returnedById.getShowId()).isEqualTo(firstShow.getShowId());
         assertThat(returnedById.getDate()).isEqualTo(firstShow.getDate());
         assertThat(returnedById.getEvent()).isEqualTo(firstShow.getEvent());
-        assertThat(returnedById.getArtists()).isEqualTo(firstShow.getArtists());
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
@@ -100,17 +96,14 @@ class ShowRepositoryTest {
         assertThat(allShows.get(0).getEvent().getName()).isEqualTo(EVENT_NAME);
         assertThat(allShows.get(0).getEvent().getContent()).isEqualTo(EVENT_CONTENT);
         assertThat(allShows.get(0).getDate()).isEqualTo(SHOW_DATE);
-        assertThat(allShows.get(0).getArtists()).isNull();
 
         assertThat(allShows.get(1).getEvent().getName()).isEqualTo(EVENT2_NAME);
         assertThat(allShows.get(1).getEvent().getContent()).isEqualTo(EVENT2_CONTENT);
         assertThat(allShows.get(1).getDate()).isEqualTo(SHOW2_DATE);
-        assertThat(allShows.get(1).getArtists()).isNull();
 
         assertThat(allShows.get(2).getEvent().getDuration()).isEqualTo(EVENT3_DURATION);
         assertThat(allShows.get(2).getEvent().getContent()).isEqualTo(EVENT3_CONTENT);
         assertThat(allShows.get(2).getDate()).isEqualTo(SHOW3_DATE);
-        assertThat(allShows.get(2).getArtists()).isNull();
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
@@ -144,7 +137,6 @@ class ShowRepositoryTest {
         Show show1 = new Show();
 
         show1.setEvent(event1);
-        show1.setArtists(null);
         show1.setDate(SHOW_DATE);
 
         showRepository.save(show1);
@@ -152,7 +144,6 @@ class ShowRepositoryTest {
         Show show2 = new Show();
 
         show2.setEvent(event2);
-        show2.setArtists(null);
         show2.setDate(SHOW2_DATE);
 
         showRepository.save(show2);
@@ -160,7 +151,6 @@ class ShowRepositoryTest {
         Show show3 = new Show();
 
         show3.setEvent(event3);
-        show3.setArtists(null);
         show3.setDate(SHOW3_DATE);
 
         showRepository.save(show3);

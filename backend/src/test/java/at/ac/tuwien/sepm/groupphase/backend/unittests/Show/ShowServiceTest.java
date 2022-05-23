@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
@@ -49,11 +50,12 @@ class ShowServiceTest {
 
     @Spy
     private ShowMapper showMapper = Mappers.getMapper(ShowMapper.class);
-
+    @Spy
+    private EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
     @BeforeEach
     void setUp() {
-        eventService = new EventServiceImpl(eventRepository, eventValidator);
+        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
         showService = new ShowServiceImpl(showRepository, showValidator);
         showRepository.deleteAll();
     }
@@ -74,7 +76,6 @@ class ShowServiceTest {
         fakePersistedEvent.setDuration(EVENT_DURATION);
 
         fakePersistedShow.setDate(SHOW_DATE);
-        fakePersistedShow.setArtists(null);
         fakePersistedShow.setShowId(1L);
         fakePersistedShow.setEvent(fakePersistedEvent);
 
@@ -87,7 +88,6 @@ class ShowServiceTest {
         showsEvent.setName(EVENT_NAME);
 
         showToSave.setEvent(showsEvent);
-        showToSave.setArtists(null);
         showToSave.setDate(SHOW_DATE);
 
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
@@ -102,7 +102,6 @@ class ShowServiceTest {
         verify(showRepository).save(showArgumentCaptor.capture());
 
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
-        assertThat(showArgumentCaptor.getValue().getArtists()).isNull();
         assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
     }
 
@@ -116,7 +115,6 @@ class ShowServiceTest {
         fakePersistedEvent.setDuration(EVENT_DURATION);
 
         fakePersistedShow.setDate(SHOW_DATE);
-        fakePersistedShow.setArtists(null);
         fakePersistedShow.setShowId(1L);
         fakePersistedShow.setEvent(fakePersistedEvent);
 
@@ -129,7 +127,6 @@ class ShowServiceTest {
         showsEvent.setName(EVENT_NAME);
 
         showToSave.setEvent(showsEvent);
-        showToSave.setArtists(null);
         showToSave.setDate(SHOW_INVALID_DATE);
 
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);

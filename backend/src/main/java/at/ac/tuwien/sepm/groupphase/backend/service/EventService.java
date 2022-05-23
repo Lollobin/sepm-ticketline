@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface EventService {
 
@@ -13,12 +15,9 @@ public interface EventService {
      */
     Event createEvent(Event event);
 
-    /**
-     * finds all events in EventRepository.
-     *
-     * @return list of all events
-     */
-    List<Event> findAll();
+    EventSearchResultDto findAll(Pageable pageable);
+
+    EventSearchResultDto search(EventSearchDto eventSearchDto, Pageable pageable);
 
     /**
      * Find a single event entry by id.

@@ -2,15 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -27,12 +24,6 @@ public class Show {
     @Column
     private OffsetDateTime date;
 
-    @ManyToMany
-    @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
-    @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
-    private Set<Artist> artists;
-
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @Cascade(CascadeType.MERGE)
@@ -41,8 +32,7 @@ public class Show {
 
     @Override
     public String toString() {
-        return "Show{" + "showId=" + showId + ", date=" + date + ", artistIds=" + artists
-            + ", event=" + event + '}';
+        return "Show{" + "showId=" + showId + ", date=" + date + ", event=" + event + '}';
     }
 
     @Override
@@ -54,8 +44,7 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
-            show.artists) && Objects.equals(event, show.event);
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(event, show.event);
     }
 
     @Override
@@ -77,14 +66,6 @@ public class Show {
 
     public void setDate(OffsetDateTime date) {
         this.date = date;
-    }
-
-    public Set<Artist> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(Set<Artist> artists) {
-        this.artists = artists;
     }
 
     public Event getEvent() {

@@ -13,7 +13,10 @@
 
 export interface EventSearch { 
     name?: string;
+    content?: string;
     category?: string;
     duration?: number;
+    location?: number;
+    artist?: number;
 }
 
