@@ -15,6 +15,8 @@
         <a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/events/create"
            routerLinkActive="active">Create New Event</a>
       </li>
+      <li><a *ngIf="!adminView" class="nav-link" routerLink="/events"
+             routerLinkActive="active">Events</a></li>
       <li><a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/lockedUsers"
              routerLinkActive="active">Show Locked Users</a>
 

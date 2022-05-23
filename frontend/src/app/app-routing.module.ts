@@ -10,6 +10,7 @@ import {CreateEventComponent} from './components/create-event/create-event.compo
 import {CreateShowComponent} from './components/create-show/create-show.component';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
 import {AdminComponent} from "./components/admin/admin.component";
+import {EventsComponent} from "./components/events/events.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
   {path: 'registration', component: RegistrationComponent},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
-  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
+  {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path: 'events', component: EventsComponent}
 ];
 
 @NgModule({
