@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Sector {
@@ -14,6 +16,13 @@ public class Sector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sectorId;
+
+    @ManyToOne
+    @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
+    private SeatingPlan seatingPlan;
+
+    @OneToMany(mappedBy = "sector")
+    private List<SectorPrice> sectorPrices;
 
     @Override
     public boolean equals(Object o) {
@@ -37,9 +46,6 @@ public class Sector {
         return Objects.hash(sectorId, seatingPlan);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "seatingPlanId", referencedColumnName = "seatingPlanId", nullable = false)
-    private SeatingPlan seatingPlan;
 
     public Long getSectorId() {
         return sectorId;
@@ -55,5 +61,13 @@ public class Sector {
 
     public void setSeatingPlan(SeatingPlan seatingPlan) {
         this.seatingPlan = seatingPlan;
+    }
+
+    public List<SectorPrice> getSectorPrices() {
+        return sectorPrices;
+    }
+
+    public void setSectorPrices(List<SectorPrice> sectorPrices) {
+        this.sectorPrices = sectorPrices;
     }
 }

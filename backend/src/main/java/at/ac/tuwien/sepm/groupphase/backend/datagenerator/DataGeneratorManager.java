@@ -31,6 +31,7 @@ public class DataGeneratorManager {
     private final SeatingPlanDataGenerator seatingPlanDataGenerator;
     private final SectorDataGenerator sectorDataGenerator;
     private final SeatDataGenerator seatDataGenerator;
+    private final TicketDataGenerator ticketDataGenerator;
 
     public DataGeneratorManager(
         UserDataGenerator userDataGenerator,
@@ -41,7 +42,8 @@ public class DataGeneratorManager {
         SeatingPlanLayoutDataGenerator seatingPlanLayoutDataGenerator,
         SeatingPlanDataGenerator seatingPlanDataGenerator,
         SectorDataGenerator sectorDataGenerator,
-        SeatDataGenerator seatDataGenerator) {
+        SeatDataGenerator seatDataGenerator,
+        TicketDataGenerator ticketDataGenerator) {
         this.userDataGenerator = userDataGenerator;
         this.artistDataGenerator = artistDataGenerator;
         this.eventDataGenerator = eventDataGenerator;
@@ -51,6 +53,7 @@ public class DataGeneratorManager {
         this.seatingPlanDataGenerator = seatingPlanDataGenerator;
         this.sectorDataGenerator = sectorDataGenerator;
         this.seatDataGenerator = seatDataGenerator;
+        this.ticketDataGenerator = ticketDataGenerator;
     }
 
     @PostConstruct
@@ -69,6 +72,7 @@ public class DataGeneratorManager {
         seatingPlanDataGenerator.generateSeatingPlans(MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION);
         sectorDataGenerator.generateSectors();
         seatDataGenerator.generateSeats();
+        ticketDataGenerator.generateTickets();
     }
 
 }

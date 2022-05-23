@@ -15,4 +15,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
         + " WHERE s.show_id = (:showId)",
         nativeQuery = true)
     public List<Ticket> findByShowId();
+
+    List<Seat> findBySectorSectorId(Long sectorId);
 }

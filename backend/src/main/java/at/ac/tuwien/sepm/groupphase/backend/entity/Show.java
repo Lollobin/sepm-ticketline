@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -38,6 +39,9 @@ public class Show {
     @Cascade(CascadeType.MERGE)
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
+
+    @OneToMany(mappedBy = "show")
+    private Set<SectorPrice> sectorPrices;
 
     @Override
     public String toString() {
@@ -94,5 +98,14 @@ public class Show {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public Set<SectorPrice> getSectorPrices() {
+        return sectorPrices;
+    }
+
+    public void setSectorPrices(
+        Set<SectorPrice> sectorPrices) {
+        this.sectorPrices = sectorPrices;
     }
 }

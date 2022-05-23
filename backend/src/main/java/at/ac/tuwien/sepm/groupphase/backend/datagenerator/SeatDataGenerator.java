@@ -29,7 +29,7 @@ public class SeatDataGenerator {
     }
 
     public void generateSeats() {
-        if (!sectorRepository.findAll().isEmpty()) {
+        if (!seatRepository.findAll().isEmpty()) {
             LOGGER.debug("seats already generated");
             return;
         }
