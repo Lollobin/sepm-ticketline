@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +160,7 @@ public class ShowDataGenerator {
 
         Show show = new Show();
         show.setShowId(1L);
+        show.setArtists(Set.of(a1));
         show.setDate(OffsetDateTime.now());
         show.setEvent(e1);
 

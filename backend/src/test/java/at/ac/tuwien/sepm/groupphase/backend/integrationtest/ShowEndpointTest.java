@@ -246,6 +246,7 @@ class ShowEndpointTest {
         Show show1 = new Show();
 
         show1.setEvent(event1);
+        show1.setArtists(null);
         show1.setDate(SHOW_DATE);
 
         showRepository.save(show1);
@@ -253,6 +254,7 @@ class ShowEndpointTest {
         Show show2 = new Show();
 
         show2.setEvent(event2);
+        show2.setArtists(null);
         show2.setDate(SHOW2_DATE);
 
         showRepository.save(show2);
@@ -260,6 +262,7 @@ class ShowEndpointTest {
         Show show3 = new Show();
 
         show3.setEvent(event3);
+        show3.setArtists(null);
         show3.setDate(SHOW3_DATE);
 
         showRepository.save(show3);

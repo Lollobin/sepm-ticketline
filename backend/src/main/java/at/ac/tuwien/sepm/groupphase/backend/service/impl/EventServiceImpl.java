@@ -1,21 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,43 +21,17 @@ public class EventServiceImpl implements EventService {
         MethodHandles.lookup().lookupClass());
     private final EventRepository eventRepository;
     private final EventValidator eventValidator;
-    private final EventMapper eventMapper;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator,
-        EventMapper eventMapper) {
+    public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator) {
         this.eventRepository = eventRepository;
         this.eventValidator = eventValidator;
-        this.eventMapper = eventMapper;
     }
 
     @Override
-    public EventSearchResultDto findAll(Pageable pageable) {
-        LOGGER.debug("Find all events with pageable: {}", pageable);
-
-        Page<Event> eventPage = this.eventRepository.findAll(pageable);
-
-        return setEventSearchResultDto(eventPage);
-    }
-
-    @Override
-    public EventSearchResultDto search(EventSearchDto eventSearchDto, Pageable pageable) {
-        LOGGER.debug("Searching for events with EventSearchDto: {}", eventSearchDto);
-
-        Long duration;
-        if (eventSearchDto.getDuration() == null) {
-            duration = null;
-        } else {
-            duration = Long.valueOf(eventSearchDto.getDuration());
-        }
-
-        LOGGER.debug(String.valueOf(eventSearchDto));
-
-        Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            duration, eventSearchDto.getCategory(), eventSearchDto.getLocation(),
-            eventSearchDto.getArtist(), pageable);
-
-        return setEventSearchResultDto(eventPage);
+    public List<Event> findAll() {
+        LOGGER.debug("Find all events");
+        return eventRepository.findAll();
     }
 
     @Override
@@ -83,17 +53,5 @@ public class EventServiceImpl implements EventService {
         eventValidator.checkIfEvenIsValid(event);
 
         return eventRepository.save(event);
-    }
-
-    private EventSearchResultDto setEventSearchResultDto(Page<Event> eventPage) {
-        LOGGER.trace("Setting EventSearchResultDto values");
-        EventSearchResultDto eventSearchResultDto = new EventSearchResultDto();
-
-        eventSearchResultDto.setEvents(eventPage.get().map(eventMapper::eventToEventDto).toList());
-        eventSearchResultDto.setNumberOfResults(eventPage.getNumberOfElements());
-        eventSearchResultDto.setCurrentPage(eventPage.getNumber());
-        eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
-
-        return eventSearchResultDto;
     }
 }

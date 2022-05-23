@@ -16,14 +16,6 @@ public class SectorPriceId implements Serializable {
         this.showId = showId;
     }
 
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
-    }
-
-    public void setShowId(Long showId) {
-        this.showId = showId;
-    }
-
     public Long getSectorId() {
         return sectorId;
     }
