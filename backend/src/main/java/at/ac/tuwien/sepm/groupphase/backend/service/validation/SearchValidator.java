@@ -13,12 +13,14 @@ public class SearchValidator {
         String exceptionString = "";
         boolean first = true;
 
-        if (isStringLengthInvalid(locationSearchDto.getName())) {
+        if (locationSearchDto.getName() != null && isStringLengthInvalid(
+            locationSearchDto.getName())) {
 
             exceptionString += "Name of event is too long ";
             first = false;
         }
-        if (isStringLengthInvalid(locationSearchDto.getCountry())) {
+        if (locationSearchDto.getCountry() != null && isStringLengthInvalid(
+            locationSearchDto.getCountry())) {
             if (!first) {
                 exceptionString += "& ";
             }
@@ -26,14 +28,16 @@ public class SearchValidator {
             exceptionString += "Country search param is too long";
             first = false;
         }
-        if (isStringLengthInvalid(locationSearchDto.getCity())) {
+        if (locationSearchDto.getCity() != null && isStringLengthInvalid(
+            locationSearchDto.getCity())) {
             if (!first) {
                 exceptionString += "& ";
             }
             exceptionString += "City search param is too long";
             first = false;
         }
-        if (isStringLengthInvalid(locationSearchDto.getStreet())) {
+        if (locationSearchDto.getStreet() != null && isStringLengthInvalid(
+            locationSearchDto.getStreet())) {
             if (!first) {
                 exceptionString += "& ";
             }
@@ -41,7 +45,8 @@ public class SearchValidator {
             exceptionString += "Street search param is too long";
             first = false;
         }
-        if (isStringLengthInvalid(locationSearchDto.getZipCode())) {
+        if (locationSearchDto.getZipCode() != null && isStringLengthInvalid(
+            locationSearchDto.getZipCode())) {
             if (!first) {
                 exceptionString += "& ";
             }
