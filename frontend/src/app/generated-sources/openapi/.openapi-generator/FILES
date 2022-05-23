@@ -19,16 +19,19 @@ model/address.ts
 model/article.ts
 model/articleWithoutId.ts
 model/artist.ts
+model/artistsSearchResult.ts
 model/authRequest.ts
 model/bookingType.ts
 model/event.ts
 model/eventSearch.ts
+model/eventSearchResult.ts
 model/eventWithoutId.ts
 model/fullTicketWithStatus.ts
 model/gender.ts
 model/invoiceItem.ts
 model/location.ts
 model/locationSearch.ts
+model/locationSearchResult.ts
 model/locationWithoutId.ts
 model/models.ts
 model/order.ts
@@ -39,6 +42,7 @@ model/sector.ts
 model/show.ts
 model/showInformation.ts
 model/showSearch.ts
+model/showSearchResult.ts
 model/showWithTicketsSold.ts
 model/showWithoutId.ts
 model/ticket.ts

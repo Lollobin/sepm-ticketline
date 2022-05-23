@@ -7,6 +7,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +47,10 @@ public interface EventsApi {
      * Filters data depending on the query parameters. When no query parameters are given, all events are returned
      *
      * @param search  (optional)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
      * @return Successful retreival of articles (status code 200)
-     *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
@@ -55,12 +58,8 @@ public interface EventsApi {
         summary = "Searches for events depending on parameters",
         tags = { "events" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventDto.class))),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventSearchResultDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -68,13 +67,16 @@ public interface EventsApi {
         value = "/events",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<EventDto>> eventsGet(
-        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid EventSearchDto search
+    default ResponseEntity<EventSearchResultDto> eventsGet(
+        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid EventSearchDto search,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }";
+                    String exampleString = "{ \"currentPage\" : 1, \"events\" : [ { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }, { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

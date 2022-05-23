@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.EventsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
@@ -30,11 +31,24 @@ public class EventsEndpoint implements EventsApi {
     }
 
     @Override
-    public ResponseEntity<List<EventDto>> eventsGet(EventSearchDto search) {
+    public ResponseEntity<EventSearchResultDto> eventsGet(
+        EventSearchDto search, Integer pageSize, Integer requestedPage, String sort) {
+        if (search.getName() == null && search.getCategory() == null
+            && search.getDuration() == null) {
+            /* this is just a placeholderlogic to keep current eventsgetall
+            functional (if used anywhere, what i dont think) */
+            List<EventDto> list = this.eventsGetAll();
+            EventSearchResultDto result = new EventSearchResultDto().events(list).currentPage(0)
+                .numberOfResults(list.size()).pagesTotal(1);
+            return ResponseEntity.ok().body(result);
+        }
+        return EventsApi.super.eventsGet(search, pageSize, requestedPage, sort);
+    }
+
+    private List<EventDto> eventsGetAll() {
         LOGGER.info("GET /events");
-        List<EventDto> eventDtos = eventService.findAll().stream().map(eventMapper::eventToEventDto)
+        return eventService.findAll().stream().map(eventMapper::eventToEventDto)
             .toList();
-        return ResponseEntity.ok().body(eventDtos);
     }
 
     @Secured("ROLE_ADMIN")
