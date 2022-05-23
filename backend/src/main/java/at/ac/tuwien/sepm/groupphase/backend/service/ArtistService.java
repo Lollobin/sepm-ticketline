@@ -14,7 +14,20 @@ public interface ArtistService {
      */
     Artist findOne(Long id);
 
+    /**
+     * Searches the database for artists which correspond to the given search String.
+     *
+     * @param search for which we search
+     * @param pageable contains information about the page we request
+     * @return found ArtistsSearchResultDto from database
+     */
     ArtistsSearchResultDto search(String search, Pageable pageable);
 
+    /**
+     * Finds all artists in database.
+     *
+     * @param pageable contains information about the page we request
+     * @return found ArtistsSearchResultDto from database
+     */
     ArtistsSearchResultDto findAll(Pageable pageable);
 }
