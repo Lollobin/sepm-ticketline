@@ -50,11 +50,11 @@ public class OrderDto   {
   private String locationName;
 
   @JsonProperty("transactionId")
-  private Integer transactionId;
+  private Long transactionId;
 
   @JsonProperty("ticketIds")
   @Valid
-  private List<Integer> ticketIds = new ArrayList<>();
+  private List<Long> ticketIds = new ArrayList<>();
 
   public OrderDto type(BookingTypeDto type) {
     this.type = type;
@@ -197,7 +197,7 @@ public class OrderDto   {
     this.locationName = locationName;
   }
 
-  public OrderDto transactionId(Integer transactionId) {
+  public OrderDto transactionId(Long transactionId) {
     this.transactionId = transactionId;
     return this;
   }
@@ -208,20 +208,20 @@ public class OrderDto   {
   */
   @NotNull 
   @Schema(name = "transactionId", required = true)
-  public Integer getTransactionId() {
+  public Long getTransactionId() {
     return transactionId;
   }
 
-  public void setTransactionId(Integer transactionId) {
+  public void setTransactionId(Long transactionId) {
     this.transactionId = transactionId;
   }
 
-  public OrderDto ticketIds(List<Integer> ticketIds) {
+  public OrderDto ticketIds(List<Long> ticketIds) {
     this.ticketIds = ticketIds;
     return this;
   }
 
-  public OrderDto addTicketIdsItem(Integer ticketIdsItem) {
+  public OrderDto addTicketIdsItem(Long ticketIdsItem) {
     if (this.ticketIds == null) {
       this.ticketIds = new ArrayList<>();
     }
@@ -235,11 +235,11 @@ public class OrderDto   {
   */
   @NotNull 
   @Schema(name = "ticketIds", required = true)
-  public List<Integer> getTicketIds() {
+  public List<Long> getTicketIds() {
     return ticketIds;
   }
 
-  public void setTicketIds(List<Integer> ticketIds) {
+  public void setTicketIds(List<Long> ticketIds) {
     this.ticketIds = ticketIds;
   }
 
