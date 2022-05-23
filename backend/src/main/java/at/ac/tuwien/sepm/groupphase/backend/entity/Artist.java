@@ -30,7 +30,7 @@ public class Artist {
             return false;
         }
         Artist artist = (Artist) o;
-        return Objects.equals(artistId, artist.artistId)
+        return artistId == artist.artistId
             && Objects.equals(bandName, artist.bandName)
             && Objects.equals(knownAs, artist.knownAs)
             && Objects.equals(firstName, artist.firstName)
