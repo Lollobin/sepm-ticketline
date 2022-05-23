@@ -20,6 +20,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingS
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SectorDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SectorPriceDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowInformationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchDto.java
