@@ -5,11 +5,11 @@ import {Component} from '@angular/core';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.scss']
 })
-export class EventsComponent {
+export class EventsComponent{
 
   data: any;
 
-  artistSearch: boolean;
+  artistSearch = true;
   locationSearch: boolean;
   eventSearch: boolean;
   showSearch: boolean;
