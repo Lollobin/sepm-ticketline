@@ -1565,10 +1565,12 @@ components:
           type: string
         transactionId:
           type: integer
+          format: int64
         ticketIds:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - type
         - date
