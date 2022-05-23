@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
+import at.ac.tuwien.sepm.groupphase.backend.entity.PlaysIn;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
@@ -17,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.PlaysInRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
@@ -56,6 +58,7 @@ public class ShowDataGenerator {
     private final TicketRepository ticketRepository;
     private final SectorPriceRepository sectorPriceRepository;
     private final FileSystemRepository fileSystemRepository;
+    private final PlaysInRepository playsInRepository;
 
     public ShowDataGenerator(ShowRepository showRepository, ArtistRepository artistRepository,
         EventRepository eventRepository, AddressRepository addressRepository,
@@ -63,7 +66,8 @@ public class ShowDataGenerator {
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
         SeatingPlanRepository seatingPlanRepository, SectorRepository sectorRepository,
         SeatRepository seatRepository, TicketRepository ticketRepository,
-        SectorPriceRepository sectorPriceRepository, FileSystemRepository fileSystemRepository) {
+        SectorPriceRepository sectorPriceRepository, FileSystemRepository fileSystemRepository,
+        PlaysInRepository playsInRepository) {
         this.showRepository = showRepository;
         this.artistRepository = artistRepository;
         this.eventRepository = eventRepository;
@@ -76,6 +80,7 @@ public class ShowDataGenerator {
         this.ticketRepository = ticketRepository;
         this.sectorPriceRepository = sectorPriceRepository;
         this.fileSystemRepository = fileSystemRepository;
+        this.playsInRepository = playsInRepository;
     }
 
     private Ticket generateTicket(Show show, Seat seat) {
@@ -163,6 +168,11 @@ public class ShowDataGenerator {
         show.setEvent(e1);
 
         showRepository.save(show);
+
+        PlaysIn playsIn = new PlaysIn();
+        playsIn.setShow(show);
+        playsIn.setArtist(a1);
+        playsInRepository.save(playsIn);
 
         Address address = generateAddress();
         addressRepository.save(address);

@@ -48,17 +48,8 @@ public class EventServiceImpl implements EventService {
     public EventSearchResultDto search(EventSearchDto eventSearchDto, Pageable pageable) {
         LOGGER.debug("Searching for events with EventSearchDto: {}", eventSearchDto);
 
-        Long duration;
-        if (eventSearchDto.getDuration() == null) {
-            duration = null;
-        } else {
-            duration = Long.valueOf(eventSearchDto.getDuration());
-        }
-
-        LOGGER.debug(String.valueOf(eventSearchDto));
-
         Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            duration, eventSearchDto.getCategory(), eventSearchDto.getLocation(),
+            eventSearchDto.getDuration(), eventSearchDto.getCategory(), eventSearchDto.getLocation(),
             eventSearchDto.getArtist(), pageable);
 
         return setEventSearchResultDto(eventPage);
@@ -89,7 +80,7 @@ public class EventServiceImpl implements EventService {
         LOGGER.trace("Setting EventSearchResultDto values");
         EventSearchResultDto eventSearchResultDto = new EventSearchResultDto();
 
-        eventSearchResultDto.setEvents(eventPage.get().map(eventMapper::eventToEventDto).toList());
+        eventSearchResultDto.setEvents(eventPage.getContent().stream().map(eventMapper::eventToEventDto).toList());
         eventSearchResultDto.setNumberOfResults(eventPage.getNumberOfElements());
         eventSearchResultDto.setCurrentPage(eventPage.getNumber());
         eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
