@@ -1462,6 +1462,11 @@ components:
           type: string
         duration:
           type: integer
+        location:
+          type: integer
+        artist:
+          type: integer
+        
     TopShowSearch:
       type: object
       properties:
