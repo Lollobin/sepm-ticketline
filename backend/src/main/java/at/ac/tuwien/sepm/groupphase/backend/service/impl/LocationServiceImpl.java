@@ -43,8 +43,8 @@ public class LocationServiceImpl implements LocationService {
         checkForBlankValues(searchDto);
 
         Page<Location> locationPage = locationRepository.search(searchDto.getName(),
-            searchDto.getStreet(), searchDto.getCity(), searchDto.getZipCode(),
-            searchDto.getCountry(), pageable);
+            searchDto.getCity(), searchDto.getCountry(), searchDto.getStreet(),
+            searchDto.getZipCode(), pageable);
 
         return setLocationSearchDto(locationPage);
 
