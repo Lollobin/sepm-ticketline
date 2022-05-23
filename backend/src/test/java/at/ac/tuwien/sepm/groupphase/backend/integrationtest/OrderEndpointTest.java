@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,7 +119,7 @@ class OrderEndpointTest implements TestData {
 
         Transaction transaction = new Transaction();
         transaction.setUser(user);
-        transaction.setDate(TRANSACTION_DATE);
+        transaction.setDate(OffsetDateTime.now());
         transactionRepository.save(transaction);
 
         MvcResult mvcResult = this.mockMvc.perform(get(ORDERS_BASE_URI)

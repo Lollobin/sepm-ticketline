@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
@@ -13,7 +12,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -35,7 +33,6 @@ public class TicketDataGenerator {
     private final ShowRepository showRepository;
     private final SeatingPlanRepository seatingPlanRepository;
     private final SectorRepository sectorRepository;
-    private final UserRepository userRepository;
     private final SectorPriceRepository sectorPriceRepository;
     private final Faker faker = new Faker();
 
@@ -45,14 +42,12 @@ public class TicketDataGenerator {
         ShowRepository showRepository,
         SeatingPlanRepository seatingPlanRepository,
         SectorRepository sectorRepository,
-        UserRepository userRepository,
         SectorPriceRepository sectorPriceRepository) {
         this.ticketRepository = ticketRepository;
         this.seatRepository = seatRepository;
         this.showRepository = showRepository;
         this.seatingPlanRepository = seatingPlanRepository;
         this.sectorRepository = sectorRepository;
-        this.userRepository = userRepository;
         this.sectorPriceRepository = sectorPriceRepository;
     }
 
@@ -85,17 +80,6 @@ public class TicketDataGenerator {
                     Ticket ticket = new Ticket();
                     ticket.setSeat(seat);
                     ticket.setShow(show);
-
-                    long numberOfUsers = userRepository.findAll().size();
-                    ApplicationUser user = userRepository.getById(
-                        faker.number().numberBetween(1L, numberOfUsers));
-
-                    int random = faker.number().numberBetween(1, 100);
-                    if (random < 20) {
-                        ticket.setReservedBy(user);
-                    } else if (random < 40) {
-                        ticket.setPurchasedBy(user);
-                    }
 
                     ticketRepository.save(ticket);
                 }

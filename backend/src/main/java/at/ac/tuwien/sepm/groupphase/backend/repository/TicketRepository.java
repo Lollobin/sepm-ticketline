@@ -17,4 +17,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "SELECT * FROM ticket t" + " NATURAL JOIN show s"
         + " WHERE s.show_id = (:showId)", nativeQuery = true)
     public List<Ticket> findByShowId(@Param("showId") Long showId);
+
+    Ticket getByTicketId(Long ticketId);
 }

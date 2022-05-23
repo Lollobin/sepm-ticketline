@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataGeneratorManager {
 
-    private static final int NUMBER_OF_USERS = 20;
-    private static final int NUMBER_OF_ARTISTS = 50;
-    private static final int NUMBER_OF_EVENTS = 30;
-    private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 10;
-    private static final int NUMBER_OF_LOCATIONS = 10;
+    private static final int NUMBER_OF_USERS = 5;
+    private static final int NUMBER_OF_ARTISTS = 20;
+    private static final int NUMBER_OF_EVENTS = 10;
+    private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 5;
+    private static final int NUMBER_OF_LOCATIONS = 3;
     private static final int MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION = 5;
 
     private static final Logger LOGGER =
@@ -32,6 +32,7 @@ public class DataGeneratorManager {
     private final SectorDataGenerator sectorDataGenerator;
     private final SeatDataGenerator seatDataGenerator;
     private final TicketDataGenerator ticketDataGenerator;
+    private final TransactionDataGenerator transactionDataGenerator;
 
     public DataGeneratorManager(
         UserDataGenerator userDataGenerator,
@@ -43,7 +44,8 @@ public class DataGeneratorManager {
         SeatingPlanDataGenerator seatingPlanDataGenerator,
         SectorDataGenerator sectorDataGenerator,
         SeatDataGenerator seatDataGenerator,
-        TicketDataGenerator ticketDataGenerator) {
+        TicketDataGenerator ticketDataGenerator,
+        TransactionDataGenerator transactionDataGenerator) {
         this.userDataGenerator = userDataGenerator;
         this.artistDataGenerator = artistDataGenerator;
         this.eventDataGenerator = eventDataGenerator;
@@ -54,6 +56,7 @@ public class DataGeneratorManager {
         this.sectorDataGenerator = sectorDataGenerator;
         this.seatDataGenerator = seatDataGenerator;
         this.ticketDataGenerator = ticketDataGenerator;
+        this.transactionDataGenerator = transactionDataGenerator;
     }
 
     @PostConstruct
@@ -73,6 +76,7 @@ public class DataGeneratorManager {
         sectorDataGenerator.generateSectors();
         seatDataGenerator.generateSeats();
         ticketDataGenerator.generateTickets();
+        transactionDataGenerator.generateTransactions();
     }
 
 }
