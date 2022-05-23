@@ -168,4 +168,6 @@ public interface TestData {
     String ARTIST2_KNOWNAS = "Friedl";
     String ARTIST2_BANDNAME = "Ferdies Jungs";
 
+    String ARTIST_INVALIDNAME = "INVALID NAME";
+
 }
