@@ -94,19 +94,19 @@ class EventEndpointTest {
         List<EventDto> eventResult = resultDto.getEvents();
 
         assertThat(eventResult).hasSize(3);
-        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT2_NAME);
-        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT2_DURATION);
-        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT2_CATEGORY);
-        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT2_CONTENT);
+        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT_NAME);
+        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT_DURATION);
+        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT_CATEGORY);
+        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT_CONTENT);
 
-        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT_NAME);
-        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT_DURATION);
-        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT_CATEGORY);
-        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT_CONTENT);
+        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT3_NAME);
+        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT3_DURATION);
+        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT3_CATEGORY);
+        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT3_CONTENT);
 
-        assertThat(eventResult.get(0).getEventId()).isEqualTo(2);
-        assertThat(eventResult.get(1).getEventId()).isEqualTo(3);
-        assertThat(eventResult.get(2).getEventId()).isEqualTo(1);
+        assertThat(eventResult.get(0).getEventId()).isEqualTo(1);
+        assertThat(eventResult.get(1).getEventId()).isEqualTo(2);
+        assertThat(eventResult.get(2).getEventId()).isEqualTo(3);
     }
 
     @Test
