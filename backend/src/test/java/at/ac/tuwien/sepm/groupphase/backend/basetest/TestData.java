@@ -158,5 +158,16 @@ public interface TestData {
     ApplicationUser TICKET_PURCHASED_BY = null;
     ApplicationUser TICKET_RESERVED_BY = null;
 
+    //Location Data
+
+    String LOCATION1_NAME = "Gasometer";
+
+    String LOCATION2_NAME = "Stadthalle";
+
+    String LOCATION3_NAME = "Praterdome";
+
+    String LOCATION4_NAME = "Tomorrowland";
+
+
 
 }
