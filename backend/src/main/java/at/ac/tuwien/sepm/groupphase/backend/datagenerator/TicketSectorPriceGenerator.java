@@ -62,7 +62,7 @@ public class TicketSectorPriceGenerator {
         List<Show> shows = showRepository.findAll();
         for (Show show : shows) {
             int totalNumberOfSeatingPlans = seatingPlanRepository.findAll().size();
-            SeatingPlan randSeatingPlan = seatingPlanRepository.getById(
+            SeatingPlan randSeatingPlan = seatingPlanRepository.getBySeatingPlanId(
                 (long) faker.number().numberBetween(1, totalNumberOfSeatingPlans));
 
             List<Sector> sectors = sectorRepository.findAllBySeatingPlanSeatingPlanId(
