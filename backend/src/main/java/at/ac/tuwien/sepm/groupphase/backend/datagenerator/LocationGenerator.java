@@ -43,7 +43,7 @@ public class LocationGenerator {
         }
     }
 
-    private Location generateLocation(){
+    private Location generateLocation() {
         Location location = new Location();
         location.setName(faker.overwatch().location());
         location.setAddress(addressDataGenerator.generateRandomAddress());
