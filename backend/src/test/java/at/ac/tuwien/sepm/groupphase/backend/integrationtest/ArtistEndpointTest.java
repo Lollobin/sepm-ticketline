@@ -123,7 +123,7 @@ class ArtistEndpointTest {
     }
 
     @Test
-    void get_shouldReturnArtistWithBandNameFerdies() throws Exception {
+    void get_shouldReturnArtistsWithBandNameFerdies() throws Exception {
 
         saveThreeArtistsInRepo();
 

@@ -169,11 +169,11 @@ public interface TestData {
     String ARTIST2_LASTNAME = "Bauer";
     String ARTIST2_KNOWNAS = "Friedl";
     String ARTIST2_BANDNAME = "Ferdies Jungs";
+
     String ARTIST3_FIRSTNAME = "Patrick";
     String ARTIST3_LASTNAME = "Grossmann";
     String ARTIST3_KNOWNAS = "Luciano";
     String ARTIST3_BANDNAME = null;
-
 
     String ARTIST_INVALIDNAME = "INVALID NAME";
 
