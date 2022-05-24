@@ -21,6 +21,7 @@ export * from './seatWithBookingStatus';
 export * from './seatingPlan';
 export * from './seatingPlanWithoutId';
 export * from './sector';
+export * from './sectorPrice';
 export * from './show';
 export * from './showInformation';
 export * from './showSearch';

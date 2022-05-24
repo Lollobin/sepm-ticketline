@@ -4,7 +4,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -158,5 +160,16 @@ public interface TestData {
     ApplicationUser TICKET_PURCHASED_BY = null;
     ApplicationUser TICKET_RESERVED_BY = null;
 
+    String SEATINGPLAN_NAME = "SeatingPlan Name";
+    String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
+    Long SECTOR_ID1 = 1L;
+    Long SECTOR_ID2 = 2L;
+    Long SECTOR_ID3 = 3L;
+    Long SEAT_ID1 = 1L;
+    Long SEAT_ID2 = 2L;
+    Long SEAT_ID3 = 3L;
+    BigDecimal SECTOR_PRICE1 = BigDecimal.valueOf(1);
+    BigDecimal SECTOR_PRICE2 = BigDecimal.valueOf(2);
+    BigDecimal SECTOR_PRICE3 = BigDecimal.valueOf(3);
 
 }
