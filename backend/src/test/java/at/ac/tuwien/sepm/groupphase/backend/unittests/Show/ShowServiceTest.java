@@ -26,6 +26,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
@@ -40,8 +41,11 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.h2.command.dml.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,6 +73,8 @@ class ShowServiceTest {
     private SeatingPlanRepository seatingPlanRepository;
     @Mock
     private SectorPriceRepository sectorPriceRepository;
+    @Mock
+    private ArtistRepository artistRepository;
 
     private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
@@ -77,15 +83,12 @@ class ShowServiceTest {
     private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
 
-    @Spy
-    private ShowMapper showMapper = Mappers.getMapper(ShowMapper.class);
-
-
     @BeforeEach
     void setUp() {
         eventService = new EventServiceImpl(eventRepository, eventValidator);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
-            seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository);
+            seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
+            artistRepository);
         showRepository.deleteAll();
     }
 
@@ -120,6 +123,7 @@ class ShowServiceTest {
         showToSave.setEvent(showsEvent);
         showToSave.setArtists(null);
         showToSave.setDate(SHOW_DATE);
+        showToSave.setArtists(Collections.EMPTY_SET);
 
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
 
@@ -168,7 +172,7 @@ class ShowServiceTest {
         verify(ticketRepository, times(3)).save(any());
 
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
-        assertThat(showArgumentCaptor.getValue().getArtists()).isNull();
+        assertThat(showArgumentCaptor.getValue().getArtists().isEmpty());
         assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
     }
 

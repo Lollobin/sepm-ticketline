@@ -29,7 +29,7 @@ public class Show {
 
     @ManyToMany
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @Cascade(CascadeType.MERGE)
     @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
     private Set<Artist> artists;
 

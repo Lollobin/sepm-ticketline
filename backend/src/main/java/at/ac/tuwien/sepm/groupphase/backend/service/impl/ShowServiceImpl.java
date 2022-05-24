@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
@@ -9,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
@@ -40,12 +42,13 @@ public class ShowServiceImpl implements ShowService {
     private final TicketRepository ticketRepository;
     private final SeatingPlanRepository seatingPlanRepository;
     private final SectorPriceRepository sectorPriceRepository;
+    private final ArtistRepository artistRepository;
 
     @Autowired
     public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator,
         SectorRepository sectorRepository, SeatRepository seatRepository,
         TicketRepository ticketRepository, SeatingPlanRepository seatingPlanRepository,
-        SectorPriceRepository sectorPriceRepository) {
+        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
         this.sectorRepository = sectorRepository;
@@ -53,6 +56,7 @@ public class ShowServiceImpl implements ShowService {
         this.ticketRepository = ticketRepository;
         this.seatingPlanRepository = seatingPlanRepository;
         this.sectorPriceRepository = sectorPriceRepository;
+        this.artistRepository = artistRepository;
     }
 
 
@@ -83,6 +87,14 @@ public class ShowServiceImpl implements ShowService {
         if (sectors.get().size() != sectorPriceDtos.size()) {
             throw new ConflictException(
                 "length of list of sectorPrices does not match with length of list of sectors");
+        }
+
+        for (Artist artist : show.getArtists()) {
+            if (!artistRepository.existsById(artist.getArtistId())) {
+                throw new NotFoundException(
+                    String.format("Could not find artist with the given artistId %s",
+                        seatingPlanId));
+            }
         }
 
         List<SectorPrice> sectorPrices = setUpSectorPrices(sectorPriceDtos, sectors.get());
