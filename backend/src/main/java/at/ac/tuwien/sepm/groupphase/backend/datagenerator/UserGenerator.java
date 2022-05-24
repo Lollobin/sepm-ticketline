@@ -12,23 +12,23 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class UserDataGenerator {
+public class UserGenerator {
 
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
 
     private final AddressDataGenerator addressDataGenerator;
     private final UserRepository userRepository;
     private final Faker faker = new Faker();
 
-    public UserDataGenerator(
+    public UserGenerator(
         AddressDataGenerator addressDataGenerator,
         UserRepository userRepository) {
         this.addressDataGenerator = addressDataGenerator;
         this.userRepository = userRepository;
     }
 
-    public void generateUsers(int numberOfUsers) {
+    public void generateData(int numberOfUsers) {
 
         if (!userRepository.findAll().isEmpty()) {
             LOGGER.debug("users already generated");
@@ -37,13 +37,7 @@ public class UserDataGenerator {
 
         LOGGER.debug("generating {} users", numberOfUsers);
 
-        for (int i = 0; i < numberOfUsers; i++) {
-            ApplicationUser user = generateRandomApplicationUser();
-            LOGGER.debug("saving user {}", user);
-            userRepository.save(user);
-        }
-
-        ApplicationUser admin = generateRandomApplicationUser();
+        ApplicationUser admin = generateApplicationUser();
         admin.setEmail("admin@email.com");
         admin.setPassword("password");
         admin.setHasAdministrativeRights(true);
@@ -52,7 +46,7 @@ public class UserDataGenerator {
         admin.setLockedAccount(false);
         userRepository.save(admin);
 
-        ApplicationUser user = generateRandomApplicationUser();
+        ApplicationUser user = generateApplicationUser();
         user.setEmail("user@email.com");
         user.setPassword("password");
         user.setHasAdministrativeRights(false);
@@ -61,9 +55,14 @@ public class UserDataGenerator {
         user.setLockedAccount(false);
         userRepository.save(user);
 
+        for (int i = 0; i < numberOfUsers; i++) {
+            ApplicationUser randomUser = generateApplicationUser();
+            LOGGER.trace("saving user {}", randomUser);
+            userRepository.save(randomUser);
+        }
     }
 
-    private ApplicationUser generateRandomApplicationUser() {
+    private ApplicationUser generateApplicationUser() {
         ApplicationUser user = new ApplicationUser();
         user.setEmail(faker.internet().emailAddress());
         user.setFirstName(faker.name().firstName());
@@ -71,11 +70,11 @@ public class UserDataGenerator {
         user.setGender(faker.options().option(Gender.class));
         user.setAddress(addressDataGenerator.generateRandomAddress());
         user.setPassword(faker.internet().password(10, 30));
-        // TODO: find better way to generate data for following fields
         user.setHasAdministrativeRights(false);
         user.setLoginTries(0);
         user.setMustResetPassword(false);
-        user.setLockedAccount(false);
+        double randomDouble = faker.number().randomDouble(3, 0, 1);
+        user.setLockedAccount(randomDouble < 0.1);
         return user;
     }
 }

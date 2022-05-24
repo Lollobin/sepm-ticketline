@@ -14,7 +14,7 @@ import org.springframework.util.ResourceUtils;
 
 @Profile("generateData")
 @Component
-public class SeatingPlanLayoutDataGenerator {
+public class SeatingPlanLayoutGenerator {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -22,7 +22,7 @@ public class SeatingPlanLayoutDataGenerator {
     private final SeatingPlanLayoutRepository seatingPlanLayoutRepository;
     private final FileSystemRepository fileSystemRepository;
 
-    public SeatingPlanLayoutDataGenerator(
+    public SeatingPlanLayoutGenerator(
         FileSystemRepository fileSystemRepository,
         SeatingPlanLayoutRepository seatingPlanLayoutRepository) {
         this.fileSystemRepository = fileSystemRepository;

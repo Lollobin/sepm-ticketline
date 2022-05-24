@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class SeatingPlanDataGenerator {
+public class SeatingPlanGenerator {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -27,7 +27,7 @@ public class SeatingPlanDataGenerator {
     private final SeatingPlanLayoutRepository seatingPlanLayoutRepository;
     private final Faker faker = new Faker();
 
-    public SeatingPlanDataGenerator(
+    public SeatingPlanGenerator(
         SeatingPlanRepository seatingPlanRepository,
         LocationRepository locationRepository,
         SeatingPlanLayoutRepository seatingPlanLayoutRepository) {
@@ -50,18 +50,24 @@ public class SeatingPlanDataGenerator {
             int numberOfSeatingPlans = faker.number().numberBetween(1, maxSeatingPlansPerLocation);
 
             for (int i = 0; i < numberOfSeatingPlans; i++) {
-                SeatingPlan seatingPlan = new SeatingPlan();
-                seatingPlan.setName(String.valueOf((char) (i + 65)));
-                seatingPlan.setLocation(location);
 
                 int numberOfSeatingPlanLayouts = seatingPlanLayoutRepository.findAll().size();
                 SeatingPlanLayout randomLayout = seatingPlanLayoutRepository.getById(
                     (long) faker.number().numberBetween(1, numberOfSeatingPlanLayouts));
-                seatingPlan.setSeatingPlanLayout(randomLayout);
 
+                SeatingPlan seatingPlan = generateRandomSeatingPlan(String.valueOf((char) (i + 65)),
+                    location, randomLayout);
                 seatingPlanRepository.save(seatingPlan);
             }
         }
+    }
 
+    private SeatingPlan generateRandomSeatingPlan(String name, Location location,
+        SeatingPlanLayout seatingPlanLayout) {
+        SeatingPlan seatingPlan = new SeatingPlan();
+        seatingPlan.setName(name);
+        seatingPlan.setLocation(location);
+        seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
+        return seatingPlan;
     }
 }

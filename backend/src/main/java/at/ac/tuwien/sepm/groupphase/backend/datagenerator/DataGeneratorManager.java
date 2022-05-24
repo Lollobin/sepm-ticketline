@@ -22,61 +22,59 @@ public class DataGeneratorManager {
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private final UserDataGenerator userDataGenerator;
-    private final ArtistDataGenerator artistDataGenerator;
-    private final EventDataGenerator eventDataGenerator;
-    private final ShowDataGenerator showDataGenerator;
-    private final LocationDataGenerator locationDataGenerator;
-    private final SeatingPlanLayoutDataGenerator seatingPlanLayoutDataGenerator;
-    private final SeatingPlanDataGenerator seatingPlanDataGenerator;
-    private final SectorDataGenerator sectorDataGenerator;
-    private final SeatDataGenerator seatDataGenerator;
-    private final TicketDataGenerator ticketDataGenerator;
-    private final TransactionDataGenerator transactionDataGenerator;
+    private final UserGenerator userGenerator;
+    private final ArtistGenerator artistGenerator;
+    private final EventShowGenerator eventShowGenerator;
+    private final LocationGenerator locationGenerator;
+    private final SeatingPlanLayoutGenerator seatingPlanLayoutGenerator;
+    private final SeatingPlanGenerator seatingPlanGenerator;
+    private final SectorGenerator sectorGenerator;
+    private final SeatGenerator seatGenerator;
+    private final TicketSectorPriceGenerator ticketSectorPriceGenerator;
+    private final TransactionBookedInGenerator transactionDataGenerator;
 
     public DataGeneratorManager(
-        UserDataGenerator userDataGenerator,
-        ArtistDataGenerator artistDataGenerator,
-        EventDataGenerator eventDataGenerator,
-        ShowDataGenerator showDataGenerator,
-        LocationDataGenerator locationDataGenerator,
-        SeatingPlanLayoutDataGenerator seatingPlanLayoutDataGenerator,
-        SeatingPlanDataGenerator seatingPlanDataGenerator,
-        SectorDataGenerator sectorDataGenerator,
-        SeatDataGenerator seatDataGenerator,
-        TicketDataGenerator ticketDataGenerator,
-        TransactionDataGenerator transactionDataGenerator) {
-        this.userDataGenerator = userDataGenerator;
-        this.artistDataGenerator = artistDataGenerator;
-        this.eventDataGenerator = eventDataGenerator;
-        this.showDataGenerator = showDataGenerator;
-        this.locationDataGenerator = locationDataGenerator;
-        this.seatingPlanLayoutDataGenerator = seatingPlanLayoutDataGenerator;
-        this.seatingPlanDataGenerator = seatingPlanDataGenerator;
-        this.sectorDataGenerator = sectorDataGenerator;
-        this.seatDataGenerator = seatDataGenerator;
-        this.ticketDataGenerator = ticketDataGenerator;
+        UserGenerator userGenerator,
+        ArtistGenerator artistGenerator,
+        EventShowGenerator eventShowGenerator,
+        LocationGenerator locationGenerator,
+        SeatingPlanLayoutGenerator seatingPlanLayoutGenerator,
+        SeatingPlanGenerator seatingPlanGenerator,
+        SectorGenerator sectorGenerator,
+        SeatGenerator seatGenerator,
+        TicketSectorPriceGenerator ticketSectorPriceGenerator,
+        TransactionBookedInGenerator transactionDataGenerator) {
+        this.userGenerator = userGenerator;
+        this.artistGenerator = artistGenerator;
+        this.eventShowGenerator = eventShowGenerator;
+        this.locationGenerator = locationGenerator;
+        this.seatingPlanLayoutGenerator = seatingPlanLayoutGenerator;
+        this.seatingPlanGenerator = seatingPlanGenerator;
+        this.sectorGenerator = sectorGenerator;
+        this.seatGenerator = seatGenerator;
+        this.ticketSectorPriceGenerator = ticketSectorPriceGenerator;
         this.transactionDataGenerator = transactionDataGenerator;
     }
 
     @PostConstruct
     private void generateData() {
         LOGGER.debug("starting data generation");
-        userDataGenerator.generateUsers(NUMBER_OF_USERS);
-        artistDataGenerator.generateArtists(NUMBER_OF_ARTISTS);
-        eventDataGenerator.generateEvents(NUMBER_OF_EVENTS);
-        showDataGenerator.generateShows(MAX_NUMBER_OF_SHOWS_PER_EVENT);
-        locationDataGenerator.generateLocations(NUMBER_OF_LOCATIONS);
+        userGenerator.generateData(NUMBER_OF_USERS);
+        artistGenerator.generateData(NUMBER_OF_ARTISTS);
+        eventShowGenerator.generateData(NUMBER_OF_EVENTS, MAX_NUMBER_OF_SHOWS_PER_EVENT);
+        locationGenerator.generateData(NUMBER_OF_LOCATIONS);
+
         try {
-            seatingPlanLayoutDataGenerator.generateSeatingPlanLayouts();
+            seatingPlanLayoutGenerator.generateSeatingPlanLayouts();
         } catch (IOException e) {
             LOGGER.error("error generating seatingPlanLayouts", e);
         }
-        seatingPlanDataGenerator.generateSeatingPlans(MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION);
-        sectorDataGenerator.generateSectors();
-        seatDataGenerator.generateSeats();
-        ticketDataGenerator.generateTickets();
-        transactionDataGenerator.generateTransactions();
+        seatingPlanGenerator.generateSeatingPlans(MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION);
+        sectorGenerator.generateSectors();
+        seatGenerator.generateSeats();
+
+        ticketSectorPriceGenerator.generateData();
+        transactionDataGenerator.generateData();
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class ArtistDataGenerator {
+public class ArtistGenerator {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -19,12 +19,12 @@ public class ArtistDataGenerator {
     private final ArtistRepository artistRepository;
     private final Faker faker = new Faker();
 
-    public ArtistDataGenerator(
+    public ArtistGenerator(
         ArtistRepository artistRepository) {
         this.artistRepository = artistRepository;
     }
 
-    public void generateArtists(int numberOfArtists) {
+    public void generateData(int numberOfArtists) {
         if (!artistRepository.findAll().isEmpty()) {
             LOGGER.debug("artists already generated");
             return;
@@ -33,14 +33,19 @@ public class ArtistDataGenerator {
         LOGGER.debug("generating {} artists", numberOfArtists);
 
         for (int i = 0; i < numberOfArtists; i++) {
-            Artist artist = new Artist();
-            String bandName = faker.rockBand().name();
-            artist.setBandName(bandName);
-            artist.setKnownAs(bandName);
-            artist.setFirstName(faker.name().firstName());
-            artist.setLastName(faker.name().lastName());
-            LOGGER.debug("saving artist {}", artist);
+            Artist artist = generateArtist();
+            LOGGER.trace("saving artist {}", artist);
             artistRepository.save(artist);
         }
+    }
+
+    public Artist generateArtist() {
+        Artist artist = new Artist();
+        String bandName = faker.rockBand().name();
+        artist.setBandName(bandName);
+        artist.setKnownAs(bandName);
+        artist.setFirstName(faker.name().firstName());
+        artist.setLastName(faker.name().lastName());
+        return artist;
     }
 }

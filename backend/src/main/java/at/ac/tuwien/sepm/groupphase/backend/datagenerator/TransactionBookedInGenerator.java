@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class TransactionDataGenerator {
+public class TransactionBookedInGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
@@ -35,7 +35,7 @@ public class TransactionDataGenerator {
     private final ShowRepository showRepository;
     private final Faker faker = new Faker();
 
-    public TransactionDataGenerator(
+    public TransactionBookedInGenerator(
         TransactionRepository transactionRepository,
         UserRepository userRepository,
         BookedInRepository bookedInRepository,
@@ -48,7 +48,7 @@ public class TransactionDataGenerator {
         this.showRepository = showRepository;
     }
 
-    public void generateTransactions() {
+    public void generateData() {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("transactions already generated");
             return;
@@ -61,40 +61,54 @@ public class TransactionDataGenerator {
             int numberOfPurchases = faker.number().numberBetween(1, 5);
 
             for (int i = 0; i < numberOfPurchases; i++) {
-                Transaction transaction = new Transaction();
-                transaction.setUser(user);
-
                 long numberOfShows = showRepository.findAll().size();
                 Show randomShow = showRepository.getByShowId(
                     faker.number().numberBetween(1L, numberOfShows));
 
-                OffsetDateTime transactionDate = randomShow.getDate()
-                    .minusDays(faker.number().numberBetween(0, 500))
-                    .minusMinutes(faker.number().numberBetween(0, 1000));
-                transaction.setDate(transactionDate);
-
+                Transaction transaction = generateTransaction(user, randomShow.getDate());
                 transactionRepository.save(transaction);
 
-                int totalNumberOfTickets = ticketRepository.findAll().size();
-                int numberOfTicketsToBuy = faker.number().numberBetween(1, 5);
-                for (int j = 0; j < numberOfTicketsToBuy; j++) {
-                    Ticket randomTicket = ticketRepository.getByTicketId(
-                        faker.number().numberBetween(1L, totalNumberOfTickets));
-                    if (randomTicket.getPurchasedBy() == null
-                        && randomTicket.getReservedBy() == null) {
-                        randomTicket.setPurchasedBy(user);
-                        ticketRepository.save(randomTicket);
+                List<Ticket> showTickets = ticketRepository.getByShowShowIdAndPurchasedByIsNullAndReservedByIsNull(
+                    randomShow.getShowId());
 
-                        BookedIn bookedIn = new BookedIn();
-                        bookedIn.setTransaction(transaction);
-                        bookedIn.setTicket(randomTicket);
-                        bookedIn.setBookingType(BookingType.PURCHASE);
-                        // TODO: set price at booking time correctly
-                        bookedIn.setPriceAtBookingTime(BigDecimal.valueOf(1));
-                        bookedInRepository.save(bookedIn);
-                    }
+                int totalNumberOfTickets = showTickets.size();
+                int numberOfTicketsToBuy = faker.number().numberBetween(1, 5);
+                if (numberOfTicketsToBuy > totalNumberOfTickets) {
+                    numberOfTicketsToBuy = totalNumberOfTickets;
+                }
+
+                for (int j = 0; j < numberOfTicketsToBuy; j++) {
+                    Ticket randomTicket = showTickets.get(j);
+                    randomTicket.setPurchasedBy(user);
+                    ticketRepository.save(randomTicket);
+
+                    // TODO: also generate cancellations, reservations, dereservations
+                    BookedIn bookedIn = generateBookedIn(transaction, randomTicket,
+                        BookingType.PURCHASE);
+                    bookedInRepository.save(bookedIn);
                 }
             }
         }
+    }
+
+    private Transaction generateTransaction(ApplicationUser user, OffsetDateTime beforeDate) {
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        OffsetDateTime transactionDate = beforeDate
+            .minusDays(faker.number().numberBetween(0, 500))
+            .minusMinutes(faker.number().numberBetween(0, 1000));
+        transaction.setDate(transactionDate);
+        return transaction;
+    }
+
+    private BookedIn generateBookedIn(Transaction transaction, Ticket ticket,
+        BookingType bookingType) {
+        BookedIn bookedIn = new BookedIn();
+        bookedIn.setTransaction(transaction);
+        bookedIn.setTicket(ticket);
+        bookedIn.setBookingType(bookingType);
+        // TODO: set price at booking time correctly
+        bookedIn.setPriceAtBookingTime(BigDecimal.valueOf(1));
+        return bookedIn;
     }
 }

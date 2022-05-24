@@ -19,4 +19,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     public List<Ticket> findByShowId(@Param("showId") Long showId);
 
     Ticket getByTicketId(Long ticketId);
+
+    List<Ticket> getByShowShowIdAndPurchasedByIsNullAndReservedByIsNull(Long showId);
 }

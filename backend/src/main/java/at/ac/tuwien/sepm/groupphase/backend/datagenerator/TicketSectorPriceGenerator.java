@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class TicketDataGenerator {
+public class TicketSectorPriceGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
@@ -36,7 +36,7 @@ public class TicketDataGenerator {
     private final SectorPriceRepository sectorPriceRepository;
     private final Faker faker = new Faker();
 
-    public TicketDataGenerator(
+    public TicketSectorPriceGenerator(
         TicketRepository ticketRepository,
         SeatRepository seatRepository,
         ShowRepository showRepository,
@@ -51,7 +51,7 @@ public class TicketDataGenerator {
         this.sectorPriceRepository = sectorPriceRepository;
     }
 
-    public void generateTickets() {
+    public void generateData() {
         if (!ticketRepository.findAll().isEmpty()) {
             LOGGER.debug("tickets already generated");
             return;
@@ -60,16 +60,14 @@ public class TicketDataGenerator {
         LOGGER.debug("generating tickets and sector prices for each show");
 
         List<Show> shows = showRepository.findAll();
-
         for (Show show : shows) {
-
-            int numberOfSeatingPlans = seatingPlanRepository.findAll().size();
+            int totalNumberOfSeatingPlans = seatingPlanRepository.findAll().size();
             SeatingPlan randSeatingPlan = seatingPlanRepository.getById(
-                (long) faker.number().numberBetween(1, numberOfSeatingPlans));
+                (long) faker.number().numberBetween(1, totalNumberOfSeatingPlans));
+
             List<Sector> sectors = sectorRepository.findAllBySeatingPlanSeatingPlanId(
                 randSeatingPlan.getSeatingPlanId());
             for (Sector sector : sectors) {
-
                 //generate sector price
                 SectorPrice sectorPrice = generateSectorPrice(show, sector);
                 sectorPriceRepository.save(sectorPrice);
@@ -77,22 +75,26 @@ public class TicketDataGenerator {
                 //generate tickets
                 List<Seat> seats = seatRepository.findBySectorSectorId(sector.getSectorId());
                 for (Seat seat : seats) {
-                    Ticket ticket = new Ticket();
-                    ticket.setSeat(seat);
-                    ticket.setShow(show);
-
+                    Ticket ticket = generateTicket(seat, show);
                     ticketRepository.save(ticket);
                 }
             }
         }
     }
 
-    SectorPrice generateSectorPrice(Show show, Sector sector) {
+    private SectorPrice generateSectorPrice(Show show, Sector sector) {
         SectorPrice sectorPrice = new SectorPrice();
         sectorPrice.setShow(show);
         sectorPrice.setSector(sector);
         double price = faker.number().randomDouble(2, 5L, 200L);
         sectorPrice.setPrice(BigDecimal.valueOf(price));
         return sectorPrice;
+    }
+
+    private Ticket generateTicket(Seat seat, Show show) {
+        Ticket ticket = new Ticket();
+        ticket.setSeat(seat);
+        ticket.setShow(show);
+        return ticket;
     }
 }

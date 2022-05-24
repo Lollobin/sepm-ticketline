@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class LocationDataGenerator {
+public class LocationGenerator {
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -20,14 +20,14 @@ public class LocationDataGenerator {
     private final LocationRepository locationRepository;
     private final Faker faker = new Faker();
 
-    public LocationDataGenerator(
+    public LocationGenerator(
         AddressDataGenerator addressDataGenerator,
         LocationRepository locationRepository) {
         this.addressDataGenerator = addressDataGenerator;
         this.locationRepository = locationRepository;
     }
 
-    public void generateLocations(int numberOfLocations) {
+    public void generateData(int numberOfLocations) {
 
         if (!locationRepository.findAll().isEmpty()) {
             LOGGER.debug("locations already generated");
@@ -37,11 +37,16 @@ public class LocationDataGenerator {
         LOGGER.debug("generating {} locations", numberOfLocations);
 
         for (int i = 0; i < numberOfLocations; i++) {
-            Location location = new Location();
-            location.setName(faker.overwatch().location());
-            location.setAddress(addressDataGenerator.generateRandomAddress());
-            LOGGER.debug("saving location {}", location);
+            Location location = generateLocation();
+            LOGGER.trace("saving location {}", location);
             locationRepository.save(location);
         }
+    }
+
+    private Location generateLocation(){
+        Location location = new Location();
+        location.setName(faker.overwatch().location());
+        location.setAddress(addressDataGenerator.generateRandomAddress());
+        return location;
     }
 }

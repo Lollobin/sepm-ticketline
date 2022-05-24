@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Profile("generateData")
 @Component
-public class SeatDataGenerator {
+public class SeatGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
@@ -21,7 +21,7 @@ public class SeatDataGenerator {
     private final SeatRepository seatRepository;
     private final SectorRepository sectorRepository;
 
-    public SeatDataGenerator(
+    public SeatGenerator(
         SeatRepository seatRepository,
         SectorRepository sectorRepository) {
         this.seatRepository = seatRepository;
