@@ -151,15 +151,34 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/filterLocked"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UsersPage"
     post:
       tags:
         - userManagement
@@ -1758,3 +1777,18 @@ components:
           type: integer
         pagesTotal:
           type: integer
+    UsersPage:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+
+
