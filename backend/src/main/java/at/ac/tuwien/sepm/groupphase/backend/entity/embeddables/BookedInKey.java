@@ -2,11 +2,17 @@ package at.ac.tuwien.sepm.groupphase.backend.entity.embeddables;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class BookedInKey implements Serializable {
 
-    private Long transactionId;
-    private Long ticketId;
+    @Column(name = "transaction_id")
+    Long transactionId;
+
+    @Column(name = "ticket_id")
+    Long ticketId;
 
     @Override
     public boolean equals(Object o) {
@@ -17,7 +23,8 @@ public class BookedInKey implements Serializable {
             return false;
         }
         BookedInKey that = (BookedInKey) o;
-        return transactionId == that.transactionId && ticketId == that.ticketId;
+        return Objects.equals(transactionId, that.transactionId) && Objects.equals(ticketId,
+            that.ticketId);
     }
 
     @Override
@@ -34,15 +41,16 @@ public class BookedInKey implements Serializable {
         return transactionId;
     }
 
-    public void setTransactionId(Long transactionId) {
-        this.transactionId = transactionId;
-    }
-
     public Long getTicketId() {
         return ticketId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
     public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
+
 }

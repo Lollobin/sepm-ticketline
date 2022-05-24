@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,7 +13,7 @@ import javax.persistence.MapsId;
 @Entity
 public class SectorPrice {
     @EmbeddedId
-    SectorPriceId id;
+    SectorPriceId id = new SectorPriceId();
 
     @ManyToOne
     @MapsId("sectorId")
@@ -26,6 +27,42 @@ public class SectorPrice {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    public SectorPrice() {
+    }
+
+    public SectorPrice(Sector sector, Show show, BigDecimal price) {
+        this.sector = sector;
+        this.show = show;
+        this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SectorPrice that = (SectorPrice) o;
+        return Objects.equals(sector, that.sector) && Objects.equals(show, that.show)
+            && Objects.equals(price, that.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sector, show, price);
+    }
+
+    @Override
+    public String toString() {
+        return "SectorPrice{"
+            + "sector=" + sector
+            + ", show=" + show
+            + ", price=" + price
+            + '}';
+    }
 
     public BigDecimal getPrice() {
         return price;

@@ -20,6 +20,13 @@
       <li><a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/lockedUsers"
              routerLinkActive="active">Show Locked Users</a>
 
+      <li class="nav-item">
+        <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/orders"
+           routerLinkActive="active">Orders</a>
+      </li>
+      <li>
+        <a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/lockedUsers"
+           routerLinkActive="active">Show Locked Users</a>
       </li>
     </ul>
     <ul class="navbar-nav mr-5">
@@ -28,12 +35,15 @@
       <a class="nav-link" *ngIf="authService.isLoggedIn() " routerLink="/"
          (click)="authService.logoutUser()">Logout</a>
     </ul>
-    <ul *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN'" class="nav navbar-nav ms-auto ">
-      <button *ngIf="!adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()" routerLink="/admin">Switch
+    <ul *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN'"
+        class="nav navbar-nav ms-auto ">
+      <button *ngIf="!adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()"
+              routerLink="/admin">Switch
         to Admin View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
       </button>
-      <button *ngIf="adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()" routerLink="/">Switch
+      <button *ngIf="adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()"
+              routerLink="/">Switch
         to Customer View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
       </button>
