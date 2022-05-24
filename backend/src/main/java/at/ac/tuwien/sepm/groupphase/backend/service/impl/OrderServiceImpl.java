@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         String email = authenticationFacade.getEmail();
         LOGGER.debug("Looking for orders by '{}'", email);
 
-        return transactionRepository.findAllByUserEmail(email);
+        return transactionRepository.findAllByUserEmailOrderByDateDesc(email);
     }
 
     @Override

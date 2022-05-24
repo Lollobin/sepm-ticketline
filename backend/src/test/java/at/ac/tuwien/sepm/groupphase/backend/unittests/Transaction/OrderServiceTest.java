@@ -58,7 +58,7 @@ class OrderServiceTest implements TestData {
     }
 
     @Test
-    void whenExistingUser_thenTransactionsByUserShouldBeFound() {
+    void whenExistingUser_thenOrdersByUserShouldBeFound() {
         ApplicationUser loggedInUser = new ApplicationUser();
         loggedInUser.setEmail(USER_EMAIL);
 
@@ -68,7 +68,7 @@ class OrderServiceTest implements TestData {
 
         transactionsToReturn.add(transaction);
 
-        when(transactionRepository.findAllByUserEmail(USER_EMAIL)).thenReturn(transactionsToReturn);
+        when(transactionRepository.findAllByUserEmailOrderByDateDesc(USER_EMAIL)).thenReturn(transactionsToReturn);
         when(authenticationFacade.getEmail()).thenReturn(USER_EMAIL);
 
         List<Transaction> found = orderService.findAllByCurrentUser();

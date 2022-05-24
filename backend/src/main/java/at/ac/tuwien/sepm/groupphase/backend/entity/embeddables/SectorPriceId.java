@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity.embeddables;
 
+import java.util.Objects;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -31,7 +33,21 @@ public class SectorPriceId implements Serializable {
             return false;
         }
         SectorPriceId that = (SectorPriceId) o;
-        return sectorId.equals(that.sectorId) && showId.equals(that.showId);
+        return Objects.equals(sectorId, that.sectorId) && Objects.equals(showId,
+            that.showId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sectorId, showId);
+    }
+
+    @Override
+    public String toString() {
+        return "SectorPriceId{"
+            + "sectorId=" + sectorId
+            + ", showId=" + showId
+            + '}';
     }
 
     @Override
@@ -43,15 +59,19 @@ public class SectorPriceId implements Serializable {
         return sectorId;
     }
 
-    public Long getShowId() {
-        return showId;
-    }
-
     public void setSectorId(Long sectorId) {
         this.sectorId = sectorId;
     }
 
+    public Long getShowId() {
+        return showId;
+    }
+
     public void setShowId(Long showId) {
         this.showId = showId;
+    }
+
+    public void setSectorId(Long sectorId) {
+        this.sectorId = sectorId;
     }
 }

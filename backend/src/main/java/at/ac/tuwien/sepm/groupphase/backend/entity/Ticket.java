@@ -67,7 +67,7 @@ public class Ticket {
             return false;
         }
         Ticket ticket = (Ticket) o;
-        return ticketId == ticket.ticketId
+        return Objects.equals(ticketId, ticket.ticketId)
             && Objects.equals(reservedBy, ticket.reservedBy)
             && Objects.equals(purchasedBy, ticket.purchasedBy)
             && Objects.equals(seat, ticket.seat)

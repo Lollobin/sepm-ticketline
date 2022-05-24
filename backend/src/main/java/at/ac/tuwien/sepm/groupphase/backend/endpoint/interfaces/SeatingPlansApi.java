@@ -7,6 +7,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,7 +44,7 @@ public interface SeatingPlansApi {
     /**
      * GET /seatingPlans : Gets all seating plans
      *
-     * @return Successful retreival of artists (status code 200)
+     * @return Successful retreival of seating plans (status code 200)
      *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
@@ -52,7 +53,7 @@ public interface SeatingPlansApi {
         summary = "Gets all seating plans",
         tags = { "seatingPlans" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of artists", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of seating plans", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
@@ -117,6 +118,51 @@ public interface SeatingPlansApi {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /seatingPlans/{id}/sectors : Gets all sectors of the seating plan with the given ID.
+     *
+     * @param id ID of the seating plan layout that is retreived (required)
+     * @return Successful retreival of sectors of seating plan with the given ID. (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The seating plan with the given ID was not found or has no sectors (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "seatingPlansIdSectorsGet",
+        summary = "Gets all sectors of the seating plan with the given ID.",
+        tags = { "seatingPlans" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of sectors of seating plan with the given ID.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SectorDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The seating plan with the given ID was not found or has no sectors"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/seatingPlans/{id}/sectors",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<List<SectorDto>> seatingPlansIdSectorsGet(
+        @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"sectorId\" : 0, \"price\" : 6.027456183070403 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
