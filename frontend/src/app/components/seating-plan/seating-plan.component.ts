@@ -49,7 +49,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   event: Event = {
     eventId: 0,
     name: "",
-    category: "",
+    category: null,
     duration: 0,
     content: "",
   };
