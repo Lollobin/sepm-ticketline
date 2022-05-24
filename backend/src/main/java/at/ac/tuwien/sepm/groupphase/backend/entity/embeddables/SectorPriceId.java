@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity.embeddables;
 
-import java.util.Objects;
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -50,11 +48,6 @@ public class SectorPriceId implements Serializable {
             + '}';
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(sectorId, showId);
-    }
-
     public Long getSectorId() {
         return sectorId;
     }
@@ -69,9 +62,5 @@ public class SectorPriceId implements Serializable {
 
     public void setShowId(Long showId) {
         this.showId = showId;
-    }
-
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
     }
 }
