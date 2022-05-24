@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.basetest;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -117,17 +119,21 @@ public interface TestData {
 
     String EVENT_NAME = "Tomorrowland";
     long EVENT_DURATION = 249L;
-    String EVENT_CATEGORY = "EDM";
+    Category EVENT_CATEGORY = Category.EDM;
+    CategoryDto EVENT_CATEGORY_DTO = CategoryDto.EDM;
     String EVENT_CONTENT = "Tomorrowland is one of the largest music festivals in the world held in Boom, Belgium, organized and owned by the original founders, the brothers Beers.";
 
     String EVENT2_NAME = "Festival";
     long EVENT2_DURATION = 350L;
-    String EVENT2_CATEGORY = "Pop";
+    Category EVENT2_CATEGORY = Category.POP;
+    CategoryDto EVENT2_CATEGORY_DTO = CategoryDto.POP;
+
     String EVENT2_CONTENT = "Festival is a test festival";
 
     String EVENT3_NAME = "Nova Rock";
     long EVENT3_DURATION = 12L;
-    String EVENT3_CATEGORY = "Rock";
+    Category EVENT3_CATEGORY = Category.ROCK;
+    CategoryDto EVENT3_CATEGORY_DTO = CategoryDto.ROCK;
     String EVENT3_CONTENT = "Nova Rock is a famous festival";
 
     //Invalid Event Data

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ public class EventDto   {
   private BigDecimal duration;
 
   @JsonProperty("category")
-  private String category;
+  private CategoryDto category;
 
   @JsonProperty("content")
   private String content;
@@ -93,7 +94,7 @@ public class EventDto   {
     this.duration = duration;
   }
 
-  public EventDto category(String category) {
+  public EventDto category(CategoryDto category) {
     this.category = category;
     return this;
   }
@@ -102,13 +103,13 @@ public class EventDto   {
    * Get category
    * @return category
   */
-  
+  @Valid 
   @Schema(name = "category", required = false)
-  public String getCategory() {
+  public CategoryDto getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryDto category) {
     this.category = category;
   }
 

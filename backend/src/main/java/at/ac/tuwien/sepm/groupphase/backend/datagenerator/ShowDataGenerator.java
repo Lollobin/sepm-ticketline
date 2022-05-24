@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.SectorPriceId;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
@@ -198,7 +199,7 @@ public class ShowDataGenerator {
         Event e1 = new Event();
         e1.setEventId(1L);
         e1.setDuration(120);
-        e1.setCategory("POP");
+        e1.setCategory(Category.POP);
         e1.setName("Weird Al's cool tour");
         eventRepository.save(e1);
 
