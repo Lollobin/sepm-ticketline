@@ -7,10 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -18,8 +20,8 @@ import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -60,28 +63,11 @@ class OrderEndpointTest implements TestData {
     @Autowired
     private SecurityProperties securityProperties;
 
-    private ApplicationUser user;
-    private Address address;
 
     @BeforeEach
     public void beforeEach() {
         transactionRepository.deleteAll();
         userRepository.deleteAll();
-
-        address = new Address();
-        address.setHouseNumber(USER_HOUSE_NO);
-        address.setStreet(USER_STREET);
-        address.setZipCode(USER_ZIPCODE);
-        address.setCity(USER_CITY);
-        address.setCountry(USER_CTRY);
-
-        user = new ApplicationUser();
-        user.setEmail(USER_EMAIL);
-        user.setFirstName(USER_FNAME);
-        user.setLastName(USER_LNAME);
-        user.setGender(USER_GENDER);
-        user.setAddress(address);
-        user.setPassword(USER_PASSWORD);
     }
 
     @Test
@@ -108,12 +94,26 @@ class OrderEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
-    @Disabled("Disabled until address cascading issues are resolved")
     @Test
-    void givenOneOrder_whenOrdersGet_thenListWithSizeOneAndTransaction() throws Exception {
+    void ordersGet_shouldReturnListWithOrders() throws Exception {
+        Address address = new Address();
+        address.setStreet("TestStreet 1233");
+        address.setZipCode("219338");
+        address.setCity("test3City");
+        address.setCountry("Austria");
+        address.setHouseNumber("2");
 
-        addressRepository.save(address);
-
+        ApplicationUser user = new ApplicationUser();
+        user.setEmail(USER_EMAIL);
+        user.setFirstName("Admin");
+        user.setLastName("User");
+        user.setGender(Gender.FEMALE);
+        user.setAddress(address);
+        user.setPassword("password");
+        user.setHasAdministrativeRights(false);
+        user.setLoginTries(0);
+        user.setMustResetPassword(false);
+        user.setLockedAccount(false);
         userRepository.save(user);
 
         Transaction transaction = new Transaction();
@@ -121,9 +121,12 @@ class OrderEndpointTest implements TestData {
         transaction.setDate(TRANSACTION_DATE);
         transactionRepository.save(transaction);
 
-        MvcResult mvcResult = this.mockMvc.perform(get(ORDERS_BASE_URI)
-                .header(securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(USER_EMAIL, USER_ROLES)))
+        MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders
+                .get("/orders")
+                .header(
+                    securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(USER_EMAIL, USER_ROLES))
+                .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -131,14 +134,14 @@ class OrderEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<TransactionDto> transactionDtos = Arrays.asList(
-            objectMapper.readValue(response.getContentAsString(), TransactionDto[].class));
+        List<OrderDto> orderDtos = Arrays.asList(
+            objectMapper.readValue(response.getContentAsString(), OrderDto[].class));
 
-        assertEquals(1, transactionDtos.size());
+        assertEquals(1, orderDtos.size());
 
-        TransactionDto transactionDto = transactionDtos.get(0);
+        OrderDto orderDto = orderDtos.get(0);
 
-        assertEquals(transaction.getTransactionId(), transactionDto.getTransactionId().longValue());
+        assertEquals(transaction.getTransactionId(), orderDto.getTransactionId().longValue());
     }
 
 }

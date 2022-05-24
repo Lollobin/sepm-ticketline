@@ -16,6 +16,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationWithoutIdDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrderDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanWithoutIdDto.java
@@ -29,6 +30,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithTicketsS
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketStatusDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketWithShowInfoDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TopShowSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TransactionDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserDto.java
@@ -51,6 +53,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/SeatingPl
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ShowTicketsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ShowsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketCancellationsApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketInfoApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketPrintsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TopShowsApi.java
