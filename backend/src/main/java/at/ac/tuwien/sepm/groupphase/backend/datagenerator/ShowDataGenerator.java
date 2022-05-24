@@ -188,6 +188,13 @@ public class ShowDataGenerator {
         a1.setKnownAs("Weird Al");
         artistRepository.save(a1);
 
+        Artist a2 = new Artist();
+        a2.setFirstName("David");
+        a2.setLastName("Alaba");
+        a2.setBandName("Real Madrid");
+        a2.setKnownAs("Stolz der Nation");
+        artistRepository.save(a2);
+
         Event e1 = new Event();
         e1.setEventId(1L);
         e1.setDuration(120);
