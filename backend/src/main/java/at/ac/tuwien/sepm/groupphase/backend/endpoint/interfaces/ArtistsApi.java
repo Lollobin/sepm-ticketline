@@ -6,6 +6,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistsSearchResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -43,8 +44,10 @@ public interface ArtistsApi {
      * Filters data depending on the query parameters. When no query parameters are given, all artists are returned
      *
      * @param search Finds artists that either have their first, last, band name or their alias containing the search string (optional)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
      * @return Successful retreival of artists (status code 200)
-     *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
@@ -52,12 +55,8 @@ public interface ArtistsApi {
         summary = "Searches for artists depending on parameters",
         tags = { "artists" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of artists", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArtistDto.class))),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of artists", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArtistsSearchResultDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -65,13 +64,16 @@ public interface ArtistsApi {
         value = "/artists",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ArtistDto>> artistsGet(
-        @Parameter(name = "search", description = "Finds artists that either have their first, last, band name or their alias containing the search string", schema = @Schema(description = "")) @Valid @RequestParam(value = "search", required = false) String search
+    default ResponseEntity<ArtistsSearchResultDto> artistsGet(
+        @Parameter(name = "search", description = "Finds artists that either have their first, last, band name or their alias containing the search string", schema = @Schema(description = "")) @Valid @RequestParam(value = "search", required = false) String search,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"knownAs\" : \"knownAs\", \"artistId\" : 0, \"bandName\" : \"bandName\" }";
+                    String exampleString = "{ \"artists\" : [ { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"knownAs\" : \"knownAs\", \"artistId\" : 0, \"bandName\" : \"bandName\" }, { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"knownAs\" : \"knownAs\", \"artistId\" : 0, \"bandName\" : \"bandName\" } ], \"currentPage\" : 6, \"numberOfResults\" : 1, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

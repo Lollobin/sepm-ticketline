@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomAuthService} from '../../services/custom-auth.service';
+import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-header',
@@ -7,10 +8,15 @@ import {CustomAuthService} from '../../services/custom-auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  eye = faEye;
+  adminView=false;
 
   constructor(public authService: CustomAuthService) { }
 
   ngOnInit() {
   }
 
+  toggleAdminView(){
+    this.adminView= !this.adminView;
+  }
 }
