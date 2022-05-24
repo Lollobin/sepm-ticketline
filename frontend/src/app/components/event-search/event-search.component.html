@@ -1,0 +1,39 @@
+<form>
+  <div class="row">
+    <div class="form-group form-inline">
+      <input class="form-control  col" type="text" name="name" [(ngModel)]="name"
+             placeholder="Name of Event"
+      />
+      <input class="form-control col" type="text" name="name" [(ngModel)]="description"
+             placeholder="Details"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="dropdown m-3 col">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Category
+      </button>
+      <div class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+        <option class="dropdown-item" *ngFor="let category of categories"
+                [value]="category.id">{{category.name}} </option>
+      </div>
+
+    </div>
+
+
+    <div class="m-3 col">
+      <small  class="form-label text-muted">Duration</small>
+      <input type="range" class="form-range" min="10" max="360" step="10" value="120"
+             id="inputDuration"
+             oninput="this.nextElementSibling.value = this.value" required
+             formControlName="duration">
+      <span>{{this.secondsToHms(this.duration.value)}}</span>
+    </div>
+  </div>
+
+
+  <button class="btn btn-primary">Search</button>
+</form>
+<app-error-alert [error]="err"></app-error-alert>
