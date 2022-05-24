@@ -13,6 +13,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -25,23 +27,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailService implements UserService {
 
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
+
     private final UserValidator userValidator;
 
     @Autowired
-    public CustomUserDetailService(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper,
-        UserValidator userValidator) {
+    public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+        UserEncodePasswordMapper encodePasswordMapper, UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
         this.userValidator = userValidator;
+
     }
 
     @Override
@@ -71,17 +72,14 @@ public class CustomUserDetailService implements UserService {
         }
         List<GrantedAuthority> grantedAuthorities;
         if (applicationUser.isHasAdministrativeRights()) {
-            grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN",
-                "ROLE_USER");
+            grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
         } else {
             grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
         }
 
         UserBuilder retrievedUser = User.builder();
-        retrievedUser.username(applicationUser.getEmail())
-            .password(applicationUser.getPassword())
-            .authorities(grantedAuthorities)
-            .accountLocked(applicationUser.isLockedAccount());
+        retrievedUser.username(applicationUser.getEmail()).password(applicationUser.getPassword())
+            .authorities(grantedAuthorities).accountLocked(applicationUser.isLockedAccount());
         return retrievedUser.build();
     }
 
@@ -110,12 +108,12 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public List<ApplicationUser> findAll(Boolean filterLocked) {
+    public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
-        boolean isLocked = filterLocked != null ? filterLocked : false;
+        boolean isLocked = filterLocked != null && filterLocked;
 
-        return userRepository.findByLockedAccountEquals(isLocked);
+        return userRepository.findByLockedAccountEquals(isLocked, pageable);
     }
 
 
@@ -131,8 +129,7 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public void resetNumberOfFailedLoginAttempts(
-        ApplicationUser user) {
+    public void resetNumberOfFailedLoginAttempts(ApplicationUser user) {
         userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
     }
 }

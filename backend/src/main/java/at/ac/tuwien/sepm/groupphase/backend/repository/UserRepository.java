@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,12 +30,12 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     ApplicationUser save(ApplicationUser user);
 
     /**
-     * Gets all users where lockedAccount is equal to the parameter.
+     * Gets a page of users where lockedAccount is equal to the parameter.
      *
      * @param lockedAccount if true then only locked users will be returned and vice versa
-     * @return List of ApplicationsUsers based on lockedAccount
+     * @return Page of ApplicationsUsers based on lockedAccount
      */
-    List<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount);
+    Page<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount, Pageable pageable);
 
     /**
      * Unlocks a user and resets number of failed attempts.
