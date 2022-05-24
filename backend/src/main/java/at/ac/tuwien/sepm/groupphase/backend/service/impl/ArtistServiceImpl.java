@@ -62,7 +62,7 @@ public class ArtistServiceImpl implements ArtistService {
 
         searchResultDto.setArtists(
             artistPage.getContent().stream().map(artistMapper::artistToArtistDto).toList());
-        searchResultDto.setNumberOfResults(artistPage.getNumberOfElements());
+        searchResultDto.setNumberOfResults((int) artistPage.getTotalElements());
         searchResultDto.setCurrentPage(artistPage.getNumber());
         searchResultDto.setPagesTotal(artistPage.getTotalPages());
 

@@ -15,6 +15,13 @@ public class Sector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sectorId;
 
+    public Sector(Long sectorId) {
+        this.sectorId = sectorId;
+    }
+
+    public Sector() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -24,7 +31,8 @@ public class Sector {
             return false;
         }
         Sector sector = (Sector) o;
-        return sectorId == sector.sectorId && Objects.equals(seatingPlan, sector.seatingPlan);
+        return Objects.equals(sectorId, sector.sectorId)
+            && Objects.equals(seatingPlan, sector.seatingPlan);
     }
 
     @Override

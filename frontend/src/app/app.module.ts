@@ -19,6 +19,7 @@ import { ErrorAlertComponent } from './components/error-alert/error-alert.compon
 import { RegistrationComponent } from './components/registration/registration.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
 import { AdminComponent } from './components/admin/admin.component';
 import {AuthService} from "./generated-sources/openapi";
 
@@ -36,7 +37,9 @@ import {AuthService} from "./generated-sources/openapi";
     ErrorAlertComponent,
     RegistrationComponent,
     UnlockUserComponent,
-    AdminComponent
+    AdminComponent,
+    UnlockUserComponent,
+    OrderOverviewComponent
   ],
   imports: [
     BrowserModule,

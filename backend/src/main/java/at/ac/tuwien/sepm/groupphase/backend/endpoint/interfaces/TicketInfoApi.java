@@ -5,7 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketWithShowInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -31,28 +31,28 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "orders", description = "the orders API")
-public interface OrdersApi {
+@Tag(name = "ticketInfo", description = "the ticketInfo API")
+public interface TicketInfoApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * GET /orders : Shows orders for the user possessing the token
+     * GET /ticketInfo : Gets all future tickets of user possessing the token
      *
-     * @return Successful retreival of orders (status code 200)
+     * @return Successful retreival of tickets (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
      *         or The user with the given token was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "ordersGet",
-        summary = "Shows orders for the user possessing the token",
+        operationId = "ticketInfoGet",
+        summary = "Gets all future tickets of user possessing the token",
         tags = { "tickets" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  OrderDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  TicketWithShowInfoDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "404", description = "The user with the given token was not found"),
@@ -64,16 +64,16 @@ public interface OrdersApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/orders",
+        value = "/ticketInfo",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<OrderDto>> ordersGet(
+    default ResponseEntity<List<TicketWithShowInfoDto>> ticketInfoGet(
         
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"locationName\" : \"locationName\", \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"transactionDate\" : \"2000-01-23T04:56:07.000+00:00\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\", \"transactionId\" : 0, \"ticketIds\" : [ 6, 6 ] }";
+                    String exampleString = "{ \"locationName\" : \"locationName\", \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0, \"seatNumber\" : 1 }, \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"type\" : \"purchased\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

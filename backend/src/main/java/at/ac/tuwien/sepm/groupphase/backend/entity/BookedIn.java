@@ -9,6 +9,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
@@ -16,14 +17,16 @@ import javax.persistence.MapsId;
 public class BookedIn {
 
     @EmbeddedId
-    private BookedInKey id;
+    BookedInKey id = new BookedInKey();
 
     @ManyToOne
     @MapsId("transactionId")
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @ManyToOne
     @MapsId("ticketId")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     @Column(nullable = false, length = 16)
@@ -32,6 +35,24 @@ public class BookedIn {
 
     @Column(nullable = false)
     private BigDecimal priceAtBookingTime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BookedIn bookedIn = (BookedIn) o;
+        return Objects.equals(id, bookedIn.id) && bookingType == bookedIn.bookingType
+            && Objects.equals(priceAtBookingTime, bookedIn.priceAtBookingTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, bookingType, priceAtBookingTime);
+    }
 
     @Override
     public String toString() {
@@ -47,23 +68,6 @@ public class BookedIn {
             + ", priceAtBookingTime="
             + priceAtBookingTime
             + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BookedIn bookedIn = (BookedIn) o;
-        return Objects.equals(id, bookedIn.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     public BookedInKey getId() {
