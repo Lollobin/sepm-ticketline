@@ -5,7 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowInformationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketWithShowInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -31,30 +31,31 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "showTickets", description = "the showTickets API")
-public interface ShowTicketsApi {
+@Tag(name = "ticketInfo", description = "the ticketInfo API")
+public interface TicketInfoApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * GET /showTickets/{id} : Gets all tickets of a show with their corresponding booking status + hall plan + sectors
+     * GET /ticketInfo : Gets all future tickets of user possessing the token
      *
-     * @param id ID of the show that is retreived (required)
-     * @return Successful retreival of the show information (status code 200)
+     * @return Successful retreival of tickets (status code 200)
      *         or The user is not logged in (status code 401)
-     *         or The user with the given ID was not found (status code 404)
+     *         or The user needs administrative rights (status code 403)
+     *         or The user with the given token was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "showTicketsIdGet",
-        summary = "Gets all tickets of a show with their corresponding booking status + hall plan + sectors",
-        tags = { "shows" },
+        operationId = "ticketInfoGet",
+        summary = "Gets all future tickets of user possessing the token",
+        tags = { "tickets" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of the show information", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowInformationDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  TicketWithShowInfoDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
+            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "404", description = "The user with the given token was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
         security = {
@@ -63,16 +64,16 @@ public interface ShowTicketsApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/showTickets/{id}",
+        value = "/ticketInfo",
         produces = { "application/json" }
     )
-    default ResponseEntity<ShowInformationDto> showTicketsIdGet(
-        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
+    default ResponseEntity<List<TicketWithShowInfoDto>> ticketInfoGet(
+        
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 0, \"price\" : 6.027456183070403 }, { \"sectorId\" : 0, \"price\" : 6.027456183070403 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 } ] }";
+                    String exampleString = "{ \"locationName\" : \"locationName\", \"ticket\" : { \"rowNumber\" : 6, \"sector\" : 5, \"ticketId\" : 0, \"seatNumber\" : 1 }, \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"type\" : \"purchased\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

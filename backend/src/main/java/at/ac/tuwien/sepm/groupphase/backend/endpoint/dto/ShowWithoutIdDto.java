@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.OffsetDateTime;
@@ -34,6 +35,13 @@ public class ShowWithoutIdDto   {
   @JsonProperty("artists")
   @Valid
   private List<Integer> artists = new ArrayList<>();
+
+  @JsonProperty("seatingPlan")
+  private Integer seatingPlan;
+
+  @JsonProperty("sectorPrices")
+  @Valid
+  private List<SectorPriceDto> sectorPrices = new ArrayList<>();
 
   public ShowWithoutIdDto date(OffsetDateTime date) {
     this.date = date;
@@ -100,6 +108,52 @@ public class ShowWithoutIdDto   {
     this.artists = artists;
   }
 
+  public ShowWithoutIdDto seatingPlan(Integer seatingPlan) {
+    this.seatingPlan = seatingPlan;
+    return this;
+  }
+
+  /**
+   * Get seatingPlan
+   * @return seatingPlan
+  */
+  @NotNull 
+  @Schema(name = "seatingPlan", required = true)
+  public Integer getSeatingPlan() {
+    return seatingPlan;
+  }
+
+  public void setSeatingPlan(Integer seatingPlan) {
+    this.seatingPlan = seatingPlan;
+  }
+
+  public ShowWithoutIdDto sectorPrices(List<SectorPriceDto> sectorPrices) {
+    this.sectorPrices = sectorPrices;
+    return this;
+  }
+
+  public ShowWithoutIdDto addSectorPricesItem(SectorPriceDto sectorPricesItem) {
+    if (this.sectorPrices == null) {
+      this.sectorPrices = new ArrayList<>();
+    }
+    this.sectorPrices.add(sectorPricesItem);
+    return this;
+  }
+
+  /**
+   * Get sectorPrices
+   * @return sectorPrices
+  */
+  @NotNull @Valid 
+  @Schema(name = "sectorPrices", required = true)
+  public List<SectorPriceDto> getSectorPrices() {
+    return sectorPrices;
+  }
+
+  public void setSectorPrices(List<SectorPriceDto> sectorPrices) {
+    this.sectorPrices = sectorPrices;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -111,12 +165,14 @@ public class ShowWithoutIdDto   {
     ShowWithoutIdDto showWithoutId = (ShowWithoutIdDto) o;
     return Objects.equals(this.date, showWithoutId.date) &&
         Objects.equals(this.event, showWithoutId.event) &&
-        Objects.equals(this.artists, showWithoutId.artists);
+        Objects.equals(this.artists, showWithoutId.artists) &&
+        Objects.equals(this.seatingPlan, showWithoutId.seatingPlan) &&
+        Objects.equals(this.sectorPrices, showWithoutId.sectorPrices);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(date, event, artists);
+    return Objects.hash(date, event, artists, seatingPlan, sectorPrices);
   }
 
   @Override
@@ -126,6 +182,8 @@ public class ShowWithoutIdDto   {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    event: ").append(toIndentedString(event)).append("\n");
     sb.append("    artists: ").append(toIndentedString(artists)).append("\n");
+    sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
+    sb.append("    sectorPrices: ").append(toIndentedString(sectorPrices)).append("\n");
     sb.append("}");
     return sb.toString();
   }
