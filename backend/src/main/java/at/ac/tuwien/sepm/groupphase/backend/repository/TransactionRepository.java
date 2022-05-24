@@ -18,4 +18,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 + " ORDER BY t.date DESC",
         nativeQuery = true)
     List<Transaction> findAllByUserEmail(@Param("email") String email);
+
+    Transaction getByTransactionId(Long transactionId);
 }

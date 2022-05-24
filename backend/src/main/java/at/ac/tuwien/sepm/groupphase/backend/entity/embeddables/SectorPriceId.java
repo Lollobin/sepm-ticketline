@@ -2,12 +2,16 @@ package at.ac.tuwien.sepm.groupphase.backend.entity.embeddables;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class SectorPriceId implements Serializable {
 
+    @Column(name = "sector_id")
     private Long sectorId;
+
+    @Column(name = "show_id")
     private Long showId;
 
     public SectorPriceId() {

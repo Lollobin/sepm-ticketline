@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
@@ -16,10 +17,12 @@ public class SectorPrice {
 
     @ManyToOne
     @MapsId("sectorId")
+    @JoinColumn(name = "sector_id")
     private Sector sector;
 
     @ManyToOne
     @MapsId("showId")
+    @JoinColumn(name = "show_id")
     private Show show;
 
     @Column(nullable = false)

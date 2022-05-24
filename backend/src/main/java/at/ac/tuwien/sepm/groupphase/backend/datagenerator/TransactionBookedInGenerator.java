@@ -7,15 +7,16 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
 import at.ac.tuwien.sepm.groupphase.backend.repository.BookedInRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -33,6 +34,7 @@ public class TransactionBookedInGenerator {
     private final BookedInRepository bookedInRepository;
     private final TicketRepository ticketRepository;
     private final ShowRepository showRepository;
+    private final SectorPriceRepository sectorPriceRepository;
     private final Faker faker = new Faker();
 
     public TransactionBookedInGenerator(
@@ -40,12 +42,14 @@ public class TransactionBookedInGenerator {
         UserRepository userRepository,
         BookedInRepository bookedInRepository,
         TicketRepository ticketRepository,
-        ShowRepository showRepository) {
+        ShowRepository showRepository,
+        SectorPriceRepository sectorPriceRepository) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
         this.bookedInRepository = bookedInRepository;
         this.ticketRepository = ticketRepository;
         this.showRepository = showRepository;
+        this.sectorPriceRepository = sectorPriceRepository;
     }
 
     public void generateData() {
@@ -77,15 +81,60 @@ public class TransactionBookedInGenerator {
                     numberOfTicketsToBuy = totalNumberOfTickets;
                 }
 
+                BookingType bookingType;
+                double random = faker.number().randomDouble(3, 0, 1);
+                if (random < 0.5) {
+                    bookingType = BookingType.PURCHASE;
+                } else {
+                    bookingType = BookingType.RESERVATION;
+                }
+
                 for (int j = 0; j < numberOfTicketsToBuy; j++) {
                     Ticket randomTicket = showTickets.get(j);
-                    randomTicket.setPurchasedBy(user);
+
+                    if (bookingType == BookingType.PURCHASE) {
+                        randomTicket.setPurchasedBy(user);
+                    } else {
+                        randomTicket.setReservedBy(user);
+                    }
+
                     ticketRepository.save(randomTicket);
 
-                    // TODO: also generate cancellations, reservations, dereservations
                     BookedIn bookedIn = generateBookedIn(transaction, randomTicket,
-                        BookingType.PURCHASE);
+                        bookingType);
                     bookedInRepository.save(bookedIn);
+                }
+
+                transaction = transactionRepository.getByTransactionId(
+                    (transaction.getTransactionId()));
+
+                if (transaction.getBookedIns() == null) {
+                    LOGGER.warn("created transaction without any bookedIns");
+                    transactionRepository.delete(transaction);
+                } else {
+                    // generate cancellations and dereservations for some tickets
+                    random = faker.number().randomDouble(3, 0, 1);
+                    if (random < 0.2) {
+                        Transaction transaction2 = generateTransaction(user, randomShow.getDate());
+                        transaction2.setDate(transaction.getDate().plusDays(2));
+                        transactionRepository.save(transaction2);
+
+                        if (bookingType == BookingType.PURCHASE) {
+                            bookingType = BookingType.CANCELLATION;
+                        } else {
+                            bookingType = BookingType.DERESERVATION;
+                        }
+
+                        Set<BookedIn> bookedIns = transaction.getBookedIns();
+                        for (BookedIn bookedIn : bookedIns) {
+                            bookedIn.getTicket().setReservedBy(null);
+                            bookedIn.getTicket().setPurchasedBy(null);
+
+                            BookedIn bookedIn2 = generateBookedIn(transaction2, bookedIn.getTicket(),
+                                bookingType);
+                            bookedInRepository.save(bookedIn2);
+                        }
+                    }
                 }
             }
         }
@@ -107,8 +156,9 @@ public class TransactionBookedInGenerator {
         bookedIn.setTransaction(transaction);
         bookedIn.setTicket(ticket);
         bookedIn.setBookingType(bookingType);
-        // TODO: set price at booking time correctly
-        bookedIn.setPriceAtBookingTime(BigDecimal.valueOf(1));
+        bookedIn.setPriceAtBookingTime(
+            sectorPriceRepository.findOneByShowIdBySectorId(ticket.getShow().getShowId(),
+                ticket.getSeat().getSector().getSectorId()).getPrice());
         return bookedIn;
     }
 }

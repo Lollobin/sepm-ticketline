@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class Transaction {
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private ApplicationUser user;
 
-    @OneToMany(mappedBy = "transaction")
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.EAGER)
     private Set<BookedIn> bookedIns;
 
     @Override
