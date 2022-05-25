@@ -9,7 +9,7 @@ import {
   EventEmitter,
 } from "@angular/core";
 import { forEach, uniqueId } from "lodash";
-import { Application, Container, Graphics } from "pixi.js";
+import { Application, Container, Graphics, Rectangle } from "pixi.js";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
 import {
   drawSeatingPlan,
@@ -68,42 +68,31 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     graphics.height = location.h;
   }
   syncModelWithGraphics() {
-    this.seatingPlan.seats.forEach((seat) => {
-      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
-      if (!seatGraphics) {
-        return;
-      }
-      seat.location.h = seatGraphics.getBounds().height;
-      seat.location.w = seatGraphics.getBounds().width;
-      seat.location.x = seatGraphics.getBounds().x;
-      seat.location.y = seatGraphics.getBounds().y;
-    });
-    this.seatingPlan.sectors.forEach((sector) => {
-      const sectorGraphics = this.pixiApplication.stage.getChildByName(
-        generateStandingAreaId(sector.id)
-      );
-      if (!sectorGraphics) {
-        return;
-      }
-      const standingSector = sector as SectorWithLocation;
-      standingSector.location.h = sectorGraphics.getBounds().height;
-      standingSector.location.w = sectorGraphics.getBounds().width;
-      standingSector.location.x = sectorGraphics.getBounds().x;
-      standingSector.location.y = sectorGraphics.getBounds().y;
-    });
-    this.seatingPlan.staticElements.forEach((element) => {
-      const staticGraphics = this.pixiApplication.stage.getChildByName(
-        generateStaticAreaId(element.id)
-      );
-      if (!staticGraphics) {
-        return;
-      }
-      element.location.h = staticGraphics.getBounds().height;
-      element.location.w = staticGraphics.getBounds().width;
-      element.location.x = staticGraphics.getBounds().x;
-      element.location.y = staticGraphics.getBounds().y;
-    });
+    this.seatingPlan.seats.forEach((element) =>
+      this.syncElement(element as Seat & { location: Location }, generateSeatId(element.id))
+    );
+    this.seatingPlan.sectors.forEach((element) =>
+      this.syncElement(element as SectorWithLocation, generateStandingAreaId(element.id))
+    );
+    this.seatingPlan.staticElements.forEach((element) =>
+      this.syncElement(element, generateStaticAreaId(element.id))
+    );
     this.initializeSeatingPlan();
+  }
+  syncElement<T extends { location: Location }>(element: T, id: string) {
+    const graphics = this.pixiApplication.stage.getChildByName(id) as Graphics | undefined;
+    if (!graphics) {
+      return;
+    }
+    element.location = this.parseRectangleToLocation(graphics.getBounds());
+  }
+  parseRectangleToLocation(bounds: Rectangle): Location {
+    return {
+      h: bounds.height,
+      w: bounds.width,
+      x: bounds.x,
+      y: bounds.y,
+    };
   }
 
   onDragStart(graphics: Graphics) {
@@ -125,17 +114,17 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       if (graphics.name === seatGraphics.name) return;
       const xPositionDifference = seatGraphics.x - graphics.x;
       const yPositionDifference = seatGraphics.y - graphics.y;
-      const newX = newPosition.x + xPositionDifference
-      const newY = newPosition.y + yPositionDifference
-      this.setPosition(graphics, newX, newY)
-      this.setPosition(cover, newX, newY)
+      const newX = newPosition.x + xPositionDifference;
+      const newY = newPosition.y + yPositionDifference;
+      this.setPosition(graphics, newX, newY);
+      this.setPosition(cover, newX, newY);
     });
-    this.setPosition(graphics, newPosition.x, newPosition.y)
-    this.setPosition(cover, newPosition.x, newPosition.y)
+    this.setPosition(graphics, newPosition.x, newPosition.y);
+    this.setPosition(cover, newPosition.x, newPosition.y);
   }
 
-  setPosition(graphics: Graphics|undefined, x:number, y:number){
-    if(!graphics) return
+  setPosition(graphics: Graphics | undefined, x: number, y: number) {
+    if (!graphics) return;
     graphics.x = x;
     graphics.y = y;
   }
