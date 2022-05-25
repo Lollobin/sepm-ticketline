@@ -239,11 +239,11 @@ export {
   drawSeatingPlan,
   generateStandingAreaId,
   generateSeatId,
-  drawStandingArea,
   SeatingPlan,
   Sector,
   SectorWithLocation,
   SectorBuilder,
   Seat,
   StaticElement,
+  Location
 };

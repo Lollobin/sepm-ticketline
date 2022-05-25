@@ -13,9 +13,9 @@ import { Application, Container, Graphics } from "pixi.js";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
 import {
   drawSeatingPlan,
-  drawStandingArea,
   generateSeatId,
   generateStandingAreaId,
+  Location,
   Seat,
   SeatingPlan,
   SectorBuilder,
@@ -68,22 +68,21 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
   }
+  changeLocation (graphics: Graphics, location: Location){
+    graphics.setTransform(location.x, location.y);
+    graphics.width = location.w;
+    graphics.height = location.h;
+  }
   applyLocation(element: ClickElement) {
-    console.log(element);
     if (element.type === "Seat") {
       const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(element.data);
       if (!seatCover) {
         return;
       }
       const initializedSeatGraphics = seatGraphics as Graphics;
-      const initializedSeatCover = seatGraphics as Graphics;
-
-      initializedSeatGraphics.setTransform(element.data.location.x, element.data.location.y);
-      initializedSeatGraphics.width = element.data.location.w;
-      initializedSeatGraphics.height = element.data.location.h;
-      initializedSeatCover.setTransform(element.data.location.x, element.data.location.y);
-      initializedSeatCover.width = element.data.location.w;
-      initializedSeatCover.height = element.data.location.h;
+      const initializedSeatCover = seatCover as Graphics;
+      this.changeLocation(initializedSeatGraphics, element.data.location)
+      this.changeLocation(initializedSeatCover, element.data.location)
     }
     if (element.type === "SectorWithLocation") {
       const sectorGraphics = this.pixiApplication.stage.getChildByName(
@@ -93,22 +92,12 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         return;
       }
       const initializedSectorGraphics = sectorGraphics as Graphics;
-
-      drawStandingArea(
-        element.data.location,
-        { baseColor: 0xf0f0f0, strokeColor: element.data.color },
-        0,
-        15,
-        element.data.description
-      );
-
-      sectorGraphics.setTransform(element.data.location.x, element.data.location.y);
-      initializedSectorGraphics.width = element.data.location.w;
-      initializedSectorGraphics.height = element.data.location.h;
+      this.changeLocation(initializedSectorGraphics, element.data.location)
     }
     if (element.type === "StaticElement") {
       //TODO: IMplement feature
     }
+    this.syncModelWithGraphics()
   }
   syncModelWithGraphics() {
     this.seatingPlan.seats.forEach((seat) => {
@@ -134,6 +123,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       standingSector.location.x = sectorGraphics.getBounds().x;
       standingSector.location.y = sectorGraphics.getBounds().y;
     });
+    this.initializeSeatingPlan()
   }
 
   onDragStart(graphics: Graphics) {
