@@ -25,7 +25,8 @@ class SearchValidatorTest {
         LocationSearchDto searchDto = new LocationSearchDto();
         searchDto.setName(invalidName);
 
-        assertThrows(ValidationException.class, () -> searchValidator.validateLocationSearchDto(searchDto));
+        assertThrows(ValidationException.class,
+            () -> searchValidator.validateLocationSearchDto(searchDto));
     }
 
     @Test

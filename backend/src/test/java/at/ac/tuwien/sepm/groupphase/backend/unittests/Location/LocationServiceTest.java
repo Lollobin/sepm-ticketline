@@ -31,8 +31,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LocationMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.LocationServiceImpl;
-import at.ac.tuwien.sepm.groupphase.backend.service.validation.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
 import java.util.ArrayList;
 import java.util.List;
