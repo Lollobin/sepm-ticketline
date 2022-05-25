@@ -5,9 +5,6 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTE
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEATINGPLAN_NAME;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SECTOR_ID1;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SECTOR_ID2;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SECTOR_ID3;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALID_DATE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -54,9 +51,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ShowServiceTest {
 
+    private final ShowValidator showValidator = new ShowValidator();
+    private final Event fakePersistedEvent = new Event();
+    private final Show fakePersistedShow = new Show();
+    private final EventValidator eventValidator = new EventValidator();
     @Mock
     private EventRepository eventRepository;
-
     @Mock
     private ShowRepository showRepository;
     @Mock
@@ -69,12 +69,7 @@ class ShowServiceTest {
     private SeatingPlanRepository seatingPlanRepository;
     @Mock
     private SectorPriceRepository sectorPriceRepository;
-
-    private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
-    private final Event fakePersistedEvent = new Event();
-    private final Show fakePersistedShow = new Show();
-    private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
 
     @Spy
@@ -85,7 +80,8 @@ class ShowServiceTest {
     void setUp() {
         eventService = new EventServiceImpl(eventRepository, eventValidator);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
-            seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository);
+            seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
+            showMapper);
         showRepository.deleteAll();
     }
 
