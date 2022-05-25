@@ -46,7 +46,7 @@ class EventServiceTest {
 
     @BeforeEach
     void setUp() {
-        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
+        eventService = new EventServiceImpl(eventRepository, eventValidator);
         eventRepository.deleteAll();
     }
 

@@ -19,8 +19,12 @@ import { ErrorAlertComponent } from './components/error-alert/error-alert.compon
 import { RegistrationComponent } from './components/registration/registration.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
+import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
 import { AdminComponent } from './components/admin/admin.component';
 import {AuthService} from "./generated-sources/openapi";
+import { EventsComponent } from './components/events/events.component';
+import { ArtistSearchComponent } from './components/artist-search/artist-search.component';
+import { EventSearchResultComponent } from './components/event-search-result/event-search-result.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,13 @@ import {AuthService} from "./generated-sources/openapi";
     ErrorAlertComponent,
     RegistrationComponent,
     UnlockUserComponent,
-    AdminComponent
+    AdminComponent,
+    EventsComponent,
+    ArtistSearchComponent,
+    EventSearchResultComponent,
+    AdminComponent,
+    UnlockUserComponent,
+    OrderOverviewComponent
   ],
   imports: [
     BrowserModule,
