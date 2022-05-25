@@ -48,9 +48,11 @@ public class EventServiceImpl implements EventService {
     public EventSearchResultDto search(EventSearchDto eventSearchDto, Pageable pageable) {
         LOGGER.debug("Searching for events with EventSearchDto: {}", eventSearchDto);
 
+        Long location = eventSearchDto.getLocation() == null ? null : Long.valueOf(eventSearchDto.getLocation());
+        Long artist = eventSearchDto.getArtist() == null ? null : Long.valueOf(eventSearchDto.getArtist());
+
         Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            eventSearchDto.getDuration(), eventSearchDto.getCategory(), Long.valueOf(eventSearchDto.getLocation()),
-            Long.valueOf(eventSearchDto.getArtist()), pageable);
+            eventSearchDto.getDuration(), eventSearchDto.getCategory(), location, artist, pageable);
 
         return setEventSearchResultDto(eventPage);
     }
