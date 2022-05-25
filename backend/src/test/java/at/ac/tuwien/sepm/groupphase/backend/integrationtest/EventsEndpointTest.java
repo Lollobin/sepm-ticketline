@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
@@ -49,7 +50,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class EventEndpointTest {
+class EventsEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -87,8 +88,10 @@ class EventEndpointTest {
             ).andExpect(status().isOk())
             .andReturn().getResponse().getContentAsByteArray();
 
-        List<EventDto> eventResult = objectMapper.readerFor(EventDto.class)
-            .<EventDto>readValues(body).readAll();
+        EventSearchResultDto resultDto = objectMapper.readerFor(EventSearchResultDto.class)
+            .<EventSearchResultDto>readValues(body).readAll().get(0);
+
+        List<EventDto> eventResult = resultDto.getEvents();
 
         assertThat(eventResult).hasSize(3);
         assertThat(eventResult.get(0).getName()).isEqualTo(EVENT_NAME);

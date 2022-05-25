@@ -2,16 +2,18 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,10 +35,23 @@ public class ShowsEndpoint implements ShowsApi {
     }
 
     @Override
-    public ResponseEntity<List<ShowDto>> showsGet(ShowSearchDto search) {
+    public ResponseEntity<ShowSearchResultDto> showsGet(
+        ShowSearchDto search, Integer pageSize, Integer requestedPage, String sort) {
+        if (search.getDate() == null && search.getEvent() == null && search.getPrice() == null
+            && search.getSeatingPlan() == null) {
+            /* this is just a placeholderlogic to keep current eventsgetall
+            functional (if used anywhere, what i dont think) */
+            List<ShowDto> list = this.showsGetAll();
+            ShowSearchResultDto result = new ShowSearchResultDto().shows(list).currentPage(0)
+                .numberOfResults(list.size()).pagesTotal(1);
+            return ResponseEntity.ok().body(result);
+        }
+        return ShowsApi.super.showsGet(search, pageSize, requestedPage, sort);
+    }
+
+    private List<ShowDto> showsGetAll() {
         LOGGER.info("GET /shows");
-        return new ResponseEntity<>(
-            showService.findAll().stream().map(showMapper::showToShowDto).toList(), HttpStatus.OK);
+        return showService.findAll().stream().map(showMapper::showToShowDto).toList();
     }
 
 
@@ -45,10 +60,17 @@ public class ShowsEndpoint implements ShowsApi {
     public ResponseEntity<Void> showsPost(ShowWithoutIdDto showWithoutIdDto) {
         LOGGER.info("POST /shows body: {}", showWithoutIdDto);
 
-        ShowDto newShowDto = showMapper.showToShowDto(
-            showService.createShow(
-                showMapper.showWithoutIdDtoToShow(showWithoutIdDto)
-            ));
+        ShowDto newShowDto;
+        try {
+            newShowDto = showMapper.showToShowDto(
+                showService.createShow(
+                    showMapper.showWithoutIdDtoToShow(showWithoutIdDto),
+                    Long.valueOf(showWithoutIdDto.getSeatingPlan()),
+                    showWithoutIdDto.getSectorPrices()
+                ));
+        } catch (NotFoundException e) {
+            throw new ConflictException(e.getMessage());
+        }
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
