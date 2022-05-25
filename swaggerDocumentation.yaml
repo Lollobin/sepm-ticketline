@@ -458,11 +458,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
 
       responses:
         200:
@@ -551,11 +547,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of articles
@@ -669,11 +661,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of locations
@@ -732,11 +720,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            default: ASC
-            enum:
-              - ASC
-              - DESC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of artists
@@ -1153,6 +1137,12 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Sort:
+      type: string
+      default: ASC
+      enum:
+        - ASC
+        - DESC
     Gender:
       type: string
       enum:
@@ -1514,6 +1504,8 @@ components:
       properties:
         name:
           type: string
+        content:
+          type: string
         category:
           type: string
         duration:
@@ -1522,7 +1514,6 @@ components:
           type: integer
         artist:
           type: integer
-        
     TopShowSearch:
       type: object
       properties:
@@ -1705,7 +1696,7 @@ components:
         sectorId:
           type: integer
           format: int64
-        price: 
+        price:
           type: number
           format: float
       required:

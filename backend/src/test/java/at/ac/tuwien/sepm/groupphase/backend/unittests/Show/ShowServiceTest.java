@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -80,10 +81,12 @@ class ShowServiceTest {
     @Spy
     private ShowMapper showMapper = Mappers.getMapper(ShowMapper.class);
 
+    @Spy
+    private EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
     @BeforeEach
     void setUp() {
-        eventService = new EventServiceImpl(eventRepository, eventValidator);
+        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
             seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository);
         showRepository.deleteAll();

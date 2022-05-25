@@ -23,11 +23,20 @@ public class EventSearchDto   {
   @JsonProperty("name")
   private String name;
 
+  @JsonProperty("content")
+  private String content;
+
   @JsonProperty("category")
   private String category;
 
   @JsonProperty("duration")
   private Integer duration;
+
+  @JsonProperty("location")
+  private Integer location;
+
+  @JsonProperty("artist")
+  private Integer artist;
 
   public EventSearchDto name(String name) {
     this.name = name;
@@ -46,6 +55,25 @@ public class EventSearchDto   {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public EventSearchDto content(String content) {
+    this.content = content;
+    return this;
+  }
+
+  /**
+   * Get content
+   * @return content
+  */
+  
+  @Schema(name = "content", required = false)
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
   }
 
   public EventSearchDto category(String category) {
@@ -86,6 +114,44 @@ public class EventSearchDto   {
     this.duration = duration;
   }
 
+  public EventSearchDto location(Integer location) {
+    this.location = location;
+    return this;
+  }
+
+  /**
+   * Get location
+   * @return location
+  */
+  
+  @Schema(name = "location", required = false)
+  public Integer getLocation() {
+    return location;
+  }
+
+  public void setLocation(Integer location) {
+    this.location = location;
+  }
+
+  public EventSearchDto artist(Integer artist) {
+    this.artist = artist;
+    return this;
+  }
+
+  /**
+   * Get artist
+   * @return artist
+  */
+  
+  @Schema(name = "artist", required = false)
+  public Integer getArtist() {
+    return artist;
+  }
+
+  public void setArtist(Integer artist) {
+    this.artist = artist;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -96,13 +162,16 @@ public class EventSearchDto   {
     }
     EventSearchDto eventSearch = (EventSearchDto) o;
     return Objects.equals(this.name, eventSearch.name) &&
+        Objects.equals(this.content, eventSearch.content) &&
         Objects.equals(this.category, eventSearch.category) &&
-        Objects.equals(this.duration, eventSearch.duration);
+        Objects.equals(this.duration, eventSearch.duration) &&
+        Objects.equals(this.location, eventSearch.location) &&
+        Objects.equals(this.artist, eventSearch.artist);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, category, duration);
+    return Objects.hash(name, content, category, duration, location, artist);
   }
 
   @Override
@@ -110,8 +179,11 @@ public class EventSearchDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventSearchDto {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
+    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    artist: ").append(toIndentedString(artist)).append("\n");
     sb.append("}");
     return sb.toString();
   }

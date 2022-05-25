@@ -35,27 +35,19 @@ public class SectorPriceId implements Serializable {
         return Objects.hash(sectorId, showId);
     }
 
-    @Override
-    public String toString() {
-        return "SectorPriceId{"
-            + "sectorId=" + sectorId
-            + ", showId=" + showId
-            + '}';
+    public void setSectorId(Long sectorId) {
+        this.sectorId = sectorId;
+    }
+
+    public void setShowId(Long showId) {
+        this.showId = showId;
     }
 
     public Long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
-    }
-
     public Long getShowId() {
         return showId;
-    }
-
-    public void setShowId(Long showId) {
-        this.showId = showId;
     }
 }

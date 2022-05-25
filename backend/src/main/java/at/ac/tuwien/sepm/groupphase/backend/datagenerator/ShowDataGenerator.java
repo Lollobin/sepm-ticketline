@@ -202,6 +202,20 @@ public class ShowDataGenerator {
         e1.setName("Weird Al's cool tour");
         eventRepository.save(e1);
 
+        Event e2 = new Event();
+        e2.setEventId(2L);
+        e2.setDuration(10);
+        e2.setCategory("Rock");
+        e2.setName("Toni's Rock'n'Roll");
+        eventRepository.save(e2);
+
+        Event e3 = new Event();
+        e3.setEventId(3L);
+        e3.setDuration(240);
+        e3.setCategory("Jazz");
+        e3.setName("Filip's Night of GROOVE");
+        eventRepository.save(e3);
+
         Show show = new Show();
         show.setShowId(1L);
         show.setArtists(Set.of(a1));
