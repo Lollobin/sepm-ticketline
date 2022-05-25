@@ -74,7 +74,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             and ((:category is null) or upper(event1.category) like upper(:category))
             """)
     Page<Event> search(@Param(value = "name") String name, @Param(value = "content") String content, @Param(value = "duration") Integer duration,
-        @Param(value = "category") String category, @Param(value = "location") Integer location, @Param(value = "artist") Integer artist,
+        @Param(value = "category") String category, @Param(value = "location") Long location, @Param(value = "artist") Long artist,
         Pageable pageable);
 
 }

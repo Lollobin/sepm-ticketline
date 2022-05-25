@@ -31,6 +31,8 @@ import { ShowWithTicketsSold } from '../model/showWithTicketsSold';
 // @ts-ignore
 import { ShowWithoutId } from '../model/showWithoutId';
 // @ts-ignore
+import { Sort } from '../model/sort';
+// @ts-ignore
 import { TopShowSearch } from '../model/topShowSearch';
 
 // @ts-ignore
@@ -172,10 +174,10 @@ export class ShowsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ShowSearchResult>;
-    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ShowSearchResult>>;
-    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ShowSearchResult>>;
-    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ShowSearchResult>;
+    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ShowSearchResult>>;
+    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ShowSearchResult>>;
+    public showsGet(search?: ShowSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {

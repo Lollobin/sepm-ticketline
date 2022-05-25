@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,7 +72,7 @@ public interface LocationsApi {
         @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid LocationSearchDto search,
         @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
-        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") SortDto sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

@@ -458,11 +458,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC 
-              - DESC
-            default: ASC     
+            $ref: "#/components/schemas/Sort"  
 
       responses:
         200:
@@ -551,11 +547,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC 
-              - DESC
-            default: ASC   
+            $ref: "#/components/schemas/Sort"    
       responses:
         200:
           description: Successful retreival of articles
@@ -669,11 +661,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC 
-              - DESC 
-            default: ASC
+            $ref: "#/components/schemas/Sort"    
       responses:
         200:
           description: Successful retreival of locations
@@ -732,11 +720,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC 
-              - DESC
-            default: ASC 
+            $ref: "#/components/schemas/Sort"     
       responses:
         200:
           description: Successful retreival of artists
@@ -1105,6 +1089,12 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Sort:
+      type: string
+      default: ASC
+      enum:
+        - ASC
+        - DESC
     Gender:
       type: string
       enum:

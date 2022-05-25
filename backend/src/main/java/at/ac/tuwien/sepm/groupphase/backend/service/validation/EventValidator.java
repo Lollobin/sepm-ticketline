@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class EventValidator {
 
-    public void checkIfEvenIsValid(Event event) {
+    public void checkIfEventIsValid(Event event) {
 
         String exceptionString = "";
         boolean first = true;

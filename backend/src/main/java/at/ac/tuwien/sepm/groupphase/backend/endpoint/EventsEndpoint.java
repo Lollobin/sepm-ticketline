@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.EventsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
@@ -34,9 +35,9 @@ public class EventsEndpoint implements EventsApi {
 
     @Override
     public ResponseEntity<EventSearchResultDto> eventsGet(EventSearchDto search,
-        Integer pageSize, Integer requestedPage, String sort) {
+        Integer pageSize, Integer requestedPage, SortDto sort) {
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort), "name");
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort.getValue()), "name");
 
         if ((search.getName() == null || search.getName().isBlank())
             && (search.getCategory() == null || search.getCategory().isBlank())

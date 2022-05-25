@@ -49,8 +49,8 @@ public class EventServiceImpl implements EventService {
         LOGGER.debug("Searching for events with EventSearchDto: {}", eventSearchDto);
 
         Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            eventSearchDto.getDuration(), eventSearchDto.getCategory(), eventSearchDto.getLocation(),
-            eventSearchDto.getArtist(), pageable);
+            eventSearchDto.getDuration(), eventSearchDto.getCategory(), Long.valueOf(eventSearchDto.getLocation()),
+            Long.valueOf(eventSearchDto.getArtist()), pageable);
 
         return setEventSearchResultDto(eventPage);
     }
@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
     public Event createEvent(Event event) {
         LOGGER.debug("Create new event {}", event);
 
-        eventValidator.checkIfEvenIsValid(event);
+        eventValidator.checkIfEventIsValid(event);
 
         return eventRepository.save(event);
     }

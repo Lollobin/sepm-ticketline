@@ -12,7 +12,7 @@ import javax.persistence.MapsId;
 public class PlaysIn {
 
     @EmbeddedId
-    PlaysInId id;
+    PlaysInId id = new PlaysInId();
 
     @ManyToOne
     @MapsId("showId")
