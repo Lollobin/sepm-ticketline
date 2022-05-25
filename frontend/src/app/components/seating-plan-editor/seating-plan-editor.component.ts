@@ -8,13 +8,14 @@ import {
   ViewChild,
   EventEmitter,
 } from "@angular/core";
-import { forEach } from "lodash";
+import { forEach, uniqueId } from "lodash";
 import { Application, Container, Graphics } from "pixi.js";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
 import {
   drawSeatingPlan,
   generateSeatId,
   generateStandingAreaId,
+  generateStaticAreaId,
   Location,
   Seat,
   SeatingPlan,
@@ -68,7 +69,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
   }
-  changeLocation (graphics: Graphics, location: Location){
+  changeLocation(graphics: Graphics, location: Location) {
     graphics.setTransform(location.x, location.y);
     graphics.width = location.w;
     graphics.height = location.h;
@@ -81,8 +82,8 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       }
       const initializedSeatGraphics = seatGraphics as Graphics;
       const initializedSeatCover = seatCover as Graphics;
-      this.changeLocation(initializedSeatGraphics, element.data.location)
-      this.changeLocation(initializedSeatCover, element.data.location)
+      this.changeLocation(initializedSeatGraphics, element.data.location);
+      this.changeLocation(initializedSeatCover, element.data.location);
     }
     if (element.type === "SectorWithLocation") {
       const sectorGraphics = this.pixiApplication.stage.getChildByName(
@@ -92,12 +93,20 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         return;
       }
       const initializedSectorGraphics = sectorGraphics as Graphics;
-      this.changeLocation(initializedSectorGraphics, element.data.location)
+      this.changeLocation(initializedSectorGraphics, element.data.location);
     }
     if (element.type === "StaticElement") {
       //TODO: IMplement feature
+      const staticGraphics = this.pixiApplication.stage.getChildByName(
+        generateStaticAreaId(element.data.id)
+      );
+      if (!staticGraphics) {
+        return;
+      }
+      const initializedStaticGraphics = staticGraphics as Graphics;
+      this.changeLocation(initializedStaticGraphics, element.data.location);
     }
-    this.syncModelWithGraphics()
+    this.syncModelWithGraphics();
   }
   syncModelWithGraphics() {
     this.seatingPlan.seats.forEach((seat) => {
@@ -123,7 +132,19 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       standingSector.location.x = sectorGraphics.getBounds().x;
       standingSector.location.y = sectorGraphics.getBounds().y;
     });
-    this.initializeSeatingPlan()
+    this.seatingPlan.staticElements.forEach((element) => {
+      const staticGraphics = this.pixiApplication.stage.getChildByName(
+        generateStaticAreaId(element.id)
+      );
+      if (!staticGraphics) {
+        return;
+      }
+      element.location.h = staticGraphics.getBounds().height;
+      element.location.w = staticGraphics.getBounds().width;
+      element.location.x = staticGraphics.getBounds().x;
+      element.location.y = staticGraphics.getBounds().y;
+    });
+    this.initializeSeatingPlan();
   }
 
   onDragStart(graphics: Graphics) {
@@ -204,6 +225,20 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     });
     this.selectedElements = {};
   }
+  addStaticArea() {
+    this.seatingPlan.staticElements.push({
+      id: +uniqueId(),
+      color: 123,
+      location: {
+        x: 10,
+        y: 10,
+        w: 100,
+        h: 100,
+      },
+      description: "A STATIC AREA"
+    });
+    this.syncModelWithGraphics();
+  }
   addDragAndDrop(stage: Container, seatingPlan: SeatingPlan) {
     seatingPlan.seats.forEach((seat) => {
       const seatGraphics = stage.getChildByName(generateSeatId(seat.id));
@@ -258,6 +293,29 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         .on("pointerup", () => this.onDragEnd(sectorGraphics as Graphics))
         .on("pointerupoutside", () => this.onDragEnd(sectorGraphics as Graphics))
         .on("pointermove", (event) => this.onDragMove(event, sectorGraphics as Graphics));
+    });
+    seatingPlan.staticElements.forEach((element) => {
+      const staticGraphics = stage.getChildByName(generateStaticAreaId(element.id));
+      if (!staticGraphics) {
+        return;
+      }
+      staticGraphics.interactive = true;
+      staticGraphics.buttonMode = true;
+      addButtonListeners(staticGraphics as Graphics, {
+        mouseover: () => {},
+        mouseout: () => {},
+        click: () => {
+          this.clickElement.emit({
+            data: element as StaticElement,
+            type: "StaticElement",
+          });
+        },
+      });
+      staticGraphics
+        .on("pointerdown", () => this.onDragStart(staticGraphics as Graphics))
+        .on("pointerup", () => this.onDragEnd(staticGraphics as Graphics))
+        .on("pointerupoutside", () => this.onDragEnd(staticGraphics as Graphics))
+        .on("pointermove", (event) => this.onDragMove(event, staticGraphics as Graphics));
     });
   }
   ngAfterViewInit() {

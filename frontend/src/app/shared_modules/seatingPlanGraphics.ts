@@ -57,7 +57,7 @@ interface SectorBuilder {
 
 const generateSeatId = (id: number) => `seat${id}`;
 const generateStandingAreaId = (id: number) => `standingArea${id}`;
-
+const generateStaticAreaId = (id: number) => `staticArea${id}`;
 const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlan) => {
   drawSeats(stage, seatingPlan);
   drawStandingAreas(stage, seatingPlan);
@@ -114,6 +114,7 @@ const drawStaticAreas = (stage: Container, seatingPlan: SeatingPlan) => {
       { baseColor: 0xf0f0f0, strokeColor: staticArea.color },
       staticArea.description ? staticArea.description : ""
     );
+    staticGraphics.name = generateStaticAreaId(staticArea.id);
     stage.addChild(staticGraphics);
   }
 };
@@ -230,7 +231,7 @@ const drawArea = (location: Location, color: Color, radius: number) => {
   areaGraphics
     .beginFill(color.baseColor)
     .lineStyle({ width: lineWidth, color: color.strokeColor, alignment: 0 })
-    .setTransform(location.x, location.y )
+    .setTransform(location.x, location.y)
     .drawRoundedRect(0, 0, location.w, location.h, radius);
   return areaGraphics;
 };
@@ -239,11 +240,12 @@ export {
   drawSeatingPlan,
   generateStandingAreaId,
   generateSeatId,
+  generateStaticAreaId,
   SeatingPlan,
   Sector,
   SectorWithLocation,
   SectorBuilder,
   Seat,
   StaticElement,
-  Location
+  Location,
 };
