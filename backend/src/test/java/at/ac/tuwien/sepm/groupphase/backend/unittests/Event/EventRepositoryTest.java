@@ -106,4 +106,35 @@ class EventRepositoryTest {
         assertThat(foundEvent.getCategory()).isEqualTo(EVENT2_CATEGORY);
         assertThat(foundEvent.getContent()).isEqualTo(EVENT2_CONTENT);
     }
+
+    @Test
+    void searchWithCorrectParams_shouldReturnCorrectEvents(){
+
+        Event event = new Event();
+        event.setName(EVENT_NAME);
+        event.setContent(EVENT_CONTENT);
+        event.setCategory(EVENT_CATEGORY);
+        event.setDuration(EVENT_DURATION);
+
+        Event event2 = new Event();
+        event.setName(EVENT2_NAME);
+        event.setContent(EVENT2_CONTENT);
+        event.setCategory(EVENT2_CATEGORY);
+        event.setDuration(EVENT2_DURATION);
+
+        Event event3 = new Event();
+        event.setName(EVENT3_NAME);
+        event.setContent(EVENT3_CONTENT);
+        event.setCategory(EVENT3_CATEGORY);
+        event.setDuration(EVENT3_DURATION);
+
+        eventRepository.save(event);
+        eventRepository.save(event2);
+        eventRepository.save(event3);
+
+        assertNotNull(event.getEventId());
+        assertThat(event).hasFieldOrPropertyWithValue("name", EVENT_NAME);
+    }
+
+
 }
