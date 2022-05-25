@@ -1,39 +1,43 @@
-<form>
+
+<form class="form-margin" [formGroup]="eventForm">
   <div class="row">
-    <div class="form-group form-inline">
-      <input class="form-control  col" type="text" name="name" [(ngModel)]="name"
-             placeholder="Name of Event"
-      />
-      <input class="form-control col" type="text" name="name" [(ngModel)]="description"
-             placeholder="Details"
-      />
+    <div class="form-group col">
+      <input type="text" class="form-control " id="name" placeholder="Name" formControlName="name">
     </div>
+    <div class="form-group col">
+
+      <select id="inputCategory" class="form-control form-override"
+              formControlName="category" style="background-position: 95%" placeholder="Category">
+
+        <option *ngFor="let category1 of categories">{{category1}}</option>
+      </select>
+    </div>
+
   </div>
-  <div class="row">
-    <div class="dropdown m-3 col">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Category
-      </button>
-      <div class="dropdown-menu " aria-labelledby="dropdownMenuButton">
-        <option class="dropdown-item" *ngFor="let category of categories"
-                [value]="category.id">{{category.name}} </option>
-      </div>
-
-    </div>
+  <div class="form-group">
+    <input class="form-control " rows="4" formControlName="description" placeholder="Description">
+  </div>
 
 
-    <div class="m-3 col">
-      <small  class="form-label text-muted">Duration</small>
-      <input type="range" class="form-range" min="10" max="360" step="10" value="120"
+
+    <div class="form-group col-md-4">
+      <small for="inputDuration" class="form-label text-muted">Duration</small>
+      <input type="range" class="form-range" min="10" max="360" step="10" value="-1"
              id="inputDuration"
-             oninput="this.nextElementSibling.value = this.value" required
+             oninput="this.nextElementSibling.value = this.value"
              formControlName="duration">
-      <span>{{this.secondsToHms(this.duration.value)}}</span>
+      <span>{{secondsToHms(duration?.value)}}</span>
     </div>
+  <div class="row">
+    <button class="btn btn-outline-secondary col-3" (click)="resetDuration()">Reset Duration Filter</button>
+    <button type="submit" class="btn btn-primary col" (click)="onSearch()"
+    >Search
+    </button>
   </div>
 
 
-  <button class="btn btn-primary">Search</button>
 </form>
+<app-event-search-result *ngIf="eventsResult"  (nextRequestedPage)="handleEventPageEmit($event)" [events]="eventsResult" [pageSize]="pageSize" ></app-event-search-result>
+
 <app-error-alert [error]="err"></app-error-alert>
+

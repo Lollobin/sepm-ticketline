@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {EventSearchResult} from "../../generated-sources/openapi";
+import {EventSearch, EventSearchResult, EventsService} from "../../generated-sources/openapi";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-event-search',
@@ -7,16 +8,40 @@ import {EventSearchResult} from "../../generated-sources/openapi";
   styleUrls: ['./event-search.component.scss']
 })
 export class EventSearchComponent implements OnInit {
+  page=0;
+  pageSize=10;
+  eventsResult: EventSearchResult;
+  eventForm: FormGroup;
   err;
-  name;
-  description;
-  category;
-  duration;
   categoryService;
   categories;
-
   events: EventSearchResult;
 
+  constructor(private formBuilder: FormBuilder,private eventService: EventsService) {
+    this.eventForm = this.formBuilder.group({
+      name: [],
+      category: [],
+      duration: [],
+      description: []
+    });
+  }
+
+
+  get name() {
+    return this.eventForm.get("name");
+  }
+
+  get category() {
+    return this.eventForm.get("category");
+  }
+
+  get duration() {
+    return this.eventForm.get("duration");
+  }
+
+  get description() {
+    return this.eventForm.get("description");
+  }
 
 
   ngOnInit(): void {
@@ -37,5 +62,32 @@ export class EventSearchComponent implements OnInit {
     const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
     const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
     return hDisplay + mDisplay + sDisplay;
+  }
+
+  onSearch() {
+
+    const search: EventSearch={
+      name: this.name.value,
+      category:this.category.value,
+      duration:this.duration.value,
+      content:this.description.value
+    };
+    console.log(search);
+
+    this.eventService.eventsGet(search,this.pageSize,this.page).subscribe(
+        {
+          next: events => this.eventsResult=events,
+          error: err => this.err=err
+        }
+    );
+  }
+
+  resetDuration(){
+    this.eventForm.controls.duration.setValue(undefined);
+  }
+
+  handleEventPageEmit(number){
+    this.page=number;
+    this.onSearch();
   }
 }
