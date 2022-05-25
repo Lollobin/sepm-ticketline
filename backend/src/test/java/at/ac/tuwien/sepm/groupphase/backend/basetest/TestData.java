@@ -4,7 +4,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -84,7 +86,7 @@ public interface TestData {
 
     String USER4_EMAIL = "nicht@anzeigen.com";
 
-    LocalDate TRANSACTION_DATE = LocalDate.of(2020, 12, 7);
+    OffsetDateTime TRANSACTION_DATE = OffsetDateTime.of(2020, 12, 7,0,0,0,0, ZoneOffset.UTC);
     String ENCODED_USER_PASSWORD_EXAMPLE =
         "$2a$10$x7OY2tKTe/bZ.597/w056ej0EJN2pljBBcgkAs8Td8gdAR6I/ggY2";
 
@@ -158,49 +160,33 @@ public interface TestData {
     ApplicationUser TICKET_PURCHASED_BY = null;
     ApplicationUser TICKET_RESERVED_BY = null;
 
-    //Location Data
+    String ARTIST_FIRSTNAME = "Ferdinand";
+    String ARTIST_LASTNAME = "Bauer";
+    String ARTIST_KNOWNAS = "Ferbl";
+    String ARTIST_BANDNAME = "Ferdies Jungs";
 
-    String GASOMETER_STREET = "Guglgasse";
-    String GASOMETER_HOUSE_NUMBER = "6";
-    String GASOMETER_ZIP_CODE = "1110";
-    String GASOMETER_CITY = "Wien";
-    String GASOMETER_COUNTRY = "Austria";
+    String ARTIST2_FIRSTNAME = "Friedrich";
+    String ARTIST2_LASTNAME = "Bauer";
+    String ARTIST2_KNOWNAS = "Friedl";
+    String ARTIST2_BANDNAME = "Ferdies Jungs";
 
-    Address LOCATION_GASOMETER_ADDRESS = new Address(GASOMETER_HOUSE_NUMBER, GASOMETER_STREET, GASOMETER_ZIP_CODE, GASOMETER_CITY, GASOMETER_COUNTRY);
+    String ARTIST3_FIRSTNAME = "Patrick";
+    String ARTIST3_LASTNAME = "Grossmann";
+    String ARTIST3_KNOWNAS = "Luciano";
+    String ARTIST3_BANDNAME = null;
 
-    String BOLLWERK_STREET = "Gerberweg";
-    String BOLLWERK_HOUSE_NUMBER = "46";
-    String BOLLWERK_ZIP_CODE = "9020";
-    String BOLLWERK_CITY = "Klagenfurt";
-    String BOLLWERK_COUNTRY = "Austria";
+    String ARTIST_INVALIDNAME = "INVALID NAME";
 
-    Address LOCATION_BOLLWERK_ADDRESS = new Address(BOLLWERK_HOUSE_NUMBER, BOLLWERK_STREET, BOLLWERK_ZIP_CODE, BOLLWERK_CITY, BOLLWERK_COUNTRY);
-
-
-    String STADTHALLE_STREET = "Messeplatz";
-    String STADTHALLE_HOUSE_NUMBER = "1";
-    String STADTHALLE_ZIP_CODE = "8010";
-    String STADTHALLE_CITY = "Graz";
-    String STADTHALLE_COUNTRY = "Austria";
-
-    Address LOCATION_STADTHALLE_ADDRESS = new Address(STADTHALLE_HOUSE_NUMBER, STADTHALLE_STREET, STADTHALLE_ZIP_CODE, STADTHALLE_CITY, STADTHALLE_COUNTRY);
-
-    String TOMORROWLAND_STREET = "Schommelei";
-    String TOMORROWLAND_HOUSE_NUMBER = "1";
-    String TOMORROWLAND_ZIP_CODE = "2850";
-    String TOMORROWLAND_CITY = "Boom";
-    String TOMORROWLAND_COUNTRY = "Belgien";
-
-    Address LOCATION_TOMORROWLAND_ADDRESS = new Address(TOMORROWLAND_HOUSE_NUMBER, TOMORROWLAND_STREET, TOMORROWLAND_ZIP_CODE, TOMORROWLAND_CITY, TOMORROWLAND_COUNTRY);
-
-    String LOCATION1_NAME = "Gasometer";
-
-    String LOCATION2_NAME = "Stadthalle";
-
-    String LOCATION3_NAME = "Bollwerk";
-
-    String LOCATION4_NAME = "Tomorrowland";
-
-
+    String SEATINGPLAN_NAME = "SeatingPlan Name";
+    String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
+    Long SECTOR_ID1 = 1L;
+    Long SECTOR_ID2 = 2L;
+    Long SECTOR_ID3 = 3L;
+    Long SEAT_ID1 = 1L;
+    Long SEAT_ID2 = 2L;
+    Long SEAT_ID3 = 3L;
+    BigDecimal SECTOR_PRICE1 = BigDecimal.valueOf(1);
+    BigDecimal SECTOR_PRICE2 = BigDecimal.valueOf(2);
+    BigDecimal SECTOR_PRICE3 = BigDecimal.valueOf(3);
 
 }

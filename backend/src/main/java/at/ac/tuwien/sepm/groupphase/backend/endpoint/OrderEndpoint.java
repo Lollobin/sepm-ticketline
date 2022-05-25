@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.OrdersApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TransactionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController()
+@RestController
 public class OrderEndpoint implements OrdersApi {
 
     private static final Logger LOGGER =
@@ -27,9 +27,9 @@ public class OrderEndpoint implements OrdersApi {
 
     @Secured("ROLE_USER")
     @Override
-    public ResponseEntity<List<TransactionDto>> ordersGet() {
+    public ResponseEntity<List<OrderDto>> ordersGet() {
         LOGGER.info("GET /orders");
         return ResponseEntity.ok(
-            transactionMapper.transActionToTransactionDto(orderService.findAllByCurrentUser()));
+            transactionMapper.transActionToOrderDto(orderService.findAllByCurrentUser()));
     }
 }

@@ -1,0 +1,9 @@
+
+<div class="h4 m-5">Filter By <div class="btn-group m-lg-2" role="group">
+  <button type="button" (click)="setAllFalseExcept('artist')" class=" btn btn-outline-primary" [class.active]="artistSearch">Artist</button>
+  <button type="button" (click)="setAllFalseExcept('location')" class="btn btn-outline-primary" [class.active]="locationSearch">Location</button>
+  <button type="button"  (click)="setAllFalseExcept('event')" class=" btn btn-outline-primary" [class.active]="eventSearch">Event</button>
+  <button type="button"  (click)="setAllFalseExcept('show')" class="btn btn-outline-primary" [class.active]="showSearch">Shows</button>
+</div>
+</div>
+<app-artist-search *ngIf="artistSearch"></app-artist-search>

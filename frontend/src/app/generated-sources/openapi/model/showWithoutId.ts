@@ -9,11 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SectorPrice } from './sectorPrice';
 
 
 export interface ShowWithoutId { 
     date: string;
     event: number;
     artists: Array<number>;
+    seatingPlan: number;
+    sectorPrices: Array<SectorPrice>;
 }
 

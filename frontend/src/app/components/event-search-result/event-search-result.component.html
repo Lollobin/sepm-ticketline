@@ -1,0 +1,28 @@
+<h2>Shows by {{artist.knownAs}}</h2>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+
+    <th scope="col">Name</th>
+    <th scope="col">Category</th>
+    <th scope="col" >Duration</th>
+    <th scope="col"></th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr
+      *ngFor="let event of events.events ">
+
+    <td>
+      <div   class="mr-2">{{event.name}}</div>
+    </td>
+    <td>{{ event.category}}</td>
+    <td>{{ event.duration}}</td>
+    <td> <button class="btn btn-primary">Get shows</button> </td>
+  </tr>
+  </tbody>
+</table>
+<ngb-pagination [collectionSize]="events?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
+                [pageSize]="pageSize" class="d-flex justify-content-center" (pageChange)="onPageChange(page)"></ngb-pagination>

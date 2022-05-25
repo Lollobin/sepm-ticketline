@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler;
 
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +39,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
+    @ExceptionHandler(value = {ValidationException.class})
+    protected ResponseEntity<Object> handleValidationException(RuntimeException ex, WebRequest request) {
+        LOGGER.warn(ex.getMessage());
+        return handleExceptionInternal(
+            ex, ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+
+
+    @ExceptionHandler(value = ConflictException.class)
+    protected ResponseEntity<Object> handleConflictException(RuntimeException ex, WebRequest request) {
+        LOGGER.warn(ex.getMessage());
+        return handleExceptionInternal(
+            ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
 
     /**
      * Override methods from ResponseEntityExceptionHandler to send a customized HTTP response for a

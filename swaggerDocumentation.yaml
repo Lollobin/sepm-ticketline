@@ -460,9 +460,9 @@ paths:
           schema:
             type: string
             enum:
-              - ASC 
+              - ASC
               - DESC
-            default: ASC     
+            default: ASC
 
       responses:
         200:
@@ -553,9 +553,9 @@ paths:
           schema:
             type: string
             enum:
-              - ASC 
+              - ASC
               - DESC
-            default: ASC   
+            default: ASC
       responses:
         200:
           description: Successful retreival of articles
@@ -671,8 +671,8 @@ paths:
           schema:
             type: string
             enum:
-              - ASC 
-              - DESC 
+              - ASC
+              - DESC
             default: ASC
       responses:
         200:
@@ -733,10 +733,10 @@ paths:
           name: sort
           schema:
             type: string
+            default: ASC
             enum:
-              - ASC 
+              - ASC
               - DESC
-            default: ASC 
       responses:
         200:
           description: Successful retreival of artists
@@ -807,7 +807,7 @@ paths:
         - BearerAuth: []
       responses:
         200:
-          description: Successful retreival of artists
+          description: Successful retreival of seating plans
           content:
             application/json:
               schema:
@@ -838,6 +838,30 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         404:
           description: The seating plan with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /seatingPlans/{id}/sectors:
+    get:
+      tags:
+        - seatingPlans
+      summary: Gets all sectors of the seating plan with the given ID.
+      parameters:
+        - $ref: "#/components/parameters/seatingPlanId"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of sectors of seating plan with the given ID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sector"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The seating plan with the given ID was not found or has no sectors
         500:
           $ref: "#/components/responses/500-internal-error"
   /showTickets/{id}:
@@ -956,7 +980,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Transaction"
+                  $ref: "#/components/schemas/Order"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -988,6 +1012,30 @@ paths:
           $ref: "#/components/responses/403-forbidden"
         404:
           description: The given transaction id was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /ticketInfo:
+    get:
+      tags:
+        - tickets
+      summary: Gets all future tickets of user possessing the token
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TicketWithShowInfo"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The user with the given token was not found
         500:
           $ref: "#/components/responses/500-internal-error"
 components:
@@ -1226,10 +1274,18 @@ components:
           type: array
           items:
             type: integer
+        seatingPlan:
+          type: integer
+        sectorPrices:
+          type: array
+          items:
+            $ref: "#/components/schemas/SectorPrice"
       required:
         - date
         - event
         - artists
+        - seatingPlan
+        - sectorPrices
     ShowWithTicketsSold:
       type: object
       properties:
@@ -1458,8 +1514,6 @@ components:
       properties:
         name:
           type: string
-        content:
-          type: string
         category:
           type: string
         duration:
@@ -1468,6 +1522,7 @@ components:
           type: integer
         artist:
           type: integer
+        
     TopShowSearch:
       type: object
       properties:
@@ -1575,10 +1630,91 @@ components:
         - city
         - country
         - zipCode
+    Order:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/BookingType"
+        transactionDate:
+          type: string
+          format: date-time
+        showDate:
+          type: string
+          format: date-time
+        artists:
+          type: array
+          items:
+            type: string
+        eventName:
+          type: string
+        city:
+          type: string
+        locationName:
+          type: string
+        transactionId:
+          type: integer
+          format: int64
+        ticketIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+        - type
+        - date
+        - artists
+        - eventName
+        - city
+        - locationName
+        - transactionId
+        - ticketIds
+    TicketWithShowInfo:
+      type: object
+      properties:
+        ticket:
+          $ref: "#/components/schemas/Ticket"
+        type:
+          type: string
+          enum:
+            - purchased
+            - reserved
+        showDate:
+          type: string
+          format: date-time
+        artists:
+          type: array
+          items:
+            type: string
+        eventName:
+          type: string
+        city:
+          type: string
+        locationName:
+          type: string
+      required:
+        - ticket
+        - type
+        - showDate
+        - artists
+        - eventName
+        - city
+        - locationName
+    SectorPrice:
+      type: object
+      properties:
+        sectorId:
+          type: integer
+          format: int64
+        price: 
+          type: number
+          format: float
+      required:
+        - sectorId
+        - price
     ArtistsSearchResult:
       type: object
       properties:
-        artists: 
+        artists:
           type: array
           items:
             $ref: "#/components/schemas/Artist"
@@ -1591,7 +1727,7 @@ components:
     LocationSearchResult:
       type: object
       properties:
-        locations: 
+        locations:
           type: array
           items:
             $ref: "#/components/schemas/Location"
@@ -1604,7 +1740,7 @@ components:
     EventSearchResult:
       type: object
       properties:
-        events: 
+        events:
           type: array
           items:
             $ref: "#/components/schemas/Event"
@@ -1617,7 +1753,7 @@ components:
     ShowSearchResult:
       type: object
       properties:
-        shows: 
+        shows:
           type: array
           items:
             $ref: "#/components/schemas/Show"
