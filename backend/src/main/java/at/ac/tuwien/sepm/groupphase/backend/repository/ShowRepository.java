@@ -11,15 +11,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface ShowRepository extends JpaRepository<Show, Long> {
 
-    @Query(
-        "select distinct s from Show s join SectorPrice sectorPrice on s.showId = sectorPrice.show.showId join Sector"
-            + " sector on sector.sectorId = sectorPrice.sector.sectorId join SeatingPlan seatingPlan on seatingPlan.seatingPlanId = sector.seatingPlan.seatingPlanId "
-            + "where "
-            + "((:data is null) or s.date = (:date)) and "
-            + "((:name is null) or upper(s.event.name) = upper(:name)) and"
-            + "((:maxPrice is null) or sectorPrice.price <= (:maxPrice)) and"
-            + "((:plan is null) or seatingPlan.seatingPlanId = (:plan))")
-    Page<Show> search(@Param("date") OffsetDateTime date, @Param("name") String eventName,
-        @Param("maxPrice") BigDecimal maxPrice, @Param("plan") Integer seatingPlan, Pageable pageable);
+    @Query("select distinct s from Show s join SectorPrice sp on sp.show.showId = s.showId join Sector"
+        + " sec on sec.sectorId = sp.sector.sectorId join SeatingPlan seatP on seatP.seatingPlanId = sec.seatingPlan.seatingPlanId where ((:name is null) or (upper(s.event.name) like upper(concat('%', :name, '%')))) and "
+        + "((:date is null) or (s.date = :date)) and "
+        + "((:price is null) or (sp.price <= :price)) and "
+        + "((:seating is null) or (seatP.seatingPlanId = :seating))")
+    Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("name") String eventName,
+        @Param("price") BigDecimal price, @Param("seating") Integer seatingPlan, Pageable pageable);
 
 }
