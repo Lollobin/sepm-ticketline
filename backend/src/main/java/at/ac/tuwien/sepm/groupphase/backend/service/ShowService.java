@@ -13,8 +13,8 @@ public interface ShowService {
      * @param seatingPlanId that is associated with the show
      * @param sectorPriceDtos List of sectorPriceDtos that are associated with the seatingPlan
      * @return entity show object that was saved with new id
-     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException if the seatingPlan
-     *     or the event are not present in the database
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException if the seatingPlan,
+     *     the event, the artists or the seats of the seatingPlan are not present in the database
      * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException if the sectorPrices
      *     don't correlate with the sectors in the database
      */

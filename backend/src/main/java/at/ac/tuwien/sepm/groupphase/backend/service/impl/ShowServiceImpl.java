@@ -93,7 +93,7 @@ public class ShowServiceImpl implements ShowService {
             if (!artistRepository.existsById(artist.getArtistId())) {
                 throw new NotFoundException(
                     String.format("Could not find artist with the given artistId %s",
-                        seatingPlanId));
+                        artist.getArtistId()));
             }
         }
 
