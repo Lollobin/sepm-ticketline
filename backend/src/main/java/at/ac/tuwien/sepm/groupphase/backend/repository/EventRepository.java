@@ -17,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
      *
      * @param name of the searched event
      * @param content of the searched event
-     * @param duration of the searched event (+/- 15 tolerance)
+     * @param duration of the searched event (+/- 30 tolerance)
      * @param category of the searched event (has to fit perfectly)
      * @param location of the searched event, if the event has show(s)
      * @param artist of the searched event, if the event has show(s)
@@ -37,7 +37,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                     join PlaysIn playsIn1 on show2.showId = playsIn1.show.showId join Artist artist1 on playsIn1.artist.artistId = :artist
             ))
             and ((:name is null) or upper(event1.name) like concat('%', upper(:name), '%'))
-            and ((:duration is null) or (event1.duration between :duration - 15 and :duration + 15))
+            and ((:duration is null) or (event1.duration between :duration - 30 and :duration + 30))
             and ((:content is null) or upper(event1.content) like upper(concat('%', :content, '%')))
             and ((:category is null) or upper(event1.category) like upper(:category))
             """)
