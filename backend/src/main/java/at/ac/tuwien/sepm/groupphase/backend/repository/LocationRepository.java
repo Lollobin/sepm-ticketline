@@ -33,7 +33,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         ((:country is null) or (upper(l.address.country) like upper(concat(:country, '%')))) and
         ((:street is null) or (upper(l.address.street) like upper(concat(:street, '%')))) and
         ((:zipCode is null) or (upper(l.address.zipCode) = upper(:zipCode)))) or
-        ((:city is not null and :name is not null and :country is null and :street is null and :zipCode is null and (upper(l.address.city) like upper(concat(:city, '%')))))""")
+        (:city is not null and :name is not null and :country is null and :street is null and :zipCode is null and
+        not exists (select s from Location s where (upper(s.name) like upper(concat(:name, '%'))) and (upper(s.address.city) like upper(concat(:city, '%')))) and (upper(l.address.city) like upper(concat(:city, '%'))))""")
     Page<Location> search(@Param("name") String name, @Param("city") String city,
         @Param("country") String country, @Param("street") String street,
         @Param("zipCode") String zipCode, Pageable pageable);

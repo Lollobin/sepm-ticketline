@@ -34,14 +34,8 @@ public class LocationsEndpoint implements LocationsApi {
         Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
             "name");
 
-        LocationSearchResultDto searchResultDto;
-        if (search.getCity() == null && search.getCountry() == null && search.getName() == null
-            && search.getStreet() == null && search.getZipCode() == null) {
-            searchResultDto = locationService.findAll(pageable);
-        } else {
+        LocationSearchResultDto searchResultDto = locationService.search(search, pageable);
 
-            searchResultDto = locationService.search(search, pageable);
-        }
 
         return ResponseEntity.ok(searchResultDto);
 
