@@ -11,6 +11,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    /**
+     * Searched the table Event if there is an event that has the following parameters as fields or relations.
+     *     All parameters are case insensitive.
+     *
+     * @param name of the searched event
+     * @param content of the searched event
+     * @param duration of the searched event (+/- 15 tolerance)
+     * @param category of the searched event (has to fit perfectly)
+     * @param location of the searched event, if the event has show(s)
+     * @param artist of the searched event, if the event has show(s)
+     * @param pageable contains information about the page we request
+     * @return Page of found events
+     */
     @Query("""
             select distinct event1 from Event event1
             where ((:location is null) or event1.eventId in (
