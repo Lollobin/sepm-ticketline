@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
@@ -199,5 +200,73 @@ class EventServiceTest {
         EventSearchResultDto empty = eventService.findAll(pageable);
 
         assertThat(empty.getEvents()).isEmpty();
+    }
+
+    @Test
+    void searchWithStandardPageable_shouldReturnCorrectEvents() {
+
+        Event event = new Event();
+        event.setName(EVENT_NAME);
+        event.setContent(EVENT_CONTENT);
+        event.setCategory(EVENT_CATEGORY);
+        event.setDuration(EVENT_DURATION);
+
+        Event event2 = new Event();
+        event2.setName(EVENT2_NAME);
+        event2.setContent(EVENT2_CONTENT);
+        event2.setCategory(EVENT2_CATEGORY);
+        event2.setDuration(EVENT2_DURATION);
+
+        Event event3 = new Event();
+        event3.setName(EVENT3_NAME);
+        event3.setContent(EVENT3_CONTENT);
+        event3.setCategory(EVENT3_CATEGORY);
+        event3.setDuration(EVENT3_DURATION);
+
+        List<Event> events1 = new ArrayList<>();
+        events1.add(event2);
+        events1.add(event3);
+        events1.add(event);
+
+        List<Event> events2 = new ArrayList<>();
+        events2.add(event);
+
+        Page<Event> eventPage1 = new PageImpl<>(events1);
+        Page<Event> eventPage2 = new PageImpl<>(events2);
+        Page<Event> eventPage3 = new PageImpl<>(new ArrayList<>());
+
+        when(eventRepository.search("a", null, null, null, null, null, pageable))
+            .thenReturn(eventPage1);
+        when(eventRepository.search(EVENT_NAME.substring(1, EVENT_NAME.length() - 2), null, null, null, null, null, pageable))
+            .thenReturn(eventPage2);
+        when(eventRepository.search("INVALID NAME", null, null, null, null, null, pageable))
+            .thenReturn(eventPage3);
+
+        EventSearchDto eventSearchDto1 = new EventSearchDto();
+        eventSearchDto1.setName("a");
+        EventSearchDto eventSearchDto2 = new EventSearchDto();
+        eventSearchDto2.setName(EVENT_NAME.substring(1, EVENT_NAME.length() - 2));
+        EventSearchDto eventSearchDto3 = new EventSearchDto();
+        eventSearchDto3.setName("INVALID NAME");
+
+        EventSearchResultDto eventSearchResultDto1 = eventService.search(eventSearchDto1, pageable);
+        EventSearchResultDto eventSearchResultDto2 = eventService.search(eventSearchDto2, pageable);
+        EventSearchResultDto eventSearchResultDto3 = eventService.search(eventSearchDto3, pageable);
+
+        assertAll(
+            () -> assertEquals(eventSearchResultDto1.getEvents().size(), 3),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getName(), event2.getName()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getCategory(), event2.getCategory()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getName(), event3.getName()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getCategory(), event3.getCategory()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getName(), event.getName()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getCategory(), event.getCategory()),
+
+            () -> assertEquals(eventSearchResultDto2.getEvents().size(), 1),
+            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getName(), event.getName()),
+            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getCategory(), event.getCategory()),
+
+            () -> assertThat(eventSearchResultDto3.getEvents()).isEmpty()
+        );
     }
 }
