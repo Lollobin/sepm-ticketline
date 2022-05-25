@@ -36,37 +36,65 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public LocationSearchResultDto search(LocationSearchDto searchDto, Pageable pageable) {
 
-        LOGGER.debug("getting location with pageable: {}", pageable);
+        LOGGER.trace("getting location with pageable: {}", pageable);
 
-        searchValidator.validateLocationSearchDto(searchDto);
+        if (checkIfAllFieldNullOrBlank(searchDto)) {
+            return findAll(pageable);
+        } else {
 
-        checkForBlankValues(searchDto);
+            resetBlankValuesToNull(searchDto);
 
-        Page<Location> locationPage = locationRepository.search(searchDto.getName(),
-            searchDto.getCity(), searchDto.getCountry(), searchDto.getStreet(),
-            searchDto.getZipCode(), pageable);
+            searchValidator.validateLocationSearchDto(searchDto);
 
-        return setLocationSearchDto(locationPage);
+            Page<Location> locationPage = locationRepository.search(searchDto.getName(),
+                searchDto.getCity(), searchDto.getCountry(), searchDto.getStreet(),
+                searchDto.getZipCode(), pageable);
+
+            return setLocationSearchDto(locationPage);
+        }
+
 
     }
 
-    private void checkForBlankValues(LocationSearchDto locationSearchDto) {
-        LOGGER.trace("setting blank values to null");
+    private boolean checkIfAllFieldNull(LocationSearchDto search) {
+        LOGGER.trace("checking if all fields are null");
+        return search.getCity() == null && search.getCountry() == null && search.getName() == null
+            && search.getStreet() == null && search.getZipCode() == null;
 
-        if (locationSearchDto.getZipCode() != null && locationSearchDto.getZipCode().isBlank()) {
-            locationSearchDto.setZipCode(null);
+    }
+
+    private void resetBlankValuesToNull(LocationSearchDto searchDto) {
+        LOGGER.trace("setting blank values to null");
+        if (searchDto.getCity() != null && searchDto.getCity().isBlank()) {
+            searchDto.setCity(null);
         }
-        if (locationSearchDto.getCountry() != null && locationSearchDto.getCountry().isBlank()) {
-            locationSearchDto.setCountry(null);
+
+        if (searchDto.getName() != null && searchDto.getName().isBlank()) {
+            searchDto.setName(null);
         }
-        if (locationSearchDto.getStreet() != null && locationSearchDto.getStreet().isBlank()) {
-            locationSearchDto.setStreet(null);
+
+        if (searchDto.getStreet() != null && searchDto.getStreet().isBlank()) {
+            searchDto.setStreet(null);
         }
-        if (locationSearchDto.getName() != null && locationSearchDto.getName().isBlank()) {
-            locationSearchDto.setName(null);
+
+        if (searchDto.getCountry() != null && searchDto.getCountry().isBlank()) {
+            searchDto.setCountry(null);
         }
-        if (locationSearchDto.getCity() != null && locationSearchDto.getCity().isBlank()) {
-            locationSearchDto.setCity(null);
+        if (searchDto.getZipCode() != null && searchDto.getZipCode().isBlank()) {
+            searchDto.setZipCode(null);
+        }
+    }
+
+    private boolean checkIfAllFieldNullOrBlank(LocationSearchDto search) {
+        if (checkIfAllFieldNull(search)) {
+            return true;
+        } else {
+            LOGGER.debug("Not all fields are null, checking if all fields are blank");
+            return (search.getCity() != null && search.getCity().isBlank()) && (
+                search.getCountry() != null && search.getCountry().isBlank()) && (
+                search.getName() != null && search.getName().isBlank()) && (
+                search.getStreet() != null && search.getStreet().isBlank()) && (
+                search.getZipCode() != null && search.getZipCode().isBlank());
         }
     }
 

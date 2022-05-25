@@ -14,8 +14,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     /**
      * Searches for locations that contain the params. The search is case-insensitive and looks if
      * the search params start with values stored in the database. The params are connected with the
-     * operator AND except for one case. This case checks if name and city param are both not null. If true it searches for
-     * location in the city even if the name of the location is wrong.
+     * operator AND except for one case. This case checks if name and city param are both not null.
+     * If true it searches for location in the city even if the name of the location is wrong.
      *
      * @param name     searches for location which start with the name
      * @param street   searches for locations which start with the street name
@@ -33,7 +33,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         ((:country is null) or (upper(l.address.country) like upper(concat(:country, '%')))) and
         ((:street is null) or (upper(l.address.street) like upper(concat(:street, '%')))) and
         ((:zipCode is null) or (upper(l.address.zipCode) = upper(:zipCode)))) or
-        ((:city is not null and :name is not null and (upper(l.address.city) like upper(concat(:city, '%')))))""")
+        (:city is not null and :name is not null and :country is null and :street is null and :zipCode is null and
+        not exists (select s from Location s where (upper(s.name) like upper(concat(:name, '%'))) and (upper(s.address.city) like upper(concat(:city, '%')))) and (upper(l.address.city) like upper(concat(:city, '%'))))""")
     Page<Location> search(@Param("name") String name, @Param("city") String city,
         @Param("country") String country, @Param("street") String street,
         @Param("zipCode") String zipCode, Pageable pageable);
