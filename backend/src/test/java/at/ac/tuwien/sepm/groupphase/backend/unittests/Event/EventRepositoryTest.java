@@ -21,6 +21,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -29,6 +33,9 @@ class EventRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
+
+    private final Pageable pageable_asc = PageRequest.of(0, 10, Sort.by("name").ascending());
+    private final Pageable pageable_desc = PageRequest.of(0, 2, Sort.by("name").descending());
 
     @Test
     void should_CreateNewEvent_When_EventIsValid() {
@@ -41,10 +48,10 @@ class EventRepositoryTest {
         Event event = eventRepository.save(testEvent);
 
         assertNotNull(testEvent.getEventId());
-        assertThat(event).hasFieldOrPropertyWithValue("duration", EVENT_DURATION);
-        assertThat(event).hasFieldOrPropertyWithValue("content", EVENT_CONTENT);
-        assertThat(event).hasFieldOrPropertyWithValue("category", EVENT_CATEGORY);
-        assertThat(event).hasFieldOrPropertyWithValue("name", EVENT_NAME);
+        assertThat(event).hasFieldOrPropertyWithValue("duration", EVENT_DURATION)
+            .hasFieldOrPropertyWithValue("content", EVENT_CONTENT)
+            .hasFieldOrPropertyWithValue("category", EVENT_CATEGORY)
+            .hasFieldOrPropertyWithValue("name", EVENT_NAME);
     }
 
     @Test
@@ -108,7 +115,7 @@ class EventRepositoryTest {
     }
 
     @Test
-    void searchWithCorrectParams_shouldReturnCorrectEvents(){
+    void searchWithNoParams_shouldReturnAllEvents(){
 
         Event event = new Event();
         event.setName(EVENT_NAME);
@@ -117,24 +124,151 @@ class EventRepositoryTest {
         event.setDuration(EVENT_DURATION);
 
         Event event2 = new Event();
-        event.setName(EVENT2_NAME);
-        event.setContent(EVENT2_CONTENT);
-        event.setCategory(EVENT2_CATEGORY);
-        event.setDuration(EVENT2_DURATION);
+        event2.setName(EVENT2_NAME);
+        event2.setContent(EVENT2_CONTENT);
+        event2.setCategory(EVENT2_CATEGORY);
+        event2.setDuration(EVENT2_DURATION);
 
         Event event3 = new Event();
-        event.setName(EVENT3_NAME);
-        event.setContent(EVENT3_CONTENT);
-        event.setCategory(EVENT3_CATEGORY);
-        event.setDuration(EVENT3_DURATION);
+        event3.setName(EVENT3_NAME);
+        event3.setContent(EVENT3_CONTENT);
+        event3.setCategory(EVENT3_CATEGORY);
+        event3.setDuration(EVENT3_DURATION);
 
         eventRepository.save(event);
         eventRepository.save(event2);
         eventRepository.save(event3);
 
-        assertNotNull(event.getEventId());
-        assertThat(event).hasFieldOrPropertyWithValue("name", EVENT_NAME);
+        Page<Event> events = eventRepository.search("", "", null, null, null, null, pageable_asc);
+
+        assertThat(events.getContent()).hasSize(3);
+
+        Event persistedEvent = events.getContent().get(0);
+        Event persistedEvent2 = events.getContent().get(1);
+        Event persistedEvent3 = events.getContent().get(2);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT2_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT2_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT2_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT2_CONTENT);
+
+        assertThat(persistedEvent2).hasFieldOrPropertyWithValue("name", EVENT3_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT3_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT3_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT3_CONTENT);
+
+        assertThat(persistedEvent3).hasFieldOrPropertyWithValue("name", EVENT_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT_CONTENT);
+
+        events = eventRepository.search("", "", null, null, null, null, pageable_desc);
+
+        assertThat(events).hasSize(2);
+
+        persistedEvent = events.getContent().get(0);
+        persistedEvent2 = events.getContent().get(1);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT_CONTENT);
+
+        assertThat(persistedEvent2).hasFieldOrPropertyWithValue("name", EVENT3_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT3_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT3_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT3_CONTENT);
     }
 
+    @Test
+    void searchWithCorrectParams_shouldReturnCorrectEvents() {
 
+        Event event = new Event();
+        event.setName(EVENT_NAME);
+        event.setContent(EVENT_CONTENT);
+        event.setCategory(EVENT_CATEGORY);
+        event.setDuration(EVENT_DURATION);
+
+        Event event2 = new Event();
+        event2.setName(EVENT2_NAME);
+        event2.setContent(EVENT2_CONTENT);
+        event2.setCategory(EVENT2_CATEGORY);
+        event2.setDuration(EVENT2_DURATION);
+
+        Event event3 = new Event();
+        event3.setName(EVENT3_NAME);
+        event3.setContent(EVENT3_CONTENT);
+        event3.setCategory(EVENT3_CATEGORY);
+        event3.setDuration(EVENT3_DURATION);
+
+        eventRepository.save(event);
+        eventRepository.save(event2);
+        eventRepository.save(event3);
+
+        Page<Event> events = eventRepository.search("morrow", "", null, null, null, null, pageable_asc);
+
+        assertThat(events.getContent()).hasSize(1);
+
+        Event persistedEvent = events.getContent().get(0);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT_CONTENT);
+
+        events = eventRepository.search("", "is a", null, null, null, null, pageable_asc);
+
+        assertThat(events.getContent()).hasSize(2);
+
+        persistedEvent = events.getContent().get(0);
+        Event persistedEvent2 = events.getContent().get(1);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT2_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT2_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT2_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT2_CONTENT);
+
+        assertThat(persistedEvent2).hasFieldOrPropertyWithValue("name", EVENT3_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT3_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT3_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT3_CONTENT);
+
+        events = eventRepository.search("", "", 250, null, null, null, pageable_asc);
+
+        assertThat(events.getContent()).hasSize(1);
+
+        persistedEvent = events.getContent().get(0);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT_CONTENT);
+
+        events = eventRepository.search("", "", null, "pOp", null, null, pageable_asc);
+
+        assertThat(events.getContent()).hasSize(1);
+
+        persistedEvent = events.getContent().get(0);
+
+        assertThat(persistedEvent).hasFieldOrPropertyWithValue("name", EVENT2_NAME)
+            .hasFieldOrPropertyWithValue("duration", EVENT2_DURATION)
+            .hasFieldOrPropertyWithValue("category", EVENT2_CATEGORY)
+            .hasFieldOrPropertyWithValue("content", EVENT2_CONTENT);
+    }
+
+    @Test
+    void searchWithFalseParams_shouldReturnNoEvents() {
+
+        Event event = new Event();
+        event.setName(EVENT_NAME);
+        event.setContent(EVENT_CONTENT);
+        event.setCategory(EVENT_CATEGORY);
+        event.setDuration(EVENT_DURATION);
+
+        eventRepository.save(event);
+
+        Page<Event> events = eventRepository.search("These", "are", 499, "false", 1L, 3L, pageable_asc);
+
+        assertThat(events.getContent()).isEmpty();
+    }
 }

@@ -1,5 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Event;
 
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_NAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CONTENT;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_DURATION;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
@@ -9,9 +17,13 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVAL
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_NAME_LENGTH;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -19,6 +31,9 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +43,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +62,7 @@ class EventServiceTest {
 
     @Spy
     private EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
-
+    Pageable pageable = PageRequest.of(0, 10, Direction.fromString("ASC"), "firstName");
 
     @BeforeEach
     void setUp() {
@@ -128,5 +148,56 @@ class EventServiceTest {
             () -> eventService.createEvent(eventToSave));
         Assertions.assertEquals("Name of event is too long & Category contains too many characters",
             exception.getMessage());
+    }
+
+    @Test
+    void findAllWithStandardPageable_shouldReturnAllEvents() {
+
+        Event event = new Event();
+        event.setName(EVENT_NAME);
+        event.setContent(EVENT_CONTENT);
+        event.setCategory(EVENT_CATEGORY);
+        event.setDuration(EVENT_DURATION);
+
+        Event event2 = new Event();
+        event2.setName(EVENT2_NAME);
+        event2.setContent(EVENT2_CONTENT);
+        event2.setCategory(EVENT2_CATEGORY);
+        event2.setDuration(EVENT2_DURATION);
+
+        Event event3 = new Event();
+        event3.setName(EVENT3_NAME);
+        event3.setContent(EVENT3_CONTENT);
+        event3.setCategory(EVENT3_CATEGORY);
+        event3.setDuration(EVENT3_DURATION);
+
+        List<Event> events = new ArrayList<>();
+        events.add(event2);
+        events.add(event3);
+        events.add(event);
+
+        Page<Event> eventPage = new PageImpl<>(events);
+
+        when(eventRepository.findAll(pageable)).thenReturn(eventPage);
+
+        EventSearchResultDto eventSearchResultDto = eventService.findAll(pageable);
+
+        assertAll(
+            () -> assertEquals(eventSearchResultDto.getEvents().size(), 3),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getName(), EVENT2_NAME),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getDuration(), BigDecimal.valueOf(EVENT2_DURATION)),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getCategory(), EVENT2_CATEGORY),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getContent(), EVENT2_CONTENT),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(1).getName(), EVENT3_NAME),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(2).getName(), EVENT_NAME)
+        );
+
+        events.clear();
+        eventPage = new PageImpl<>(events);
+        when(eventRepository.findAll(pageable)).thenReturn(eventPage);
+
+        EventSearchResultDto empty = eventService.findAll(pageable);
+
+        assertThat(empty.getEvents()).isEmpty();
     }
 }
