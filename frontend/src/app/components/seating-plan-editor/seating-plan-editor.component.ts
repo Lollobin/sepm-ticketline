@@ -228,14 +228,14 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   addStaticArea() {
     this.seatingPlan.staticElements.push({
       id: +uniqueId(),
-      color: 123,
+      color: 0,
       location: {
         x: 10,
         y: 10,
         w: 100,
         h: 100,
       },
-      description: "A STATIC AREA"
+      description: ""
     });
     this.syncModelWithGraphics();
   }

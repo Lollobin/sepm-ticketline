@@ -116,7 +116,44 @@
             </div>
           </div>
         </div>
-        <div class="card-footer"><button class="btn btn-success mr-0 ml-auto" (click)="seatingPlanEditor.applyLocation(chosenElement)">Apply</button></div>
+        <div class="card-footer">
+          <button
+            class="btn btn-success mr-0 ml-auto"
+            (click)="seatingPlanEditor.applyLocation(chosenElement)"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+      <div class="card" *ngIf="chosenElement.type === 'StaticElement'">
+        <div class="card-body">
+          <div class="card-title">
+            <h4>Info</h4>
+          </div>
+          <div class="card-text">
+            <div class="input-group">
+              <span class="input-group-text">description</span>
+              <input
+                type="text"
+                class="form-control col"
+                [(ngModel)]="chosenElement.data.description"
+                (ngModelChange)="seatingPlanEditor.syncModelWithGraphics()"
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">color</span>
+              <input
+                type="color"
+                class="form-control"
+                [ngModel]="numberToCssColorString(chosenElement.data.color)"
+                (ngModelChange)="
+                  chosenElement.data.color = parseColor($event);
+                  seatingPlanEditor.syncModelWithGraphics()
+                "
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

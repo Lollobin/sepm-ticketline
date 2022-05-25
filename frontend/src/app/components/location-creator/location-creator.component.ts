@@ -65,6 +65,12 @@ export class LocationCreatorComponent implements OnInit {
   removeSector(index: number) {
     this.sectors.splice(index, 1);
   }
+  numberToCssColorString(color: number) {
+    return `#${color.toString(16).padStart(6, "0")}`;
+  }
+  parseColor(color: string): number {
+    return Number.parseInt(color.substring(1), 16)
+  };
   addSector() {
     this.sectors.push({
       color: "#000000",
