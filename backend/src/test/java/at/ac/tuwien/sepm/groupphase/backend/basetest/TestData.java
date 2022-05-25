@@ -170,6 +170,13 @@ public interface TestData {
     String ARTIST2_KNOWNAS = "Friedl";
     String ARTIST2_BANDNAME = "Ferdies Jungs";
 
+    String ARTIST3_FIRSTNAME = "Patrick";
+    String ARTIST3_LASTNAME = "Grossmann";
+    String ARTIST3_KNOWNAS = "Luciano";
+    String ARTIST3_BANDNAME = null;
+
+    String ARTIST_INVALIDNAME = "INVALID NAME";
+
     String SEATINGPLAN_NAME = "SeatingPlan Name";
     String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
     Long SECTOR_ID1 = 1L;
