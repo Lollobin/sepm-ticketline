@@ -1,9 +1,9 @@
 import { Graphics } from "pixi.js";
 
 interface ButtonCallbacks {
-  mouseover: () => void;
-  mouseout: () => void;
-  click: () => void;
+  mouseover: (event?) => void;
+  mouseout: (event?) => void;
+  click: (event?) => void;
 }
 
 const addButtonListeners = (
@@ -13,16 +13,16 @@ const addButtonListeners = (
 ) => {
   graphics.interactive = true;
   graphics.buttonMode = true;
-  graphics.on("mouseover", () => {
+  graphics.on("mouseover", (event) => {
     graphics.alpha = seatHoverAlpha;
-    callbacks.mouseover();
+    callbacks.mouseover(event);
   });
-  graphics.on("mouseout", () => {
+  graphics.on("mouseout", (event) => {
     graphics.alpha = 1;
-    callbacks.mouseout();
+    callbacks.mouseout(event);
   });
-  graphics.on("click", () => {
-    callbacks.click();
+  graphics.on("click", (event) => {
+    callbacks.click(event);
   });
 };
 export { addButtonListeners };

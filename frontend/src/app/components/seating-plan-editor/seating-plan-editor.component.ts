@@ -194,87 +194,76 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         w: 100,
         h: 100,
       },
-      description: ""
+      description: "",
     });
     this.syncModelWithGraphics();
   }
-  addDragAndDrop(stage: Container, seatingPlan: SeatingPlan) {
-    seatingPlan.seats.forEach((seat) => {
-      const seatGraphics = stage.getChildByName(generateSeatId(seat.id));
-      const seatCover = stage.getChildByName(`${generateSeatId(seat.id)}_cover`);
-      if (!seatGraphics) {
-        return;
-      }
-      seatGraphics.interactive = true;
-      seatGraphics.buttonMode = true;
-      addButtonListeners(seatGraphics as Graphics, {
-        mouseover: () => {},
-        mouseout: () => {},
-        click: () => {},
-      });
-      seatGraphics.on("click", (event) => {
-        this.clickElement.emit({ data: seat, type: "Seat" });
-        if (event.data.originalEvent.ctrlKey) {
-          !this.selectedElements[seatGraphics.name]
-            ? this.selectSeat(seatGraphics as Graphics, seatCover as Graphics)
-            : this.deselectSeat(seatGraphics as Graphics, seatCover as Graphics);
-        } else if (this.selectedElements[seatGraphics.name] == undefined) {
-          this.deselectAllSeats();
-        }
-      });
-      seatGraphics
-        .on("pointerdown", () => this.onDragStart(seatGraphics as Graphics))
-        .on("pointerup", () => this.onDragEnd(seatGraphics as Graphics))
-        .on("pointerupoutside", () => this.onDragEnd(seatGraphics as Graphics))
-        .on("pointermove", (event) =>
-          this.onDragMove(event, seatGraphics as Graphics, seatCover as Graphics)
-        );
+
+  addGenericDragAndDrop(
+    graphics: Graphics,
+    clickCallback = (event) => {},
+    pointermoveCallback = (event) => this.onDragMove(event, graphics)
+  ) {
+    graphics.interactive = true;
+    graphics.buttonMode = true;
+    addButtonListeners(graphics, {
+      mouseover: () => {},
+      mouseout: () => {},
+      click: clickCallback,
     });
+    graphics
+      .on("pointerdown", () => this.onDragStart(graphics))
+      .on("pointerup", () => this.onDragEnd(graphics))
+      .on("pointerupoutside", () => this.onDragEnd(graphics))
+      .on("pointermove", pointermoveCallback);
+  }
+  addSeatDragAndDrop(stage: Container, seat: Seat) {
+    const seatGraphics = stage.getChildByName(generateSeatId(seat.id));
+    const seatCover = stage.getChildByName(`${generateSeatId(seat.id)}_cover`);
+    if (!seatGraphics) {
+      return;
+    }
+
+    const clickEvent = (event) => {
+      this.clickElement.emit({ data: seat, type: "Seat" });
+      if (event.data.originalEvent.ctrlKey) {
+        !this.selectedElements[seatGraphics.name]
+          ? this.selectSeat(seatGraphics as Graphics, seatCover as Graphics)
+          : this.deselectSeat(seatGraphics as Graphics, seatCover as Graphics);
+      } else if (this.selectedElements[seatGraphics.name] == undefined) {
+        this.deselectAllSeats();
+      }
+    };
+
+    this.addGenericDragAndDrop(seatGraphics as Graphics, clickEvent, (event) =>
+      this.onDragMove(event, seatGraphics as Graphics, seatCover as Graphics)
+    );
+  }
+  addDragAndDrop(stage: Container, seatingPlan: SeatingPlan) {
+    seatingPlan.seats.forEach((seat) => this.addSeatDragAndDrop(stage, seat));
     seatingPlan.sectors.forEach((sector) => {
       const sectorGraphics = stage.getChildByName(generateStandingAreaId(sector.id));
       if (!sectorGraphics) {
         return;
       }
-      sectorGraphics.interactive = true;
-      sectorGraphics.buttonMode = true;
-      addButtonListeners(sectorGraphics as Graphics, {
-        mouseover: () => {},
-        mouseout: () => {},
-        click: () => {
-          this.clickElement.emit({
-            data: sector as SectorWithLocation,
-            type: "SectorWithLocation",
-          });
-        },
+      this.addGenericDragAndDrop(sectorGraphics as Graphics, () => {
+        this.clickElement.emit({
+          data: sector as SectorWithLocation,
+          type: "SectorWithLocation",
+        });
       });
-      sectorGraphics
-        .on("pointerdown", () => this.onDragStart(sectorGraphics as Graphics))
-        .on("pointerup", () => this.onDragEnd(sectorGraphics as Graphics))
-        .on("pointerupoutside", () => this.onDragEnd(sectorGraphics as Graphics))
-        .on("pointermove", (event) => this.onDragMove(event, sectorGraphics as Graphics));
     });
     seatingPlan.staticElements.forEach((element) => {
       const staticGraphics = stage.getChildByName(generateStaticAreaId(element.id));
       if (!staticGraphics) {
         return;
       }
-      staticGraphics.interactive = true;
-      staticGraphics.buttonMode = true;
-      addButtonListeners(staticGraphics as Graphics, {
-        mouseover: () => {},
-        mouseout: () => {},
-        click: () => {
-          this.clickElement.emit({
-            data: element as StaticElement,
-            type: "StaticElement",
-          });
-        },
+      this.addGenericDragAndDrop(staticGraphics as Graphics, () => {
+        this.clickElement.emit({
+          data: element as StaticElement,
+          type: "StaticElement",
+        });
       });
-      staticGraphics
-        .on("pointerdown", () => this.onDragStart(staticGraphics as Graphics))
-        .on("pointerup", () => this.onDragEnd(staticGraphics as Graphics))
-        .on("pointerupoutside", () => this.onDragEnd(staticGraphics as Graphics))
-        .on("pointermove", (event) => this.onDragMove(event, staticGraphics as Graphics));
     });
   }
   ngAfterViewInit() {
