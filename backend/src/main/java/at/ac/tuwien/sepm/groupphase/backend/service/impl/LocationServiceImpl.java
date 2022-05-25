@@ -5,7 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LocationMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
-import at.ac.tuwien.sepm.groupphase.backend.service.validation.LocationService;
+import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -38,28 +38,15 @@ public class LocationServiceImpl implements LocationService {
 
         LOGGER.trace("getting location with pageable: {}", pageable);
 
-        if (checkIfAllFieldNullOrBlank(searchDto)) {
-            return findAll(pageable);
-        } else {
+        searchValidator.validateLocationSearchDto(searchDto);
 
-            resetBlankValuesToNull(searchDto);
+        resetBlankValuesToNull(searchDto);
 
-            searchValidator.validateLocationSearchDto(searchDto);
+        Page<Location> locationPage = locationRepository.search(searchDto.getName(),
+            searchDto.getCity(), searchDto.getCountry(), searchDto.getStreet(),
+            searchDto.getZipCode(), pageable);
 
-            Page<Location> locationPage = locationRepository.search(searchDto.getName(),
-                searchDto.getCity(), searchDto.getCountry(), searchDto.getStreet(),
-                searchDto.getZipCode(), pageable);
-
-            return setLocationSearchDto(locationPage);
-        }
-
-
-    }
-
-    private boolean checkIfAllFieldNull(LocationSearchDto search) {
-        LOGGER.trace("checking if all fields are null");
-        return search.getCity() == null && search.getCountry() == null && search.getName() == null
-            && search.getStreet() == null && search.getZipCode() == null;
+        return setLocationResultSearchDto(locationPage);
 
     }
 
@@ -85,20 +72,8 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
-    private boolean checkIfAllFieldNullOrBlank(LocationSearchDto search) {
-        if (checkIfAllFieldNull(search)) {
-            return true;
-        } else {
-            LOGGER.debug("Not all fields are null, checking if all fields are blank");
-            return (search.getCity() != null && search.getCity().isBlank()) && (
-                search.getCountry() != null && search.getCountry().isBlank()) && (
-                search.getName() != null && search.getName().isBlank()) && (
-                search.getStreet() != null && search.getStreet().isBlank()) && (
-                search.getZipCode() != null && search.getZipCode().isBlank());
-        }
-    }
 
-    private LocationSearchResultDto setLocationSearchDto(Page<Location> locationPage) {
+    private LocationSearchResultDto setLocationResultSearchDto(Page<Location> locationPage) {
         LOGGER.trace("setting location result dto");
         LocationSearchResultDto searchResultDto = new LocationSearchResultDto();
 
@@ -117,7 +92,7 @@ public class LocationServiceImpl implements LocationService {
 
         Page<Location> locationPage = locationRepository.findAll(pageable);
 
-        return setLocationSearchDto(locationPage);
+        return setLocationResultSearchDto(locationPage);
 
     }
 }

@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LocationsApi;
-import at.ac.tuwien.sepm.groupphase.backend.service.validation.LocationService;
+import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +33,15 @@ public class LocationsEndpoint implements LocationsApi {
 
         Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
             "name");
-
-        LocationSearchResultDto searchResultDto = locationService.search(search, pageable);
-
+        LocationSearchResultDto searchResultDto;
+        if ((search.getName() == null || search.getName().isBlank()) && (search.getCountry() == null
+            || search.getCountry().isBlank()) && (search.getCity() == null || search.getCity()
+            .isBlank()) && (search.getStreet() == null || search.getStreet().isBlank()) && (
+            search.getZipCode() == null || search.getZipCode().isBlank())) {
+            searchResultDto = locationService.findAll(pageable);
+        } else {
+            searchResultDto = locationService.search(search, pageable);
+        }
 
         return ResponseEntity.ok(searchResultDto);
 
