@@ -1,18 +1,26 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Location;
 
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_CITY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_COUNTRY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_STREET;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.BOLLWERK_CITY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.BOLLWERK_COUNTRY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.BOLLWERK_STREET;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.GASOMETER_CITY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.GASOMETER_COUNTRY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.GASOMETER_STREET;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION1_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION2_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION3_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION4_NAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION5_NAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_ALBERTINA_ADDRESS;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_BOLLWERK_ADDRESS;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_GASOMETER_ADDRESS;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_STADTHALLE_ADDRESS;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_TOMORROWLAND_ADDRESS;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.STADTHALLE_CITY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.STADTHALLE_COUNTRY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.STADTHALLE_STREET;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.TOMORROWLAND_CITY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.TOMORROWLAND_STREET;
@@ -38,16 +46,17 @@ class LocationRepositoryTest {
 
     @Autowired
     private AddressRepository addressRepository;
-    @Test
-    void searchWithNameAndCity_shouldReturnGasometerWienLocation(){
 
-        saveFourLocations();
+    @Test
+    void searchWithNameAndCity_shouldReturnGasometerWienLocation() {
+
+        saveFiveLocations();
 
         String city = "wie";
         String name = "gaso";
 
         List<Location> locationPage = locationRepository.search(name, city, null, null, null,
-            PageRequest.of(0,10, Sort.by("id").ascending())).getContent();
+            PageRequest.of(0, 10, Sort.by("id").ascending())).getContent();
 
         assertThat(locationPage).hasSize(1);
         assertThat(locationPage.get(0).getName()).isEqualTo(LOCATION1_NAME);
@@ -59,15 +68,17 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void searchWithIncorrectNameAndCorrectCity_shouldReturnGrazLocation(){
+    void searchWithIncorrectNameAndCorrectCity_shouldReturnGrazLocation() {
 
-        saveFourLocations();
+        saveFiveLocations();
 
         String city = "graz";
         String name = "gaso";
 
         List<Location> locationPage = locationRepository.search(name, city, null, null, null,
-            PageRequest.of(0,10, Sort.by("id").ascending())).getContent();
+            PageRequest.of(0, 10, Sort.by("id").ascending())).getContent();
+
+        List<Location> all = locationRepository.findAll();
 
         assertThat(locationPage).hasSize(1);
         assertThat(locationPage.get(0).getName()).isEqualTo(LOCATION2_NAME);
@@ -78,9 +89,9 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void searchWithAllFieldsStartWithCorrectNames_shouldReturnTomorrowlandEntity(){
+    void searchWithAllFieldsStartWithCorrectNames_shouldReturnTomorrowlandEntity() {
 
-        saveFourLocations();
+        saveFiveLocations();
 
         String city = "bo";
         String name = "tomorrow";
@@ -88,8 +99,8 @@ class LocationRepositoryTest {
         String zipCode = "2850";
         String street = "Schommelei";
 
-        List<Location> locationPage = locationRepository.search(name, city, country, street, zipCode,
-            PageRequest.of(0,10, Sort.by("id").ascending())).getContent();
+        List<Location> locationPage = locationRepository.search(name, city, country, street,
+            zipCode, PageRequest.of(0, 10, Sort.by("id").ascending())).getContent();
 
         assertThat(locationPage).hasSize(1);
         assertThat(locationPage.get(0).getName()).isEqualTo(LOCATION4_NAME);
@@ -101,35 +112,42 @@ class LocationRepositoryTest {
     }
 
     @Test
-    void searchWithCountryStartingWithAust_shouldReturnLocationBollWerkAndGasometerAndStadthalle(){
+    void searchWithCountryStartingWithAust_shouldReturnLocationBollWerkAndGasometerAndStadthalle() {
 
-        saveFourLocations();
+        saveFiveLocations();
 
         String country = "Aust";
 
-        List<Location> locationPage = locationRepository.search(null, null, country,null, null,
-            PageRequest.of(0,10, Sort.by("id").ascending())).getContent();
+        List<Location> locationPage = locationRepository.search(null, null, country, null, null,
+            PageRequest.of(0, 10, Sort.by("id").ascending())).getContent();
 
-        assertThat(locationPage).hasSize(3);
+        assertThat(locationPage).hasSize(4);
         assertThat(locationPage.get(0).getName()).isEqualTo(LOCATION1_NAME);
         assertThat(locationPage.get(0).getAddress().getCity()).isEqualTo(GASOMETER_CITY);
         assertThat(locationPage.get(0).getAddress().getStreet()).isEqualTo(GASOMETER_STREET);
+        assertThat(locationPage.get(0).getAddress().getCountry()).isEqualTo(GASOMETER_COUNTRY);
 
         assertThat(locationPage.get(1).getName()).isEqualTo(LOCATION2_NAME);
         assertThat(locationPage.get(1).getAddress().getCity()).isEqualTo(STADTHALLE_CITY);
         assertThat(locationPage.get(1).getAddress().getStreet()).isEqualTo(STADTHALLE_STREET);
+        assertThat(locationPage.get(1).getAddress().getCountry()).isEqualTo(STADTHALLE_COUNTRY);
 
         assertThat(locationPage.get(2).getName()).isEqualTo(LOCATION3_NAME);
         assertThat(locationPage.get(2).getAddress().getCity()).isEqualTo(BOLLWERK_CITY);
         assertThat(locationPage.get(2).getAddress().getStreet()).isEqualTo(BOLLWERK_STREET);
+        assertThat(locationPage.get(2).getAddress().getCountry()).isEqualTo(BOLLWERK_COUNTRY);
+
+        assertThat(locationPage.get(3).getName()).isEqualTo(LOCATION5_NAME);
+        assertThat(locationPage.get(3).getAddress().getCity()).isEqualTo(ALBERTINA_CITY);
+        assertThat(locationPage.get(3).getAddress().getStreet()).isEqualTo(ALBERTINA_STREET);
+        assertThat(locationPage.get(3).getAddress().getCountry()).isEqualTo(ALBERTINA_COUNTRY);
 
         locationRepository.deleteAll();
         addressRepository.deleteAll();
     }
 
 
-
-    private void saveFourLocations(){
+    private void saveFiveLocations() {
         LOCATION_GASOMETER_ADDRESS.setAddressId(null);
         addressRepository.save(LOCATION_GASOMETER_ADDRESS);
 
@@ -165,6 +183,15 @@ class LocationRepositoryTest {
         location4.setName(LOCATION4_NAME);
 
         locationRepository.save(location4);
+
+        LOCATION_ALBERTINA_ADDRESS.setAddressId(null);
+        addressRepository.save(LOCATION_ALBERTINA_ADDRESS);
+
+        Location location5 = new Location();
+        location5.setAddress(LOCATION_ALBERTINA_ADDRESS);
+        location5.setName(LOCATION5_NAME);
+
+        locationRepository.save(location5);
 
     }
 }
