@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.service.validation;
+package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
@@ -16,7 +16,7 @@ public interface LocationService {
     LocationSearchResultDto search(LocationSearchDto searchDto, Pageable pageable);
 
     /**
-     *  * Return a page of locations.
+     * Return a page of locations.
      *
      * @param pageable contains informations about the page
      * @return Dto with list of locations and page information
