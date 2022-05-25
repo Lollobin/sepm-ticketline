@@ -118,27 +118,26 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   }
 
   onDragMove(event, graphics: Graphics, cover?: Graphics) {
-    if (this.dragging === graphics.name) {
-      const newPosition = event.data.getLocalPosition(graphics.parent);
-      forEach(this.selectedElements, ({ seatGraphics, seatCover }) => {
-        if (graphics.name === seatGraphics.name) return;
-        const xPositionDifference = seatGraphics.x - graphics.x;
-        const yPositionDifference = seatGraphics.y - graphics.y;
+    if (this.dragging !== graphics.name) return;
+    const newPosition = event.data.getLocalPosition(graphics.parent);
+    forEach(this.selectedElements, ({ seatGraphics, seatCover }) => {
+      //Object that has been dragged should be moved last
+      if (graphics.name === seatGraphics.name) return;
+      const xPositionDifference = seatGraphics.x - graphics.x;
+      const yPositionDifference = seatGraphics.y - graphics.y;
+      const newX = newPosition.x + xPositionDifference
+      const newY = newPosition.y + yPositionDifference
+      this.setPosition(graphics, newX, newY)
+      this.setPosition(cover, newX, newY)
+    });
+    this.setPosition(graphics, newPosition.x, newPosition.y)
+    this.setPosition(cover, newPosition.x, newPosition.y)
+  }
 
-        seatGraphics.x = newPosition.x + xPositionDifference;
-        seatGraphics.y = newPosition.y + yPositionDifference;
-        if (seatCover) {
-          seatCover.x = newPosition.x + xPositionDifference;
-          seatCover.y = newPosition.y + yPositionDifference;
-        }
-      });
-      graphics.x = newPosition.x;
-      graphics.y = newPosition.y;
-      if (cover) {
-        cover.x = newPosition.x;
-        cover.y = newPosition.y;
-      }
-    }
+  setPosition(graphics: Graphics|undefined, x:number, y:number){
+    if(!graphics) return
+    graphics.x = x;
+    graphics.y = y;
   }
   getSeatGraphicsAndCover(seat: Seat) {
     const seatGraphics = this.pixiApplication.stage.getChildByName(generateSeatId(seat.id));
