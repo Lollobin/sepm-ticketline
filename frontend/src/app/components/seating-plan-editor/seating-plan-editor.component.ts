@@ -39,11 +39,9 @@ type ClickElement =
 })
 export class SeatingPlanEditorComponent implements AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
-  @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
   pixiApplication: Application;
   seatingPlan: SeatingPlan;
   selectedElements: { [key: string]: { seatGraphics: Graphics; seatCover: Graphics } } = {};
-  hoverInfo = undefined;
   @Input() set sectors(sectors: SectorBuilder[]) {
     this.seatingPlan = generateFromSectorBuilder(sectors);
     if (this.pixiApplication) {
@@ -60,11 +58,6 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlan.general.width;
     this.pixiApplication.view.height = this.seatingPlan.general.height;
-    document.addEventListener("mousemove", (event) => {
-      this.infoOverlay.nativeElement.style.left = event.x + 20 + "px";
-      this.infoOverlay.nativeElement.style.top = event.y + "px";
-      return event;
-    });
     this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
