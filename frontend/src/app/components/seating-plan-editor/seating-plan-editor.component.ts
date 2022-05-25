@@ -67,40 +67,6 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     graphics.width = location.w;
     graphics.height = location.h;
   }
-  applyLocation(element: ClickElement) {
-    if (element.type === "Seat") {
-      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(element.data);
-      if (!seatCover) {
-        return;
-      }
-      const initializedSeatGraphics = seatGraphics as Graphics;
-      const initializedSeatCover = seatCover as Graphics;
-      this.changeLocation(initializedSeatGraphics, element.data.location);
-      this.changeLocation(initializedSeatCover, element.data.location);
-    }
-    if (element.type === "SectorWithLocation") {
-      const sectorGraphics = this.pixiApplication.stage.getChildByName(
-        generateStandingAreaId(element.data.id)
-      );
-      if (!sectorGraphics) {
-        return;
-      }
-      const initializedSectorGraphics = sectorGraphics as Graphics;
-      this.changeLocation(initializedSectorGraphics, element.data.location);
-    }
-    if (element.type === "StaticElement") {
-      //TODO: IMplement feature
-      const staticGraphics = this.pixiApplication.stage.getChildByName(
-        generateStaticAreaId(element.data.id)
-      );
-      if (!staticGraphics) {
-        return;
-      }
-      const initializedStaticGraphics = staticGraphics as Graphics;
-      this.changeLocation(initializedStaticGraphics, element.data.location);
-    }
-    this.syncModelWithGraphics();
-  }
   syncModelWithGraphics() {
     this.seatingPlan.seats.forEach((seat) => {
       const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
