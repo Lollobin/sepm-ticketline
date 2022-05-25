@@ -34,10 +34,12 @@ model/locationSearch.ts
 model/locationSearchResult.ts
 model/locationWithoutId.ts
 model/models.ts
+model/order.ts
 model/seatWithBookingStatus.ts
 model/seatingPlan.ts
 model/seatingPlanWithoutId.ts
 model/sector.ts
+model/sectorPrice.ts
 model/show.ts
 model/showInformation.ts
 model/showSearch.ts
@@ -46,6 +48,7 @@ model/showWithTicketsSold.ts
 model/showWithoutId.ts
 model/ticket.ts
 model/ticketStatus.ts
+model/ticketWithShowInfo.ts
 model/topShowSearch.ts
 model/transaction.ts
 model/user.ts

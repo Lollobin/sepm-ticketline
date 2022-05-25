@@ -50,7 +50,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class EventEndpointTest {
+class EventsEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;

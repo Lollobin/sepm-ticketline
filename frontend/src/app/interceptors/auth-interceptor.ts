@@ -11,12 +11,24 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authUri = this.globals.backendUri + '/authentication';
-    const signUpUri = this.globals.backendUri + '/users';
     const isLoggedIn = this.authService.isLoggedIn();
 
+    //auth and registration
+    const authUri = this.globals.backendCustomUri + '/login';
+    const signUpUri = this.globals.backendCustomUri + '/users';
+
+    const listOfGetPublics = [
+      this.globals.backendCustomUri + '/events',
+      this.globals.backendCustomUri + '/artists',
+      this.globals.backendCustomUri + '/shows',
+      this.globals.backendCustomUri + '/seatingPlan'];
+
+
+    const dontInterceptPublic = req.method === "GET" && listOfGetPublics.indexOf(req.url) !== -1;
+
     // Do not intercept authentication / registration requests
-    if ((req.url === authUri || req.url === signUpUri) && !isLoggedIn) {
+    if ((req.url === authUri || req.url === signUpUri || dontInterceptPublic) && !isLoggedIn) {
+
       return next.handle(req);
     }
 
