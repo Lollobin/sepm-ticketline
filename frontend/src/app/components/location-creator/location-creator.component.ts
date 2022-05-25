@@ -10,6 +10,15 @@ import {
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
 
+type ClickElement =
+  | {
+      data: SectorWithLocation;
+      type: "SectorWithLocation";
+    }
+  | { data: Seat; type: "Seat" }
+  | { data: StaticElement; type: "StaticElement" };
+
+
 @Component({
   selector: "app-location-creator",
   templateUrl: "./location-creator.component.html",
@@ -21,7 +30,7 @@ export class LocationCreatorComponent implements OnInit {
   faXmark = faXmark;
   showInformation: ShowInformation;
   sectors: SectorBuilder[] = [];
-  chosenElement: Seat | StaticElement | SectorWithLocation;
+  chosenElement: ClickElement;
   selectedSector: number;
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
   ngOnInit(): void {
@@ -76,7 +85,7 @@ export class LocationCreatorComponent implements OnInit {
   checkIsSector(element: any){
     return Object.keys(element).includes("noSeats")
   }
-  handleChosenElement(element: Seat | StaticElement | SectorWithLocation) {
+  handleChosenElement(element: ClickElement) {
     this.chosenElement = element;
   }
 }

@@ -239,6 +239,7 @@ export {
   drawSeatingPlan,
   generateStandingAreaId,
   generateSeatId,
+  drawStandingArea,
   SeatingPlan,
   Sector,
   SectorWithLocation,

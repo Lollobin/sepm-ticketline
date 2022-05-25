@@ -13,6 +13,7 @@ import { Application, Container, Graphics } from "pixi.js";
 import { addButtonListeners } from "src/app/shared_modules/seatingPlanEvents";
 import {
   drawSeatingPlan,
+  drawStandingArea,
   generateSeatId,
   generateStandingAreaId,
   Seat,
@@ -22,6 +23,13 @@ import {
   StaticElement,
 } from "src/app/shared_modules/seatingPlanGraphics";
 import { generateFromSectorBuilder, generateFromShowInfo } from "./generateSampleFromStructure";
+type ClickElement =
+  | {
+      data: SectorWithLocation;
+      type: "SectorWithLocation";
+    }
+  | { data: Seat; type: "Seat" }
+  | { data: StaticElement; type: "StaticElement" };
 
 @Component({
   selector: "app-seating-plan-editor",
@@ -42,7 +50,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     }
   }
 
-  @Output() clickElement = new EventEmitter<SectorWithLocation | Seat | StaticElement>();
+  @Output() clickElement = new EventEmitter<ClickElement>();
 
   dragging = "";
   dragStartEventData = null;
@@ -60,28 +68,71 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
   }
-
-  syncModelWithGraphics() {
-    this.seatingPlan.seats.forEach(seat => {
-      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
-      if(!seatGraphics){
-        return
+  applyLocation(element: ClickElement) {
+    console.log(element);
+    if (element.type === "Seat") {
+      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(element.data);
+      if (!seatCover) {
+        return;
       }
-      seat.location.h = seatGraphics.getBounds().height
-      seat.location.w = seatGraphics.getBounds().width
-      seat.location.x = seatGraphics.getBounds().x
-      seat.location.y = seatGraphics.getBounds().y
-    });
-    this.seatingPlan.sectors.forEach(sector => {
-      const sectorGraphics = this.pixiApplication.stage.getChildByName(generateStandingAreaId(sector.id));
+      const initializedSeatGraphics = seatGraphics as Graphics;
+      const initializedSeatCover = seatGraphics as Graphics;
+
+      initializedSeatGraphics.setTransform(element.data.location.x, element.data.location.y);
+      initializedSeatGraphics.width = element.data.location.w;
+      initializedSeatGraphics.height = element.data.location.h;
+      initializedSeatCover.setTransform(element.data.location.x, element.data.location.y);
+      initializedSeatCover.width = element.data.location.w;
+      initializedSeatCover.height = element.data.location.h;
+    }
+    if (element.type === "SectorWithLocation") {
+      const sectorGraphics = this.pixiApplication.stage.getChildByName(
+        generateStandingAreaId(element.data.id)
+      );
       if (!sectorGraphics) {
         return;
       }
-      const standingSector = sector as SectorWithLocation 
-      standingSector.location.h = sectorGraphics.getBounds().height
-      standingSector.location.w = sectorGraphics.getBounds().width
-      standingSector.location.x = sectorGraphics.getBounds().x
-      standingSector.location.y = sectorGraphics.getBounds().y
+      const initializedSectorGraphics = sectorGraphics as Graphics;
+
+      drawStandingArea(
+        element.data.location,
+        { baseColor: 0xf0f0f0, strokeColor: element.data.color },
+        0,
+        15,
+        element.data.description
+      );
+
+      sectorGraphics.setTransform(element.data.location.x, element.data.location.y);
+      initializedSectorGraphics.width = element.data.location.w;
+      initializedSectorGraphics.height = element.data.location.h;
+    }
+    if (element.type === "StaticElement") {
+      //TODO: IMplement feature
+    }
+  }
+  syncModelWithGraphics() {
+    this.seatingPlan.seats.forEach((seat) => {
+      const { seatGraphics, seatCover } = this.getSeatGraphicsAndCover(seat);
+      if (!seatGraphics) {
+        return;
+      }
+      seat.location.h = seatGraphics.getBounds().height;
+      seat.location.w = seatGraphics.getBounds().width;
+      seat.location.x = seatGraphics.getBounds().x;
+      seat.location.y = seatGraphics.getBounds().y;
+    });
+    this.seatingPlan.sectors.forEach((sector) => {
+      const sectorGraphics = this.pixiApplication.stage.getChildByName(
+        generateStandingAreaId(sector.id)
+      );
+      if (!sectorGraphics) {
+        return;
+      }
+      const standingSector = sector as SectorWithLocation;
+      standingSector.location.h = sectorGraphics.getBounds().height;
+      standingSector.location.w = sectorGraphics.getBounds().width;
+      standingSector.location.x = sectorGraphics.getBounds().x;
+      standingSector.location.y = sectorGraphics.getBounds().y;
     });
   }
 
@@ -178,7 +229,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         click: () => {},
       });
       seatGraphics.on("click", (event) => {
-        this.clickElement.emit(seat);
+        this.clickElement.emit({ data: seat, type: "Seat" });
         if (event.data.originalEvent.ctrlKey) {
           !this.selectedElements[seatGraphics.name]
             ? this.selectSeat(seatGraphics as Graphics, seatCover as Graphics)
@@ -206,7 +257,10 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
         mouseover: () => {},
         mouseout: () => {},
         click: () => {
-          this.clickElement.emit(sector as SectorWithLocation);
+          this.clickElement.emit({
+            data: sector as SectorWithLocation,
+            type: "SectorWithLocation",
+          });
         },
       });
       sectorGraphics
