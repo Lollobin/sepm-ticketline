@@ -66,7 +66,7 @@ class LocationEndpointTest {
     }
 
     @Test
-    void get_shouldReturnLocationWithCityWienAndNameBollwerk() throws Exception {
+    void getWithCityAndName_shouldReturnLocationWithCityWienAndNameBollwerk() throws Exception {
 
         saveFiveLocations();
 
