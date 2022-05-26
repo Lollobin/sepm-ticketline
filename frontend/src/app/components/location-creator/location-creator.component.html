@@ -1,5 +1,157 @@
 <div>
-  <div *ngIf="page == 1">
+  <div *ngIf="page === 0">
+    <div class="card">
+      <header class="card-header">
+        <h4 class="card-title mt-2">Create Location</h4>
+      </header>
+      <article class="card-body">
+        <form [formGroup]="registrationForm">
+          <div class="form-group">
+            <label>Name</label>
+            <input
+              [maxlength]="100"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder=" "
+            />
+            <div
+              *ngIf="
+                (registrationForm.get('name').touched || submitted) &&
+                registrationForm.get('name').errors
+              "
+              class="error"
+            >
+              <small
+                class="form-text text-warning"
+                *ngIf="registrationForm.get('name').errors.required"
+                >A name is required!
+              </small>
+            </div>
+          </div>
+          <div class="m-3">
+            <h5>Postal Address</h5>
+          </div>
+
+          <div formGroupName="address">
+            <div class="row">
+              <div class="form-group col-8">
+                <label for="street">Street</label>
+                <input
+                  [maxlength]="100"
+                  type="text"
+                  id="street"
+                  value="street"
+                  formControlName="street"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="registrationForm.get('address.street').touched || submitted"
+                  class="error"
+                >
+                  <small
+                    class="form-text text-warning"
+                    *ngIf="registrationForm.get('address.street').errors?.required"
+                    >Street must be filled in!
+                  </small>
+                </div>
+              </div>
+
+              <div class="col form-group">
+                <label for="houseNumber">House No.</label>
+                <input
+                  [maxlength]="40"
+                  type="text"
+                  id="houseNumber"
+                  value="houseNumber"
+                  formControlName="houseNumber"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="registrationForm.get('address.houseNumber').touched || submitted"
+                  class="error"
+                >
+                  <small
+                    class="form-text text-warning"
+                    *ngIf="registrationForm.get('address.houseNumber').errors?.required"
+                    >House Number must be filled in!
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group col">
+                <label for="zipCode">Zip Code</label>
+                <input
+                  [maxlength]="16"
+                  type="text"
+                  id="zipCode"
+                  value="zipCode"
+                  formControlName="zipCode"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="registrationForm.get('address.zipCode').touched || submitted"
+                  class="error"
+                >
+                  <small
+                    class="form-text text-warning"
+                    *ngIf="registrationForm.get('address.zipCode').errors?.required"
+                    >Zip Code must be filled in!
+                  </small>
+                </div>
+              </div>
+              <div class="form-group col-7">
+                <label for="city">City</label>
+                <input
+                  [maxlength]="100"
+                  type="text"
+                  id="city"
+                  value="city"
+                  formControlName="city"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="registrationForm.get('address.city').touched || submitted"
+                  class="error"
+                >
+                  <small
+                    class="form-text text-warning"
+                    *ngIf="registrationForm.get('address.city').errors?.required"
+                    >City must be filled in!
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input
+                [maxlength]="100"
+                type="text"
+                id="country"
+                value="country"
+                formControlName="country"
+                class="form-control"
+              />
+              <div
+                *ngIf="registrationForm.get('address.country').touched || submitted"
+                class="error"
+              >
+                <small
+                  class="form-text text-warning"
+                  *ngIf="registrationForm.get('address.country').errors?.required"
+                  >Country must be filled in!
+                </small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </article>
+    </div>
+  </div>
+
+  <div *ngIf="page === 1">
     <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
       <ngb-panel *ngFor="let sector of sectors; index as index">
         <ng-template ngbPanelTitle>
@@ -27,7 +179,7 @@
     </ngb-accordion>
     <button class="btn btn-primary" style="width: 100%" (click)="addSector()">Add Sector</button>
   </div>
-  <div *ngIf="page == 2" class="d-flex container-fluid overflow-auto">
+  <div *ngIf="page === 2" class="d-flex container-fluid overflow-auto">
     <div style="min-width: 20%; overflow: auto">
       <h3>Tools</h3>
       <div>
@@ -208,7 +360,10 @@
         </div>
       </div>
     </div>
-    <div class="border border-dark border-2" style="max-height: 80vh; max-width: 80%; overflow: auto">
+    <div
+      class="border border-dark border-2"
+      style="max-height: 80vh; max-width: 80%; overflow: auto"
+    >
       <app-seating-plan-editor
         [sectors]="sectors"
         (clickElement)="handleChosenElement($event)"
@@ -216,8 +371,12 @@
     </div>
   </div>
 </div>
-<div class="d-flex" style="width: 100%;">
-  <button class="btn btn-secondary mr-0" (click)="previousPage()" *ngIf="page>1">Previous Page</button>
-  <button class="btn btn-success mr-0 ms-auto" (click)="nextPage()" *ngIf="page<2">Next Page</button>
-  <button class="btn btn-success mr-0 ms-auto" (click)="finish()" *ngIf="page==2">Finish</button>
+<div class="d-flex" style="width: 100%">
+  <button class="btn btn-secondary mr-0" (click)="previousPage()" *ngIf="page > 0">
+    Previous Page
+  </button>
+  <button class="btn btn-success mr-0 ms-auto" (click)="nextPage()" *ngIf="page < 2">
+    Next Page
+  </button>
+  <button class="btn btn-success mr-0 ms-auto" (click)="finish()" *ngIf="page >= 2">Finish</button>
 </div>

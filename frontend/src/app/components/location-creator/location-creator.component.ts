@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { Show, ShowInformation } from "src/app/generated-sources/openapi";
 import {
   Seat,
   Sector,
@@ -9,6 +8,8 @@ import {
 } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { LocationWithoutId, SeatingPlanWithoutId } from "src/app/generated-sources/openapi";
 
 type ClickElement =
   | {
@@ -25,16 +26,33 @@ type ClickElement =
 })
 export class LocationCreatorComponent implements OnInit {
   page: number;
-  constructor() {}
+  registrationForm: FormGroup;
+  submitted = true
   faXmark = faXmark;
-  showInformation: ShowInformation;
   sectors: SectorBuilder[] = [];
+  location: LocationWithoutId
+  seatingPlan: SeatingPlanWithoutId
   chosenElement: ClickElement;
   selectedSector: number;
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
+
+  constructor(private formBuilder: FormBuilder) {
+    this.registrationForm = this.formBuilder.group({
+          name: ['', [Validators.required]],
+          address: this.formBuilder.group({
+            houseNumber: ['', [Validators.required]],
+            street: ['', [Validators.required]],
+            zipCode: ['', [Validators.required]],
+            city: ['', [Validators.required]],
+            country: ['', [Validators.required]]
+          }),
+        }
+    );
+  }
+
   ngOnInit(): void {
-    this.page = 1;
+    this.page = 0;
     this.sectors.push(
       {
         color: "#0000AA",
@@ -86,7 +104,9 @@ export class LocationCreatorComponent implements OnInit {
     this.page--;
   }
   finish(){
-
+    //TODO: Send locationWithout ID
+    //Get back ID of location
+    //Send seating plan with location ID
   }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
