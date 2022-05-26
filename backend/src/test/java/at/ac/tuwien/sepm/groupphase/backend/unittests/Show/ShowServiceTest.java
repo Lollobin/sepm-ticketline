@@ -8,16 +8,14 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SEATINGPLAN
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALID_DATE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
@@ -25,7 +23,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
@@ -40,24 +37,26 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ShowServiceTest {
 
+    private final ShowValidator showValidator = new ShowValidator();
+    private final Event fakePersistedEvent = new Event();
+    private final Show fakePersistedShow = new Show();
+    private final EventValidator eventValidator = new EventValidator();
     @Mock
     private EventRepository eventRepository;
-
     @Mock
     private ShowRepository showRepository;
     @Mock
@@ -70,22 +69,19 @@ class ShowServiceTest {
     private SeatingPlanRepository seatingPlanRepository;
     @Mock
     private SectorPriceRepository sectorPriceRepository;
-    @Mock
-    private ArtistRepository artistRepository;
-
-    private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
-    private final Event fakePersistedEvent = new Event();
-    private final Show fakePersistedShow = new Show();
-    private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
+
+    @Spy
+    private ShowMapper showMapper = Mappers.getMapper(ShowMapper.class);
+
 
     @BeforeEach
     void setUp() {
         eventService = new EventServiceImpl(eventRepository, eventValidator);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
             seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
-            artistRepository);
+            showMapper);
         showRepository.deleteAll();
     }
 
@@ -105,15 +101,7 @@ class ShowServiceTest {
         fakePersistedEvent.setDuration(EVENT_DURATION);
 
         fakePersistedShow.setDate(SHOW_DATE);
-        Set<Artist> artists = new HashSet<>();
-        Artist artist1 = new Artist();
-        artist1.setArtistId(1L);
-        Artist artist2 = new Artist();
-        artist2.setArtistId(2L);
-        artists.add(artist1);
-        artists.add(artist2);
-
-        fakePersistedShow.setArtists(artists);
+        fakePersistedShow.setArtists(null);
         fakePersistedShow.setShowId(1L);
         fakePersistedShow.setEvent(fakePersistedEvent);
 
@@ -126,13 +114,10 @@ class ShowServiceTest {
         showsEvent.setName(EVENT_NAME);
 
         showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
         showToSave.setDate(SHOW_DATE);
-        showToSave.setArtists(artists);
 
         when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
-
-        when(artistRepository.existsById(1L)).thenReturn(true);
-        when(artistRepository.existsById(2L)).thenReturn(true);
 
         eventService.createEvent(fakePersistedEvent);
 
@@ -179,7 +164,7 @@ class ShowServiceTest {
         verify(ticketRepository, times(3)).save(any());
 
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
-        assertFalse(showArgumentCaptor.getValue().getArtists().isEmpty());
+        assertThat(showArgumentCaptor.getValue().getArtists()).isNull();
         assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
     }
 
@@ -255,39 +240,9 @@ class ShowServiceTest {
         showToSave.setDate(SHOW_DATE);
 
         when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
-        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.ofNullable(null));
 
         assertThrows(NotFoundException.class,
             () -> showService.createShow(showToSave, 1L, null));
-
-    }
-
-    @Test
-    void whenArtistDoesNotExist_shouldThrowNotFoundException() {
-
-        Show showToSave = new Show();
-
-        Event showsEvent = new Event();
-        showsEvent.setDuration(EVENT_DURATION);
-        showsEvent.setCategory(EVENT_CATEGORY);
-        showsEvent.setContent(EVENT_CONTENT);
-        showsEvent.setName(EVENT_NAME);
-
-        showToSave.setEvent(showsEvent);
-        Set<Artist> artists = new HashSet<>();
-        Artist artist = new Artist();
-        artist.setArtistId(3L);
-        artists.add(artist);
-
-        showToSave.setArtists(artists);
-        showToSave.setDate(SHOW_DATE);
-
-        when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
-        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.of(new ArrayList<>()));
-        when(artistRepository.existsById(3L)).thenReturn(false);
-
-        assertThrows(NotFoundException.class,
-            () -> showService.createShow(showToSave, 1L, Collections.EMPTY_LIST));
 
     }
 }
