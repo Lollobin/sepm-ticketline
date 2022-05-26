@@ -28,21 +28,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
@@ -51,15 +55,11 @@ import org.springframework.test.context.jdbc.SqlGroup;
 @ActiveProfiles("test")
 class ShowRepositoryTest {
 
+    Pageable pageable = PageRequest.of(0, 10, Direction.fromString("ASC"), "showId");
     @Autowired
     private EventRepository eventRepository;
-
-    @Autowired
-    private AddressRepository addressRepository;
-
     @Autowired
     private ShowRepository showRepository;
-
     @Autowired
     private ArtistRepository artistRepository;
 
@@ -138,7 +138,6 @@ class ShowRepositoryTest {
 
     @Test
     void should_ReturnAllStoredShows_When_RepoNotEmpty() {
-
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
@@ -240,46 +239,233 @@ class ShowRepositoryTest {
 
         showRepository.save(show3);
     }
+
     @Test
     @SqlGroup({
 
-        @Sql("classpath:/sql/delete.sql"),
-        @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
         @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
-        @Sql("classpath:/sql/insert_seatingPlan.sql"),
-        @Sql("classpath:/sql/insert_sector.sql"),
-        @Sql("classpath:/sql/insert_event.sql"),
-        @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),
-    })
-    public void shouldTest(){
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithEventName_shouldReturnShowAtEventWithNameContainingPop() {
 
-        String eventName = "gutes";
+        String eventName = "pop";
 
+        List<Show> shows = showRepository.search(null, null, null, eventName, null, null, pageable)
+            .getContent();
+
+        //Verifying that search is case-insensitive
+        assertThat(shows).hasSize(1);
+        assertThat(shows.get(0).getEvent().getName().toUpperCase()).contains(
+            eventName.toUpperCase());
+        assertThat(shows.get(0).getEvent().getName()).doesNotContain(eventName);
 
     }
 
     @Test
     @SqlGroup({
-        @Sql("classpath:/sql/delete.sql"),
-        @Sql("classpath:/sql/insert_address.sql"),
+
+        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
         @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
-        @Sql("classpath:/sql/insert_seatingPlan.sql"),
-        @Sql("classpath:/sql/insert_sector.sql"),
-        @Sql("classpath:/sql/insert_event.sql"),
-        @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),
-    })
-    public void shouldTesfet(){
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithDate_shouldReturnShowWithCorrectDate() {
 
-        List event = eventRepository.findAll();
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        List address = addressRepository.findAll();
-        System.out.println(addressRepository.findAll());
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 18, 45), zoneOffSet);
 
-        assertThat(address).hasSize(5);
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
+            null, pageable).getContent();
+
+        assertThat(shows).hasSize(1);
+        assertThat(shows.get(0).getDate()).isEqualTo(date);
+
+    }
+
+    @Test
+    @SqlGroup({
+
+        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithPrice_shouldFindShowWithPriceLowerThan() {
+
+        BigDecimal price = BigDecimal.valueOf(53.00);
+
+        List<Show> shows = showRepository.search(null, null, null, null, price, null, pageable)
+            .getContent();
+
+        SectorPrice savedPrice = shows.get(0).getSectorPrices().iterator().next();
+
+        assertThat(shows).hasSize(1);
+
+        assertThat(savedPrice.getPrice()).isEqualByComparingTo(price);
+        assertThat(savedPrice.getShow().getShowId()).isEqualTo(shows.get(0).getShowId());
+
+
+    }
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithDateAndPrice_shouldBeEmpty() {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+        BigDecimal price = BigDecimal.valueOf(70);
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
+
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
+            price, null, pageable).getContent();
+
+        assertThat(shows).isEmpty();
+
+    }
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithSeatingPlanAndPrice_shouldReturnOneShow() {
+
+        Long seatingPlan = -1L;
+        BigDecimal priceOfShow = BigDecimal.valueOf(60);
+
+        List<Show> shows = showRepository.search(null, null, null, null, priceOfShow, seatingPlan,
+            pageable).getContent();
+
+        assertThat(shows).hasSize(1);
+        assertThat(shows.get(0).getEvent().getName()).isEqualTo("Romanticevent");
+        SectorPrice price = shows.get(0).getSectorPrices().iterator().next();
+
+        assertThat(price.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
+    }
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithAllParams_shouldReturnOneShow() {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
+
+        //case-insensitive and contains
+        String eventName = "pop";
+
+        Long seatingPlan = -1L;
+        BigDecimal priceOfShow = BigDecimal.valueOf(154.32);
+
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), eventName,
+            priceOfShow, seatingPlan, pageable).getContent();
+        SectorPrice price = shows.get(0).getSectorPrices().iterator().next();
+
+        assertThat(shows).hasSize(1);
+        assertThat(shows.get(0).getEvent().getName()).contains("Popevent");
+        assertThat(shows.get(0).getDate()).isEqualTo(date);
+        assertThat(price.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
+    }
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithMinimalWrongPrice_shouldBeEmpty() {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
+
+        //case-insensitive and contains
+        String eventName = "pop";
+
+        Long seatingPlan = -1L;
+        BigDecimal priceOfShow = BigDecimal.valueOf(154.31);
+
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), eventName,
+            priceOfShow, seatingPlan, pageable).getContent();
+
+        assertThat(shows).isEmpty();
+    }
+
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithAllParamsButWrongSeatingPlan_shouldBeEmpty() {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
+
+        //case-insensitive and contains
+        String eventName = "pop";
+
+        Long seatingPlan = -10L;
+        BigDecimal priceOfShow = BigDecimal.valueOf(154.32);
+
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), eventName,
+            priceOfShow, seatingPlan, pageable).getContent();
+
+        assertThat(shows).isEmpty();
+    }
+
+    @Test
+    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithSeatingPlan_shouldReturnTwoShows() {
+
+        Long seatingPlan = -1L;
+
+        List<Show> shows = showRepository.search(null, null, null, null, null, seatingPlan,
+            pageable).getContent();
+
+        assertThat(shows).hasSize(2);
+        assertThat(shows.get(0).getEvent().getName()).isEqualTo("Romanticevent");
+        assertThat(shows.get(1).getEvent().getName()).isEqualTo("Popevent");
+
+        SectorPrice priceOfFirstShow = shows.get(0).getSectorPrices().iterator().next();
+        SectorPrice priceOfSecondShow = shows.get(1).getSectorPrices().iterator().next();
+
+        assertThat(priceOfFirstShow.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
+        assertThat(priceOfSecondShow.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
+
 
     }
 
