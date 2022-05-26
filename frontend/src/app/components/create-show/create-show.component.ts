@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice, 
-  ShowWithoutId, LocationsService, LocationSearch, Location } from 'src/app/generated-sources/openapi';
+import {
+  EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice,
+  ShowWithoutId, LocationsService, LocationSearch, Location
+} from 'src/app/generated-sources/openapi';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
 import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
@@ -86,12 +88,12 @@ export class CreateShowComponent implements OnInit {
     });
     this.role = this.authService.getUserRole();
     this.showForm.get('location').valueChanges.subscribe(val => {
-      if (val && val.locationId){
+      if (val && val.locationId) {
         this.getSeatingPlansOfLocation(val.locationId);
       }
     });
     this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
-      if (val && val.seatingPlanId){
+      if (val && val.seatingPlanId) {
         this.getSectorsOfSeatingPlan(val.seatingPlanId);
       }
     });
@@ -174,21 +176,21 @@ export class CreateShowComponent implements OnInit {
     this.sectorForm.reset();
   }
 
-  createGroup(sectors: Sector[]) {
+  createGroup() {
     const group = this.formBuilder.group({});
     this.sectors.forEach(control => group.addControl("sector" + control.sectorId, this.formBuilder.control('', Validators.required)));
     return group;
   }
 
   getSectorsOfSeatingPlan(id: number) {
-    if (id === null){
+    if (id === null) {
       return;
     }
     this.seatingPlansService.seatingPlansIdSectorsGet(id).subscribe({
       next: data => {
         console.log("Succesfully got sectors of seatingPlan with id", id);
         this.sectors = data;
-        this.sectorForm = this.createGroup(data);
+        this.sectorForm = this.createGroup();
         this.error = false;
         this.gotFromSeatingPlan = id;
         this.showWithoutId.sectorPrices = [];
@@ -232,9 +234,9 @@ export class CreateShowComponent implements OnInit {
     distinctUntilChanged(),
     switchMap((search: string) => this.locationsService.locationsGet(this.getLocationSearch(search)).pipe(
       map(locationResult => locationResult.locations)
-      )
     )
-  )
+    )
+  );
 
   getLocationSearch(search: string) {
     this.locationSearchDto.name = search;

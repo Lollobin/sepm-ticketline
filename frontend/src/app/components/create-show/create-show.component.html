@@ -67,22 +67,25 @@
             <div class="form-group col-md-6">
                 <small for="inputLocation" class="form-label text-muted">Location Name</small>
                 <input class="form-control" type="text" formControlName="location" [ngbTypeahead]="locationSearch"
-                    #instance="ngbTypeahead" [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter" 
-                    [class.is-invalid]="!this.locationValid" [class.is-valid]="this.locationValid"/>
+                    #instance="ngbTypeahead" [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter"
+                    [class.is-invalid]="!this.locationValid" [class.is-valid]="this.locationValid" />
                 <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
                     <div>Location is required!</div>
                 </div>
             </div>
             <div class="form-group col-md-6">
                 <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
-                <select *ngIf="!this.locationValid" class="form-control form-override" style="background-position: 92%" disabled></select>
+                <select *ngIf="!this.locationValid" class="form-control form-override" style="background-position: 92%"
+                    disabled></select>
                 <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
                     <div>Please select a location first!</div>
                 </div>
-                <select *ngIf="this.locationValid" id="inputSeatingPlan" class="form-control form-override" [class.is-invalid]="!this.seatingPlan.valid"
-                    [class.is-valid]="this.seatingPlan.valid" formControlName="seatingPlan" style="background-position: 92%">
+                <select *ngIf="this.locationValid" id="inputSeatingPlan" class="form-control form-override"
+                    [class.is-invalid]="!this.seatingPlan.valid" [class.is-valid]="this.seatingPlan.valid"
+                    formControlName="seatingPlan" style="background-position: 92%">
                     <option hidden="true">Pick one</option>
-                    <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}</option>
+                    <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}
+                    </option>
                 </select>
             </div>
         </div>
@@ -110,16 +113,6 @@
                     </div>
 
                 </div>
-                <!-- <div
-                    *ngIf="(this.showForm.value.seatingPlan && (!this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan))">
-                    <button class="invalid-feedback btn btn-warning" style="display: block"
-                        (click)="getSectorsOfSeatingPlan(this.showForm.value.seatingPlan)">
-                        Click here to render the sectors
-                    </button>
-                    <div class="invalid-feedback" style="display: block">
-                        <div>Sectors have to be rendered to set prices!</div>
-                    </div>
-                </div> -->
             </div>
         </div>
         <div class="form-group">
