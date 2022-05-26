@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
@@ -38,9 +39,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -48,6 +53,9 @@ class ShowRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Autowired
     private ShowRepository showRepository;
@@ -130,6 +138,11 @@ class ShowRepositoryTest {
 
     @Test
     void should_ReturnAllStoredShows_When_RepoNotEmpty() {
+
+
+        showRepository.deleteAll();
+        eventRepository.deleteAll();
+        artistRepository.deleteAll();
 
         saveThreeShowsAndEvents();
         List<Show> allShows = showRepository.findAll();
@@ -226,6 +239,48 @@ class ShowRepositoryTest {
         show3.setDate(SHOW3_DATE);
 
         showRepository.save(show3);
+    }
+    @Test
+    @SqlGroup({
+
+        @Sql("classpath:/sql/delete.sql"),
+        @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"),
+        @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"),
+        @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),
+    })
+    public void shouldTest(){
+
+        String eventName = "gutes";
+
+
+    }
+
+    @Test
+    @SqlGroup({
+        @Sql("classpath:/sql/delete.sql"),
+        @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"),
+        @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"),
+        @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),
+    })
+    public void shouldTesfet(){
+
+        List event = eventRepository.findAll();
+
+        List address = addressRepository.findAll();
+        System.out.println(addressRepository.findAll());
+
+        assertThat(address).hasSize(5);
+
     }
 
 }
