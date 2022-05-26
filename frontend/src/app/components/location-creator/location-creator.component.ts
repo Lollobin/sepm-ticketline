@@ -18,7 +18,6 @@ type ClickElement =
   | { data: Seat; type: "Seat" }
   | { data: StaticElement; type: "StaticElement" };
 
-
 @Component({
   selector: "app-location-creator",
   templateUrl: "./location-creator.component.html",
@@ -32,6 +31,7 @@ export class LocationCreatorComponent implements OnInit {
   sectors: SectorBuilder[] = [];
   chosenElement: ClickElement;
   selectedSector: number;
+  seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
   ngOnInit(): void {
     this.page = 1;
@@ -69,8 +69,8 @@ export class LocationCreatorComponent implements OnInit {
     return `#${color.toString(16).padStart(6, "0")}`;
   }
   parseColor(color: string): number {
-    return Number.parseInt(color.substring(1), 16)
-  };
+    return Number.parseInt(color.substring(1), 16);
+  }
   addSector() {
     this.sectors.push({
       color: "#000000",
@@ -85,13 +85,10 @@ export class LocationCreatorComponent implements OnInit {
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
-  checkIsSeat(element: any){
-    return Object.keys(element).includes("sectorId")
-  }
-  checkIsSector(element: any){
-    return Object.keys(element).includes("noSeats")
-  }
   handleChosenElement(element: ClickElement) {
+    if (element.type === "Seat" && this.seatInformation[element.data.id] === undefined) {
+      this.seatInformation[element.data.id] = { rowNumber: 0, seatNumber: 0 };
+    }
     this.chosenElement = element;
   }
 }

@@ -181,6 +181,31 @@
           </div>
         </div>
       </div>
+      <div class="card" *ngIf="chosenElement.type === 'Seat'">
+        <div class="card-body">
+          <div class="card-title">
+            <h4>Data</h4>
+          </div>
+          <div class="card-text">
+            <div class="input-group">
+              <span class="input-group-text">row</span>
+              <input
+                type="number"
+                [(ngModel)]="seatInformation[chosenElement.data.id].rowNumber"
+                class="form-control"
+              />
+            </div>
+            <div class="input-group">
+              <span class="input-group-text">seat</span>
+              <input
+                type="number"
+                [(ngModel)]="seatInformation[chosenElement.data.id].seatNumber"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="border border-dark border-2" style="height: 90vh; max-width: 80%; overflow: auto;">
