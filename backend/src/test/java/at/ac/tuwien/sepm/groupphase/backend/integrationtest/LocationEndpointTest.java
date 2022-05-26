@@ -175,7 +175,6 @@ class LocationEndpointTest {
 
     private void saveFiveLocations() {
         LOCATION_GASOMETER_ADDRESS.setAddressId(null);
-        addressRepository.save(LOCATION_GASOMETER_ADDRESS);
 
         Location location1 = new Location();
         location1.setAddress(LOCATION_GASOMETER_ADDRESS);
@@ -184,7 +183,6 @@ class LocationEndpointTest {
         locationRepository.save(location1);
 
         LOCATION_STADTHALLE_ADDRESS.setAddressId(null);
-        addressRepository.save(LOCATION_STADTHALLE_ADDRESS);
 
         Location location2 = new Location();
         location2.setAddress(LOCATION_STADTHALLE_ADDRESS);
@@ -193,7 +191,6 @@ class LocationEndpointTest {
         locationRepository.save(location2);
 
         LOCATION_BOLLWERK_ADDRESS.setAddressId(null);
-        addressRepository.save(LOCATION_BOLLWERK_ADDRESS);
 
         Location location3 = new Location();
         location3.setAddress(LOCATION_BOLLWERK_ADDRESS);
@@ -202,7 +199,6 @@ class LocationEndpointTest {
         locationRepository.save(location3);
 
         LOCATION_TOMORROWLAND_ADDRESS.setAddressId(null);
-        addressRepository.save(LOCATION_TOMORROWLAND_ADDRESS);
 
         Location location4 = new Location();
         location4.setAddress(LOCATION_TOMORROWLAND_ADDRESS);
@@ -211,7 +207,6 @@ class LocationEndpointTest {
         locationRepository.save(location4);
 
         LOCATION_ALBERTINA_ADDRESS.setAddressId(null);
-        addressRepository.save(LOCATION_ALBERTINA_ADDRESS);
 
         Location location5 = new Location();
         location5.setAddress(LOCATION_ALBERTINA_ADDRESS);

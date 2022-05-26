@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
 
     /**
-     * Case insensitive search for a page of artists. It is checked whether the artist fields contain
-     * the search string in various ways.
+     * Case insensitive search for a page of artists. It is checked whether the artist fields
+     * contain the search string in various ways.
      *
-     * @param search String to be searched for
+     * @param search   String to be searched for
      * @param pageable contains information about the page we request
      * @return Page of found artists
      */
@@ -36,5 +36,5 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
         """)
     Page<Artist> search(@Param(value = "search") String search, Pageable pageable);
 
-
+    Artist getByArtistId(Long artistId);
 }
