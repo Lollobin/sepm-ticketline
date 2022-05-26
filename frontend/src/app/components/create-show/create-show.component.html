@@ -135,6 +135,12 @@
         </div>
         <table class="table table-hover" *ngIf="this.artists.length > 0">
             <tbody>
+                <tr>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Known as</th>
+                    <th scope="col">Band</th>
+                </tr>
                 <tr *ngFor="let artist of artists">
                     <td>{{artist.firstName}}</td>
                     <td>{{artist.lastName}}</td>
