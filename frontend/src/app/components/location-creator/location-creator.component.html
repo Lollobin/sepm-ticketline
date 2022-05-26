@@ -1,217 +1,223 @@
-<div *ngIf="page == 1">
-  <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-    <ngb-panel *ngFor="let sector of sectors; index as index">
-      <ng-template ngbPanelTitle>
-        <div style="color: {{ sector.color }}">
-          <span *ngIf="sector.standingSector">Standing&nbsp;</span>
-          <span>Sector {{ index }}</span>
-          <span *ngIf="sector.description">: {{ sector.description }}</span>
-        </div>
-      </ng-template>
-      <ng-template ngbPanelContent>
-        <div class="form-margin">
-          <input type="text" class="form-control col" [(ngModel)]="sector.description" />
-          <div class="form-group d-flex">
-            <input type="color" class="form-control" [(ngModel)]="sector.color" />
+<div>
+  <div *ngIf="page == 1">
+    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+      <ngb-panel *ngFor="let sector of sectors; index as index">
+        <ng-template ngbPanelTitle>
+          <div style="color: {{ sector.color }}">
+            <span *ngIf="sector.standingSector">Standing&nbsp;</span>
+            <span>Sector {{ index }}</span>
+            <span *ngIf="sector.description">: {{ sector.description }}</span>
           </div>
-          <div class="d-flex">
-            <span class="input-group-text">Number of seats</span>
-            <input type="number" class="form-control" [(ngModel)]="sector.seatCount" />
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div class="form-margin">
+            <input type="text" class="form-control col" [(ngModel)]="sector.description" />
+            <div class="form-group d-flex">
+              <input type="color" class="form-control" [(ngModel)]="sector.color" />
+            </div>
+            <div class="d-flex">
+              <span class="input-group-text">Number of seats</span>
+              <input type="number" class="form-control" [(ngModel)]="sector.seatCount" />
+            </div>
+            <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
+            <button class="btn-danger col-auto" (click)="removeSector(index)">Remove sector</button>
           </div>
-          <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
-          <button class="btn-danger col-auto" (click)="removeSector(index)">Remove sector</button>
-        </div>
-      </ng-template>
-    </ngb-panel>
-  </ngb-accordion>
-  <button class="btn btn-primary" style="width: 100%" (click)="addSector()">Add Sector</button>
-  <button class="btn btn-success mr-0" (click)="nextPage()">Next Page</button>
-</div>
-<div *ngIf="page == 2" class="d-flex container-fluid overflow-auto">
-  <div style="min-width: 20%; overflow: auto">
-    <h3>Tools</h3>
-    <div>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    <button class="btn btn-primary" style="width: 100%" (click)="addSector()">Add Sector</button>
+  </div>
+  <div *ngIf="page == 2" class="d-flex container-fluid overflow-auto">
+    <div style="min-width: 20%; overflow: auto">
+      <h3>Tools</h3>
       <div>
-        <button class="btn btn-primary" (click)="seatingPlanEditor.selectAllSeats()">
-          Select all
-        </button>
-        <button class="btn btn-danger" (click)="seatingPlanEditor.deselectAllSeats()">
-          Remove selection
-        </button>
-      </div>
-      <div class="my-1 d-flex">
-        <select [(ngModel)]="selectedSector" class="form-select">
-          <option
-            *ngFor="let sector of sectors; index as index"
-            value="{{ index }}"
-            [hidden]="sector.standingSector"
-            [disabled]="sector.standingSector"
+        <div>
+          <button class="btn btn-primary" (click)="seatingPlanEditor.selectAllSeats()">
+            Select all
+          </button>
+          <button class="btn btn-danger" (click)="seatingPlanEditor.deselectAllSeats()">
+            Remove selection
+          </button>
+        </div>
+        <div class="my-1 d-flex">
+          <select [(ngModel)]="selectedSector" class="form-select">
+            <option
+              *ngFor="let sector of sectors; index as index"
+              value="{{ index }}"
+              [hidden]="sector.standingSector"
+              [disabled]="sector.standingSector"
+            >
+              <div style="color: {{ sector.color }}">
+                <span *ngIf="sector.standingSector">Standing&nbsp;</span>
+                <span>Sector {{ index }}</span>
+                <span *ngIf="sector.description">: {{ sector.description }}</span>
+              </div>
+            </option>
+          </select>
+          <button
+            class="btn btn-primary"
+            (click)="seatingPlanEditor.selectSeatInSector(+selectedSector)"
           >
-            <div style="color: {{ sector.color }}">
-              <span *ngIf="sector.standingSector">Standing&nbsp;</span>
-              <span>Sector {{ index }}</span>
-              <span *ngIf="sector.description">: {{ sector.description }}</span>
-            </div>
-          </option>
-        </select>
-        <button
-          class="btn btn-primary"
-          (click)="seatingPlanEditor.selectSeatInSector(+selectedSector)"
-        >
-          Select
-        </button>
+            Select
+          </button>
+        </div>
+        <div>
+          <button class="btn btn-primary" (click)="seatingPlanEditor.addStaticArea()">
+            Add static area
+          </button>
+        </div>
       </div>
-      <div>
-        <button class="btn btn-primary" (click)="seatingPlanEditor.addStaticArea()">
-          Add static area
-        </button>
-      </div>
-    </div>
-    <h3>Info</h3>
-    <div *ngIf="chosenElement">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title">
-            <h4>Location</h4>
-          </div>
-          <div class="card-text">
-            <div class="input-group">
-              <span class="input-group-text">x</span>
-              <input
-                type="number"
-                [(ngModel)]="chosenElement.data.location.x"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-                class="form-control"
-                id="xLocation"
-              />
+      <h3>Info</h3>
+      <div *ngIf="chosenElement">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">
+              <h4>Location</h4>
             </div>
-            <div class="input-group">
-              <span class="input-group-text">y</span>
+            <div class="card-text">
+              <div class="input-group">
+                <span class="input-group-text">x</span>
+                <input
+                  type="number"
+                  [(ngModel)]="chosenElement.data.location.x"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                  class="form-control"
+                  id="xLocation"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">y</span>
 
-              <input
-                type="number"
-                [(ngModel)]="chosenElement.data.location.y"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-                class="form-control"
-                id="yLocation"
-              />
-            </div>
-            <div class="input-group">
-              <span class="input-group-text">width</span>
+                <input
+                  type="number"
+                  [(ngModel)]="chosenElement.data.location.y"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                  class="form-control"
+                  id="yLocation"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">width</span>
 
-              <input
-                type="number"
-                [(ngModel)]="chosenElement.data.location.w"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-                class="form-control"
-                id="wLocation"
-              />
-            </div>
-            <div class="input-group">
-              <span class="input-group-text">height</span>
+                <input
+                  type="number"
+                  [(ngModel)]="chosenElement.data.location.w"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                  class="form-control"
+                  id="wLocation"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">height</span>
 
-              <input
-                type="number"
-                [(ngModel)]="chosenElement.data.location.h"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-                class="form-control"
-                id="hLocation"
-              />
+                <input
+                  type="number"
+                  [(ngModel)]="chosenElement.data.location.h"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                  class="form-control"
+                  id="hLocation"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="card" *ngIf="chosenElement.type === 'StaticElement'">
-        <div class="card-body">
-          <div class="card-title">
-            <h4>Data</h4>
-          </div>
-          <div class="card-text">
-            <div class="input-group">
-              <span class="input-group-text">description</span>
-              <input
-                type="text"
-                class="form-control col"
-                [(ngModel)]="chosenElement.data.description"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-              />
+        <div class="card" *ngIf="chosenElement.type === 'StaticElement'">
+          <div class="card-body">
+            <div class="card-title">
+              <h4>Data</h4>
             </div>
-            <div class="input-group">
-              <span class="input-group-text">color</span>
-              <input
-                type="color"
-                class="form-control"
-                [ngModel]="numberToCssColorString(chosenElement.data.color)"
-                (ngModelChange)="
-                  chosenElement.data.color = parseColor($event);
-                  seatingPlanEditor.initializeSeatingPlan()
-                "
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card" *ngIf="chosenElement.type === 'SectorWithLocation'">
-        <div class="card-body">
-          <div class="card-title">
-            <h4>Data</h4>
-          </div>
-          <div class="card-text">
-            <div class="input-group">
-              <span class="input-group-text">description</span>
-              <input
-                type="text"
-                class="form-control col"
-                [(ngModel)]="chosenElement.data.description"
-                (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
-              />
-            </div>
-            <div class="input-group">
-              <span class="input-group-text">color</span>
-              <input
-                type="color"
-                class="form-control"
-                [ngModel]="numberToCssColorString(chosenElement.data.color)"
-                (ngModelChange)="
-                  chosenElement.data.color = parseColor($event);
-                  seatingPlanEditor.syncModelWithGraphics()
-                "
-              />
+            <div class="card-text">
+              <div class="input-group">
+                <span class="input-group-text">description</span>
+                <input
+                  type="text"
+                  class="form-control col"
+                  [(ngModel)]="chosenElement.data.description"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">color</span>
+                <input
+                  type="color"
+                  class="form-control"
+                  [ngModel]="numberToCssColorString(chosenElement.data.color)"
+                  (ngModelChange)="
+                    chosenElement.data.color = parseColor($event);
+                    seatingPlanEditor.initializeSeatingPlan()
+                  "
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="card" *ngIf="chosenElement.type === 'Seat'">
-        <div class="card-body">
-          <div class="card-title">
-            <h4>Data</h4>
-          </div>
-          <div class="card-text">
-            <div class="input-group">
-              <span class="input-group-text">row</span>
-              <input
-                type="number"
-                [(ngModel)]="seatInformation[chosenElement.data.id].rowNumber"
-                class="form-control"
-              />
+        <div class="card" *ngIf="chosenElement.type === 'SectorWithLocation'">
+          <div class="card-body">
+            <div class="card-title">
+              <h4>Data</h4>
             </div>
-            <div class="input-group">
-              <span class="input-group-text">seat</span>
-              <input
-                type="number"
-                [(ngModel)]="seatInformation[chosenElement.data.id].seatNumber"
-                class="form-control"
-              />
+            <div class="card-text">
+              <div class="input-group">
+                <span class="input-group-text">description</span>
+                <input
+                  type="text"
+                  class="form-control col"
+                  [(ngModel)]="chosenElement.data.description"
+                  (ngModelChange)="seatingPlanEditor.initializeSeatingPlan()"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">color</span>
+                <input
+                  type="color"
+                  class="form-control"
+                  [ngModel]="numberToCssColorString(chosenElement.data.color)"
+                  (ngModelChange)="
+                    chosenElement.data.color = parseColor($event);
+                    seatingPlanEditor.syncModelWithGraphics()
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" *ngIf="chosenElement.type === 'Seat'">
+          <div class="card-body">
+            <div class="card-title">
+              <h4>Data</h4>
+            </div>
+            <div class="card-text">
+              <div class="input-group">
+                <span class="input-group-text">row</span>
+                <input
+                  type="number"
+                  [(ngModel)]="seatInformation[chosenElement.data.id].rowNumber"
+                  class="form-control"
+                />
+              </div>
+              <div class="input-group">
+                <span class="input-group-text">seat</span>
+                <input
+                  type="number"
+                  [(ngModel)]="seatInformation[chosenElement.data.id].seatNumber"
+                  class="form-control"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="border border-dark border-2" style="max-height: 80vh; max-width: 80%; overflow: auto">
+      <app-seating-plan-editor
+        [sectors]="sectors"
+        (clickElement)="handleChosenElement($event)"
+      ></app-seating-plan-editor>
+    </div>
   </div>
-  <div class="border border-dark border-2" style="height: 90vh; max-width: 80%; overflow: auto;">
-    <app-seating-plan-editor
-      [sectors]="sectors"
-      (clickElement)="handleChosenElement($event)"
-    ></app-seating-plan-editor>
-  </div>
+</div>
+<div class="d-flex" style="width: 100%;">
+  <button class="btn btn-secondary mr-0" (click)="previousPage()" *ngIf="page>1">Previous Page</button>
+  <button class="btn btn-success mr-0 ms-auto" (click)="nextPage()" *ngIf="page<2">Next Page</button>
+  <button class="btn btn-success mr-0 ms-auto" (click)="finish()" *ngIf="page==2">Finish</button>
 </div>

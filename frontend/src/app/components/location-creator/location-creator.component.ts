@@ -82,6 +82,12 @@ export class LocationCreatorComponent implements OnInit {
   nextPage() {
     this.page++;
   }
+  previousPage() {
+    this.page--;
+  }
+  finish(){
+
+  }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
