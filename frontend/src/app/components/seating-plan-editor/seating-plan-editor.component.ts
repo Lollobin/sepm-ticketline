@@ -46,6 +46,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     this.seatingPlan = generateFromSectorBuilder(sectors);
     if (this.pixiApplication) {
       this.initializeSeatingPlan();
+      this.syncModelWithGraphics();
     }
   }
 
@@ -66,9 +67,12 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       const seatCover = this.pixiApplication.stage.getChildByName(`${key}_cover`) as
         | Graphics
         | undefined;
-      if (seatGraphics) {this.selectedElements[key] = { seatGraphics, seatCover };
-    seatCover.visible = true}
-      else{ delete this.selectedElements[key];}
+      if (seatGraphics) {
+        this.selectedElements[key] = { seatGraphics, seatCover };
+        seatCover.visible = true;
+      } else {
+        delete this.selectedElements[key];
+      }
     });
   }
   changeLocation(graphics: Graphics, location: Location) {
@@ -77,15 +81,38 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     graphics.height = location.h;
   }
   syncModelWithGraphics() {
-    this.seatingPlan.seats.forEach((element) =>
-      this.syncElement(element as Seat & { location: Location }, generateSeatId(element.id))
-    );
-    this.seatingPlan.sectors.forEach((element) =>
-      this.syncElement(element as SectorWithLocation, generateStandingAreaId(element.id))
-    );
-    this.seatingPlan.staticElements.forEach((element) =>
-      this.syncElement(element, generateStaticAreaId(element.id))
-    );
+    const getLargerX = (element: { location: Location }, largestX: number) =>
+      largestX < element.location.x + element.location.w
+        ? element.location.x + element.location.w
+        : largestX;
+    const getLargerY = (element: { location: Location }, largestY: number) =>
+      largestY < element.location.y + element.location.h
+        ? element.location.y + element.location.h
+        : largestY;
+    let largestX = 0;
+    let largestY = 0;
+    this.seatingPlan.seats.forEach((element: Seat) => {
+      if (!element.location) return;
+      element.location = this.syncElement(
+        element as { location: Location },
+        generateSeatId(element.id)
+      );
+      largestX = getLargerX(element as { location: Location }, largestX);
+      largestY = getLargerY(element as { location: Location }, largestY);
+    });
+    this.seatingPlan.sectors.forEach((element: SectorWithLocation) => {
+      if (!element.location) return;
+      element.location = this.syncElement(element, generateStandingAreaId(element.id));
+      largestX = getLargerX(element as { location: Location }, largestX);
+      largestY = getLargerY(element as { location: Location }, largestY);
+    });
+    this.seatingPlan.staticElements.forEach((element) => {
+      element.location = this.syncElement(element, generateStaticAreaId(element.id));
+      largestX = getLargerX(element as { location: Location }, largestX);
+      largestY = getLargerY(element as { location: Location }, largestY);
+    });
+    this.seatingPlan.general.width = largestX;
+    this.seatingPlan.general.height = largestY;
     this.initializeSeatingPlan();
   }
   syncElement<T extends { location: Location }>(element: T, id: string) {
@@ -93,7 +120,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     if (!graphics) {
       return;
     }
-    element.location = this.parseRectangleToLocation(graphics.getBounds());
+    return this.parseRectangleToLocation(graphics.getBounds());
   }
   parseRectangleToLocation(bounds: Rectangle): Location {
     return {
@@ -130,6 +157,23 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     });
     this.setPosition(graphics, newPosition.x, newPosition.y);
     this.setPosition(cover, newPosition.x, newPosition.y);
+
+    this.pixiApplication.renderer.resize(
+      this.pixiApplication.view.width < newPosition.x + graphics.width
+        ? newPosition.x + graphics.width
+        : this.pixiApplication.view.width,
+      this.pixiApplication.view.height < newPosition.y + graphics.height
+        ? newPosition.y + graphics.height
+        : this.pixiApplication.view.height
+    );
+    this.seatingPlan.general.height =
+      this.pixiApplication.view.height < newPosition.y + graphics.height
+        ? newPosition.y + graphics.height
+        : this.pixiApplication.view.height;
+    this.seatingPlan.general.width =
+      this.pixiApplication.view.width < newPosition.x + graphics.width
+        ? newPosition.x + graphics.width
+        : this.pixiApplication.view.width;
   }
 
   setPosition(graphics: Graphics | undefined, x: number, y: number) {
@@ -270,6 +314,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     });
     if (this.seatingPlan) {
       this.initializeSeatingPlan();
+      this.syncModelWithGraphics();
     }
   }
 }
