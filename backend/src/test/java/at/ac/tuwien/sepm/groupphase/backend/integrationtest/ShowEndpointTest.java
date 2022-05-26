@@ -36,7 +36,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -56,9 +55,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -220,12 +217,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -269,12 +264,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -340,9 +333,12 @@ class ShowEndpointTest {
         assertThat(sectorPriceRepository.findAll().get(0).getPrice()).isEqualTo("100.00");
 
         assertThat(ticketRepository.findAll()).hasSize(3);
-        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(seat1.getSeatId());
-        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(seat2.getSeatId());
-        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(seat3.getSeatId());
+        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(
+            seat1.getSeatId());
+        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(
+            seat2.getSeatId());
+        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(
+            seat3.getSeatId());
     }
 
 
