@@ -1,10 +1,11 @@
-import { HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice, ShowWithoutId } from 'src/app/generated-sources/openapi';
+import { EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice, 
+  ShowWithoutId, LocationsService, LocationSearch, Location } from 'src/app/generated-sources/openapi';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
+import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-create-show',
@@ -37,9 +38,12 @@ export class CreateShowComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
   sectorString = "sector";
   gotFromSeatingPlan: number;
+  locationSearchDto: LocationSearch = {};
+  seatingPlans = [];
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
-    private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService) { }
+    private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
+    private locationsService: LocationsService) { }
 
   get date() {
     return this.showForm.get("date");
@@ -57,12 +61,21 @@ export class CreateShowComponent implements OnInit {
     return this.showForm.valid && this.sectorForm.valid;
   }
 
+  get locationValid() {
+    return this.showForm.get("location") && this.showForm.get("location").value.locationId;
+  }
+
+  get seatingPlan() {
+    return this.showForm.get("seatingPlan");
+  }
+
   ngOnInit(): void {
     this.showForm = this.formBuilder.group({
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
       event: [],
-      seatingPlan: [''],
+      location: ['', [Validators.required]],
+      seatingPlan: ['', [Validators.required]],
       sectorPrices: []
     });
     this.route.params.subscribe(params => {
@@ -72,11 +85,14 @@ export class CreateShowComponent implements OnInit {
       this.getDetails(this.eventId);
     });
     this.role = this.authService.getUserRole();
-
+    this.showForm.get('location').valueChanges.subscribe(val => {
+      if (val && val.locationId){
+        this.getSeatingPlansOfLocation(val.locationId);
+      }
+    });
     this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
-      console.log(val);
-      if (val !== ""){
-        this.getSectorsOfSeatingPlan(val);
+      if (val && val.seatingPlanId){
+        this.getSectorsOfSeatingPlan(val.seatingPlanId);
       }
     });
   }
@@ -187,5 +203,45 @@ export class CreateShowComponent implements OnInit {
         }
       }
     });
+  }
+
+  getSeatingPlansOfLocation(id: number) {
+    if (id === null) {
+      return;
+    }
+    this.locationsService.locationsIdSeatingPlansGet(id).subscribe({
+      next: data => {
+        console.log("Succesfully got seating plans of location with id", id);
+        this.seatingPlans = data;
+        this.error = false;
+      },
+      error: error => {
+        console.log("Error getting seating plans of location with id", id);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }
+    });
+  }
+
+  locationSearch = (text$: Observable<string>) => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((search: string) => this.locationsService.locationsGet(this.getLocationSearch(search)).pipe(
+      map(locationResult => locationResult.locations)
+      )
+    )
+  )
+
+  getLocationSearch(search: string) {
+    this.locationSearchDto.name = search;
+    return this.locationSearchDto;
+  }
+
+  locationFormatter(location: Location) {
+    return location.name;
   }
 }

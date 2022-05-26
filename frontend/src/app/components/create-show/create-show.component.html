@@ -66,11 +66,24 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <small for="inputLocation" class="form-label text-muted">Location Name</small>
+                <input class="form-control" type="text" formControlName="location" [ngbTypeahead]="locationSearch"
+                    #instance="ngbTypeahead" [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter" 
+                    [class.is-invalid]="!this.locationValid" [class.is-valid]="this.locationValid"/>
+                <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
+                    <div *ngIf="this.time.errors.required">Location is required!</div>
+                </div>
             </div>
             <div class="form-group col-md-6">
                 <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
-                <input class="form-control form-override" type="seatingPlan" formControlName="seatingPlan"
-                    [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
+                <select *ngIf="!this.locationValid" class="form-control form-override" style="background-position: 92%" disabled></select>
+                <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
+                    <div>Please select a location first!</div>
+                </div>
+                <select *ngIf="this.locationValid" id="inputSeatingPlan" class="form-control form-override" [class.is-invalid]="!this.seatingPlan.valid"
+                    [class.is-valid]="this.seatingPlan.valid" formControlName="seatingPlan" style="background-position: 92%">
+                    <option hidden="true">Pick one</option>
+                    <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}</option>
+                </select>
             </div>
         </div>
         <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
@@ -80,7 +93,7 @@
         <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>
             <div class="container">
-                <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan">
+                <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan.seatingPlanId">
                     <small class="col-md-3 form-label text-muted input-icon input-icon-right"
                         *ngFor="let field of sectors; let i = index">
                         Sector {{i + 1}}
@@ -113,7 +126,7 @@
             <small for="inputArtists" class="form-label text-muted">Artists</small>
         </div>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
-            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan">Submit</button>
+            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Submit</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>

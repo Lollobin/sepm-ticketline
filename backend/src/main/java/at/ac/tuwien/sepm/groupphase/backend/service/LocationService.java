@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface LocationService {
@@ -22,5 +24,7 @@ public interface LocationService {
      * @return Dto with list of locations and page information
      */
     LocationSearchResultDto findAll(Pageable pageable);
+
+    List<SeatingPlanDto> findSeatingPlans(Long id);
 
 }
