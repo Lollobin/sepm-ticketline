@@ -61,6 +61,15 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     this.addDragAndDrop(this.pixiApplication.stage, this.seatingPlan);
+    forEach(this.selectedElements, (selectedElement, key) => {
+      const seatGraphics = this.pixiApplication.stage.getChildByName(key) as Graphics | undefined;
+      const seatCover = this.pixiApplication.stage.getChildByName(`${key}_cover`) as
+        | Graphics
+        | undefined;
+      if (seatGraphics) {this.selectedElements[key] = { seatGraphics, seatCover };
+    seatCover.visible = true}
+      else{ delete this.selectedElements[key];}
+    });
   }
   changeLocation(graphics: Graphics, location: Location) {
     graphics.setTransform(location.x, location.y);
@@ -116,8 +125,8 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       const yPositionDifference = seatGraphics.y - graphics.y;
       const newX = newPosition.x + xPositionDifference;
       const newY = newPosition.y + yPositionDifference;
-      this.setPosition(graphics, newX, newY);
-      this.setPosition(cover, newX, newY);
+      this.setPosition(seatGraphics, newX, newY);
+      this.setPosition(seatCover, newX, newY);
     });
     this.setPosition(graphics, newPosition.x, newPosition.y);
     this.setPosition(cover, newPosition.x, newPosition.y);
@@ -203,7 +212,7 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       .on("pointerdown", () => this.onDragStart(graphics))
       .on("pointerup", () => this.onDragEnd(graphics))
       .on("pointerupoutside", () => this.onDragEnd(graphics))
-      .on("pointermove", pointermoveCallback);
+      .on("pointermove", (event) => pointermoveCallback(event));
   }
   addSeatDragAndDrop(stage: Container, seat: Seat) {
     const seatGraphics = stage.getChildByName(generateSeatId(seat.id));
