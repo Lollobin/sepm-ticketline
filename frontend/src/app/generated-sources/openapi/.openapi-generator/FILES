@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 README.md
 api.module.ts
 api/api.ts
@@ -35,6 +36,8 @@ model/locationSearchResult.ts
 model/locationWithoutId.ts
 model/models.ts
 model/order.ts
+model/provisionalSector.ts
+model/seat.ts
 model/seatWithBookingStatus.ts
 model/seatingPlan.ts
 model/seatingPlanWithoutId.ts

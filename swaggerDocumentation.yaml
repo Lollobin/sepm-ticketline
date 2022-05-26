@@ -470,7 +470,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/EventSearchResult"
+                $ref: "#/components/schemas/EventSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /events/{id}:
@@ -562,7 +562,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/ShowSearchResult"
+                $ref: "#/components/schemas/ShowSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /shows/{id}:
@@ -680,7 +680,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/LocationSearchResult"
+                $ref: "#/components/schemas/LocationSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}:
@@ -743,7 +743,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/ArtistsSearchResult"
+                $ref: "#/components/schemas/ArtistsSearchResult"
         500:
           $ref: "#/components/responses/500-internal-error"
   /artists/{id}:
@@ -1391,13 +1391,25 @@ components:
         name:
           type: string
         seatingPlanLayoutId:
-          type: number
+          type: integer
+          format: int64
         locationId:
           type: integer
+          format: int64
+        sectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProvisionalSector"
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/Seat"
       required:
         - name
         - seatingPlanLayoutId
         - locationId
+        - sectors
+        - seats
     SeatingPlan:
       type: object
       properties:
@@ -1435,6 +1447,24 @@ components:
       required:
         - ticketId
         - sector
+    Seat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        rowNumber:
+          type: integer
+          format: int64
+        seatNumber:
+          type: integer
+          format: int64
+        sector:
+          type: integer
+          format: int64
+      required:
+        - id
+        - sector
     SeatWithBookingStatus:
       type: object
       properties:
@@ -1459,6 +1489,14 @@ components:
         - reserved
         - purchased
         - sector
+    ProvisionalSector:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      required:
+        - id
     Sector:
       type: object
       properties:
@@ -1522,7 +1560,7 @@ components:
           type: integer
         artist:
           type: integer
-        
+
     TopShowSearch:
       type: object
       properties:
@@ -1705,7 +1743,7 @@ components:
         sectorId:
           type: integer
           format: int64
-        price: 
+        price:
           type: number
           format: float
       required:
