@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>at.ac.tuwien.sepm.groupphase</groupId>
@@ -104,6 +105,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- data generation -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
 
@@ -211,7 +218,8 @@
                 <configuration>
                     <useNativeGit>true</useNativeGit>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
                     <verbose>true</verbose>
                 </configuration>
             </plugin>
@@ -237,9 +245,13 @@
                             <enablePostProcessFile>true</enablePostProcessFile>
                             <configOptions>
                                 <basePackage>at.ac.tuwien.sepm.groupphase.backend</basePackage>
-                                <modelPackage>at.ac.tuwien.sepm.groupphase.backend.endpoint.dto</modelPackage>
-                                <apiPackage>at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces</apiPackage>
-                                <configPackage>at.ac.tuwien.sepm.groupphase.backend.config</configPackage>
+                                <modelPackage>at.ac.tuwien.sepm.groupphase.backend.endpoint.dto
+                                </modelPackage>
+                                <apiPackage>
+                                    at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces
+                                </apiPackage>
+                                <configPackage>at.ac.tuwien.sepm.groupphase.backend.config
+                                </configPackage>
                                 <dateLibrary>java8</dateLibrary>
                                 <interfaceOnly>true</interfaceOnly>
                                 <openApiNullable>false</openApiNullable>

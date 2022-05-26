@@ -12,17 +12,18 @@ import javax.persistence.MapsId;
 
 @Entity
 public class SectorPrice {
+
     @EmbeddedId
     SectorPriceId id = new SectorPriceId();
 
     @ManyToOne
     @MapsId("sectorId")
-    @JoinColumn(name = "sectorId")
+    @JoinColumn(name = "sector_id")
     private Sector sector;
 
     @ManyToOne
     @MapsId("showId")
-    @JoinColumn(name = "showId")
+    @JoinColumn(name = "show_id")
     private Show show;
 
     @Column(nullable = false)
