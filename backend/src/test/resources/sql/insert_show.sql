@@ -6,8 +6,8 @@ commit;
 
 
 insert into SHOW
-values (-1, current_timestamp(0) - interval '3' DAY, -1),
-       (-2, current_timestamp(0) - interval '6' MONTH - interval '30' MINUTE, -3);
+values (-1, parsedatetime('2022-08-15 14:30', 'yyyy-MM-dd HH:mm'), -1),
+       (-2, parsedatetime('2022-05-25 18:45', 'yyyy-MM-dd HH:mm'), -3);
 
 select *
 from SHOW
