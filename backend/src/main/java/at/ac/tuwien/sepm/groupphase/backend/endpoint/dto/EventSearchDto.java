@@ -47,7 +47,7 @@ public class EventSearchDto   {
    * Get name
    * @return name
   */
-
+  
   @Schema(name = "name", required = false)
   public String getName() {
     return name;
@@ -66,7 +66,7 @@ public class EventSearchDto   {
    * Get content
    * @return content
   */
-
+  
   @Schema(name = "content", required = false)
   public String getContent() {
     return content;
@@ -85,7 +85,7 @@ public class EventSearchDto   {
    * Get category
    * @return category
   */
-
+  
   @Schema(name = "category", required = false)
   public String getCategory() {
     return category;
@@ -104,7 +104,7 @@ public class EventSearchDto   {
    * Get duration
    * @return duration
   */
-
+  
   @Schema(name = "duration", required = false)
   public Integer getDuration() {
     return duration;
@@ -123,7 +123,7 @@ public class EventSearchDto   {
    * Get location
    * @return location
   */
-
+  
   @Schema(name = "location", required = false)
   public Integer getLocation() {
     return location;
@@ -142,7 +142,7 @@ public class EventSearchDto   {
    * Get artist
    * @return artist
   */
-
+  
   @Schema(name = "artist", required = false)
   public Integer getArtist() {
     return artist;
@@ -171,7 +171,7 @@ public class EventSearchDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, category, duration);
+    return Objects.hash(name, content, category, duration, location, artist);
   }
 
   @Override
