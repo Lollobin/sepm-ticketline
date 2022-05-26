@@ -45,8 +45,7 @@ public class Artist {
             && Objects.equals(bandName, artist.bandName)
             && Objects.equals(knownAs, artist.knownAs)
             && Objects.equals(firstName, artist.firstName)
-            && Objects.equals(lastName, artist.lastName)
-            && Objects.equals(shows, artist.shows);
+            && Objects.equals(lastName, artist.lastName);
     }
 
     @Override

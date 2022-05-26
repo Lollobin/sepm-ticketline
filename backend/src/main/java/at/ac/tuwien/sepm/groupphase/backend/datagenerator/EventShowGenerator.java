@@ -51,15 +51,26 @@ public class EventShowGenerator {
             LOGGER.trace("saving event {}", event);
             eventRepository.save(event);
 
-            // TODO: add possibility to have multiple artists
             int numberOfArtists = artistRepository.findAll().size();
-            Artist randomArtist = artistRepository.getByArtistId(
+            Artist mainArtist = artistRepository.getByArtistId(
                 (long) faker.number().numberBetween(1, numberOfArtists));
-            Set<Artist> artists = new HashSet<>();
-            artists.add(randomArtist);
 
             int numberOfShows = faker.number().numberBetween(1, maxShowsPerEvent);
             for (int j = 0; j < numberOfShows; j++) {
+
+                Set<Artist> artists = new HashSet<>();
+                artists.add(mainArtist);
+
+                double random = faker.number().randomDouble(3, 0, 1);
+                if (random < 0.3) {
+                    int numberOfAdditionalArtists = faker.number().numberBetween(1, 3);
+                    for (int k = 0; k < numberOfAdditionalArtists; k++) {
+                        Artist additionalArtist = artistRepository.getByArtistId(
+                            (long) faker.number().numberBetween(1, numberOfArtists));
+                        artists.add(additionalArtist);
+                    }
+                }
+
                 Show show = generateShow(event, artists);
                 LOGGER.trace("saving show {}", show);
                 showRepository.save(show);
