@@ -154,25 +154,29 @@
   <div *ngIf="page === 1">
     <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
       <ngb-panel *ngFor="let sector of sectors; index as index">
-        <ng-template ngbPanelTitle>
+        <ng-template ngbPanelTitle class="d-flex">
+          <button class="btn-danger btn col-auto mx-1" (click)="removeSector(index)">
+            Remove
+          </button>
           <div style="color: {{ sector.color }}">
             <span *ngIf="sector.standingSector">Standing&nbsp;</span>
             <span>Sector {{ index }}</span>
-            <span *ngIf="sector.description">: {{ sector.description }}</span>
           </div>
         </ng-template>
         <ng-template ngbPanelContent>
           <div class="form-margin">
-            <input type="text" class="form-control col" [(ngModel)]="sector.description" />
             <div class="form-group d-flex">
+              <span class="input-group-text">Sector color</span>
               <input type="color" class="form-control" [(ngModel)]="sector.color" />
             </div>
             <div class="d-flex">
               <span class="input-group-text">Number of seats</span>
               <input type="number" class="form-control" [(ngModel)]="sector.seatCount" />
             </div>
-            <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
-            <button class="btn-danger col-auto" (click)="removeSector(index)">Remove sector</button>
+              <div>
+                <input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector
+              </div>
+
           </div>
         </ng-template>
       </ngb-panel>

@@ -53,32 +53,6 @@ export class LocationCreatorComponent implements OnInit {
 
   ngOnInit(): void {
     this.page = 0;
-    this.sectors.push(
-      {
-        color: "#0000AA",
-        standingSector: true,
-        description: "",
-        seatCount: 15,
-      },
-      {
-        color: "#AAAA00",
-        standingSector: true,
-        description: "",
-        seatCount: 80,
-      },
-      {
-        color: "#00AA00",
-        standingSector: false,
-        description: "",
-        seatCount: 100,
-      },
-      {
-        color: "#AA0000",
-        standingSector: false,
-        description: "",
-        seatCount: 100,
-      }
-    );
   }
   removeSector(index: number) {
     this.sectors.splice(index, 1);
