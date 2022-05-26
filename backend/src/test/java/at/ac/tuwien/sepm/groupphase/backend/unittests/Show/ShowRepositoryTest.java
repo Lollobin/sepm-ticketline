@@ -25,6 +25,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW3_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
@@ -241,10 +242,8 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({
-
-        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
@@ -265,10 +264,8 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({
-
-        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
@@ -289,14 +286,12 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({
-
-        @Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithPrice_shouldFindShowWithPriceLowerThan() {
 
         BigDecimal price = BigDecimal.valueOf(53.00);
@@ -315,12 +310,12 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithDateAndPrice_shouldBeEmpty() {
 
         ZoneId zone = ZoneId.of("Europe/Berlin");
@@ -338,12 +333,12 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithSeatingPlanAndPrice_shouldReturnOneShow() {
 
         Long seatingPlan = -1L;
@@ -360,12 +355,12 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithAllParams_shouldReturnOneShow() {
 
         ZoneId zone = ZoneId.of("Europe/Berlin");
@@ -390,12 +385,12 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithMinimalWrongPrice_shouldBeEmpty() {
 
         ZoneId zone = ZoneId.of("Europe/Berlin");
@@ -417,12 +412,12 @@ class ShowRepositoryTest {
 
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
-        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+        @Sql("classpath:/sql/insert_sectorPrice.sql")})
     void searchWithAllParamsButWrongSeatingPlan_shouldBeEmpty() {
 
         ZoneId zone = ZoneId.of("Europe/Berlin");
@@ -443,8 +438,8 @@ class ShowRepositoryTest {
     }
 
     @Test
-    @SqlGroup({@Sql("classpath:/sql/delete.sql"), @Sql("classpath:/sql/insert_address.sql"),
-        @Sql("classpath:/sql/insert_location.sql"),
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
         @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
