@@ -4,6 +4,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import java.util.List;
 
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+
 public interface ShowService {
 
     /**
@@ -13,9 +16,9 @@ public interface ShowService {
      * @param seatingPlanId that is associated with the show
      * @param sectorPriceDtos List of sectorPriceDtos that are associated with the seatingPlan
      * @return entity show object that was saved with new id
-     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException if the seatingPlan,
+     * @throws NotFoundException if the seatingPlan,
      *     the event, the artists or the seats of the seatingPlan are not present in the database
-     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException if the sectorPrices
+     * @throws ConflictException if the sectorPrices
      *     don't correlate with the sectors in the database
      */
     Show createShow(Show show, Long seatingPlanId, List<SectorPriceDto> sectorPriceDtos);
