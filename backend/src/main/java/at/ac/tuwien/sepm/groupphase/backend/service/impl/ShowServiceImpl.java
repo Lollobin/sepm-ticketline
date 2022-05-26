@@ -94,6 +94,7 @@ public class ShowServiceImpl implements ShowService {
     }
 
     private ShowSearchResultDto setShowSearchResultDto(Page<Show> showPage) {
+        LOGGER.trace("setting ShowSearchResultDto");
         ShowSearchResultDto searchResultDto = new ShowSearchResultDto();
 
         searchResultDto.setShows(

@@ -13,6 +13,19 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 
     Show getByShowId(long showId);
 
+    /**
+     * Searches for shows according to the parameters. The search is case-insensitive. The params
+     * are connected with the AND operator.
+     *
+     * @param dateTime    check if the date (date + hours + minutes) is equal to the ones stored
+     * @param hour        hours of the date to check for
+     * @param minutes     minutes of the date to check for
+     * @param eventName   name of the event to search for if the stored entries contain it
+     * @param price       searches for shows with a price <= stored price
+     * @param seatingPlan id of the seating plan to search for
+     * @param pageable    contains information about the page
+     * @return page of shows
+     */
     @Query(
         "select distinct s from Show s join SectorPrice sp on sp.show.showId = s.showId join Sector"
             + " sec on sec.sectorId = sp.sector.sectorId join SeatingPlan seatP on seatP.seatingPlanId = sec.seatingPlan.seatingPlanId where ((:name is null) or (upper(s.event.name) like upper(concat('%', :name, '%')))) and "
