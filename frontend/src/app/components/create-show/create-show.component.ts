@@ -62,7 +62,7 @@ export class CreateShowComponent implements OnInit {
   }
 
   get locationValid() {
-    return this.showForm.get("location") && this.showForm.get("location").value.locationId;
+    return this.showForm.get("location").valid && this.showForm.get("location").value.locationId;
   }
 
   get seatingPlan() {
@@ -133,7 +133,7 @@ export class CreateShowComponent implements OnInit {
       this.showWithoutId.sectorPrices[i].sectorId = this.sectors[i].sectorId;
     }
     this.showWithoutId.artists = this.showForm.value.artists;
-    this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan;
+    this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan.seatingPlanId;
     console.log("POST http://localhost:8080/shows " + JSON.stringify(this.showWithoutId));
     this.showService.showsPost(this.showWithoutId, 'response').subscribe({
       next: data => {
