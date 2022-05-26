@@ -70,7 +70,7 @@
             <div class="form-group col-md-6">
                 <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
                 <input class="form-control form-override" type="seatingPlan" formControlName="seatingPlan"
-                    [class.is-invalid]="!this.time.valid" [class.is-valid]="this.time.valid">
+                    [class.is-invalid]="!this.showForm.value.seatingPlan" [class.is-valid]="this.showForm.value.seatingPlan">
             </div>
         </div>
         <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
@@ -81,14 +81,14 @@
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>
             <div class="container">
                 <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan">
-                    <small class="col-md-3 form-label text-muted input-icon input-icon-right"
+                    <small class="col-md-3 form-label text-muted input-icon input-icon-right" style="padding: 1px; width: 129px;"
                         *ngFor="let field of sectors; let i = index">
                         Sector {{i + 1}}
                         <div class="input-group">
-                            <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
+                            <div class="input-group-addon" style="padding-left: 5px; padding-top: 5px; font-size: 20px">€</div>
                             <input [class.is-valid]="this.sectorForm.valid" [class.is-invalid]="!this.sectorForm.valid"
                                 [formControlName]="'sector'+field.sectorId" class="form-control currency"
-                                style="text-align: right" name="currency" type="number" min="0.01" />
+                                style="text-align: right; margin: 5px;" name="currency" type="number" min="0.01" />
                         </div>
                     </small>
                     <div *ngIf="!this.sectorForm.valid && this.showForm.value.seatingPlan" class="invalid-feedback"
@@ -109,9 +109,34 @@
                 </div> -->
             </div>
         </div>
-        <div class="form-group">
-            <small for="inputArtists" class="form-label text-muted">Artists</small>
+        <div class="form-group" [formGroup]="artistForm">
+            <div>
+                <div>
+                    <small for="inputArtists" class="form-label text-muted">Artists</small>
+                    <div class="row">
+                        <div class="col-9">
+                            <input class="form-control" style="width: 105%" type="text" formControlName="artist"
+                                [ngbTypeahead]="artistSearch" #instance="ngbTypeahead"
+                                [resultFormatter]="artistResultFormatter" [inputFormatter]="artistInputFormatter" />
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-secondary form-group" style="width: 100%" (click)="addArtist()"
+                                [disabled]="!this.artistFormValid">Add to show</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <table class="table table-hover" *ngIf="this.artists.length > 0">
+            <tbody>
+                <tr *ngFor="let artist of artists">
+                    <td>{{artist.firstName}}</td>
+                    <td>{{artist.lastName}}</td>
+                    <td>{{artist.knownAs}}</td>
+                    <td>{{artist.bandName}}</td>
+                </tr>
+            </tbody>
+        </table>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
             [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan">Submit</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
