@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -29,7 +30,7 @@ public class Show {
 
     @ManyToMany
     @Fetch(FetchMode.JOIN)
-    @Cascade({ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DELETE })
+    @Cascade({CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name = "PlaysIn", joinColumns = @JoinColumn(name = "showId"), inverseJoinColumns = @JoinColumn(name = "artistId"))
     private Set<Artist> artists;
 
@@ -38,6 +39,9 @@ public class Show {
     @Cascade(CascadeType.MERGE)
     @JoinColumn(name = "eventId", referencedColumnName = "eventId", nullable = false)
     private Event event;
+
+    @OneToMany(mappedBy = "show")
+    private Set<SectorPrice> sectorPrices;
 
     @Override
     public String toString() {
@@ -54,7 +58,8 @@ public class Show {
             return false;
         }
         Show show = (Show) o;
-        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date) && Objects.equals(artists,
+        return Objects.equals(showId, show.showId) && Objects.equals(date, show.date)
+            && Objects.equals(artists,
             show.artists) && Objects.equals(event, show.event);
     }
 
@@ -93,5 +98,14 @@ public class Show {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public Set<SectorPrice> getSectorPrices() {
+        return sectorPrices;
+    }
+
+    public void setSectorPrices(
+        Set<SectorPrice> sectorPrices) {
+        this.sectorPrices = sectorPrices;
     }
 }

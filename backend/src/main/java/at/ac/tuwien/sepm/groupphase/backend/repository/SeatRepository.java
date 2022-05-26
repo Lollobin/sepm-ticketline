@@ -20,4 +20,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     public List<Ticket> findByShowId();
 
     public Optional<List<Seat>> findBySector(@Param("sectorId") Sector sectorId);
+
+    List<Seat> findBySectorSectorId(Long sectorId);
 }

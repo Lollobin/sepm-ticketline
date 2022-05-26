@@ -19,6 +19,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         + " WHERE s.show_id = (:showId)", nativeQuery = true)
     public List<Ticket> findByShowId(@Param("showId") Long showId);
 
+    Ticket getByTicketId(Long ticketId);
+
+    List<Ticket> getByShowShowIdAndPurchasedByIsNullAndReservedByIsNull(Long showId);
+
     /**
      * Returns all tickets that are currently reserved or purchased by the user with the given
      * email. Only returns tickets for shows after the given date.

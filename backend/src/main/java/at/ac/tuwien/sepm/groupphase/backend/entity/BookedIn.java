@@ -17,7 +17,7 @@ import javax.persistence.MapsId;
 public class BookedIn {
 
     @EmbeddedId
-    BookedInKey id = new BookedInKey();
+    private BookedInKey id = new BookedInKey();
 
     @ManyToOne
     @MapsId("transactionId")
