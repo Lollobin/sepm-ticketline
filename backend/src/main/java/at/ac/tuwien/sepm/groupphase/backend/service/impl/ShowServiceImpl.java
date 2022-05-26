@@ -79,7 +79,14 @@ public class ShowServiceImpl implements ShowService {
 
         LOGGER.trace("Find all shows with pageable: {}", pageable);
 
-        Page<Show> showPage = showRepository.search(showSearchDto.getDate(),
+        Integer hours = null;
+        Integer minutes = null;
+        if (showSearchDto.getDate() != null) {
+            hours = showSearchDto.getDate().getHour();
+            minutes = showSearchDto.getDate().getMinute();
+        }
+
+        Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
             showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
             pageable);
 

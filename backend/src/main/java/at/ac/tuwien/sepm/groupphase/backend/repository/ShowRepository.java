@@ -13,12 +13,14 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
 
     Show getByShowId(long showId);
 
-    @Query("select distinct s from Show s join SectorPrice sp on sp.show.showId = s.showId join Sector"
-        + " sec on sec.sectorId = sp.sector.sectorId join SeatingPlan seatP on seatP.seatingPlanId = sec.seatingPlan.seatingPlanId where ((:name is null) or (upper(s.event.name) like upper(concat('%', :name, '%')))) and "
-        + "((:date is null) or (s.date = :date)) and "
-        + "((:price is null) or (sp.price <= :price)) and "
-        + "((:seating is null) or (seatP.seatingPlanId = :seating))")
-    Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("name") String eventName,
+    @Query(
+        "select distinct s from Show s join SectorPrice sp on sp.show.showId = s.showId join Sector"
+            + " sec on sec.sectorId = sp.sector.sectorId join SeatingPlan seatP on seatP.seatingPlanId = sec.seatingPlan.seatingPlanId where ((:name is null) or (upper(s.event.name) like upper(concat('%', :name, '%')))) and "
+            + "((:date is null) or ((function('HOUR', s.date) = :hour) and function('MINUTE', s.date) = :minute and year(s.date) = year(:date) and month(s.date) = month (:date) and day(s.date) = day(:date))) and"
+            + "((:price is null) or (sp.price <= :price)) and "
+            + "((:seating is null) or (seatP.seatingPlanId = :seating))")
+    Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("hour") Integer hour,
+        @Param("minute") Integer minutes, @Param("name") String eventName,
         @Param("price") BigDecimal price, @Param("seating") Integer seatingPlan, Pageable pageable);
 
 
