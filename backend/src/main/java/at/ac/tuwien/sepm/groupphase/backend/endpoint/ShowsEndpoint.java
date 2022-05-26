@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -70,6 +71,8 @@ public class ShowsEndpoint implements ShowsApi {
                 ));
         } catch (NotFoundException e) {
             throw new ConflictException(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(e.getMessage());
         }
 
         URI location = ServletUriComponentsBuilder

@@ -39,6 +39,9 @@ public class Ticket {
     @JoinColumn(name = "showId", referencedColumnName = "showId", nullable = false)
     private Show show;
 
+    @OneToMany(mappedBy = "ticket")
+    private Set<BookedIn> bookedIns;
+
     @Override
     public String toString() {
         return "Ticket{"
@@ -77,8 +80,6 @@ public class Ticket {
         return Objects.hash(ticketId, reservedBy, purchasedBy, seat, show, bookedIns);
     }
 
-    @OneToMany(mappedBy = "ticket")
-    private Set<BookedIn> bookedIns;
 
     public Long getTicketId() {
         return ticketId;

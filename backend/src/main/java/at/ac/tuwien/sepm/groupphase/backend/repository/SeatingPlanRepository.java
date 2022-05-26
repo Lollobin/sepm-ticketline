@@ -12,4 +12,5 @@ public interface SeatingPlanRepository extends JpaRepository<SeatingPlan, Long> 
 
     Optional<List<SeatingPlan>> findAllByLocation(Location location);
 
+    SeatingPlan getBySeatingPlanId(Long seatinPlanId);
 }

@@ -115,9 +115,34 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <small for="inputArtists" class="form-label text-muted">Artists</small>
+        <div class="form-group" [formGroup]="artistForm">
+            <div>
+                <div>
+                    <small for="inputArtists" class="form-label text-muted">Artists</small>
+                    <div class="row">
+                        <div class="col-9">
+                            <input class="form-control" style="width: 105%" type="text" formControlName="artist"
+                                [ngbTypeahead]="artistSearch" #instance="ngbTypeahead"
+                                [resultFormatter]="artistResultFormatter" [inputFormatter]="artistInputFormatter" />
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-secondary form-group" style="width: 100%" (click)="addArtist()"
+                                [disabled]="!this.artistFormValid">Add to show</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <table class="table table-hover" *ngIf="this.artists.length > 0">
+            <tbody>
+                <tr *ngFor="let artist of artists">
+                    <td>{{artist.firstName}}</td>
+                    <td>{{artist.lastName}}</td>
+                    <td>{{artist.knownAs}}</td>
+                    <td>{{artist.bandName}}</td>
+                </tr>
+            </tbody>
+        </table>
         <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
             [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Submit</button>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
