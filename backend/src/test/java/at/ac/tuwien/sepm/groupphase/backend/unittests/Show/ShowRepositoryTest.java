@@ -1,5 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Show;
 
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_BANDNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_FIRSTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_KNOWNAS;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_LASTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_BANDNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_FIRSTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_KNOWNAS;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_LASTNAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
@@ -18,11 +26,17 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,6 +52,9 @@ class ShowRepositoryTest {
     @Autowired
     private ShowRepository showRepository;
 
+    @Autowired
+    private ArtistRepository artistRepository;
+
     @Test
     void should_CreateNewShow_When_ShowIsValid() {
         Event testEvent = new Event();
@@ -48,25 +65,45 @@ class ShowRepositoryTest {
 
         Event event = eventRepository.save(testEvent);
 
+        Artist testArtist = new Artist();
+        testArtist.setFirstName(ARTIST_FIRSTNAME);
+        testArtist.setLastName(ARTIST_LASTNAME);
+        testArtist.setKnownAs(ARTIST_KNOWNAS);
+        testArtist.setBandName(ARTIST_BANDNAME);
+
+        Artist artist = artistRepository.save(testArtist);
+
+        Artist testArtist2 = new Artist();
+        testArtist.setFirstName(ARTIST2_FIRSTNAME);
+        testArtist.setLastName(ARTIST2_LASTNAME);
+        testArtist.setKnownAs(ARTIST2_KNOWNAS);
+        testArtist.setBandName(ARTIST2_BANDNAME);
+
+        Artist artist2 = artistRepository.save(testArtist2);
+
+        Set<Artist> artists = new HashSet<>();
+        artists.add(artist);
+        artists.add(artist2);
+
         Show show1 = new Show();
 
         show1.setEvent(event);
-        show1.setArtists(null);
+        show1.setArtists(artists);
         show1.setDate(SHOW_DATE);
 
         showRepository.save(show1);
 
         assertNotNull(show1.getShowId());
-        assertThat(show1).hasFieldOrPropertyWithValue("date", SHOW_DATE);
-        assertThat(show1).hasFieldOrPropertyWithValue("artists", null);
-        assertThat(show1).hasFieldOrPropertyWithValue("event", show1.getEvent());
+        assertThat(show1).hasFieldOrPropertyWithValue("date", SHOW_DATE)
+            .hasFieldOrPropertyWithValue("artists", show1.getArtists())
+            .hasFieldOrPropertyWithValue("event", show1.getEvent());
 
         assertThat(show1.getEvent().getEventId()).isEqualTo(event.getEventId());
         assertThat(show1.getDate()).isEqualTo(SHOW_DATE);
-        assertThat(show1.getArtists()).isNull();
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
+        artistRepository.deleteAll();
 
     }
 
@@ -87,6 +124,7 @@ class ShowRepositoryTest {
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
+        artistRepository.deleteAll();
 
     }
 
@@ -100,12 +138,12 @@ class ShowRepositoryTest {
         assertThat(allShows.get(0).getEvent().getName()).isEqualTo(EVENT_NAME);
         assertThat(allShows.get(0).getEvent().getContent()).isEqualTo(EVENT_CONTENT);
         assertThat(allShows.get(0).getDate()).isEqualTo(SHOW_DATE);
-        assertThat(allShows.get(0).getArtists()).isNull();
+        assertThat(allShows.get(0).getArtists()).isNotNull();
 
         assertThat(allShows.get(1).getEvent().getName()).isEqualTo(EVENT2_NAME);
         assertThat(allShows.get(1).getEvent().getContent()).isEqualTo(EVENT2_CONTENT);
         assertThat(allShows.get(1).getDate()).isEqualTo(SHOW2_DATE);
-        assertThat(allShows.get(1).getArtists()).isNull();
+        assertThat(allShows.get(1).getArtists()).isNotNull();
 
         assertThat(allShows.get(2).getEvent().getDuration()).isEqualTo(EVENT3_DURATION);
         assertThat(allShows.get(2).getEvent().getContent()).isEqualTo(EVENT3_CONTENT);
@@ -114,6 +152,7 @@ class ShowRepositoryTest {
 
         showRepository.deleteAll();
         eventRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     private void saveThreeShowsAndEvents() {
@@ -141,10 +180,33 @@ class ShowRepositoryTest {
 
         eventRepository.save(event3);
 
+        Artist testArtist = new Artist();
+        testArtist.setFirstName(ARTIST_FIRSTNAME);
+        testArtist.setLastName(ARTIST_LASTNAME);
+        testArtist.setKnownAs(ARTIST_KNOWNAS);
+        testArtist.setBandName(ARTIST_BANDNAME);
+
+        Artist artist = artistRepository.save(testArtist);
+
+        Artist testArtist2 = new Artist();
+        testArtist.setFirstName(ARTIST2_FIRSTNAME);
+        testArtist.setLastName(ARTIST2_LASTNAME);
+        testArtist.setKnownAs(ARTIST2_KNOWNAS);
+        testArtist.setBandName(ARTIST2_BANDNAME);
+
+        Artist artist2 = artistRepository.save(testArtist2);
+
+        Set<Artist> artists1 = new HashSet<>();
+        artists1.add(artist);
+
+        Set<Artist> artists = new HashSet<>();
+        artists.add(artist);
+        artists.add(artist2);
+
         Show show1 = new Show();
 
         show1.setEvent(event1);
-        show1.setArtists(null);
+        show1.setArtists(artists);
         show1.setDate(SHOW_DATE);
 
         showRepository.save(show1);
@@ -152,7 +214,7 @@ class ShowRepositoryTest {
         Show show2 = new Show();
 
         show2.setEvent(event2);
-        show2.setArtists(null);
+        show2.setArtists(artists1);
         show2.setDate(SHOW2_DATE);
 
         showRepository.save(show2);
