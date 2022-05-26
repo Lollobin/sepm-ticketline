@@ -35,7 +35,7 @@
 
       <td>
         <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary"
-                id="{{'purchaseBtn'+i}}" (click)="openAddModal(purchaseModal, ticket)">Purchase
+                id="{{'purchaseBtn'+i}}" (click)="openPurchaseModal(purchaseModal, ticket)">Purchase
           Tickets
         </button>
       </td>
@@ -64,7 +64,7 @@
       </div>
     </form>
 
-    <div class="text-info mt-3">Any reservations that are not bought will be cancelled.</div>
+    <div class="text-danger mt-3">Any reservations that are not bought will be cancelled.</div>
 
   </div>
   <div class="modal-footer">
@@ -73,7 +73,7 @@
             (click)="modal.dismiss('close')">Close
     </button>
     <button type="button" class="btn btn-primary" id="buy-now-btn"
-            (click)="purchaseTickets()">Buy
+            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy
       Now
     </button>
   </div>
@@ -127,3 +127,5 @@
     </tbody>
   </table>
 </div>
+
+<app-error-alert [(error)]="error"></app-error-alert>

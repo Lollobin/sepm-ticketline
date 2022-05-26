@@ -41,7 +41,9 @@ public interface TicketMapper {
 
             List<Ticket> includedTickets = new ArrayList<>();
             for (Ticket otherTicket : tickets) {
-                if (ticket.getShow().equals(otherTicket.getShow())) {
+                if (ticket.getShow().equals(otherTicket.getShow())
+                    && ticket.getReservedBy() == otherTicket.getReservedBy()
+                    && ticket.getPurchasedBy() == otherTicket.getPurchasedBy()) {
                     includedTickets.add(otherTicket);
                 }
             }
