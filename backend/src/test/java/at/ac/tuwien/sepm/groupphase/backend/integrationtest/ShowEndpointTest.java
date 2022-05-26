@@ -232,12 +232,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -281,12 +279,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -372,9 +368,12 @@ class ShowEndpointTest {
         assertThat(sectorPriceRepository.findAll().get(1).getPrice()).isEqualTo("200.00");
 
         assertThat(ticketRepository.findAll()).hasSize(3);
-        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(seat1.getSeatId());
-        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(seat2.getSeatId());
-        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(seat3.getSeatId());
+        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(
+            seat1.getSeatId());
+        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(
+            seat2.getSeatId());
+        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(
+            seat3.getSeatId());
     }
 
 
