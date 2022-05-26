@@ -10,7 +10,7 @@ import { SeatingPlan, SectorBuilder } from "src/app/shared_modules/seatingPlanGr
 const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlan => {
   const seatingPlan: SeatingPlan = {
     general: {
-      width: 1000,
+      width: 2000,
       height: 1000,
     },
     seats: createSeatsFromBuilder(sectors),
