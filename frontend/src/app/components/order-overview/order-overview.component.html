@@ -9,25 +9,76 @@
       <th scope="col">Ticket Information</th>
       <th scope="col">Event</th>
       <th scope="col">Date</th>
+      <th scope="col">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let ticket of tickets">
+    <tr *ngFor="let ticket of tickets; let i = index">
       <td>
-        1
-        <ng-template [ngIf]="ticket.type === 'purchased'" [ngIfElse]="reservation">Ticket
+        {{ticket.ticket.length}}
+        <ng-template [ngIf]="ticket.type === 'purchased'" [ngIfElse]="reservation">
+          <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleTickets">Ticket
+          </ng-template>
+          <ng-template #multipleTickets>Tickets</ng-template>
         </ng-template>
-        <ng-template #reservation>Reservation</ng-template><br>
-        Sector {{ticket.ticket.sector}}, Row {{ticket.ticket.rowNumber}}, Seat {{ticket.ticket.seatNumber}}
+        <ng-template #reservation>
+          <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleReservations">
+            Reservation
+          </ng-template>
+          <ng-template #multipleReservations>Reservations</ng-template>
+        </ng-template>
+
       </td>
       <td>{{ ticket.artists.join(', ') + " - " + ticket.eventName }} <br>
         {{ ticket.city + ", " + ticket.locationName }}</td>
       <td>{{ ticket.showDate | date }} <br> {{ ticket.showDate | date:'HH:mm' }}</td>
-    </tr>
 
+      <td>
+        <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary"
+                id="{{'purchaseBtn'+i}}" (click)="openAddModal(purchaseModal, ticket)">Purchase
+          Tickets
+        </button>
+      </td>
+    </tr>
     </tbody>
   </table>
 </div>
+
+<ng-template #purchaseModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Purchase tickets for '{{selectedReservation.eventName}}'</h5>
+    <button type="button" class="close" (click)="modal.dismiss('X')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="purchaseForm" (ngSubmit)="purchaseTickets()">
+      <div class="form-check" formArrayName="tickets"
+           *ngFor="let ticket of ticketsFormArray.controls; let i = index">
+        <input class="form-check-input" type="checkbox" [formControlName]="i">
+        <label class="form-check-label">
+          Sector {{this.selectedReservation.ticket[i].sector}},
+          Row {{this.selectedReservation.ticket[i].rowNumber}},
+          Seat {{this.selectedReservation.ticket[i].seatNumber}}
+        </label>
+      </div>
+    </form>
+
+    <div class="text-info mt-3">Any reservations that are not bought will be cancelled.</div>
+
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-secondary" id="close-modal-btn"
+            (click)="modal.dismiss('close')">Close
+    </button>
+    <button type="button" class="btn btn-primary" id="buy-now-btn"
+            (click)="purchaseTickets()">Buy
+      Now
+    </button>
+  </div>
+</ng-template>
+
 
 <div>
   <h2 class="h2 mt-3">Transaction History</h2>
