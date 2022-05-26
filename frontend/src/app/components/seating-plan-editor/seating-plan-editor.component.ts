@@ -237,7 +237,9 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       },
       description: "",
     });
+    this.initializeSeatingPlan();
     this.syncModelWithGraphics();
+
   }
 
   addGenericDragAndDrop(
