@@ -21,7 +21,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
             + "((:seating is null) or (seatP.seatingPlanId = :seating))")
     Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("hour") Integer hour,
         @Param("minute") Integer minutes, @Param("name") String eventName,
-        @Param("price") BigDecimal price, @Param("seating") Integer seatingPlan, Pageable pageable);
+        @Param("price") BigDecimal price, @Param("seating") Long seatingPlan, Pageable pageable);
 
 
 }
