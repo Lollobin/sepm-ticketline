@@ -46,7 +46,7 @@ class EventServiceTest {
 
     @BeforeEach
     void setUp() {
-        eventService = new EventServiceImpl(eventRepository, eventValidator);
+        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
         eventRepository.deleteAll();
     }
 
@@ -121,12 +121,11 @@ class EventServiceTest {
 
         eventToSave.setName(EVENT_INVALID_NAME_LENGTH);
         eventToSave.setDuration(EVENT_DURATION);
-        eventToSave.setCategory(EVENT_INVALID_CATEGORY_LENGTH);
         eventToSave.setContent(EVENT_CONTENT);
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
             () -> eventService.createEvent(eventToSave));
-        Assertions.assertEquals("Name of event is too long & Category contains too many characters",
+        Assertions.assertEquals("Name of event is too long ",
             exception.getMessage());
     }
 }

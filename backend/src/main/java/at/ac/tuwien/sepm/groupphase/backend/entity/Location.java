@@ -15,7 +15,14 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long locationId;
+    private Long locationId;
+
+    public Location() {
+    }
+
+    public Location(Long locationId) {
+        this.locationId = locationId;
+    }
 
     @Column(nullable = false)
     private String name;
@@ -24,7 +31,7 @@ public class Location {
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
-    public long getId() {
+    public Long getId() {
         return locationId;
     }
 
@@ -40,7 +47,7 @@ public class Location {
         this.address = address;
     }
 
-    public void setId(long locationId) {
+    public void setId(Long locationId) {
         this.locationId = locationId;
     }
 
@@ -71,7 +78,7 @@ public class Location {
             return false;
         }
         Location location = (Location) o;
-        return locationId == location.locationId
+        return Objects.equals(locationId, location.locationId)
             && Objects.equals(name, location.name)
             && Objects.equals(address, location.address);
     }

@@ -2,12 +2,20 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LocationMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SeatingPlanMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,16 +29,20 @@ public class LocationServiceImpl implements LocationService {
         MethodHandles.lookup().lookupClass());
 
     private final LocationRepository locationRepository;
+    private final SeatingPlanRepository seatingPlanRepository;
 
     private final SearchValidator searchValidator;
 
     private final LocationMapper locationMapper;
+    private final SeatingPlanMapper seatingPlanMapper;
 
     public LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper,
-        SearchValidator searchValidator) {
+        SearchValidator searchValidator, SeatingPlanRepository seatingPlanRepository, SeatingPlanMapper seatingPlanMapper) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
         this.searchValidator = searchValidator;
+        this.seatingPlanRepository = seatingPlanRepository;
+        this.seatingPlanMapper = seatingPlanMapper;
     }
 
     @Override
@@ -93,6 +105,22 @@ public class LocationServiceImpl implements LocationService {
         Page<Location> locationPage = locationRepository.findAll(pageable);
 
         return setLocationResultSearchDto(locationPage);
+    }
 
+    @Override
+    public List<SeatingPlanDto> findSeatingPlans(Long id) {
+        LOGGER.trace("Getting all seating plans by location id {}", id);
+
+        Optional<Location> location = locationRepository.findById(id);
+        if (location.isEmpty()) {
+            throw new NotFoundException("No location exists with id " + id);
+        }
+
+        Optional<List<SeatingPlan>> seatingPlans = seatingPlanRepository.findAllByLocation(location.get());
+        if (seatingPlans.isEmpty()) {
+            throw new ConflictException("No seating plans exist for location with id " + id);
+        }
+
+        return seatingPlans.get().stream().map(seatingPlanMapper::seatingPlanToSeatingPlanDto).toList();
     }
 }

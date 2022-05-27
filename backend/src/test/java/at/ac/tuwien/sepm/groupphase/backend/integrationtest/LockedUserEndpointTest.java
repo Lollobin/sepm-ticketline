@@ -24,10 +24,12 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_LNAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_PASSWORD;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UsersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
@@ -39,10 +41,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -50,7 +55,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class LockedUserEndpointTest {
+class LockedUserEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,51 +79,48 @@ public class LockedUserEndpointTest {
     }
 
     @Test
-    public void shouldGetAllLockedUsers() throws Exception {
+    void shouldGetAllLockedUsers() throws Exception {
 
         saveFourUsers();
 
-        byte[] body = mockMvc
-            .perform(MockMvcRequestBuilders
-                .get("/users?filterLocked=true")
-                .header(
-                    securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsByteArray();
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/users?filterLocked=true")
+            .header(securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+            .accept(MediaType.APPLICATION_JSON)).andReturn();
 
-        List<UserDto> eventsResult = objectMapper.readerFor(UserDto.class).<UserDto>readValues(body)
-            .readAll();
+        MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertThat(eventsResult).asList().hasSize(3);
-        assertThat(eventsResult.get(0).getLockedAccount()).isTrue();
-        assertThat(eventsResult.get(0).getEmail()).isEqualTo(USER_EMAIL);
-        assertThat(eventsResult.get(0).getLastName()).isEqualTo(USER_LNAME);
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        assertThat(eventsResult.get(1).getLockedAccount()).isTrue();
-        assertThat(eventsResult.get(1).getEmail()).isEqualTo(USER2_EMAIL);
-        assertThat(eventsResult.get(1).getFirstName()).isEqualTo(USER2_FNAME);
+        UsersPageDto resultDto = objectMapper.readValue(response.getContentAsString(),
+            UsersPageDto.class);
+        List<UserDto> userDtos = resultDto.getUsers();
+
+        assertThat(userDtos).asList().hasSize(3);
+        assertThat(userDtos.get(0).getLockedAccount()).isTrue();
+        assertThat(userDtos.get(0).getEmail()).isEqualTo(USER_EMAIL);
+        assertThat(userDtos.get(0).getLastName()).isEqualTo(USER_LNAME);
+
+        assertThat(userDtos.get(1).getLockedAccount()).isTrue();
+        assertThat(userDtos.get(1).getEmail()).isEqualTo(USER3_EMAIL);
+        assertThat(userDtos.get(1).getFirstName()).isEqualTo(USER3_FNAME);
 
         userRepository.deleteAll();
 
     }
 
     @Test
-    public void shouldReturn403DueToInvalidRoleToGetUsers() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders
-                .get("/users?filterLocked=true")
-                .header(
-                    securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES))
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isForbidden());
+    void shouldReturn403DueToInvalidRoleToGetUsers() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users?filterLocked=true")
+            .header(securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES))
+            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
     }
 
 
     @Test
-    public void shouldChangeLockedStateToTrue() throws Exception {
+    void shouldChangeLockedStateToTrue() throws Exception {
 
         saveFourUsers();
 
@@ -128,14 +130,11 @@ public class LockedUserEndpointTest {
 
         String json = objectMapper.writeValueAsString(false);
 
-        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
-            .put("/lockStatus/{id}", beforeChange.getUserId())
-            .header(
-                securityProperties.getAuthHeader(),
-                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-            .content(json)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+        mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/{id}", beforeChange.getUserId())
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
 
         ApplicationUser afterChange = userRepository.findUserByEmail(USER_EMAIL);
 
@@ -147,7 +146,7 @@ public class LockedUserEndpointTest {
     }
 
     @Test
-    public void shouldReturn403DueToInvalidRoleToChangeLocked() throws Exception {
+    void shouldReturn403DueToInvalidRoleToChangeLocked() throws Exception {
 
         saveFourUsers();
 
@@ -157,14 +156,11 @@ public class LockedUserEndpointTest {
 
         String json = objectMapper.writeValueAsString(false);
 
-        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
-            .put("/lockStatus/{id}", beforeChange.getUserId())
-            .header(
-                securityProperties.getAuthHeader(),
-                jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES))
-            .content(json)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/{id}", beforeChange.getUserId())
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES)).content(json)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
 
         ApplicationUser afterChange = userRepository.findUserByEmail(USER_EMAIL);
 
@@ -178,17 +174,13 @@ public class LockedUserEndpointTest {
 
 
     @Test
-    public void shouldSet404WhenUserNotPresent() throws Exception {
+    void shouldSet404WhenUserNotPresent() throws Exception {
 
         String json = objectMapper.writeValueAsString(false);
-        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
-            .put("/lockStatus/-100")
-            .header(
-                securityProperties.getAuthHeader(),
-                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-            .content(json)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON));
+        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/-100")
+            .header(securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
+            .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
 
         resultAction.andExpect(status().isNotFound());
 

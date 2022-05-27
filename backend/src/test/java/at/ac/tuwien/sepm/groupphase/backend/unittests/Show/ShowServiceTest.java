@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -48,8 +49,10 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,6 +76,9 @@ class ShowServiceTest {
     @Mock
     private ArtistRepository artistRepository;
 
+    @Spy
+    private final EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
+
     private final ShowValidator showValidator = new ShowValidator();
     private ShowService showService;
     private final Event fakePersistedEvent = new Event();
@@ -80,9 +86,10 @@ class ShowServiceTest {
     private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
 
+
     @BeforeEach
     void setUp() {
-        eventService = new EventServiceImpl(eventRepository, eventValidator);
+        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
             seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
             artistRepository);

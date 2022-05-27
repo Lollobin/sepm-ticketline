@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.LockedUser;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
@@ -12,11 +13,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class LockedUserRepositoryTest {
+class LockedUserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -26,13 +29,16 @@ public class LockedUserRepositoryTest {
 
 
     @Test
-    public void shouldReturnAllLockedUsers() {
+    void shouldReturnAllLockedUsers() {
 
         createUser();
 
-        List<ApplicationUser> lockedUser = userRepository.findByLockedAccountEquals(true);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        assertThat(lockedUser.size()).isEqualTo(3);
+        List<ApplicationUser> lockedUser = userRepository.findByLockedAccountEquals(true,
+            Pageable.unpaged()).stream().toList();
+
+        assertThat(lockedUser).hasSize(3);
         assertThat(lockedUser.get(0).isLockedAccount()).isTrue();
         assertThat(lockedUser.get(1).isLockedAccount()).isTrue();
         assertThat(lockedUser.get(2).isLockedAccount()).isTrue();
@@ -45,7 +51,7 @@ public class LockedUserRepositoryTest {
     }
 
     @Test
-    public void shouldChangeLockedToFalse() {
+    void shouldChangeLockedToFalse() {
         createUser();
 
         List<ApplicationUser> allUsers = userRepository.findAll();

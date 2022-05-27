@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,12 +72,12 @@ public interface EventsApi {
         @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid EventSearchDto search,
         @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
-        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") SortDto sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"currentPage\" : 1, \"events\" : [ { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }, { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
+                    String exampleString = "{ \"currentPage\" : 1, \"events\" : [ { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" }, { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -121,7 +122,7 @@ public interface EventsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }";
+                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

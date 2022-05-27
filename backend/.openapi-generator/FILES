@@ -5,6 +5,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistsSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AuthRequestDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/BookingTypeDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/CategoryDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResultDto.java
@@ -28,6 +29,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchDto.ja
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithTicketsSoldDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithoutIdDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SortDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketWithShowInfoDto.java
@@ -35,6 +37,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TopShowSearchDto
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TransactionDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserWithPasswordDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UsersPageDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/AdministrativeUsersApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ApiUtil.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ArticlesApi.java

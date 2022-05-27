@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class EventValidator {
 
-    public void checkIfEvenIsValid(Event event) {
+    public void checkIfEventIsValid(Event event) {
 
         String exceptionString = "";
         boolean first = true;
@@ -28,13 +28,7 @@ public class EventValidator {
             first = false;
         }
 
-        if (isStringLengthInvalid(event.getCategory())) {
-            if (!first) {
-                exceptionString += "& ";
-            }
-            exceptionString += "Category contains too many characters";
-            first = false;
-        }
+
 
         if (isDurationInvalid(event.getDuration())) {
             if (!first) {

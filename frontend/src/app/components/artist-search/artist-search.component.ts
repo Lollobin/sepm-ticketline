@@ -68,19 +68,19 @@ export class ArtistSearchComponent {
       events: [{
         eventId: 1,
         name: imp,
-        category: Category.Classical,
+        category: Category.Pop,
         duration: 3
       }, {eventId: 2, name: imp + '2', category: Category.Classical, duration: 3}, {
         eventId: 4,
         name: imp,
-        category: Category.Classical,
+        category: Category.Edm,
         duration: 3
-      }, {eventId: 5, name: imp + '2', category: Category.Classical, duration: 3}, {
+      }, {eventId: 5, name: imp + '2', category: Category.Country, duration: 3}, {
         eventId: 1,
         name: imp,
-        category: Category.Classical,
+        category: Category.Rap,
         duration: 3
-      }, {eventId: 6, name: imp + '2', category: Category.Classical, duration: 3},]
+      }, {eventId: 6, name: imp + '2', category: Category.RnB, duration: 3},]
     };
 
   }

@@ -24,10 +24,7 @@
         <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/orders"
            routerLinkActive="active">Orders</a>
       </li>
-      <li>
-        <a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/lockedUsers"
-           routerLinkActive="active">Show Locked Users</a>
-      </li>
+
     </ul>
     <ul class="navbar-nav mr-5">
       <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/login"

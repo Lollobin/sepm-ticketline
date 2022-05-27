@@ -40,5 +40,4 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
         @Param("country") String country, @Param("street") String street,
         @Param("zipCode") String zipCode, Pageable pageable);
 
-
 }
