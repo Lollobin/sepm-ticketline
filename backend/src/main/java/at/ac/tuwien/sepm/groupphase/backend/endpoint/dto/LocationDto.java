@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 public class LocationDto   {
 
   @JsonProperty("locationId")
-  private Integer locationId;
+  private Long locationId;
 
   @JsonProperty("name")
   private String name;
@@ -30,7 +30,7 @@ public class LocationDto   {
   @JsonProperty("address")
   private AddressDto address;
 
-  public LocationDto locationId(Integer locationId) {
+  public LocationDto locationId(Long locationId) {
     this.locationId = locationId;
     return this;
   }
@@ -41,11 +41,11 @@ public class LocationDto   {
   */
   @NotNull 
   @Schema(name = "locationId", required = true)
-  public Integer getLocationId() {
+  public Long getLocationId() {
     return locationId;
   }
 
-  public void setLocationId(Integer locationId) {
+  public void setLocationId(Long locationId) {
     this.locationId = locationId;
   }
 

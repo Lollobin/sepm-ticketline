@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import {Category, Event, EventsService, EventWithoutId} from 'src/app/generated-sources/openapi';
 
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
-import {CustomAuthService} from "../../services/custom-auth.service";
+import { CustomAuthService } from "../../services/custom-auth.service";
 
 @Component({
   selector: 'app-create-event',
@@ -22,11 +22,12 @@ export class CreateEventComponent implements OnInit {
   error = false;
   errorMessage = '';
   role = '';
-  eventWithoutId: EventWithoutId = {name: ""};
+  eventWithoutId: EventWithoutId = { name: "" };
   faCircleQuestion = faCircleQuestion;
+  display = "none";
 
 
-  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router,
     private authService: CustomAuthService) {
     this.categories = Object.keys(this.categoriesType);
   }
@@ -56,6 +57,13 @@ export class CreateEventComponent implements OnInit {
       description: ['']
     });
     this.role = this.authService.getUserRole();
+  }
+
+  openModal() {
+    this.display = "block";
+  }
+  onCloseHandled() {
+    this.display = "none";
   }
 
   secondsToHms(d): string {
@@ -91,7 +99,8 @@ export class CreateEventComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
-      }}
+      }
+    }
     );
   }
 

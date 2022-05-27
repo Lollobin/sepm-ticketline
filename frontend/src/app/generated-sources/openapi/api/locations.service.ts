@@ -27,6 +27,8 @@ import { LocationSearchResult } from '../model/locationSearchResult';
 // @ts-ignore
 import { LocationWithoutId } from '../model/locationWithoutId';
 // @ts-ignore
+import { SeatingPlan } from '../model/seatingPlan';
+// @ts-ignore
 import { Sort } from '../model/sort';
 
 // @ts-ignore

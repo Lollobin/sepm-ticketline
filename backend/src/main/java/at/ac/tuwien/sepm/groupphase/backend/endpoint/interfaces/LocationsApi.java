@@ -9,7 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,7 +72,7 @@ public interface LocationsApi {
         @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid LocationSearchDto search,
         @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
-        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") SortDto sort
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
@@ -123,6 +123,51 @@ public interface LocationsApi {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /locations/{id}/seatingPlans : Gets the seating plans of a location
+     *
+     * @param id ID of the location that is retreived (required)
+     * @return Successful retreival of the location seating plans (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or No seating plans of the given location were found (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "locationsIdSeatingPlansGet",
+        summary = "Gets the seating plans of a location",
+        tags = { "locations" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retreival of the location seating plans", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanDto.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "No seating plans of the given location were found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/locations/{id}/seatingPlans",
+        produces = { "application/json" }
+    )
+    default ResponseEntity<List<SeatingPlanDto>> locationsIdSeatingPlansGet(
+        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
