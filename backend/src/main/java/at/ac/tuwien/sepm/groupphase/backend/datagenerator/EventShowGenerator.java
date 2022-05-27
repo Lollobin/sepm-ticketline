@@ -84,8 +84,7 @@ public class EventShowGenerator {
         Event event = new Event();
         event.setName(faker.harryPotter().location());
         event.setDuration(faker.number().numberBetween(5, 50) * 10L);
-        // TODO: find way to generate category. Consider changing it to enum
-        event.setCategory(Category.POP);
+        event.setCategory(faker.options().option(Category.class));
         event.setContent(faker.lorem().paragraph(3));
         return event;
     }
