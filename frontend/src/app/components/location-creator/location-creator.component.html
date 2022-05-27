@@ -5,7 +5,7 @@
         <h4 class="card-title mt-2">Create Location</h4>
       </header>
       <article class="card-body">
-        <form [formGroup]="registrationForm">
+        <form [formGroup]="locationForm">
           <div class="form-group">
             <label>Name</label>
             <input
@@ -17,14 +17,14 @@
             />
             <div
               *ngIf="
-                (registrationForm.get('name').touched || submitted) &&
-                registrationForm.get('name').errors
+                (locationForm.get('name').touched || submitted) &&
+                locationForm.get('name').errors
               "
               class="error"
             >
               <small
                 class="form-text text-warning"
-                *ngIf="registrationForm.get('name').errors.required"
+                *ngIf="locationForm.get('name').errors.required"
                 >A name is required!
               </small>
             </div>
@@ -46,12 +46,12 @@
                   class="form-control"
                 />
                 <div
-                  *ngIf="registrationForm.get('address.street').touched || submitted"
+                  *ngIf="locationForm.get('address.street').touched || submitted"
                   class="error"
                 >
                   <small
                     class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.street').errors?.required"
+                    *ngIf="locationForm.get('address.street').errors?.required"
                     >Street must be filled in!
                   </small>
                 </div>
@@ -68,12 +68,12 @@
                   class="form-control"
                 />
                 <div
-                  *ngIf="registrationForm.get('address.houseNumber').touched || submitted"
+                  *ngIf="locationForm.get('address.houseNumber').touched || submitted"
                   class="error"
                 >
                   <small
                     class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.houseNumber').errors?.required"
+                    *ngIf="locationForm.get('address.houseNumber').errors?.required"
                     >House Number must be filled in!
                   </small>
                 </div>
@@ -92,12 +92,12 @@
                   class="form-control"
                 />
                 <div
-                  *ngIf="registrationForm.get('address.zipCode').touched || submitted"
+                  *ngIf="locationForm.get('address.zipCode').touched || submitted"
                   class="error"
                 >
                   <small
                     class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.zipCode').errors?.required"
+                    *ngIf="locationForm.get('address.zipCode').errors?.required"
                     >Zip Code must be filled in!
                   </small>
                 </div>
@@ -113,12 +113,12 @@
                   class="form-control"
                 />
                 <div
-                  *ngIf="registrationForm.get('address.city').touched || submitted"
+                  *ngIf="locationForm.get('address.city').touched || submitted"
                   class="error"
                 >
                   <small
                     class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.city').errors?.required"
+                    *ngIf="locationForm.get('address.city').errors?.required"
                     >City must be filled in!
                   </small>
                 </div>
@@ -135,12 +135,12 @@
                 class="form-control"
               />
               <div
-                *ngIf="registrationForm.get('address.country').touched || submitted"
+                *ngIf="locationForm.get('address.country').touched || submitted"
                 class="error"
               >
                 <small
                   class="form-text text-warning"
-                  *ngIf="registrationForm.get('address.country').errors?.required"
+                  *ngIf="locationForm.get('address.country').errors?.required"
                   >Country must be filled in!
                 </small>
               </div>
@@ -160,7 +160,7 @@
           </button>
           <div style="color: {{ sector.color }}">
             <span *ngIf="sector.standingSector">Standing&nbsp;</span>
-            <span>Sector {{ index }}</span>
+            <span>Sector ({{sector.seatCount}} seats)</span>
           </div>
         </ng-template>
         <ng-template ngbPanelContent>

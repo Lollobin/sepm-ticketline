@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   Seat,
+  SeatingPlan,
   Sector,
   SectorBuilder,
   SectorWithLocation,
@@ -26,29 +27,26 @@ type ClickElement =
 })
 export class LocationCreatorComponent implements OnInit {
   page: number;
-  registrationForm: FormGroup;
-  submitted = true
+  locationForm: FormGroup;
+  submitted = true;
   faXmark = faXmark;
   sectors: SectorBuilder[] = [];
-  location: LocationWithoutId
-  seatingPlan: SeatingPlanWithoutId
   chosenElement: ClickElement;
   selectedSector: number;
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
 
   constructor(private formBuilder: FormBuilder) {
-    this.registrationForm = this.formBuilder.group({
-          name: ['', [Validators.required]],
-          address: this.formBuilder.group({
-            houseNumber: ['', [Validators.required]],
-            street: ['', [Validators.required]],
-            zipCode: ['', [Validators.required]],
-            city: ['', [Validators.required]],
-            country: ['', [Validators.required]]
-          }),
-        }
-    );
+    this.locationForm = this.formBuilder.group({
+      name: ["", [Validators.required]],
+      address: this.formBuilder.group({
+        houseNumber: ["", [Validators.required]],
+        street: ["", [Validators.required]],
+        zipCode: ["", [Validators.required]],
+        city: ["", [Validators.required]],
+        country: ["", [Validators.required]],
+      }),
+    });
   }
 
   ngOnInit(): void {
@@ -68,7 +66,7 @@ export class LocationCreatorComponent implements OnInit {
       color: "#000000",
       standingSector: true,
       description: "",
-      seatCount: 0,
+      seatCount: 1,
     });
   }
   nextPage() {
@@ -77,7 +75,23 @@ export class LocationCreatorComponent implements OnInit {
   previousPage() {
     this.page--;
   }
-  finish(){
+  finish() {
+    const location: LocationWithoutId = {
+      name: this.locationForm.get("name").value,
+      address: this.locationForm.get("address").value,
+    };
+
+    //const seatingPlanLayout: SeatingPlan = {}
+
+    const seatingPlan: SeatingPlanWithoutId = {
+      name: "",
+      //TODO: Get locationId after saving location
+      locationId: 0,
+      //TODO: Get locationId after saving location
+      seatingPlanLayoutId: 0,
+      sectors: [],
+      seats: []
+    };
     //TODO: Send locationWithout ID
     //Get back ID of location
     //Send seating plan with location ID
