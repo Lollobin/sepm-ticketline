@@ -29,7 +29,7 @@ export class UnlockUserComponent implements OnInit {
   reloadUser() {
     this.userManagementService.usersGet(true).subscribe({
       next: user => {
-        this.users = user;
+        this.users = user.users;
         console.log("received users", user);
         this.empty = this.users.length === 0;
       },
