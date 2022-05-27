@@ -83,7 +83,7 @@ public class EventServiceImpl implements EventService {
         EventSearchResultDto eventSearchResultDto = new EventSearchResultDto();
 
         eventSearchResultDto.setEvents(eventPage.getContent().stream().map(eventMapper::eventToEventDto).toList());
-        eventSearchResultDto.setNumberOfResults(eventPage.getNumberOfElements());
+        eventSearchResultDto.setNumberOfResults((int) eventPage.getTotalElements());
         eventSearchResultDto.setCurrentPage(eventPage.getNumber());
         eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
 
