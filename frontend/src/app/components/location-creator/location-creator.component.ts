@@ -27,8 +27,6 @@ type ClickElement =
 })
 export class LocationCreatorComponent implements OnInit {
   page: number;
-  locationForm: FormGroup;
-  submitted = true;
   faXmark = faXmark;
   sectors: SectorBuilder[] = [];
   chosenElement: ClickElement;
@@ -36,21 +34,11 @@ export class LocationCreatorComponent implements OnInit {
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.locationForm = this.formBuilder.group({
-      name: ["", [Validators.required]],
-      address: this.formBuilder.group({
-        houseNumber: ["", [Validators.required]],
-        street: ["", [Validators.required]],
-        zipCode: ["", [Validators.required]],
-        city: ["", [Validators.required]],
-        country: ["", [Validators.required]],
-      }),
-    });
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.page = 0;
+    this.page = 1;
   }
   removeSector(index: number) {
     this.sectors.splice(index, 1);
@@ -76,11 +64,6 @@ export class LocationCreatorComponent implements OnInit {
     this.page--;
   }
   finish() {
-    const location: LocationWithoutId = {
-      name: this.locationForm.get("name").value,
-      address: this.locationForm.get("address").value,
-    };
-
     //const seatingPlanLayout: SeatingPlan = {}
 
     const seatingPlan: SeatingPlanWithoutId = {

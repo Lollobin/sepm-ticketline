@@ -27,6 +27,7 @@ import {AuthService} from "./generated-sources/openapi";
 import { EventsComponent } from './components/events/events.component';
 import { ArtistSearchComponent } from './components/artist-search/artist-search.component';
 import { EventSearchResultComponent } from './components/event-search-result/event-search-result.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { EventSearchResultComponent } from './components/event-search-result/eve
     EventSearchResultComponent,
     AdminComponent,
     UnlockUserComponent,
-    OrderOverviewComponent
+    OrderOverviewComponent,
+    CreateLocationComponent
   ],
   imports: [
     BrowserModule,
