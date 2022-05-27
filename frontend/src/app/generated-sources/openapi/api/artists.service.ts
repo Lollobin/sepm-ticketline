@@ -22,6 +22,8 @@ import { Observable }                                        from 'rxjs';
 import { Artist } from '../model/artist';
 // @ts-ignore
 import { ArtistsSearchResult } from '../model/artistsSearchResult';
+// @ts-ignore
+import { Sort } from '../model/sort';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -98,10 +100,10 @@ export class ArtistsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ArtistsSearchResult>;
-    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ArtistsSearchResult>>;
-    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ArtistsSearchResult>>;
-    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ArtistsSearchResult>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ArtistsSearchResult>>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ArtistsSearchResult>>;
+    public artistsGet(search?: string, pageSize?: number, requestedPage?: number, sort?: Sort, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {

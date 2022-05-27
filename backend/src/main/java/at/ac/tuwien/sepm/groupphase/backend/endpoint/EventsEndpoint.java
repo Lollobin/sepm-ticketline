@@ -4,14 +4,17 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.EventsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,24 +34,24 @@ public class EventsEndpoint implements EventsApi {
     }
 
     @Override
-    public ResponseEntity<EventSearchResultDto> eventsGet(
-        EventSearchDto search, Integer pageSize, Integer requestedPage, String sort) {
-        if (search.getName() == null && search.getCategory() == null
-            && search.getDuration() == null) {
-            /* this is just a placeholderlogic to keep current eventsgetall
-            functional (if used anywhere, what i dont think) */
-            List<EventDto> list = this.eventsGetAll();
-            EventSearchResultDto result = new EventSearchResultDto().events(list).currentPage(0)
-                .numberOfResults(list.size()).pagesTotal(1);
-            return ResponseEntity.ok().body(result);
-        }
-        return EventsApi.super.eventsGet(search, pageSize, requestedPage, sort);
-    }
+    public ResponseEntity<EventSearchResultDto> eventsGet(EventSearchDto search,
+        Integer pageSize, Integer requestedPage, SortDto sort) {
 
-    private List<EventDto> eventsGetAll() {
-        LOGGER.info("GET /events");
-        return eventService.findAll().stream().map(eventMapper::eventToEventDto)
-            .toList();
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort.getValue()), "name");
+
+        if ((search.getName() == null || search.getName().isBlank())
+            && (search.getContent() == null || search.getContent().isBlank())
+            && search.getCategory() == null
+            && search.getDuration() == null
+            && search.getLocation() == null
+            && search.getArtist() == null) {
+
+            EventSearchResultDto eventSearchResultDto = this.eventService.findAll(pageable);
+            return ResponseEntity.ok().body(eventSearchResultDto);
+        } else {
+            EventSearchResultDto eventSearchResultDto = this.eventService.search(search, pageable);
+            return ResponseEntity.ok().body(eventSearchResultDto);
+        }
     }
 
     @Secured("ROLE_ADMIN")

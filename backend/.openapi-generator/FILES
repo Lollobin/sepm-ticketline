@@ -29,6 +29,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchDto.ja
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithTicketsSoldDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithoutIdDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SortDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketWithShowInfoDto.java

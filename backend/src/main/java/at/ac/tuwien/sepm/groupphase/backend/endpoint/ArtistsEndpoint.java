@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistsSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ArtistsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ArtistMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArtistService;
@@ -38,10 +39,10 @@ public class ArtistsEndpoint implements ArtistsApi {
 
     @Override
     public ResponseEntity<ArtistsSearchResultDto> artistsGet(String search, Integer pageSize,
-        Integer requestedPage, String sort) {
+        Integer requestedPage, SortDto sort) {
         LOGGER.info("GET artists/ with search string: {}", search);
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort.getValue()),
             "knownAs");
 
         ArtistsSearchResultDto searchResultDto;
