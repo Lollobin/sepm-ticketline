@@ -108,7 +108,7 @@ class EventsEndpointTest {
 
         assertThat(eventResult.get(1).getName()).isEqualTo(EVENT3_NAME);
         assertThat(eventResult.get(1).getDuration().longValue()).isEqualTo(EVENT3_DURATION);
-        assertThat(eventResult.get(1).getCategory()).isEqualTo(EVENT3_CATEGORY);
+        assertThat(eventResult.get(1).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
         assertThat(eventResult.get(1).getContent()).isEqualTo(EVENT3_CONTENT);
 
         assertThat(eventResult.get(2).getName()).isEqualTo(EVENT_NAME);
@@ -254,7 +254,7 @@ class EventsEndpointTest {
 
         assertThat(eventSearchResultDto.getEvents()).hasSize(1);
         assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT_NAME);
-        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT_CATEGORY);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
         assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT_CONTENT);
         assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT_DURATION));
     }
@@ -277,11 +277,11 @@ class EventsEndpointTest {
 
         assertThat(eventSearchResultDto.getEvents()).hasSize(2);
         assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT2_NAME);
-        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT2_CATEGORY);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT2_CATEGORY_DTO);
         assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT2_CONTENT);
         assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT2_DURATION));
         assertThat(eventSearchResultDto.getEvents().get(1).getName()).isEqualTo(EVENT3_NAME);
-        assertThat(eventSearchResultDto.getEvents().get(1).getCategory()).isEqualTo(EVENT3_CATEGORY);
+        assertThat(eventSearchResultDto.getEvents().get(1).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
         assertThat(eventSearchResultDto.getEvents().get(1).getContent()).isEqualTo(EVENT3_CONTENT);
         assertThat(eventSearchResultDto.getEvents().get(1).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT3_DURATION));
     }
@@ -291,7 +291,7 @@ class EventsEndpointTest {
 
         saveThreeValidEvents();
 
-        String category = EVENT3_CATEGORY;
+        String category = EVENT3_CATEGORY.toString();
         String duration = "20";
 
         MvcResult result = this.mockMvc.perform(
@@ -305,7 +305,7 @@ class EventsEndpointTest {
 
         assertThat(eventSearchResultDto.getEvents()).hasSize(1);
         assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT3_NAME);
-        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT3_CATEGORY);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
         assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT3_CONTENT);
         assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT3_DURATION));
     }

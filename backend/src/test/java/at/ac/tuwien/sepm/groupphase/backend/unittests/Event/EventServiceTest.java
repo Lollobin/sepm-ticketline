@@ -1,14 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Event;
 
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_CATEGORY_LENGTH;
@@ -186,7 +189,7 @@ class EventServiceTest {
             () -> assertEquals(eventSearchResultDto.getEvents().size(), 3),
             () -> assertEquals(eventSearchResultDto.getEvents().get(0).getName(), EVENT2_NAME),
             () -> assertEquals(eventSearchResultDto.getEvents().get(0).getDuration(), BigDecimal.valueOf(EVENT2_DURATION)),
-            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getCategory(), EVENT2_CATEGORY),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getCategory(), EVENT2_CATEGORY_DTO),
             () -> assertEquals(eventSearchResultDto.getEvents().get(0).getContent(), EVENT2_CONTENT),
             () -> assertEquals(eventSearchResultDto.getEvents().get(1).getName(), EVENT3_NAME),
             () -> assertEquals(eventSearchResultDto.getEvents().get(2).getName(), EVENT_NAME)
@@ -255,15 +258,15 @@ class EventServiceTest {
         assertAll(
             () -> assertEquals(eventSearchResultDto1.getEvents().size(), 3),
             () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getName(), event2.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getCategory(), event2.getCategory()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getCategory(), EVENT2_CATEGORY_DTO),
             () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getName(), event3.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getCategory(), event3.getCategory()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getCategory(), EVENT3_CATEGORY_DTO),
             () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getName(), event.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getCategory(), event.getCategory()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getCategory(), EVENT_CATEGORY_DTO),
 
             () -> assertEquals(eventSearchResultDto2.getEvents().size(), 1),
             () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getName(), event.getName()),
-            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getCategory(), event.getCategory()),
+            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getCategory(), EVENT_CATEGORY_DTO),
 
             () -> assertThat(eventSearchResultDto3.getEvents()).isEmpty()
         );
