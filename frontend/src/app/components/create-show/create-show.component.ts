@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventsService, Sector, ShowsService, SeatingPlansService,
+import {
+  EventsService, Sector, ShowsService, SeatingPlansService,
   SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
-  ArtistsService, Artist, ArtistsSearchResult} from 'src/app/generated-sources/openapi';
+  ArtistsService, Artist, ArtistsSearchResult
+} from 'src/app/generated-sources/openapi';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
 import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
@@ -45,6 +47,7 @@ export class CreateShowComponent implements OnInit {
   artist: Artist;
   artistForm: any;
   artists = [];
+  display = "none";
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
@@ -62,18 +65,18 @@ export class CreateShowComponent implements OnInit {
     return this.showForm.valid && this.sectorForm.valid;
   }
 
-  get artistFormValid(){
-    if (!this.artistForm.get("artist").value){
+  get artistFormValid() {
+    if (!this.artistForm.get("artist").value) {
       return false;
     }
-    for (const element of this.artists){
-      if (element.artistId === this.artistForm.get("artist").value.artistId){
+    for (const element of this.artists) {
+      if (element.artistId === this.artistForm.get("artist").value.artistId) {
         return false;
       }
     }
     if (this.artistForm.get("artist").value.firstName || this.artistForm.get("artist").value.lastName
-      || this.artistForm.get("artist").value.knownAs || this.artistForm.get("artist").value.bandName){
-        return true;
+      || this.artistForm.get("artist").value.knownAs || this.artistForm.get("artist").value.bandName) {
+      return true;
     }
     return false;
   }
@@ -117,6 +120,13 @@ export class CreateShowComponent implements OnInit {
     });
   }
 
+  openModal() {
+    this.display = "block";
+  }
+  onCloseHandled() {
+    this.display = "none";
+  }
+
   getDetails(id: number): void {
     this.eventService.eventsIdGet(this.eventId).subscribe({
       next: data => {
@@ -154,11 +164,10 @@ export class CreateShowComponent implements OnInit {
     }
     this.showWithoutId.artists = this.showForm.value.artists;
     this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan.seatingPlanId;
-    this.showWithoutId.artists = [ ];
-    for (const artist of this.artists){
+    this.showWithoutId.artists = [];
+    for (const artist of this.artists) {
       this.showWithoutId.artists.push(artist.artistId);
     }
-    this.artists = [];
     console.log("POST http://localhost:8080/shows " + JSON.stringify(this.showWithoutId));
     this.showService.showsPost(this.showWithoutId, 'response').subscribe({
       next: data => {
@@ -166,6 +175,7 @@ export class CreateShowComponent implements OnInit {
         console.log(data.headers.get('Location'));
         this.error = false;
         this.clearForm();
+        this.artists = [];
       },
       error: error => {
         console.log("Error creating event", error.message);
@@ -271,23 +281,23 @@ export class CreateShowComponent implements OnInit {
   }
 
   artistSearch = (text$: Observable<string>) => text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
-          map(artistResult => artistResult.artists)
-          )
-      )
-    );
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
+      map(artistResult => artistResult.artists)
+    )
+    )
+  );
 
-  artistResultFormatter(artist: any){
+  artistResultFormatter(artist: any) {
     return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
   }
 
-  artistInputFormatter(artist: any){
+  artistInputFormatter(artist: any) {
     return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
   }
 
-  addArtist(){
+  addArtist() {
     this.artists.push(this.artistForm.get("artist").value);
     console.log(this.artists);
     this.artistForm.reset();

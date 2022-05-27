@@ -151,8 +151,22 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
+        <button type="submit" class="btn btn-primary form-group" (click)="openModal()"
             [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Submit</button>
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+            style="background: rgba(0,0,0, .5); padding-top: 15%">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Are you sure you want to create this show?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="createShow()">Create Show</button>
+                        <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>

@@ -56,7 +56,21 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"
                 formControlName="description"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" (click)="createEvent()"
+        <button type="button" class="btn btn-primary" (click)="openModal()"
             [disabled]="!eventForm.valid">Submit</button>
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+            style="background: rgba(0,0,0, .5); padding-top: 15%">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Are you sure you want to create this event?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="createEvent()">Create Event</button>
+                        <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
