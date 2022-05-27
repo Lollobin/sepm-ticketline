@@ -7,6 +7,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +47,10 @@ public interface LocationsApi {
      * Filters data depending on the query parameters. When no query parameters are given, all locations are returned
      *
      * @param search  (optional)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
      * @return Successful retreival of locations (status code 200)
-     *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
@@ -55,12 +58,8 @@ public interface LocationsApi {
         summary = "Searches for locations depending on parameters",
         tags = { "locations" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of locations", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  LocationDto.class))),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of locations", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  LocationSearchResultDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -68,13 +67,16 @@ public interface LocationsApi {
         value = "/locations",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<LocationDto>> locationsGet(
-        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid LocationSearchDto search
+    default ResponseEntity<LocationSearchResultDto> locationsGet(
+        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid LocationSearchDto search,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" }";
+                    String exampleString = "{ \"locations\" : [ { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" }, { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" } ], \"currentPage\" : 6, \"numberOfResults\" : 1, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -114,7 +116,7 @@ public interface LocationsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<LocationDto> locationsIdGet(
-        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the location that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

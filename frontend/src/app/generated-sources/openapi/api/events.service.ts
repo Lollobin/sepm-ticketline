@@ -23,6 +23,8 @@ import { Event } from '../model/event';
 // @ts-ignore
 import { EventSearch } from '../model/eventSearch';
 // @ts-ignore
+import { EventSearchResult } from '../model/eventSearchResult';
+// @ts-ignore
 import { EventWithoutId } from '../model/eventWithoutId';
 
 // @ts-ignore
@@ -36,7 +38,7 @@ import { Configuration }                                     from '../configurat
 })
 export class EventsService {
 
-    protected basePath = 'http://localhost';
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -94,28 +96,36 @@ export class EventsService {
      * Searches for events depending on parameters
      * Filters data depending on the query parameters. When no query parameters are given, all events are returned
      * @param search 
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
+     * @param sort 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public eventsGet(search?: EventSearch, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Event>>;
-    public eventsGet(search?: EventSearch, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Event>>>;
-    public eventsGet(search?: EventSearch, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Event>>>;
-    public eventsGet(search?: EventSearch, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public eventsGet(search?: EventSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<EventSearchResult>;
+    public eventsGet(search?: EventSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<EventSearchResult>>;
+    public eventsGet(search?: EventSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<EventSearchResult>>;
+    public eventsGet(search?: EventSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>search, 'search');
         }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
+        if (sort !== undefined && sort !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>sort, 'sort');
+        }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (BearerAuth) required
-        localVarCredential = this.configuration.lookupCredential('BearerAuth');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -146,7 +156,7 @@ export class EventsService {
             }
         }
 
-        return this.httpClient.get<Array<Event>>(`${this.configuration.basePath}/events`,
+        return this.httpClient.get<EventSearchResult>(`${this.configuration.basePath}/events`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

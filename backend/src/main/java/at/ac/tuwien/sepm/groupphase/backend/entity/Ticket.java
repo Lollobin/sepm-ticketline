@@ -9,54 +9,50 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketId;
+    private Long ticketId;
 
     @ManyToOne
-    @JoinColumn(
-        name = "reservedBy",
-        referencedColumnName = "userId"
-    )
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "reservedBy", referencedColumnName = "userId")
     private ApplicationUser reservedBy;
 
     @ManyToOne
-    @JoinColumn(
-        name = "purchasedBy",
-        referencedColumnName = "userId"
-    )
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "purchasedBy", referencedColumnName = "userId")
     private ApplicationUser purchasedBy;
 
     @ManyToOne
-    @JoinColumn(
-        name = "seatId",
-        referencedColumnName = "seatId",
-        nullable = false
-    )
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "seatId", referencedColumnName = "seatId", nullable = false)
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(
-        name = "showId",
-        referencedColumnName = "showId",
-        nullable = false
-    )
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name = "showId", referencedColumnName = "showId", nullable = false)
     private Show show;
 
     @Override
     public String toString() {
-        return "Ticket{" +
-            "ticketId=" + ticketId +
-            ", reservedBy=" + reservedBy +
-            ", purchasedBy=" + purchasedBy +
-            ", seat=" + seat +
-            ", show=" + show +
-            ", bookedIns=" + bookedIns +
-            '}';
+        return "Ticket{"
+            + "ticketId="
+            + ticketId
+            + ", reservedBy="
+            + reservedBy
+            + ", purchasedBy="
+            + purchasedBy
+            + ", seat="
+            + seat
+            + ", show="
+            + show
+            + '}';
     }
 
     @Override
@@ -68,10 +64,12 @@ public class Ticket {
             return false;
         }
         Ticket ticket = (Ticket) o;
-        return ticketId == ticket.ticketId && Objects.equals(reservedBy, ticket.reservedBy)
-            && Objects.equals(purchasedBy, ticket.purchasedBy) && Objects.equals(seat,
-            ticket.seat) && Objects.equals(show, ticket.show) && Objects.equals(
-            bookedIns, ticket.bookedIns);
+        return Objects.equals(ticketId, ticket.ticketId)
+            && Objects.equals(reservedBy, ticket.reservedBy)
+            && Objects.equals(purchasedBy, ticket.purchasedBy)
+            && Objects.equals(seat, ticket.seat)
+            && Objects.equals(show, ticket.show)
+            && Objects.equals(bookedIns, ticket.bookedIns);
     }
 
     @Override
@@ -82,11 +80,11 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket")
     private Set<BookedIn> bookedIns;
 
-    public long getTicketId() {
+    public Long getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(long ticketId) {
+    public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
 

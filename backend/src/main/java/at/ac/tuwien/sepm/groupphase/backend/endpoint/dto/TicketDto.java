@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -22,18 +21,18 @@ import javax.annotation.Generated;
 public class TicketDto   {
 
   @JsonProperty("ticketId")
-  private BigDecimal ticketId;
+  private Long ticketId;
 
   @JsonProperty("rowNumber")
-  private BigDecimal rowNumber;
+  private Long rowNumber;
 
   @JsonProperty("seatNumber")
-  private BigDecimal seatNumber;
+  private Long seatNumber;
 
   @JsonProperty("sector")
-  private BigDecimal sector;
+  private Long sector;
 
-  public TicketDto ticketId(BigDecimal ticketId) {
+  public TicketDto ticketId(Long ticketId) {
     this.ticketId = ticketId;
     return this;
   }
@@ -42,17 +41,17 @@ public class TicketDto   {
    * Get ticketId
    * @return ticketId
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "ticketId", required = true)
-  public BigDecimal getTicketId() {
+  public Long getTicketId() {
     return ticketId;
   }
 
-  public void setTicketId(BigDecimal ticketId) {
+  public void setTicketId(Long ticketId) {
     this.ticketId = ticketId;
   }
 
-  public TicketDto rowNumber(BigDecimal rowNumber) {
+  public TicketDto rowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
     return this;
   }
@@ -61,17 +60,17 @@ public class TicketDto   {
    * Get rowNumber
    * @return rowNumber
   */
-  @Valid 
+  
   @Schema(name = "rowNumber", required = false)
-  public BigDecimal getRowNumber() {
+  public Long getRowNumber() {
     return rowNumber;
   }
 
-  public void setRowNumber(BigDecimal rowNumber) {
+  public void setRowNumber(Long rowNumber) {
     this.rowNumber = rowNumber;
   }
 
-  public TicketDto seatNumber(BigDecimal seatNumber) {
+  public TicketDto seatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
     return this;
   }
@@ -80,17 +79,17 @@ public class TicketDto   {
    * Get seatNumber
    * @return seatNumber
   */
-  @Valid 
+  
   @Schema(name = "seatNumber", required = false)
-  public BigDecimal getSeatNumber() {
+  public Long getSeatNumber() {
     return seatNumber;
   }
 
-  public void setSeatNumber(BigDecimal seatNumber) {
+  public void setSeatNumber(Long seatNumber) {
     this.seatNumber = seatNumber;
   }
 
-  public TicketDto sector(BigDecimal sector) {
+  public TicketDto sector(Long sector) {
     this.sector = sector;
     return this;
   }
@@ -99,13 +98,13 @@ public class TicketDto   {
    * Get sector
    * @return sector
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "sector", required = true)
-  public BigDecimal getSector() {
+  public Long getSector() {
     return sector;
   }
 
-  public void setSector(BigDecimal sector) {
+  public void setSector(Long sector) {
     this.sector = sector;
   }
 

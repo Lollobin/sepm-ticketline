@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +15,7 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long eventId;
+    private Long eventId;
 
     @Column(nullable = false)
     private String name;
@@ -20,7 +23,9 @@ public class Event {
     @Column
     private long duration;
 
-    private String category;
+    @Column(nullable = false, length = 16)
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Column(columnDefinition = "CLOB")
     private String content;
@@ -34,9 +39,11 @@ public class Event {
             return false;
         }
         Event event = (Event) o;
-        return eventId == event.eventId && duration == event.duration && Objects.equals(name,
-            event.name) && Objects.equals(category, event.category) && Objects.equals(
-            content, event.content);
+        return eventId == event.eventId
+            && duration == event.duration
+            && Objects.equals(name, event.name)
+            && Objects.equals(category, event.category)
+            && Objects.equals(content, event.content);
     }
 
     @Override
@@ -46,20 +53,28 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-            "eventId=" + eventId +
-            ", name='" + name + '\'' +
-            ", duration=" + duration +
-            ", category='" + category + '\'' +
-            ", content='" + content + '\'' +
-            '}';
+        return "Event{"
+            + "eventId="
+            + eventId
+            + ", name='"
+            + name
+            + '\''
+            + ", duration="
+            + duration
+            + ", category='"
+            + category
+            + '\''
+            + ", content='"
+            + content
+            + '\''
+            + '}';
     }
 
-    public long getEventId() {
+    public Long getEventId() {
         return eventId;
     }
 
-    public void setEventId(long eventId) {
+    public void setEventId(Long eventId) {
         this.eventId = eventId;
     }
 
@@ -79,11 +94,11 @@ public class Event {
         this.duration = duration;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -94,4 +109,5 @@ public class Event {
     public void setContent(String content) {
         this.content = content;
     }
+
 }

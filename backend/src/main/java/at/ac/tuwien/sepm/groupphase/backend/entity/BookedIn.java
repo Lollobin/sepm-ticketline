@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.embeddables.BookedInKey;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,16 +17,16 @@ import javax.persistence.MapsId;
 public class BookedIn {
 
     @EmbeddedId
-    private BookedInKey id;
+    BookedInKey id = new BookedInKey();
 
     @ManyToOne
     @MapsId("transactionId")
-    @JoinColumn(name = "transactionId")
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @ManyToOne
     @MapsId("ticketId")
-    @JoinColumn(name = "ticketId")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     @Column(nullable = false, length = 16)
@@ -33,7 +34,7 @@ public class BookedIn {
     private BookingType bookingType;
 
     @Column(nullable = false)
-    private float priceAtBookingTime;
+    private BigDecimal priceAtBookingTime;
 
     @Override
     public boolean equals(Object o) {
@@ -44,26 +45,29 @@ public class BookedIn {
             return false;
         }
         BookedIn bookedIn = (BookedIn) o;
-        return Float.compare(bookedIn.priceAtBookingTime, priceAtBookingTime) == 0
-            && Objects.equals(id, bookedIn.id) && Objects.equals(transaction,
-            bookedIn.transaction) && Objects.equals(ticket, bookedIn.ticket)
-            && bookingType == bookedIn.bookingType;
+        return Objects.equals(id, bookedIn.id) && bookingType == bookedIn.bookingType
+            && Objects.equals(priceAtBookingTime, bookedIn.priceAtBookingTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transaction, ticket, bookingType, priceAtBookingTime);
+        return Objects.hash(id, bookingType, priceAtBookingTime);
     }
 
     @Override
     public String toString() {
-        return "BookedIn{" +
-            "id=" + id +
-            ", transaction=" + transaction +
-            ", ticket=" + ticket +
-            ", bookingType=" + bookingType +
-            ", priceAtBookingTime=" + priceAtBookingTime +
-            '}';
+        return "BookedIn{"
+            + "id="
+            + id
+            + ", transaction="
+            + transaction
+            + ", ticket="
+            + ticket
+            + ", bookingType="
+            + bookingType
+            + ", priceAtBookingTime="
+            + priceAtBookingTime
+            + '}';
     }
 
     public BookedInKey getId() {
@@ -98,11 +102,11 @@ public class BookedIn {
         this.bookingType = bookingType;
     }
 
-    public float getPriceAtBookingTime() {
+    public BigDecimal getPriceAtBookingTime() {
         return priceAtBookingTime;
     }
 
-    public void setPriceAtBookingTime(float priceAtBookingTime) {
+    public void setPriceAtBookingTime(BigDecimal priceAtBookingTime) {
         this.priceAtBookingTime = priceAtBookingTime;
     }
 }

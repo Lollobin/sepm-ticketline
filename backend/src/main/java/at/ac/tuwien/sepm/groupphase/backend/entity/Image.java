@@ -13,7 +13,7 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long imageId;
+    private Long imageId;
 
     private String filePath;
 
@@ -23,11 +23,15 @@ public class Image {
 
     @Override
     public String toString() {
-        return "Image{" +
-            "imageId=" + imageId +
-            ", filePath='" + filePath + '\'' +
-            ", article=" + article +
-            '}';
+        return "Image{"
+            + "imageId="
+            + imageId
+            + ", filePath='"
+            + filePath
+            + '\''
+            + ", article="
+            + article
+            + '}';
     }
 
     @Override
@@ -39,7 +43,8 @@ public class Image {
             return false;
         }
         Image image = (Image) o;
-        return imageId == image.imageId && Objects.equals(filePath, image.filePath)
+        return imageId == image.imageId
+            && Objects.equals(filePath, image.filePath)
             && Objects.equals(article, image.article);
     }
 
@@ -48,11 +53,11 @@ public class Image {
         return Objects.hash(imageId, filePath, article);
     }
 
-    public long getImageId() {
+    public Long getImageId() {
         return imageId;
     }
 
-    public void setImageId(long imageId) {
+    public void setImageId(Long imageId) {
         this.imageId = imageId;
     }
 

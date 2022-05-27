@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +25,20 @@ import javax.annotation.Generated;
 public class ShowDto   {
 
   @JsonProperty("showId")
-  private Integer showId;
+  private Long showId;
 
   @JsonProperty("date")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime date;
 
   @JsonProperty("event")
-  private BigDecimal event;
+  private Integer event;
 
   @JsonProperty("artists")
   @Valid
-  private List<BigDecimal> artists = new ArrayList<>();
+  private List<Integer> artists = new ArrayList<>();
 
-  public ShowDto showId(Integer showId) {
+  public ShowDto showId(Long showId) {
     this.showId = showId;
     return this;
   }
@@ -50,11 +49,11 @@ public class ShowDto   {
   */
   @NotNull 
   @Schema(name = "showId", required = true)
-  public Integer getShowId() {
+  public Long getShowId() {
     return showId;
   }
 
-  public void setShowId(Integer showId) {
+  public void setShowId(Long showId) {
     this.showId = showId;
   }
 
@@ -77,7 +76,7 @@ public class ShowDto   {
     this.date = date;
   }
 
-  public ShowDto event(BigDecimal event) {
+  public ShowDto event(Integer event) {
     this.event = event;
     return this;
   }
@@ -86,22 +85,22 @@ public class ShowDto   {
    * Get event
    * @return event
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "event", required = true)
-  public BigDecimal getEvent() {
+  public Integer getEvent() {
     return event;
   }
 
-  public void setEvent(BigDecimal event) {
+  public void setEvent(Integer event) {
     this.event = event;
   }
 
-  public ShowDto artists(List<BigDecimal> artists) {
+  public ShowDto artists(List<Integer> artists) {
     this.artists = artists;
     return this;
   }
 
-  public ShowDto addArtistsItem(BigDecimal artistsItem) {
+  public ShowDto addArtistsItem(Integer artistsItem) {
     if (this.artists == null) {
       this.artists = new ArrayList<>();
     }
@@ -113,13 +112,13 @@ public class ShowDto   {
    * Get artists
    * @return artists
   */
-  @NotNull @Valid 
+  @NotNull 
   @Schema(name = "artists", required = true)
-  public List<BigDecimal> getArtists() {
+  public List<Integer> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<BigDecimal> artists) {
+  public void setArtists(List<Integer> artists) {
     this.artists = artists;
   }
 

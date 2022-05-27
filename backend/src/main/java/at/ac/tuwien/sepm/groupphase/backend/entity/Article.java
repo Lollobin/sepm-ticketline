@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -17,13 +17,13 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long articleId;
+    private Long articleId;
 
     @Column(nullable = false, length = 100)
     private String title;
 
     @Column(nullable = false)
-    private LocalDate creationDate;
+    private OffsetDateTime creationDate;
 
     @Column(columnDefinition = "CLOB")
     private String summary;
@@ -35,8 +35,7 @@ public class Article {
     @JoinTable(
         name = "ReadArticle",
         joinColumns = @JoinColumn(name = "articleId"),
-        inverseJoinColumns = @JoinColumn(name = "userId")
-    )
+        inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<ApplicationUser> users;
 
     @Override
@@ -48,9 +47,11 @@ public class Article {
             return false;
         }
         Article article = (Article) o;
-        return articleId == article.articleId && Objects.equals(title, article.title)
-            && Objects.equals(creationDate, article.creationDate) && Objects.equals(
-            summary, article.summary) && Objects.equals(text, article.text)
+        return Objects.equals(articleId, article.articleId)
+            && Objects.equals(title, article.title)
+            && Objects.equals(creationDate, article.creationDate)
+            && Objects.equals(summary, article.summary)
+            && Objects.equals(text, article.text)
             && Objects.equals(users, article.users);
     }
 
@@ -61,21 +62,30 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Article{" +
-            "articleId=" + articleId +
-            ", title='" + title + '\'' +
-            ", creationDate=" + creationDate +
-            ", summary='" + summary + '\'' +
-            ", text='" + text + '\'' +
-            ", users=" + users +
-            '}';
+        return "Article{"
+            + "articleId="
+            + articleId
+            + ", title='"
+            + title
+            + '\''
+            + ", creationDate="
+            + creationDate
+            + ", summary='"
+            + summary
+            + '\''
+            + ", text='"
+            + text
+            + '\''
+            + ", users="
+            + users
+            + '}';
     }
 
-    public long getArticleId() {
+    public Long getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(long articleId) {
+    public void setArticleId(Long articleId) {
         this.articleId = articleId;
     }
 
@@ -87,11 +97,11 @@ public class Article {
         this.title = title;
     }
 
-    public LocalDate getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(OffsetDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

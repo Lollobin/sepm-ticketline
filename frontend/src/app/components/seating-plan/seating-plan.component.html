@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="show!==undefined">
   <h1 class="text-center mt-5">{{ event.name }}</h1>
   <div class="d-flex mt-2 mb-4 justify-content-between">
     <div>
@@ -119,3 +119,5 @@
     </div>
   </div>
 </div>
+
+<app-error-alert [(error)]="error"></app-error-alert>

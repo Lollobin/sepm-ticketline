@@ -40,8 +40,8 @@ public class UserDto   {
   @JsonProperty("address")
   private AddressDto address;
 
-  @JsonProperty("isLocked")
-  private Boolean isLocked;
+  @JsonProperty("lockedAccount")
+  private Boolean lockedAccount;
 
   public UserDto userId(Integer userId) {
     this.userId = userId;
@@ -157,23 +157,23 @@ public class UserDto   {
     this.address = address;
   }
 
-  public UserDto isLocked(Boolean isLocked) {
-    this.isLocked = isLocked;
+  public UserDto lockedAccount(Boolean lockedAccount) {
+    this.lockedAccount = lockedAccount;
     return this;
   }
 
   /**
-   * Get isLocked
-   * @return isLocked
+   * Get lockedAccount
+   * @return lockedAccount
   */
   @NotNull 
-  @Schema(name = "isLocked", required = true)
-  public Boolean getIsLocked() {
-    return isLocked;
+  @Schema(name = "lockedAccount", required = true)
+  public Boolean getLockedAccount() {
+    return lockedAccount;
   }
 
-  public void setIsLocked(Boolean isLocked) {
-    this.isLocked = isLocked;
+  public void setLockedAccount(Boolean lockedAccount) {
+    this.lockedAccount = lockedAccount;
   }
 
   @Override
@@ -191,12 +191,12 @@ public class UserDto   {
         Objects.equals(this.email, user.email) &&
         Objects.equals(this.gender, user.gender) &&
         Objects.equals(this.address, user.address) &&
-        Objects.equals(this.isLocked, user.isLocked);
+        Objects.equals(this.lockedAccount, user.lockedAccount);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, firstName, lastName, email, gender, address, isLocked);
+    return Objects.hash(userId, firstName, lastName, email, gender, address, lockedAccount);
   }
 
   @Override
@@ -209,7 +209,7 @@ public class UserDto   {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    gender: ").append(toIndentedString(gender)).append("\n");
     sb.append("    address: ").append(toIndentedString(address)).append("\n");
-    sb.append("    isLocked: ").append(toIndentedString(isLocked)).append("\n");
+    sb.append("    lockedAccount: ").append(toIndentedString(lockedAccount)).append("\n");
     sb.append("}");
     return sb.toString();
   }

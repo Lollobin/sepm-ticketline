@@ -12,11 +12,9 @@
 
 
 export interface ShowSearch { 
-    event?: number;
+    event?: string;
     date?: string;
     price?: number;
     seatingPlan?: number;
-    location?: number;
-    artist?: number;
 }
 

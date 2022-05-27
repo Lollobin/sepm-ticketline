@@ -20,6 +20,6 @@ export interface User {
     email: string;
     gender: Gender;
     address: Address;
-    isLocked: boolean;
+    lockedAccount: boolean;
 }
 

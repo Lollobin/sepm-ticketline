@@ -5,37 +5,60 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.BookedInRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import javax.annotation.PostConstruct;
+import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-//TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
+// TODO: Replace with proper dataGenerator class and create dataGenerator for users and addresses
 @Profile("generateData")
 @Component
+
 public class TransactionDataGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TransactionRepository transactionRepository;
+    private final BookedInRepository bookedInRepository;
+    private final TicketRepository ticketRepository;
+    private final ShowRepository showRepository;
+    private final EventRepository eventRepository;
+    private final ArtistRepository artistRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
-    public TransactionDataGenerator(TransactionRepository transactionRepository,
+
+    public TransactionDataGenerator(
+        TransactionRepository transactionRepository,
+        BookedInRepository bookedInRepository,
+        TicketRepository ticketRepository,
+        ShowRepository showRepository,
+        EventRepository eventRepository,
+        ArtistRepository artistRepository,
         UserRepository userRepository,
         AddressRepository addressRepository) {
         this.transactionRepository = transactionRepository;
+        this.bookedInRepository = bookedInRepository;
+        this.ticketRepository = ticketRepository;
+        this.showRepository = showRepository;
+        this.eventRepository = eventRepository;
+        this.artistRepository = artistRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
     }
 
-    @PostConstruct
+    //@PostConstruct
     private void generateTransaction() {
         if (!transactionRepository.findAll().isEmpty()) {
             LOGGER.debug("order already generated");
@@ -45,9 +68,14 @@ public class TransactionDataGenerator {
             address.setZipCode("21938");
             address.setCity("testCity");
             address.setCountry("Austria");
-            address.setHouseNumber("3");
+            address.setHouseNumber("2");
 
-            addressRepository.save(address);
+            Address address2 = new Address();
+            address2.setStreet("TestStreet 1233");
+            address2.setZipCode("219338");
+            address2.setCity("test3City");
+            address2.setCountry("Aust3ria");
+            address2.setHouseNumber("2");
 
             ApplicationUser user = new ApplicationUser();
             user.setEmail("admin@email.com");
@@ -69,7 +97,7 @@ public class TransactionDataGenerator {
             user2.setFirstName("Admin");
             user2.setLastName("User");
             user2.setGender(Gender.MALE);
-            user2.setAddress(address);
+            user2.setAddress(address2);
             user2.setPassword("password");
             user2.setHasAdministrativeRights(true);
             user2.setLoginTries(0);
@@ -77,8 +105,9 @@ public class TransactionDataGenerator {
             user2.setLockedAccount(false);
             userRepository.save(user2);
 
+            /*
             Transaction transaction = new Transaction();
-            transaction.setDate(LocalDate.of(2005, 11, 20));
+            transaction.setDate(OffsetDateTime.of(2005, 11, 20));
             transaction.setUser(user);
             transactionRepository.save(transaction);
 
@@ -91,6 +120,8 @@ public class TransactionDataGenerator {
             transaction3.setDate(LocalDate.of(2020, 3, 1));
             transaction3.setUser(user2);
             transactionRepository.save(transaction3);
+
+             */
         }
     }
 }

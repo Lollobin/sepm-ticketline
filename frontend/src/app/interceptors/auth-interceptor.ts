@@ -1,20 +1,34 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {AuthService} from '../services/auth.service';
+import {CustomAuthService} from '../services/custom-auth.service';
 import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService, private globals: Globals) {
+  constructor(private authService: CustomAuthService, private globals: Globals) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authUri = this.globals.backendUri + '/authentication';
+    const isLoggedIn = this.authService.isLoggedIn();
 
-    // Do not intercept authentication requests
-    if (req.url === authUri) {
+    //auth and registration
+    const authUri = this.globals.backendCustomUri + '/login';
+    const signUpUri = this.globals.backendCustomUri + '/users';
+
+    const listOfGetPublics = [
+      this.globals.backendCustomUri + '/events',
+      this.globals.backendCustomUri + '/artists',
+      this.globals.backendCustomUri + '/shows',
+      this.globals.backendCustomUri + '/seatingPlan'];
+
+
+    const dontInterceptPublic = req.method === "GET" && listOfGetPublics.indexOf(req.url) !== -1;
+
+    // Do not intercept authentication / registration requests
+    if ((req.url === authUri || req.url === signUpUri || dontInterceptPublic) && !isLoggedIn) {
+
       return next.handle(req);
     }
 

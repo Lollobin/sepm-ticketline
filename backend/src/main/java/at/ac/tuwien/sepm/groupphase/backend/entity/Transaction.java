@@ -1,10 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,32 +18,33 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transactionId;
+    private Long transactionId;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private OffsetDateTime date;
 
     private String billPath;
 
     @ManyToOne
-    @JoinColumn(
-        name = "userId",
-        referencedColumnName = "userId",
-        nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private ApplicationUser user;
 
-    @OneToMany(mappedBy = "transaction")
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.EAGER)
     private Set<BookedIn> bookedIns;
 
     @Override
     public String toString() {
-        return "Transaction{" +
-            "transactionId=" + transactionId +
-            ", date=" + date +
-            ", billPath='" + billPath + '\'' +
-            ", user=" + user +
-            ", bookedIns=" + bookedIns +
-            '}';
+        return "Transaction{"
+            + "transactionId="
+            + transactionId
+            + ", date="
+            + date
+            + ", billPath='"
+            + billPath
+            + '\''
+            + ", user="
+            + user
+            + '}';
     }
 
     @Override
@@ -54,9 +56,11 @@ public class Transaction {
             return false;
         }
         Transaction that = (Transaction) o;
-        return transactionId == that.transactionId && Objects.equals(date, that.date)
-            && Objects.equals(billPath, that.billPath) && Objects.equals(user,
-            that.user) && Objects.equals(bookedIns, that.bookedIns);
+        return Objects.equals(transactionId, that.transactionId)
+            && Objects.equals(date, that.date)
+            && Objects.equals(billPath, that.billPath)
+            && Objects.equals(user, that.user)
+            && Objects.equals(bookedIns, that.bookedIns);
     }
 
     @Override
@@ -64,19 +68,19 @@ public class Transaction {
         return Objects.hash(transactionId, date, billPath, user, bookedIns);
     }
 
-    public long getTransactionId() {
+    public Long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(long transactionId) {
+    public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

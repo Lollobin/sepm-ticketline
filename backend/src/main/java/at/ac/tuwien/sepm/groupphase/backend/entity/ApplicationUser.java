@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class ApplicationUser {
@@ -35,32 +38,48 @@ public class ApplicationUser {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToOne
-    @JoinColumn(name = "addressId",
-        referencedColumnName = "addressId",
-        nullable = false
-    )
-    private Address address;
-
     @Column(nullable = false, length = 64)
     private String password;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
+    private Address address;
+
+    public ApplicationUser() {
+    }
+
     @Override
     public String toString() {
-        return "ApplicationUser{" +
-            "userId=" + userId +
-            ", email='" + email + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", gender=" + gender +
-            ", " + address + '\'' +
-            ", password=" + password +
-            ", hasAdministrativeRights=" + hasAdministrativeRights +
-            ", loginTries=" + loginTries +
-            ", mustResetPassword=" + mustResetPassword +
-            ", lockedAccount=" + lockedAccount +
-            ", articles=" + articles +
-            '}';
+        return "ApplicationUser{"
+            + "userId="
+            + userId
+            + ", email='"
+            + email
+            + '\''
+            + ", firstName='"
+            + firstName
+            + '\''
+            + ", lastName='"
+            + lastName
+            + '\''
+            + ", gender="
+            + gender
+            + ", "
+            + address
+            + '\''
+            + ", password="
+            + password
+            + ", hasAdministrativeRights="
+            + hasAdministrativeRights
+            + ", loginTries="
+            + loginTries
+            + ", mustResetPassword="
+            + mustResetPassword
+            + ", lockedAccount="
+            + lockedAccount
+            + ", articles="
+            + articles
+            + '}';
     }
 
     @Override
@@ -72,23 +91,35 @@ public class ApplicationUser {
             return false;
         }
         ApplicationUser user = (ApplicationUser) o;
-        return userId == user.userId && hasAdministrativeRights == user.hasAdministrativeRights
-            && loginTries == user.loginTries && mustResetPassword == user.mustResetPassword
-            && lockedAccount == user.lockedAccount && Objects.equals(email, user.email)
-            && Objects.equals(firstName, user.firstName) && Objects.equals(lastName,
-            user.lastName) && gender == user.gender && Objects.equals(address, user.address)
-            && Objects.equals(
-            password, user.password)
+        return userId == user.userId
+            && hasAdministrativeRights == user.hasAdministrativeRights
+            && loginTries == user.loginTries
+            && mustResetPassword == user.mustResetPassword
+            && lockedAccount == user.lockedAccount
+            && Objects.equals(email, user.email)
+            && Objects.equals(firstName, user.firstName)
+            && Objects.equals(lastName, user.lastName)
+            && gender == user.gender
+            && Objects.equals(address, user.address) && Objects.equals(password, user.password)
             && Objects.equals(articles, user.articles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, firstName, lastName, gender, address,
-            hasAdministrativeRights, loginTries, mustResetPassword, lockedAccount,
-            articles, password);
+        return Objects.hash(
+            userId,
+            email,
+            firstName,
+            lastName,
+            gender,
+            address,
+            hasAdministrativeRights,
+            loginTries,
+            mustResetPassword,
+            lockedAccount,
+            articles,
+            password);
     }
-
 
     @Column(nullable = false)
     private boolean hasAdministrativeRights;
@@ -103,12 +134,19 @@ public class ApplicationUser {
     private boolean lockedAccount;
 
     @ManyToMany
-    @JoinTable(
-        name = "ReadArticle",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "articleId")
-    )
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles;
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
+    }
 
     public long getUserId() {
         return userId;

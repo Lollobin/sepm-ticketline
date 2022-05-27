@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.OffsetDateTime;
@@ -24,13 +25,16 @@ public class EventSearchDto   {
   private String name;
 
   @JsonProperty("category")
-  private String category;
+  private CategoryDto category;
 
   @JsonProperty("duration")
   private Integer duration;
 
-  @JsonProperty("content")
-  private String content;
+  @JsonProperty("location")
+  private Integer location;
+
+  @JsonProperty("artist")
+  private Integer artist;
 
   public EventSearchDto name(String name) {
     this.name = name;
@@ -51,7 +55,7 @@ public class EventSearchDto   {
     this.name = name;
   }
 
-  public EventSearchDto category(String category) {
+  public EventSearchDto category(CategoryDto category) {
     this.category = category;
     return this;
   }
@@ -60,13 +64,13 @@ public class EventSearchDto   {
    * Get category
    * @return category
   */
-  
+  @Valid 
   @Schema(name = "category", required = false)
-  public String getCategory() {
+  public CategoryDto getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryDto category) {
     this.category = category;
   }
 
@@ -89,23 +93,42 @@ public class EventSearchDto   {
     this.duration = duration;
   }
 
-  public EventSearchDto content(String content) {
-    this.content = content;
+  public EventSearchDto location(Integer location) {
+    this.location = location;
     return this;
   }
 
   /**
-   * Get content
-   * @return content
+   * Get location
+   * @return location
   */
   
-  @Schema(name = "content", required = false)
-  public String getContent() {
-    return content;
+  @Schema(name = "location", required = false)
+  public Integer getLocation() {
+    return location;
   }
 
-  public void setContent(String content) {
-    this.content = content;
+  public void setLocation(Integer location) {
+    this.location = location;
+  }
+
+  public EventSearchDto artist(Integer artist) {
+    this.artist = artist;
+    return this;
+  }
+
+  /**
+   * Get artist
+   * @return artist
+  */
+  
+  @Schema(name = "artist", required = false)
+  public Integer getArtist() {
+    return artist;
+  }
+
+  public void setArtist(Integer artist) {
+    this.artist = artist;
   }
 
   @Override
@@ -120,12 +143,13 @@ public class EventSearchDto   {
     return Objects.equals(this.name, eventSearch.name) &&
         Objects.equals(this.category, eventSearch.category) &&
         Objects.equals(this.duration, eventSearch.duration) &&
-        Objects.equals(this.content, eventSearch.content);
+        Objects.equals(this.location, eventSearch.location) &&
+        Objects.equals(this.artist, eventSearch.artist);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, category, duration, content);
+    return Objects.hash(name, category, duration, location, artist);
   }
 
   @Override
@@ -135,7 +159,8 @@ public class EventSearchDto   {
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
-    sb.append("    content: ").append(toIndentedString(content)).append("\n");
+    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    artist: ").append(toIndentedString(artist)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import java.util.Objects;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 public class UserLoginDto {
 
@@ -56,6 +56,7 @@ public class UserLoginDto {
 
 
     public static final class UserLoginDtoBuilder {
+
         private String email;
         private String password;
 

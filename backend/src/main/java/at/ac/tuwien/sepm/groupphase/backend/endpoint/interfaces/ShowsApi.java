@@ -7,6 +7,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +47,10 @@ public interface ShowsApi {
      * Filters data depending on the query parameters. When no query parameters are given, all shows are returned
      *
      * @param search  (optional)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
      * @return Successful retreival of articles (status code 200)
-     *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
@@ -55,12 +58,8 @@ public interface ShowsApi {
         summary = "Searches for shows depending on parameters",
         tags = { "shows" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowDto.class))),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowSearchResultDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
@@ -68,13 +67,16 @@ public interface ShowsApi {
         value = "/shows",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ShowDto>> showsGet(
-        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid ShowSearchDto search
+    default ResponseEntity<ShowSearchResultDto> showsGet(
+        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid ShowSearchDto search,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1.4658129805029452, 1.4658129805029452 ], \"event\" : 6.027456183070403 }";
+                    String exampleString = "{ \"shows\" : [ { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }, { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 } ], \"currentPage\" : 5, \"numberOfResults\" : 5, \"pagesTotal\" : 2 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -114,12 +116,12 @@ public interface ShowsApi {
         produces = { "application/json" }
     )
     default ResponseEntity<ShowDto> showsIdGet(
-        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the show that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1.4658129805029452, 1.4658129805029452 ], \"event\" : 6.027456183070403 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
