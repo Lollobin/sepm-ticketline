@@ -3,6 +3,7 @@ import {
   Artist,
   ArtistsSearchResult,
   ArtistsService,
+  Category,
   EventSearch,
   EventSearchResult,
   EventsService
@@ -67,19 +68,19 @@ export class ArtistSearchComponent {
       events: [{
         eventId: 1,
         name: imp,
-        category: 'traudl',
+        category: Category.Classical,
         duration: 3
-      }, {eventId: 2, name: imp + '2', category: 'traudl', duration: 3}, {
+      }, {eventId: 2, name: imp + '2', category: Category.Classical, duration: 3}, {
         eventId: 4,
         name: imp,
-        category: 'traudl',
+        category: Category.Classical,
         duration: 3
-      }, {eventId: 5, name: imp + '2', category: 'traudl', duration: 3}, {
+      }, {eventId: 5, name: imp + '2', category: Category.Classical, duration: 3}, {
         eventId: 1,
         name: imp,
-        category: 'traudl',
+        category: Category.Classical,
         duration: 3
-      }, {eventId: 6, name: imp + '2', category: 'traudl', duration: 3},]
+      }, {eventId: 6, name: imp + '2', category: Category.Classical, duration: 3},]
     };
 
   }
