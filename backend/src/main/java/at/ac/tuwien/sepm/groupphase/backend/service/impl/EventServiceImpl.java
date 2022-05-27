@@ -52,7 +52,7 @@ public class EventServiceImpl implements EventService {
         Long artist = eventSearchDto.getArtist() == null ? null : Long.valueOf(eventSearchDto.getArtist());
 
         Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            eventSearchDto.getDuration(), eventSearchDto.getCategory(), location, artist, pageable);
+            eventSearchDto.getDuration(), eventSearchDto.getCategory().getValue(), location, artist, pageable);
 
         return setEventSearchResultDto(eventPage);
     }

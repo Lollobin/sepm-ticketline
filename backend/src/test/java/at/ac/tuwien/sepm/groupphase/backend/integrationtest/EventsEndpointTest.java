@@ -4,6 +4,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.DEFAULT_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_NAME;
@@ -100,19 +101,19 @@ class EventsEndpointTest {
         List<EventDto> eventResult = resultDto.getEvents();
 
         assertThat(eventResult).hasSize(3);
-        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT_NAME);
-        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT_DURATION);
-        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
-        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT_CONTENT);
+        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT2_NAME);
+        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT2_DURATION);
+        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT2_CATEGORY_DTO);
+        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT2_CONTENT);
 
-        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT3_NAME);
-        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT3_DURATION);
-        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
-        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT3_CONTENT);
+        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT_NAME);
+        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT_DURATION);
+        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
+        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT_CONTENT);
 
-        assertThat(eventResult.get(0).getEventId()).isEqualTo(1);
-        assertThat(eventResult.get(1).getEventId()).isEqualTo(2);
-        assertThat(eventResult.get(2).getEventId()).isEqualTo(3);
+        assertThat(eventResult.get(0).getEventId()).isEqualTo(2);
+        assertThat(eventResult.get(1).getEventId()).isEqualTo(3);
+        assertThat(eventResult.get(2).getEventId()).isEqualTo(1);
     }
 
     @Test
