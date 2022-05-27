@@ -77,7 +77,7 @@ public interface EventsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"currentPage\" : 1, \"events\" : [ { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }, { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
+                    String exampleString = "{ \"currentPage\" : 1, \"events\" : [ { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" }, { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -122,7 +122,7 @@ public interface EventsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" }";
+                    String exampleString = "{ \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

@@ -8,10 +8,12 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONT
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT3_NAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_DURATION_LOWER;
@@ -26,6 +28,7 @@ import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
@@ -51,6 +54,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class EventsEndpointTest {
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -94,19 +100,19 @@ class EventsEndpointTest {
         List<EventDto> eventResult = resultDto.getEvents();
 
         assertThat(eventResult).hasSize(3);
-        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT2_NAME);
-        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT2_DURATION);
-        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT2_CATEGORY);
-        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT2_CONTENT);
+        assertThat(eventResult.get(0).getName()).isEqualTo(EVENT_NAME);
+        assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT_DURATION);
+        assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
+        assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT_CONTENT);
 
-        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT_NAME);
-        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT_DURATION);
-        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT_CATEGORY);
-        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT_CONTENT);
+        assertThat(eventResult.get(2).getName()).isEqualTo(EVENT3_NAME);
+        assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT3_DURATION);
+        assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
+        assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT3_CONTENT);
 
-        assertThat(eventResult.get(0).getEventId()).isEqualTo(2);
-        assertThat(eventResult.get(1).getEventId()).isEqualTo(3);
-        assertThat(eventResult.get(2).getEventId()).isEqualTo(1);
+        assertThat(eventResult.get(0).getEventId()).isEqualTo(1);
+        assertThat(eventResult.get(1).getEventId()).isEqualTo(2);
+        assertThat(eventResult.get(2).getEventId()).isEqualTo(3);
     }
 
     @Test
@@ -117,7 +123,7 @@ class EventsEndpointTest {
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_NAME);
         eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
+        eventWithoutIdToSave.setCategory(EVENT_CATEGORY_DTO);
         eventWithoutIdToSave.setContent(EVENT_CONTENT);
 
         String json = objectMapper.writeValueAsString(eventWithoutIdToSave);
@@ -150,7 +156,7 @@ class EventsEndpointTest {
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_NAME);
         eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_DURATION));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
+        eventWithoutIdToSave.setCategory(EVENT_CATEGORY_DTO);
         eventWithoutIdToSave.setContent(EVENT_CONTENT);
 
         String json = objectMapper.writeValueAsString(eventWithoutIdToSave);
@@ -187,7 +193,7 @@ class EventsEndpointTest {
         EventDto eventDto = objectMapper.readValue(response.getContentAsString(), EventDto.class);
 
         assertThat(eventDto.getContent()).isEqualTo(firstEvent.getContent());
-        assertThat(eventDto.getCategory()).isEqualTo(firstEvent.getCategory());
+        assertThat(eventDto.getCategory()).isEqualTo(categoryMapper.categoryToCategoryDto(firstEvent.getCategory()));
         assertThat(eventDto.getEventId().longValue()).isEqualTo(firstEvent.getEventId());
         assertThat(eventDto.getName()).isEqualTo(firstEvent.getName());
     }
@@ -211,7 +217,7 @@ class EventsEndpointTest {
         EventWithoutIdDto eventWithoutIdToSave = new EventWithoutIdDto();
         eventWithoutIdToSave.setName(EVENT_INVALID_NAME);
         eventWithoutIdToSave.setDuration(BigDecimal.valueOf(EVENT_INVALID_DURATION_LOWER));
-        eventWithoutIdToSave.setCategory(EVENT_CATEGORY);
+        eventWithoutIdToSave.setCategory(EVENT_CATEGORY_DTO);
         eventWithoutIdToSave.setContent(EVENT_CONTENT);
 
         String json = objectMapper.writeValueAsString(eventWithoutIdToSave);

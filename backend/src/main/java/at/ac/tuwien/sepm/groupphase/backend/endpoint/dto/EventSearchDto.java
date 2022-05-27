@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.OffsetDateTime;
@@ -27,7 +28,7 @@ public class EventSearchDto   {
   private String content;
 
   @JsonProperty("category")
-  private String category;
+  private CategoryDto category;
 
   @JsonProperty("duration")
   private Integer duration;
@@ -47,7 +48,7 @@ public class EventSearchDto   {
    * Get name
    * @return name
   */
-  
+
   @Schema(name = "name", required = false)
   public String getName() {
     return name;
@@ -66,7 +67,7 @@ public class EventSearchDto   {
    * Get content
    * @return content
   */
-  
+
   @Schema(name = "content", required = false)
   public String getContent() {
     return content;
@@ -77,6 +78,7 @@ public class EventSearchDto   {
   }
 
   public EventSearchDto category(String category) {
+  public EventSearchDto category(CategoryDto category) {
     this.category = category;
     return this;
   }
@@ -85,13 +87,13 @@ public class EventSearchDto   {
    * Get category
    * @return category
   */
-  
+  @Valid
   @Schema(name = "category", required = false)
-  public String getCategory() {
+  public CategoryDto getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryDto category) {
     this.category = category;
   }
 
@@ -104,7 +106,7 @@ public class EventSearchDto   {
    * Get duration
    * @return duration
   */
-  
+
   @Schema(name = "duration", required = false)
   public Integer getDuration() {
     return duration;
@@ -123,7 +125,7 @@ public class EventSearchDto   {
    * Get location
    * @return location
   */
-  
+
   @Schema(name = "location", required = false)
   public Integer getLocation() {
     return location;
@@ -142,7 +144,7 @@ public class EventSearchDto   {
    * Get artist
    * @return artist
   */
-  
+
   @Schema(name = "artist", required = false)
   public Integer getArtist() {
     return artist;

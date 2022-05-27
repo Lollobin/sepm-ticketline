@@ -5,6 +5,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistsSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AuthRequestDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/BookingTypeDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/CategoryDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResultDto.java
