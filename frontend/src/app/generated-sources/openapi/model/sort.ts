@@ -9,15 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Category } from './category';
 
 
-export interface EventSearch { 
-    name?: string;
-    content?: string;
-    category?: Category;
-    duration?: number;
-    location?: number;
-    artist?: number;
-}
+export enum Sort {
+    Asc = 'ASC',
+    Desc = 'DESC'
+};
 

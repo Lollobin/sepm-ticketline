@@ -10,13 +10,14 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALI
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -48,6 +49,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
