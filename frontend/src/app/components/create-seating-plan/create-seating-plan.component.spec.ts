@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LocationCreatorComponent } from './location-creator.component';
+import { CreateSeatingPlanComponent } from './create-seating-plan.component';
 
-describe('LocationCreatorComponent', () => {
-  let component: LocationCreatorComponent;
-  let fixture: ComponentFixture<LocationCreatorComponent>;
+describe('CreateSeatingPlanComponent', () => {
+  let component: CreateSeatingPlanComponent;
+  let fixture: ComponentFixture<CreateSeatingPlanComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LocationCreatorComponent ]
+      declarations: [ CreateSeatingPlanComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocationCreatorComponent);
+    fixture = TestBed.createComponent(CreateSeatingPlanComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

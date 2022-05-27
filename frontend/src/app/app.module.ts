@@ -20,7 +20,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UnlockUserComponent } from "./components/unlock-user/unlock-user.component";
 import { SeatingPlanEditorComponent } from "./components/seating-plan-editor/seating-plan-editor.component";
-import { LocationCreatorComponent } from './components/location-creator/location-creator.component';
+import { CreateSeatingPlanComponent } from './components/create-seating-plan/create-seating-plan.component';
 import { OrderOverviewComponent } from './components/order-overview/order-overview.component';
 import { AdminComponent } from './components/admin/admin.component';
 import {AuthService} from "./generated-sources/openapi";
@@ -44,7 +44,7 @@ import { CreateLocationComponent } from './components/create-location/create-loc
     RegistrationComponent,
     UnlockUserComponent,
     SeatingPlanEditorComponent,
-    LocationCreatorComponent,
+    CreateSeatingPlanComponent,
     AdminComponent,
     EventsComponent,
     ArtistSearchComponent,

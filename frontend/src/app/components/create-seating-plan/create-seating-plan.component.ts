@@ -21,11 +21,11 @@ type ClickElement =
   | { data: StaticElement; type: "StaticElement" };
 
 @Component({
-  selector: "app-location-creator",
-  templateUrl: "./location-creator.component.html",
-  styleUrls: ["./location-creator.component.scss"],
+  selector: 'app-create-seating-plan',
+  templateUrl: './create-seating-plan.component.html',
+  styleUrls: ['./create-seating-plan.component.scss'],
 })
-export class LocationCreatorComponent implements OnInit {
+export class CreateSeatingPlanComponent implements OnInit {
   page: number;
   faXmark = faXmark;
   sectors: SectorBuilder[] = [];

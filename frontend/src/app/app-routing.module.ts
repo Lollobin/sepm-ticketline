@@ -10,7 +10,7 @@ import {RegistrationComponent} from "./components/registration/registration.comp
 import {CreateEventComponent} from './components/create-event/create-event.component';
 import {CreateShowComponent} from './components/create-show/create-show.component';
 import {UnlockUserComponent} from "./components/unlock-user/unlock-user.component";
-import { LocationCreatorComponent } from './components/location-creator/location-creator.component';
+import { CreateSeatingPlanComponent } from './components/create-seating-plan/create-seating-plan.component';
 import {AdminComponent} from "./components/admin/admin.component";
 import {EventsComponent} from "./components/events/events.component";
 import { CreateLocationComponent } from "./components/create-location/create-location.component";
@@ -23,7 +23,7 @@ const routes: Routes = [
   {path: 'registration', component: RegistrationComponent},
   {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/create', component: CreateLocationComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
-  {path: 'locations/:id/seatingPlans', component: LocationCreatorComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
+  {path: 'locations/:id/seatingPlans', component: CreateSeatingPlanComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/:id/shows', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
