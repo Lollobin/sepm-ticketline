@@ -8,6 +8,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 import java.net.URI;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UsersPageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -44,6 +45,9 @@ public interface UsersApi {
      * GET /users : Gets a list of users
      *
      * @param filterLocked Only return locked users if this is set to true (optional)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
      * @return OK (status code 200)
      */
     @Operation(
@@ -51,7 +55,7 @@ public interface UsersApi {
         summary = "Gets a list of users",
         tags = { "userManagement" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UserDto.class)))
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UsersPageDto.class)))
         },
         security = {
             @SecurityRequirement(name = "BearerAuth")
@@ -62,13 +66,16 @@ public interface UsersApi {
         value = "/users",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<UserDto>> usersGet(
-        @Parameter(name = "filterLocked", description = "Only return locked users if this is set to true", schema = @Schema(description = "")) @Valid @RequestParam(value = "filterLocked", required = false) Boolean filterLocked
+    default ResponseEntity<UsersPageDto> usersGet(
+        @Parameter(name = "filterLocked", description = "Only return locked users if this is set to true", schema = @Schema(description = "")) @Valid @RequestParam(value = "filterLocked", required = false) Boolean filterLocked,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"lockedAccount\" : true, \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"userId\" : 0, \"email\" : \"email\" }";
+                    String exampleString = "{ \"currentPage\" : 6, \"users\" : [ { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"lockedAccount\" : true, \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"userId\" : 0, \"email\" : \"email\" }, { \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"lockedAccount\" : true, \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"userId\" : 0, \"email\" : \"email\" } ], \"numberOfResults\" : 1, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

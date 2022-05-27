@@ -36,6 +36,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TopShowSearchDto
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TransactionDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserWithPasswordDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UsersPageDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/AdministrativeUsersApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ApiUtil.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ArticlesApi.java
