@@ -76,7 +76,7 @@ public interface ShowsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"shows\" : [ { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }, { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 } ], \"locationId\" : 5.962133916683182, \"currentPage\" : 5, \"numberOfResults\" : 2, \"pagesTotal\" : 7 }";
+                    String exampleString = "{ \"shows\" : [ { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } }, { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } } ], \"currentPage\" : 5, \"numberOfResults\" : 5, \"pagesTotal\" : 2 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -121,7 +121,7 @@ public interface ShowsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"category\" : \"category\", \"content\" : \"content\" } }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

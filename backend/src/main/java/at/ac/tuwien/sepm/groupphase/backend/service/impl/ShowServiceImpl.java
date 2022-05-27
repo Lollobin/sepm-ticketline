@@ -68,6 +68,10 @@ public class ShowServiceImpl implements ShowService {
     public ShowSearchResultDto findAll(Pageable pageable) {
         LOGGER.trace("Find all shows");
 
+        Show show = new Show();
+
+        show.getSectorPrices().iterator().next().getSector().getSeatingPlan().getLocation();
+
         Page<Show> showPage = showRepository.findAll(pageable);
 
         return setShowSearchResultDto(showPage);

@@ -1253,15 +1253,18 @@ components:
           type: string
           format: date-time
         event:
-          type: integer
+          $ref: "#/components/schemas/Event"
         artists:
           type: array
           items:
             type: integer
+        location:
+          $ref: "#/components/schemas/Location"
       required:
         - showId
         - event
         - artists
+        - location
     ShowWithoutId:
       type: object
       properties:
@@ -1547,6 +1550,9 @@ components:
         seatingPlan:
           type: integer
           format: int64
+        location:
+          type: integer 
+          format: int64
     LocationSearch:
       type: object
       properties:
@@ -1758,9 +1764,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Show"
-        locationId:
-          type: number
-          format: int64    
         currentPage:
           type: integer
         numberOfResults:

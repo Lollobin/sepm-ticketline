@@ -76,7 +76,7 @@ public interface LocationsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"locations\" : [ { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" }, { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" } ], \"currentPage\" : 6, \"numberOfResults\" : 1, \"pagesTotal\" : 5 }";
+                    String exampleString = "{ \"locations\" : [ { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" } ], \"currentPage\" : 0, \"numberOfResults\" : 6, \"pagesTotal\" : 1 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -121,7 +121,7 @@ public interface LocationsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 0, \"name\" : \"name\" }";
+                    String exampleString = "{ \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

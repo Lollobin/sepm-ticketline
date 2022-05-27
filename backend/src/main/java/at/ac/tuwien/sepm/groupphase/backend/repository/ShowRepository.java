@@ -30,10 +30,10 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
         "select distinct s from Show s join SectorPrice sp on sp.show.showId = s.showId join Sector"
             + " sec on sec.sectorId = sp.sector.sectorId join SeatingPlan seatP on seatP.seatingPlanId = sec.seatingPlan.seatingPlanId left join Location l on l.locationId = seatP.location.locationId "
             + " where ((:name is null) or (upper(s.event.name) like upper(concat('%', :name, '%')))) and "
-            + "((:date is null and :hour <> 0 and :minute <> 0) or "
-            + "((function('HOUR', s.date) = :hour) and function('MINUTE', s.date) = :minute and "
+            + "((:date is null) or "
+            + "(:hour <> 0 and :minute <> 0 and (function('HOUR', s.date) = :hour) and function('MINUTE', s.date) = :minute and "
             + "year(s.date) = year(:date) and month(s.date) = month (:date) and day(s.date) = day(:date))) and"
-            + "((:date is null and :hour = 0 and :minute = 0) or (year(s.date) = year(:date) and month(s.date) = month (:date) and "
+            + "((:date is null) or (:hour = 0 and :minute = 0 and year(s.date) = year(:date) and month(s.date) = month (:date) and "
             + "day(s.date) = day(:date))) and"
             + "((:price is null) or (sp.price <= :price)) and "
             + "((:seating is null) or (seatP.seatingPlanId = :seating))")

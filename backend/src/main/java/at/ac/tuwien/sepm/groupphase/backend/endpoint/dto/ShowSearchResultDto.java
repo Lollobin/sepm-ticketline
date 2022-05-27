@@ -5,7 +5,6 @@ import java.util.Objects;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.OffsetDateTime;
@@ -27,9 +26,6 @@ public class ShowSearchResultDto   {
   @JsonProperty("shows")
   @Valid
   private List<ShowDto> shows = null;
-
-  @JsonProperty("locationId")
-  private BigDecimal locationId;
 
   @JsonProperty("currentPage")
   private Integer currentPage;
@@ -65,25 +61,6 @@ public class ShowSearchResultDto   {
 
   public void setShows(List<ShowDto> shows) {
     this.shows = shows;
-  }
-
-  public ShowSearchResultDto locationId(BigDecimal locationId) {
-    this.locationId = locationId;
-    return this;
-  }
-
-  /**
-   * Get locationId
-   * @return locationId
-  */
-  @Valid 
-  @Schema(name = "locationId", required = false)
-  public BigDecimal getLocationId() {
-    return locationId;
-  }
-
-  public void setLocationId(BigDecimal locationId) {
-    this.locationId = locationId;
   }
 
   public ShowSearchResultDto currentPage(Integer currentPage) {
@@ -153,7 +130,6 @@ public class ShowSearchResultDto   {
     }
     ShowSearchResultDto showSearchResult = (ShowSearchResultDto) o;
     return Objects.equals(this.shows, showSearchResult.shows) &&
-        Objects.equals(this.locationId, showSearchResult.locationId) &&
         Objects.equals(this.currentPage, showSearchResult.currentPage) &&
         Objects.equals(this.numberOfResults, showSearchResult.numberOfResults) &&
         Objects.equals(this.pagesTotal, showSearchResult.pagesTotal);
@@ -161,7 +137,7 @@ public class ShowSearchResultDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(shows, locationId, currentPage, numberOfResults, pagesTotal);
+    return Objects.hash(shows, currentPage, numberOfResults, pagesTotal);
   }
 
   @Override
@@ -169,7 +145,6 @@ public class ShowSearchResultDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class ShowSearchResultDto {\n");
     sb.append("    shows: ").append(toIndentedString(shows)).append("\n");
-    sb.append("    locationId: ").append(toIndentedString(locationId)).append("\n");
     sb.append("    currentPage: ").append(toIndentedString(currentPage)).append("\n");
     sb.append("    numberOfResults: ").append(toIndentedString(numberOfResults)).append("\n");
     sb.append("    pagesTotal: ").append(toIndentedString(pagesTotal)).append("\n");
