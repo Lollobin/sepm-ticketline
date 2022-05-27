@@ -5,6 +5,7 @@ export * from './artist';
 export * from './artistsSearchResult';
 export * from './authRequest';
 export * from './bookingType';
+export * from './category';
 export * from './event';
 export * from './eventSearch';
 export * from './eventSearchResult';

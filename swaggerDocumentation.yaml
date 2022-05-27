@@ -1190,6 +1190,19 @@ components:
         - cancellation
         - reservation
         - dereservation
+    Category:
+      type: string
+      enum:
+        - Classical
+        - Country
+        - EDM
+        - Jazz
+        - Oldies
+        - Pop
+        - Rap
+        - RnB
+        - Rock
+        - Techno
     User:
       type: object
       properties:
@@ -1245,7 +1258,7 @@ components:
         duration:
           type: number
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         content:
           type: string
       required:
@@ -1261,7 +1274,7 @@ components:
         duration:
           type: number
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         content:
           type: string
       required:
@@ -1540,7 +1553,7 @@ components:
         name:
           type: string
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         duration:
           type: integer
         location:
@@ -1552,7 +1565,7 @@ components:
       type: object
       properties:
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         month:
           type: string
           format: date
@@ -1697,7 +1710,9 @@ components:
       type: object
       properties:
         ticket:
-          $ref: "#/components/schemas/Ticket"
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
         type:
           type: string
           enum:

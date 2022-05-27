@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Event, EventsService, EventWithoutId } from 'src/app/generated-sources/openapi';
+import {Category, Event, EventsService, EventWithoutId} from 'src/app/generated-sources/openapi';
 
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
@@ -14,7 +14,10 @@ import { CustomAuthService } from "../../services/custom-auth.service";
 })
 export class CreateEventComponent implements OnInit {
 
-  categories: string[];
+  categoriesType = Category;
+  categories = [];
+
+
   eventForm: any;
   error = false;
   errorMessage = '';
@@ -23,8 +26,11 @@ export class CreateEventComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
   display = "none";
 
+
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router,
-    private authService: CustomAuthService) { }
+    private authService: CustomAuthService) {
+    this.categories = Object.keys(this.categoriesType);
+  }
 
   get name() {
     return this.eventForm.get("name");
@@ -43,12 +49,10 @@ export class CreateEventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categories = [
-      "Classical", "Country", "EDM", "Jazz", "Oldies", "Pop", "Rap", "R&B", "Rock", "Techno"
-    ];
+
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
-      category: ['', [Validators.required, Validators.maxLength(255)]],
+      category: ['', [Validators.required]],
       duration: [120, [Validators.min(10), Validators.max(360)]],
       description: ['']
     });

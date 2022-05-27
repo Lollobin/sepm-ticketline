@@ -27,7 +27,8 @@ import javax.annotation.Generated;
 public class TicketWithShowInfoDto   {
 
   @JsonProperty("ticket")
-  private TicketDto ticket;
+  @Valid
+  private List<TicketDto> ticket = new ArrayList<>();
 
   /**
    * Gets or Sets type
@@ -84,8 +85,16 @@ public class TicketWithShowInfoDto   {
   @JsonProperty("locationName")
   private String locationName;
 
-  public TicketWithShowInfoDto ticket(TicketDto ticket) {
+  public TicketWithShowInfoDto ticket(List<TicketDto> ticket) {
     this.ticket = ticket;
+    return this;
+  }
+
+  public TicketWithShowInfoDto addTicketItem(TicketDto ticketItem) {
+    if (this.ticket == null) {
+      this.ticket = new ArrayList<>();
+    }
+    this.ticket.add(ticketItem);
     return this;
   }
 
@@ -95,11 +104,11 @@ public class TicketWithShowInfoDto   {
   */
   @NotNull @Valid 
   @Schema(name = "ticket", required = true)
-  public TicketDto getTicket() {
+  public List<TicketDto> getTicket() {
     return ticket;
   }
 
-  public void setTicket(TicketDto ticket) {
+  public void setTicket(List<TicketDto> ticket) {
     this.ticket = ticket;
   }
 
