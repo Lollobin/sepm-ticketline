@@ -24,6 +24,9 @@ public class EventSearchDto   {
   @JsonProperty("name")
   private String name;
 
+  @JsonProperty("content")
+  private String content;
+
   @JsonProperty("category")
   private CategoryDto category;
 
@@ -53,6 +56,25 @@ public class EventSearchDto   {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public EventSearchDto content(String content) {
+    this.content = content;
+    return this;
+  }
+
+  /**
+   * Get content
+   * @return content
+  */
+  
+  @Schema(name = "content", required = false)
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
   }
 
   public EventSearchDto category(CategoryDto category) {
@@ -141,6 +163,7 @@ public class EventSearchDto   {
     }
     EventSearchDto eventSearch = (EventSearchDto) o;
     return Objects.equals(this.name, eventSearch.name) &&
+        Objects.equals(this.content, eventSearch.content) &&
         Objects.equals(this.category, eventSearch.category) &&
         Objects.equals(this.duration, eventSearch.duration) &&
         Objects.equals(this.location, eventSearch.location) &&
@@ -149,7 +172,7 @@ public class EventSearchDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, category, duration, location, artist);
+    return Objects.hash(name, content, category, duration, location, artist);
   }
 
   @Override
@@ -157,6 +180,7 @@ public class EventSearchDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventSearchDto {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");

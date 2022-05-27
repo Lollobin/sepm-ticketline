@@ -8,8 +8,9 @@
 
       <select id="inputCategory" class="form-control form-override"
               formControlName="category" style="background-position: 95%" >
-        <option [value]="noCategory">Category..</option>
-        <option *ngFor="let category1 of categories">{{category1}}</option>
+        <option [value]="noCategory" disabled selected>Filter by Category</option>
+        <option [value]="noCategory"></option>
+        <option *ngFor="let category1 of categories" [value]="category1|uppercase">{{category1}}</option>
       </select>
     </div>
 
@@ -26,10 +27,9 @@
              id="inputDuration"
              oninput="this.nextElementSibling.value = this.value"
              formControlName="duration">
-      <span *ngIf = "duration!==null; else noVal">{{secondsToHms(duration?.value)}}</span>
-      <ng-template #noVal><span>No Value Set</span></ng-template>
+      <span *ngIf = "duration.value!==null">{{secondsToHms(duration.value)}}</span>
     </div>
-  <button type ="button" class="btn btn-outline-secondary col-3" style="padding: 20px" (click)="resetDuration()">Reset Duration Filter</button>
+  <button *ngIf="duration.value" type ="button" class="btn btn-outline-secondary col-2" style="margin: 15px " (click)="resetDuration()">Reset Duration Filter</button>
 </div>
   <div class="row">
 
@@ -42,5 +42,4 @@
 </form>
 <app-event-search-result *ngIf="eventsResult"  (nextRequestedPage)="handleEventPageEmit($event)" [events]="eventsResult" [pageSize]="pageSize" ></app-event-search-result>
 
-<app-error-alert [error]="err"></app-error-alert>
 

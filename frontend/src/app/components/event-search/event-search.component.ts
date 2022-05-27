@@ -1,5 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {EventSearch, EventSearchResult, EventsService} from "../../generated-sources/openapi";
+import {
+  Category,
+  EventSearch,
+  EventSearchResult,
+  EventsService
+} from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
@@ -14,8 +19,11 @@ export class EventSearchComponent implements OnInit {
   eventsResult: EventSearchResult;
   eventForm: FormGroup;
   err;
-  categoryService;
-  categories;
+  errorMessage;
+  categoriesType = Category;
+  categories = [];
+
+
   events: EventSearchResult;
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService) {
@@ -25,6 +33,7 @@ export class EventSearchComponent implements OnInit {
       duration: [null],
       description: [null]
     });
+    this.categories = Object.keys(this.categoriesType);
   }
 
 
@@ -46,12 +55,7 @@ export class EventSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.categories = this.categoryService.categoriesGet().subscribe(
-        {
-          next: resp => this.categories = resp,
-          error: error => this.err = error
-        }
-    );
+
   }
 
   secondsToHms(d): string {
@@ -69,7 +73,7 @@ export class EventSearchComponent implements OnInit {
 
     const search: EventSearch = {
       name: this.name.value ? this.name.value : null,
-      category: this.category.value ? this.category.value : null,
+      category: this.category.value? this.category.value : null,
       duration: this.duration.value ? this.duration.value : null,
       content: this.description.value ? this.description.value : null
     };
@@ -81,7 +85,16 @@ export class EventSearchComponent implements OnInit {
             this.eventsResult = events;
             console.log(events);
           },
-          error: err => this.err = err
+          error: err => {
+            console.log('Could not fetch events: ');
+            console.log(err);
+            this.err = true;
+            if (typeof err.error === 'object') {
+              this.errorMessage = err.error.error;
+            } else {
+              this.errorMessage = err.error;
+            }
+          }
         }
     );
   }
