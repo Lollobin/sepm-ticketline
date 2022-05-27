@@ -3,6 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADDRESS_ENTITY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_BANDNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_FIRSTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_KNOWNAS;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST2_LASTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_BANDNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_FIRSTNAME;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_KNOWNAS;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTIST_LASTNAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.DEFAULT_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CATEGORY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT2_CONTENT;
@@ -37,6 +45,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -45,6 +54,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
@@ -56,9 +66,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -116,6 +124,9 @@ class ShowEndpointTest {
     private SeatRepository seatRepository;
 
     @Autowired
+    private ArtistRepository artistRepository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
@@ -131,6 +142,7 @@ class ShowEndpointTest {
         sectorPriceRepository.deleteAll();
         showRepository.deleteAll();
         eventRepository.deleteAll();
+        artistRepository.deleteAll();
         sectorRepository.deleteAll();
         seatingPlanRepository.deleteAll();
         seatingPlanLayoutRepository.deleteAll();
@@ -220,12 +232,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -269,12 +279,10 @@ class ShowEndpointTest {
 
         eventRepository.save(event1);
 
-        Address address = ADDRESS_ENTITY;
-        address = addressRepository.save(address);
-
         Location location = new Location();
         location.setName("Filip's Cool Location");
-        location.setAddress(address);
+        ADDRESS_ENTITY.setAddressId(null);
+        location.setAddress(ADDRESS_ENTITY);
         locationRepository.save(location);
 
         SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
@@ -307,6 +315,21 @@ class ShowEndpointTest {
         seat2 = seatRepository.save(seat2);
         seat3 = seatRepository.save(seat3);
 
+        Artist artist1 = new Artist();
+        artist1.setArtistId(1L);
+        artist1.setFirstName(ARTIST_FIRSTNAME);
+        artist1.setLastName(ARTIST_LASTNAME);
+        artist1.setKnownAs(ARTIST_KNOWNAS);
+        artist1.setBandName(ARTIST_BANDNAME);
+        Artist artist2 = new Artist();
+        artist2.setArtistId(2L);
+        artist2.setFirstName(ARTIST2_FIRSTNAME);
+        artist2.setLastName(ARTIST2_LASTNAME);
+        artist2.setKnownAs(ARTIST2_KNOWNAS);
+        artist2.setBandName(ARTIST2_BANDNAME);
+        artist1 = artistRepository.save(artist1);
+        artist2 = artistRepository.save(artist2);
+
         ShowWithoutIdDto showDtoToSave = new ShowWithoutIdDto();
         showDtoToSave.setDate(SHOW_DATE);
         showDtoToSave.setEvent(event1.getEventId().intValue());
@@ -321,6 +344,10 @@ class ShowEndpointTest {
         sectorPriceDto2.setSectorId(sector2.getSectorId());
         sectorPriceDtos.add(sectorPriceDto2);
         showDtoToSave.setSectorPrices(sectorPriceDtos);
+        List<Integer> artists = new ArrayList<>();
+        artists.add(Math.toIntExact(artist1.getArtistId()));
+        artists.add(Math.toIntExact(artist2.getArtistId()));
+        showDtoToSave.setArtists(artists);
 
         String json = objectMapper.writeValueAsString(showDtoToSave);
 
@@ -338,11 +365,15 @@ class ShowEndpointTest {
 
         assertThat(sectorPriceRepository.findAll()).hasSize(2);
         assertThat(sectorPriceRepository.findAll().get(0).getPrice()).isEqualTo("100.00");
+        assertThat(sectorPriceRepository.findAll().get(1).getPrice()).isEqualTo("200.00");
 
         assertThat(ticketRepository.findAll()).hasSize(3);
-        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(seat1.getSeatId());
-        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(seat2.getSeatId());
-        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(seat3.getSeatId());
+        assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(
+            seat1.getSeatId());
+        assertThat(ticketRepository.findAll().get(1).getSeat().getSeatId()).isEqualTo(
+            seat2.getSeatId());
+        assertThat(ticketRepository.findAll().get(2).getSeat().getSeatId()).isEqualTo(
+            seat3.getSeatId());
     }
 
 

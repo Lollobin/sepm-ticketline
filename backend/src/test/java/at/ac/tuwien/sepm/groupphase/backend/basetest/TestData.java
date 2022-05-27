@@ -170,6 +170,13 @@ public interface TestData {
     String ARTIST2_KNOWNAS = "Friedl";
     String ARTIST2_BANDNAME = "Ferdies Jungs";
 
+    String ARTIST3_FIRSTNAME = "Patrick";
+    String ARTIST3_LASTNAME = "Grossmann";
+    String ARTIST3_KNOWNAS = "Luciano";
+    String ARTIST3_BANDNAME = null;
+
+    String ARTIST_INVALIDNAME = "INVALID NAME";
+
     String SEATINGPLAN_NAME = "SeatingPlan Name";
     String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
     Long SECTOR_ID1 = 1L;
@@ -181,5 +188,61 @@ public interface TestData {
     BigDecimal SECTOR_PRICE1 = BigDecimal.valueOf(1);
     BigDecimal SECTOR_PRICE2 = BigDecimal.valueOf(2);
     BigDecimal SECTOR_PRICE3 = BigDecimal.valueOf(3);
+
+    //Location Data
+
+    String GASOMETER_STREET = "Guglgasse";
+    String GASOMETER_HOUSE_NUMBER = "6";
+    String GASOMETER_ZIP_CODE = "1110";
+    String GASOMETER_CITY = "Wien";
+    String GASOMETER_COUNTRY = "Austria";
+
+    Address LOCATION_GASOMETER_ADDRESS = new Address(GASOMETER_HOUSE_NUMBER, GASOMETER_STREET, GASOMETER_ZIP_CODE, GASOMETER_CITY, GASOMETER_COUNTRY);
+
+    String ALBERTINA_STREET = "Albertinaplatz";
+    String ALBERTINA_HOUSE_NUMBER = "1";
+    String ALBERTINA_ZIP_CODE = "1010";
+    String ALBERTINA_CITY = "Wien";
+    String ALBERTINA_COUNTRY = "Austria";
+
+    Address LOCATION_ALBERTINA_ADDRESS = new Address(ALBERTINA_HOUSE_NUMBER, ALBERTINA_STREET, ALBERTINA_ZIP_CODE, ALBERTINA_CITY, ALBERTINA_COUNTRY);
+
+
+
+    String BOLLWERK_STREET = "Gerberweg";
+    String BOLLWERK_HOUSE_NUMBER = "46";
+    String BOLLWERK_ZIP_CODE = "9020";
+    String BOLLWERK_CITY = "Klagenfurt";
+    String BOLLWERK_COUNTRY = "Austria";
+
+    Address LOCATION_BOLLWERK_ADDRESS = new Address(BOLLWERK_HOUSE_NUMBER, BOLLWERK_STREET, BOLLWERK_ZIP_CODE, BOLLWERK_CITY, BOLLWERK_COUNTRY);
+
+
+    String STADTHALLE_STREET = "Messeplatz";
+    String STADTHALLE_HOUSE_NUMBER = "1";
+    String STADTHALLE_ZIP_CODE = "8010";
+    String STADTHALLE_CITY = "Graz";
+    String STADTHALLE_COUNTRY = "Austria";
+
+    Address LOCATION_STADTHALLE_ADDRESS = new Address(STADTHALLE_HOUSE_NUMBER, STADTHALLE_STREET, STADTHALLE_ZIP_CODE, STADTHALLE_CITY, STADTHALLE_COUNTRY);
+
+    String TOMORROWLAND_STREET = "Schommelei";
+    String TOMORROWLAND_HOUSE_NUMBER = "1";
+    String TOMORROWLAND_ZIP_CODE = "2850";
+    String TOMORROWLAND_CITY = "Boom";
+    String TOMORROWLAND_COUNTRY = "Belgien";
+
+    Address LOCATION_TOMORROWLAND_ADDRESS = new Address(TOMORROWLAND_HOUSE_NUMBER, TOMORROWLAND_STREET, TOMORROWLAND_ZIP_CODE, TOMORROWLAND_CITY, TOMORROWLAND_COUNTRY);
+
+    String LOCATION1_NAME = "Gasometer";
+
+    String LOCATION2_NAME = "Stadthalle";
+
+    String LOCATION3_NAME = "Bollwerk";
+
+    String LOCATION4_NAME = "Tomorrowland";
+
+    String LOCATION5_NAME = "Albertina";
+
 
 }
