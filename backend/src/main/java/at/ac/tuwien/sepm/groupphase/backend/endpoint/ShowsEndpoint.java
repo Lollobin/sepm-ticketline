@@ -46,7 +46,7 @@ public class ShowsEndpoint implements ShowsApi {
             "showId");
         ShowSearchResultDto resultDto;
         if (search.getDate() == null && (search.getEvent() == null || search.getEvent().isBlank())
-            && search.getPrice() == null && search.getSeatingPlan() == null) {
+            && search.getPrice() == null && search.getSeatingPlan() == null && search.getLocation() == null && search.getEventId() == null) {
 
             resultDto = showService.findAll(pageable);
 

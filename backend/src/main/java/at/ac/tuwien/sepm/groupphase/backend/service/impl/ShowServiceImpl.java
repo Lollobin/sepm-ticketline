@@ -57,7 +57,8 @@ public class ShowServiceImpl implements ShowService {
     public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator,
         SectorRepository sectorRepository, SeatRepository seatRepository,
         TicketRepository ticketRepository, SeatingPlanRepository seatingPlanRepository,
-        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository, ShowMapper showMapper) {
+        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository,
+        ShowMapper showMapper) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
         this.sectorRepository = sectorRepository;
@@ -85,18 +86,36 @@ public class ShowServiceImpl implements ShowService {
 
         LOGGER.trace("Find all shows with pageable: {}", pageable);
 
-        Integer hours = null;
-        Integer minutes = null;
-        if (showSearchDto.getDate() != null) {
-            hours = showSearchDto.getDate().getHour();
-            minutes = showSearchDto.getDate().getMinute();
+        if (showSearchDto.getDate() == null && showSearchDto.getEvent() == null
+            && showSearchDto.getPrice() == null && showSearchDto.getSeatingPlan() == null
+            && showSearchDto.getEventId() == null && showSearchDto.getLocation() != null) {
+
+            Page<Show> showPage = showRepository.findShowByLocation(showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+
+        } else if (showSearchDto.getEventId() != null) {
+            Page<Show> showPage = showRepository.findShowByEventId(showSearchDto.getEventId(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+        } else {
+
+            Integer hours = null;
+            Integer minutes = null;
+            if (showSearchDto.getDate() != null) {
+                hours = showSearchDto.getDate().getHour();
+                minutes = showSearchDto.getDate().getMinute();
+            }
+
+            Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
+                showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
+                showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
         }
-
-        Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
-            showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
-            pageable);
-
-        return setShowSearchResultDto(showPage);
     }
 
     private ShowSearchResultDto setShowSearchResultDto(Page<Show> showPage) {
@@ -172,7 +191,6 @@ public class ShowServiceImpl implements ShowService {
 
         show.setSectorPrices(sectorPriceSet);
 
-
         return show;
     }
 
@@ -187,15 +205,17 @@ public class ShowServiceImpl implements ShowService {
         }
     }
 
-    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos, List<Sector> sectors) {
+    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos,
+        List<Sector> sectors) {
         List<SectorPrice> sectorPrices = new ArrayList<>();
         for (Sector sector : sectors) {
             boolean found = false;
             for (SectorPriceDto sectorPriceDto : sectorPriceDtos) {
                 if (sectorPriceDto.getSectorId().equals(sector.getSectorId())) {
                     found = true;
-                    sectorPrices.add(new SectorPrice(sector, null,
-                        BigDecimal.valueOf(sectorPriceDto.getPrice())));
+                    sectorPrices.add(
+                        new SectorPrice(sector, null,
+                            BigDecimal.valueOf(sectorPriceDto.getPrice())));
                     break;
                 }
             }
