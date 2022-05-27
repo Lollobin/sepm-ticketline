@@ -32,6 +32,15 @@ type ClickElement =
   | { data: Seat; type: "Seat" }
   | { data: StaticElement; type: "StaticElement" };
 
+const getLargerX = (element: { location: Location }, largestX: number) =>
+  largestX < element.location.x + element.location.w
+    ? element.location.x + element.location.w
+    : largestX;
+const getLargerY = (element: { location: Location }, largestY: number) =>
+  largestY < element.location.y + element.location.h
+    ? element.location.y + element.location.h
+    : largestY;
+
 @Component({
   selector: "app-seating-plan-editor",
   templateUrl: "./seating-plan-editor.component.html",
@@ -39,9 +48,16 @@ type ClickElement =
 })
 export class SeatingPlanEditorComponent implements AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
+  @Output() clickElement = new EventEmitter<ClickElement>();
+
   pixiApplication: Application;
   seatingPlan: SeatingPlan;
   selectedElements: { [key: string]: { seatGraphics: Graphics; seatCover: Graphics } } = {};
+  dragging = "";
+  dragStartEventData = null;
+
+  constructor() {}
+
   @Input() set sectors(sectors: SectorBuilder[]) {
     this.seatingPlan = generateFromSectorBuilder(sectors);
     if (this.pixiApplication) {
@@ -50,11 +66,6 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     }
   }
 
-  @Output() clickElement = new EventEmitter<ClickElement>();
-
-  dragging = "";
-  dragStartEventData = null;
-  constructor() {}
   initializeSeatingPlan() {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlan.general.width;
@@ -81,18 +92,12 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     graphics.height = location.h;
   }
   syncModelWithGraphics() {
-    const getLargerX = (element: { location: Location }, largestX: number) =>
-      largestX < element.location.x + element.location.w
-        ? element.location.x + element.location.w
-        : largestX;
-    const getLargerY = (element: { location: Location }, largestY: number) =>
-      largestY < element.location.y + element.location.h
-        ? element.location.y + element.location.h
-        : largestY;
     let largestX = 0;
     let largestY = 0;
     this.seatingPlan.seats.forEach((element: Seat) => {
-      if (!element.location) return;
+      if (!element.location) {
+        return;
+      }
       element.location = this.syncElement(
         element as { location: Location },
         generateSeatId(element.id)
@@ -101,7 +106,9 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
       largestY = getLargerY(element as { location: Location }, largestY);
     });
     this.seatingPlan.sectors.forEach((element: SectorWithLocation) => {
-      if (!element.location) return;
+      if (!element.location) {
+        return;
+      }
       element.location = this.syncElement(element, generateStandingAreaId(element.id));
       largestX = getLargerX(element as { location: Location }, largestX);
       largestY = getLargerY(element as { location: Location }, largestY);
@@ -143,11 +150,15 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   }
 
   onDragMove(event, graphics: Graphics, cover?: Graphics) {
-    if (this.dragging !== graphics.name) return;
+    if (this.dragging !== graphics.name) {
+      return;
+    }
     const newPosition = event.data.getLocalPosition(graphics.parent);
     forEach(this.selectedElements, ({ seatGraphics, seatCover }) => {
       //Object that has been dragged should be moved last
-      if (graphics.name === seatGraphics.name) return;
+      if (graphics.name === seatGraphics.name) {
+        return;
+      }
       const xPositionDifference = seatGraphics.x - graphics.x;
       const yPositionDifference = seatGraphics.y - graphics.y;
       const newX = newPosition.x + xPositionDifference;
@@ -177,7 +188,9 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
   }
 
   setPosition(graphics: Graphics | undefined, x: number, y: number) {
-    if (!graphics) return;
+    if (!graphics) {
+      return;
+    }
     graphics.x = x;
     graphics.y = y;
   }
@@ -239,7 +252,6 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     });
     this.initializeSeatingPlan();
     this.syncModelWithGraphics();
-
   }
 
   addGenericDragAndDrop(
@@ -270,10 +282,11 @@ export class SeatingPlanEditorComponent implements AfterViewInit {
     const clickEvent = (event) => {
       this.clickElement.emit({ data: seat, type: "Seat" });
       if (event.data.originalEvent.ctrlKey) {
-        !this.selectedElements[seatGraphics.name]
-          ? this.selectSeat(seatGraphics as Graphics, seatCover as Graphics)
-          : this.deselectSeat(seatGraphics as Graphics, seatCover as Graphics);
-      } else if (this.selectedElements[seatGraphics.name] == undefined) {
+        (!this.selectedElements[seatGraphics.name] ? this.selectSeat : this.deselectSeat)(
+          seatGraphics as Graphics,
+          seatCover as Graphics
+        );
+      } else if (!this.selectedElements[seatGraphics.name]) {
         this.deselectAllSeats();
       }
     };

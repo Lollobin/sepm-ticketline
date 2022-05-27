@@ -9,8 +9,11 @@ import {
 } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { LocationsService, LocationWithoutId, SeatingPlanWithoutId, Location } from "src/app/generated-sources/openapi";
+import {
+  LocationsService,
+  SeatingPlanWithoutId,
+  Location,
+} from "src/app/generated-sources/openapi";
 import { ActivatedRoute } from "@angular/router";
 
 type ClickElement =
@@ -27,6 +30,8 @@ type ClickElement =
   styleUrls: ["./create-seating-plan.component.scss"],
 })
 export class CreateSeatingPlanComponent implements OnInit {
+  @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
+
   locationId: number;
   page: number;
   faXmark = faXmark;
@@ -34,17 +39,19 @@ export class CreateSeatingPlanComponent implements OnInit {
   chosenElement: ClickElement;
   selectedSector: number;
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
-  seatingPlanName = ""
+  seatingPlanName = "";
   location: Location = {
     //TODO: DElete test data when location get interface works
     locationId: 1,
     name: "Capital Arena",
     address: {
-      houseNumber: "12", street: "Imaginary street", city: "City Capital", country: "Imaginarium", zipCode: "1212"
-    } 
-
-  }
-  @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
+      houseNumber: "12",
+      street: "Imaginary street",
+      city: "City Capital",
+      country: "Imaginarium",
+      zipCode: "1212",
+    },
+  };
 
   constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
 
@@ -52,10 +59,13 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.page = 1;
     this.route.params.subscribe((params) => {
       this.locationId = params["id"];
-      this.locationsService.locationsIdGet(this.locationId).subscribe({next: (location)=>{
-        //TODO: Add location get interface
-        console.log(location)
-      }, error: ()=>{}})
+      this.locationsService.locationsIdGet(this.locationId).subscribe({
+        next: (location) => {
+          //TODO: Add location get interface
+          console.log(location);
+        },
+        error: () => {},
+      });
     });
   }
   removeSector(index: number) {

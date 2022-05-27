@@ -20,26 +20,22 @@ const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlan => {
   return seatingPlan;
 };
 
-const parseColor = (color: string): number => {
-  return Number.parseInt(color.substring(1), 16)
-};
-
+const parseColor = (color: string): number => Number.parseInt(color.substring(1), 16);
 const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["sectors"] =>
-  sectors.map((sector, index) => {
-    if (sector.standingSector) {
-      return {
-        location: { x: index * 110, y: 10, w: 100, h: 100 },
-        noSeats: true,
-        id: index,
-        color: parseColor(sector.color),
-      };
-    }
-    return {
-      noSeats: false,
-      id: index,
-      color: parseColor(sector.color),
-    };
-  });
+  sectors.map((sector, index) =>
+    sector.standingSector
+      ? {
+          location: { x: index * 110, y: 10, w: 100, h: 100 },
+          noSeats: true,
+          id: index,
+          color: parseColor(sector.color),
+        }
+      : {
+          noSeats: false,
+          id: index,
+          color: parseColor(sector.color),
+        }
+  );
 
 const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["seats"] => {
   const seats: SeatingPlan["seats"] = [];
