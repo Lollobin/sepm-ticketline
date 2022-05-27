@@ -66,11 +66,27 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <small for="inputLocation" class="form-label text-muted">Location Name</small>
+                <input class="form-control" type="text" formControlName="location" [ngbTypeahead]="locationSearch"
+                    #instance="ngbTypeahead" [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter"
+                    [class.is-invalid]="!this.locationValid" [class.is-valid]="this.locationValid" />
+                <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
+                    <div>Location is required!</div>
+                </div>
             </div>
             <div class="form-group col-md-6">
                 <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
-                <input class="form-control form-override" type="seatingPlan" formControlName="seatingPlan"
-                    [class.is-invalid]="!this.showForm.value.seatingPlan" [class.is-valid]="this.showForm.value.seatingPlan">
+                <select *ngIf="!this.locationValid" class="form-control form-override" style="background-position: 92%"
+                    disabled></select>
+                <div *ngIf="!this.locationValid" class="invalid-feedback" style="display: block">
+                    <div>Please select a location first!</div>
+                </div>
+                <select *ngIf="this.locationValid" id="inputSeatingPlan" class="form-control form-override"
+                    [class.is-invalid]="!this.seatingPlan.valid" [class.is-valid]="this.seatingPlan.valid"
+                    formControlName="seatingPlan" style="background-position: 92%">
+                    <option hidden="true">Pick one</option>
+                    <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}
+                    </option>
+                </select>
             </div>
         </div>
         <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
@@ -80,15 +96,15 @@
         <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>
             <div class="container">
-                <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan">
-                    <small class="col-md-3 form-label text-muted input-icon input-icon-right" style="padding: 1px; width: 129px;"
+                <div class="row" *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan.seatingPlanId">
+                    <small class="col-md-3 form-label text-muted input-icon input-icon-right"
                         *ngFor="let field of sectors; let i = index">
                         Sector {{i + 1}}
                         <div class="input-group">
-                            <div class="input-group-addon" style="padding-left: 5px; padding-top: 5px; font-size: 20px">€</div>
+                            <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
                             <input [class.is-valid]="this.sectorForm.valid" [class.is-invalid]="!this.sectorForm.valid"
                                 [formControlName]="'sector'+field.sectorId" class="form-control currency"
-                                style="text-align: right; margin: 5px;" name="currency" type="number" min="0.01" />
+                                style="text-align: right" name="currency" type="number" min="0.01" />
                         </div>
                     </small>
                     <div *ngIf="!this.sectorForm.valid && this.showForm.value.seatingPlan" class="invalid-feedback"
@@ -97,16 +113,6 @@
                     </div>
 
                 </div>
-                <!-- <div
-                    *ngIf="(this.showForm.value.seatingPlan && (!this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan))">
-                    <button class="invalid-feedback btn btn-warning" style="display: block"
-                        (click)="getSectorsOfSeatingPlan(this.showForm.value.seatingPlan)">
-                        Click here to render the sectors
-                    </button>
-                    <div class="invalid-feedback" style="display: block">
-                        <div>Sectors have to be rendered to set prices!</div>
-                    </div>
-                </div> -->
             </div>
         </div>
         <div class="form-group" [formGroup]="artistForm">
@@ -128,6 +134,14 @@
             </div>
         </div>
         <table class="table table-hover" *ngIf="this.artists.length > 0">
+            <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Known as</th>
+                    <th scope="col">Band</th>
+                </tr>
+            </thead>
             <tbody>
                 <tr *ngFor="let artist of artists">
                     <td>{{artist.firstName}}</td>
@@ -137,8 +151,22 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary form-group" (click)="createShow()"
-            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan">Submit</button>
+        <button type="submit" class="btn btn-primary form-group" (click)="openModal()"
+            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Submit</button>
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+            style="background: rgba(0,0,0, .5); padding-top: 15%">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Are you sure you want to create this show?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="createShow(); onCloseHandled()">Create Show</button>
+                        <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
         <div class="form-group">
             <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>

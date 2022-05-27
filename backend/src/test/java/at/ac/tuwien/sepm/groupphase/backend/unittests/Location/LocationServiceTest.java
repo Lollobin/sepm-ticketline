@@ -29,8 +29,10 @@ import static org.mockito.Mockito.when;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LocationMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SeatingPlanMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.LocationServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
@@ -57,8 +59,12 @@ class LocationServiceTest {
     Pageable pageable = PageRequest.of(0, 10, Direction.fromString("ASC"), "id");
     @Mock
     private LocationRepository locationRepository;
+    @Mock
+    private SeatingPlanRepository seatingPlanRepository;
     @Spy
     private LocationMapper locationMapper = Mappers.getMapper(LocationMapper.class);
+    @Spy
+    private SeatingPlanMapper seatingPlanMapper = Mappers.getMapper(SeatingPlanMapper.class);
     @Mock
     private SearchValidator searchValidator;
     private LocationService locationService;
@@ -66,7 +72,7 @@ class LocationServiceTest {
     @BeforeEach
     void setUp() {
         locationService = new LocationServiceImpl(locationRepository, locationMapper,
-            searchValidator);
+            searchValidator, seatingPlanRepository, seatingPlanMapper);
         locationRepository.deleteAll();
     }
 
