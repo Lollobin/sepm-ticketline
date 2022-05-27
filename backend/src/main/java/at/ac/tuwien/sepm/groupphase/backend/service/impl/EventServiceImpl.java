@@ -7,8 +7,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
-import java.lang.invoke.MethodHandles;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
+import java.lang.invoke.MethodHandles;
 import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -48,11 +48,15 @@ public class EventServiceImpl implements EventService {
     public EventSearchResultDto search(EventSearchDto eventSearchDto, Pageable pageable) {
         LOGGER.debug("Searching for events with EventSearchDto: {}", eventSearchDto);
 
-        Long location = eventSearchDto.getLocation() == null ? null : Long.valueOf(eventSearchDto.getLocation());
-        Long artist = eventSearchDto.getArtist() == null ? null : Long.valueOf(eventSearchDto.getArtist());
-
-        Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(), eventSearchDto.getContent(),
-            eventSearchDto.getDuration(), eventSearchDto.getCategory().getValue(), location, artist, pageable);
+        Long location = eventSearchDto.getLocation() == null ? null
+            : Long.valueOf(eventSearchDto.getLocation());
+        Long artist =
+            eventSearchDto.getArtist() == null ? null : Long.valueOf(eventSearchDto.getArtist());
+        String category =
+            eventSearchDto.getCategory() == null ? null : eventSearchDto.getCategory().getValue();
+        Page<Event> eventPage = this.eventRepository.search(eventSearchDto.getName(),
+            eventSearchDto.getContent(), eventSearchDto.getDuration(), category, location, artist,
+            pageable);
 
         return setEventSearchResultDto(eventPage);
     }
@@ -82,7 +86,8 @@ public class EventServiceImpl implements EventService {
         LOGGER.trace("Setting EventSearchResultDto values");
         EventSearchResultDto eventSearchResultDto = new EventSearchResultDto();
 
-        eventSearchResultDto.setEvents(eventPage.getContent().stream().map(eventMapper::eventToEventDto).toList());
+        eventSearchResultDto.setEvents(
+            eventPage.getContent().stream().map(eventMapper::eventToEventDto).toList());
         eventSearchResultDto.setNumberOfResults((int) eventPage.getTotalElements());
         eventSearchResultDto.setCurrentPage(eventPage.getNumber());
         eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
