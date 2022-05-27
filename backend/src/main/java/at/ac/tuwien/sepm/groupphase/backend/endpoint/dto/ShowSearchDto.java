@@ -39,6 +39,9 @@ public class ShowSearchDto   {
   @JsonProperty("location")
   private Long location;
 
+  @JsonProperty("eventId")
+  private Long eventId;
+
   public ShowSearchDto event(String event) {
     this.event = event;
     return this;
@@ -134,6 +137,25 @@ public class ShowSearchDto   {
     this.location = location;
   }
 
+  public ShowSearchDto eventId(Long eventId) {
+    this.eventId = eventId;
+    return this;
+  }
+
+  /**
+   * Get eventId
+   * @return eventId
+  */
+  
+  @Schema(name = "eventId", required = false)
+  public Long getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(Long eventId) {
+    this.eventId = eventId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -147,12 +169,13 @@ public class ShowSearchDto   {
         Objects.equals(this.date, showSearch.date) &&
         Objects.equals(this.price, showSearch.price) &&
         Objects.equals(this.seatingPlan, showSearch.seatingPlan) &&
-        Objects.equals(this.location, showSearch.location);
+        Objects.equals(this.location, showSearch.location) &&
+        Objects.equals(this.eventId, showSearch.eventId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(event, date, price, seatingPlan, location);
+    return Objects.hash(event, date, price, seatingPlan, location, eventId);
   }
 
   @Override
@@ -164,6 +187,7 @@ public class ShowSearchDto   {
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    eventId: ").append(toIndentedString(eventId)).append("\n");
     sb.append("}");
     return sb.toString();
   }
