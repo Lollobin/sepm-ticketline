@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {User, UserManagementService} from "../../generated-sources/openapi";
+import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
