@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Category } from './category';
+import { User } from './user';
 
 
-export interface EventWithoutId { 
-    name: string;
-    duration?: number;
-    category?: Category;
-    content?: string;
+export interface UsersPage { 
+    users?: Array<User>;
+    currentPage?: number;
+    numberOfResults?: number;
+    pagesTotal?: number;
 }
 

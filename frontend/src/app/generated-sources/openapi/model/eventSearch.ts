@@ -9,11 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Category } from './category';
 
 
 export interface EventSearch { 
     name?: string;
-    category?: string;
+    category?: Category;
     duration?: number;
     location?: number;
     artist?: number;

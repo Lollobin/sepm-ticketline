@@ -1,39 +1,37 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UsersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.UsersApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
-import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("${openapi.ticketline.base-path:}")
 public class UsersEndpoint implements UsersApi {
 
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final UserService userService;
     private final UserMapper userMapper;
-    private final AuthenticationUtil authenticationUtil;
 
-    public UsersEndpoint(
-        UserService userService, UserMapper userMapper, AuthenticationUtil authenticationUtil) {
+    public UsersEndpoint(UserService userService, UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.authenticationUtil = authenticationUtil;
     }
 
     @Override
@@ -45,17 +43,24 @@ public class UsersEndpoint implements UsersApi {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public ResponseEntity<List<UserDto>> usersGet(Boolean filterLocked) {
+    public ResponseEntity<UsersPageDto> usersGet(Boolean filterLocked, Integer pageSize,
+        Integer requestedPage, String sort) {
         LOGGER.info("GET /users, filterLocked set to: {}", filterLocked);
 
-        if (authenticationUtil.getAuthentication() instanceof AnonymousAuthenticationToken) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
+            "lastName");
 
-        List<UserDto> userDto =
-            userService.findAll(filterLocked).stream()
-                .map(userMapper::applicationUserToUserDto)
-                .toList();
-        return ResponseEntity.ok().body(userDto);
+        Page<ApplicationUser> userPage = userService.findAll(filterLocked, pageable);
+
+        UsersPageDto usersPageDto = new UsersPageDto();
+
+        usersPageDto.setUsers(
+            userPage.getContent().stream().map(userMapper::applicationUserToUserDto).toList());
+        usersPageDto.setNumberOfResults((int) userPage.getTotalElements());
+        usersPageDto.setCurrentPage(userPage.getNumber());
+        usersPageDto.setPagesTotal(userPage.getTotalPages());
+
+        return ResponseEntity.ok().body(usersPageDto);
+
     }
 }

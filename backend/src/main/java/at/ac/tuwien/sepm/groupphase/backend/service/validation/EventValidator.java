@@ -28,13 +28,7 @@ public class EventValidator {
             first = false;
         }
 
-        if (isStringLengthInvalid(event.getCategory())) {
-            if (!first) {
-                exceptionString += "& ";
-            }
-            exceptionString += "Category contains too many characters";
-            first = false;
-        }
+
 
         if (isDurationInvalid(event.getDuration())) {
             if (!first) {

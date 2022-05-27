@@ -9,13 +9,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Category } from './category';
 
 
-export interface EventWithoutId { 
-    name: string;
-    duration?: number;
-    category?: Category;
-    content?: string;
-}
+export enum Category {
+    Classical = 'Classical',
+    Country = 'Country',
+    Edm = 'EDM',
+    Jazz = 'Jazz',
+    Oldies = 'Oldies',
+    Pop = 'Pop',
+    Rap = 'Rap',
+    RnB = 'RnB',
+    Rock = 'Rock',
+    Techno = 'Techno'
+};
 
