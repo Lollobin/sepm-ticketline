@@ -1685,7 +1685,9 @@ components:
       type: object
       properties:
         ticket:
-          $ref: "#/components/schemas/Ticket"
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
         type:
           type: string
           enum:
