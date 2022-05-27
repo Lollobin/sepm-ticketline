@@ -49,7 +49,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   event: Event = {
     eventId: 0,
     name: "",
-    category: "",
+    category: null,
     duration: 0,
     content: "",
   };
@@ -91,7 +91,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     });
   }
   retreiveEvent(show: Show) {
-    this.eventsService.eventsIdGet(show.event).subscribe({
+    this.eventsService.eventsIdGet(show.event.eventId).subscribe({
       next: (event) => {
         this.event = event;
       },
