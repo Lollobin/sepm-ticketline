@@ -8,8 +8,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
   styleUrls: ['./event-search.component.scss']
 })
 export class EventSearchComponent implements OnInit {
-  page=0;
-  pageSize=10;
+  page = 1;
+  pageSize = 10;
+  noCategory = null;
   eventsResult: EventSearchResult;
   eventForm: FormGroup;
   err;
@@ -17,12 +18,12 @@ export class EventSearchComponent implements OnInit {
   categories;
   events: EventSearchResult;
 
-  constructor(private formBuilder: FormBuilder,private eventService: EventsService) {
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService) {
     this.eventForm = this.formBuilder.group({
-      name: [],
-      category: [],
-      duration: [],
-      description: []
+      name: [null],
+      category: [this.noCategory],
+      duration: [null],
+      description: [null]
     });
   }
 
@@ -66,28 +67,31 @@ export class EventSearchComponent implements OnInit {
 
   onSearch() {
 
-    const search: EventSearch={
-      name: this.name.value,
-      category:this.category.value,
-      duration:this.duration.value,
-      content:this.description.value
+    const search: EventSearch = {
+      name: this.name.value ? this.name.value : null,
+      category: this.category.value ? this.category.value : null,
+      duration: this.duration.value ? this.duration.value : null,
+      content: this.description.value ? this.description.value : null
     };
     console.log(search);
 
-    this.eventService.eventsGet(search,this.pageSize,this.page).subscribe(
+    this.eventService.eventsGet(search, this.pageSize, this.page - 1).subscribe(
         {
-          next: events => this.eventsResult=events,
-          error: err => this.err=err
+          next: events => {
+            this.eventsResult = events;
+            console.log(events);
+          },
+          error: err => this.err = err
         }
     );
   }
 
-  resetDuration(){
-    this.eventForm.controls.duration.setValue(undefined);
+  resetDuration() {
+    this.eventForm.controls.duration.setValue(null);
   }
 
-  handleEventPageEmit(number){
-    this.page=number;
+  handleEventPageEmit(number) {
+    this.page = number;
     this.onSearch();
   }
 }
