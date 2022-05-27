@@ -14,6 +14,7 @@ import { Category } from './category';
 
 export interface EventSearch { 
     name?: string;
+    content?: string;
     category?: Category;
     duration?: number;
     location?: number;
