@@ -13,7 +13,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ShowService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -41,14 +40,16 @@ public class ShowsEndpoint implements ShowsApi {
 
     @Override
     public ResponseEntity<ShowSearchResultDto> showsGet(ShowSearchDto search, Integer pageSize,
-        Integer requestedPage, String sort) {
+        Integer requestedPage, SortDto sort) {
         LOGGER.info("GET /shows with searchDto: {}", search);
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.valueOf(
+                String.valueOf(sort)),
             "showId");
         ShowSearchResultDto resultDto;
         if (search.getDate() == null && (search.getEvent() == null || search.getEvent().isBlank())
-            && search.getPrice() == null && search.getSeatingPlan() == null && search.getLocation() == null && search.getEventId() == null) {
+            && search.getPrice() == null && search.getSeatingPlan() == null
+            && search.getLocation() == null && search.getEventId() == null) {
 
             resultDto = showService.findAll(pageable);
 
