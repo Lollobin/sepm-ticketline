@@ -41,7 +41,7 @@ public class EventsEndpoint implements EventsApi {
 
         if ((search.getName() == null || search.getName().isBlank())
             && (search.getContent() == null || search.getContent().isBlank())
-            && (search.getCategory() == null || search.getCategory().isBlank())
+            && search.getCategory() == null
             && search.getDuration() == null
             && search.getLocation() == null
             && search.getArtist() == null) {

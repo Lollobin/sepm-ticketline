@@ -17,6 +17,13 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
 
+    public Location() {
+    }
+
+    public Location(Long locationId) {
+        this.locationId = locationId;
+    }
+
     @Column(nullable = false)
     private String name;
 

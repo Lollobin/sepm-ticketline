@@ -151,15 +151,34 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/filterLocked"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UsersPage"
     post:
       tags:
         - userManagement
@@ -693,6 +712,30 @@ paths:
           description: The location with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
+  /locations/{id}/seatingPlans:
+    get:
+      tags: 
+        - locations
+      summary: Gets the seating plans of a location
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/locationId"
+      responses:
+        200:
+          description: Successful retreival of the location seating plans
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/components/schemas/SeatingPlan"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: No seating plans of the given location were found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /artists:
     get:
       tags:
@@ -1156,6 +1199,19 @@ components:
         - cancellation
         - reservation
         - dereservation
+    Category:
+      type: string
+      enum:
+        - Classical
+        - Country
+        - EDM
+        - Jazz
+        - Oldies
+        - Pop
+        - Rap
+        - RnB
+        - Rock
+        - Techno
     User:
       type: object
       properties:
@@ -1211,7 +1267,7 @@ components:
         duration:
           type: number
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         content:
           type: string
       required:
@@ -1227,7 +1283,7 @@ components:
         duration:
           type: number
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         content:
           type: string
       required:
@@ -1342,6 +1398,7 @@ components:
       properties:
         locationId:
           type: integer
+          format: int64
         name:
           type: string
         address:
@@ -1507,18 +1564,19 @@ components:
         content:
           type: string
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         duration:
           type: integer
         location:
           type: integer
         artist:
           type: integer
+
     TopShowSearch:
       type: object
       properties:
         category:
-          type: string
+          $ref: "#/components/schemas/Category"
         month:
           type: string
           format: date
@@ -1663,7 +1721,9 @@ components:
       type: object
       properties:
         ticket:
-          $ref: "#/components/schemas/Ticket"
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
         type:
           type: string
           enum:
@@ -1754,3 +1814,18 @@ components:
           type: integer
         pagesTotal:
           type: integer
+    UsersPage:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+
+

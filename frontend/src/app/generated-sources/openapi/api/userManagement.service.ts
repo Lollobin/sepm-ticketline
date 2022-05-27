@@ -22,6 +22,8 @@ import { Observable }                                        from 'rxjs';
 import { User } from '../model/user';
 // @ts-ignore
 import { UserWithPassword } from '../model/userWithPassword';
+// @ts-ignore
+import { UsersPage } from '../model/usersPage';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -305,18 +307,33 @@ export class UserManagementService {
     /**
      * Gets a list of users
      * @param filterLocked Only return locked users if this is set to true
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
+     * @param sort 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public usersGet(filterLocked?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<User>>;
-    public usersGet(filterLocked?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<User>>>;
-    public usersGet(filterLocked?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<User>>>;
-    public usersGet(filterLocked?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public usersGet(filterLocked?: boolean, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<UsersPage>;
+    public usersGet(filterLocked?: boolean, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<UsersPage>>;
+    public usersGet(filterLocked?: boolean, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<UsersPage>>;
+    public usersGet(filterLocked?: boolean, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (filterLocked !== undefined && filterLocked !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>filterLocked, 'filterLocked');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
+        if (sort !== undefined && sort !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>sort, 'sort');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -357,7 +374,7 @@ export class UserManagementService {
             }
         }
 
-        return this.httpClient.get<Array<User>>(`${this.configuration.basePath}/users`,
+        return this.httpClient.get<UsersPage>(`${this.configuration.basePath}/users`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

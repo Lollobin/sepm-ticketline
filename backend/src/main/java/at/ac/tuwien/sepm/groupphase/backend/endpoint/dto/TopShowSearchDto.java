@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.LocalDate;
@@ -23,13 +24,13 @@ import javax.annotation.Generated;
 public class TopShowSearchDto   {
 
   @JsonProperty("category")
-  private String category;
+  private CategoryDto category;
 
   @JsonProperty("month")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
   private LocalDate month;
 
-  public TopShowSearchDto category(String category) {
+  public TopShowSearchDto category(CategoryDto category) {
     this.category = category;
     return this;
   }
@@ -38,13 +39,13 @@ public class TopShowSearchDto   {
    * Get category
    * @return category
   */
-  @NotNull 
+  @NotNull @Valid 
   @Schema(name = "category", required = true)
-  public String getCategory() {
+  public CategoryDto getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryDto category) {
     this.category = category;
   }
 

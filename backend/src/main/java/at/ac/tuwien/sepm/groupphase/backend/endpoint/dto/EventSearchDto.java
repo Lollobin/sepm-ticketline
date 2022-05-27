@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.OffsetDateTime;
@@ -27,7 +28,7 @@ public class EventSearchDto   {
   private String content;
 
   @JsonProperty("category")
-  private String category;
+  private CategoryDto category;
 
   @JsonProperty("duration")
   private Integer duration;
@@ -76,7 +77,7 @@ public class EventSearchDto   {
     this.content = content;
   }
 
-  public EventSearchDto category(String category) {
+  public EventSearchDto category(CategoryDto category) {
     this.category = category;
     return this;
   }
@@ -85,13 +86,13 @@ public class EventSearchDto   {
    * Get category
    * @return category
   */
-  
+  @Valid 
   @Schema(name = "category", required = false)
-  public String getCategory() {
+  public CategoryDto getCategory() {
     return category;
   }
 
-  public void setCategory(String category) {
+  public void setCategory(CategoryDto category) {
     this.category = category;
   }
 
