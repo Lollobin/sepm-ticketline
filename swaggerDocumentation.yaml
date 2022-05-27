@@ -705,6 +705,30 @@ paths:
           description: The location with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
+  /locations/{id}/seatingPlans:
+    get:
+      tags: 
+        - locations
+      summary: Gets the seating plans of a location
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/locationId"
+      responses:
+        200:
+          description: Successful retreival of the location seating plans
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/components/schemas/SeatingPlan"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: No seating plans of the given location were found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /artists:
     get:
       tags:
@@ -1365,6 +1389,7 @@ components:
       properties:
         locationId:
           type: integer
+          format: int64
         name:
           type: string
         address:

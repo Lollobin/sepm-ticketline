@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
@@ -84,7 +85,7 @@ public class EventShowGenerator {
         event.setName(faker.harryPotter().location());
         event.setDuration(faker.number().numberBetween(5, 50) * 10L);
         // TODO: find way to generate category. Consider changing it to enum
-        event.setCategory("");
+        event.setCategory(Category.POP);
         event.setContent(faker.lorem().paragraph(3));
         return event;
     }
