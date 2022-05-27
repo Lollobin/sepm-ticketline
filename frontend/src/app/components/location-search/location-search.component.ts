@@ -3,7 +3,7 @@ import {
   Location,
   LocationSearch,
   LocationSearchResult,
-  LocationsService, ShowsService
+  LocationsService, ShowSearch, ShowSearchResult, ShowsService
 } from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
 
@@ -16,11 +16,14 @@ export class LocationSearchComponent implements OnInit {
 
   page = 1;
   pageSize = 10;
-  locationResult: LocationSearchResult;
+  locationResult: LocationSearchResult = null;
   locationForm: FormGroup;
   err;
   locations: Location[];
   numberOfResult: number;
+  showOfClickedLocation: ShowSearchResult = null;
+  clickedLocation: Location = null;
+  showPage: 1;
 
   constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService) {
     this.locationForm = this._formBuilder.group({
@@ -62,7 +65,9 @@ export class LocationSearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
   onSearch() {
+    this.showOfClickedLocation = null;
     const search: LocationSearch = {
       name: this.name.value,
       city: this.city.value,
@@ -76,9 +81,9 @@ export class LocationSearchComponent implements OnInit {
     this.locationService.locationsGet(search, this.pageSize, this.page-1).subscribe({
       next: locationResult => {
         this.locationResult = locationResult;
-        console.log(locationResult.numberOfResults);
         this.numberOfResult = locationResult.numberOfResults;
         this.locations = locationResult.locations;
+        
       },
       error: err => {
         this.err = err;
@@ -86,7 +91,29 @@ export class LocationSearchComponent implements OnInit {
     });
   }
 
-  loadShowsOfLocation(locationId: number) {
+  loadShowsOfLocation(location: Location, pageNum: number) {
+    this.clickedLocation = location;
+    const search: ShowSearch = {
+      location: location.locationId,
+    };
+      this.showService.showsGet(search, 10,pageNum-1).subscribe({
+        next: value => {
+          this.showOfClickedLocation = value;
+          console.log(value);
+        },
+        error: err1 => {
+          console.log(err1.err);
+        }
+      });
+  }
 
+  handleEventPageEmit(number) {
+    this.showPage = number;
+    this.loadShowsOfLocation(this.clickedLocation, this.showPage);
+  }
+
+  scroll(el: HTMLElement) {
+    el.scrollIntoView({behavior: "smooth"});
+    
   }
 }

@@ -52,7 +52,7 @@
     </thead>
     <tbody>
     <tr
-        *ngFor="let location of locations " (click)="loadShowsOfLocation(location.locationId)"
+        *ngFor="let location of locations " (click)="loadShowsOfLocation(location,1)"
         style="cursor: pointer">
 
       <td>{{location.name}}</td>
@@ -71,3 +71,9 @@
                   (pageChange)="onPageChange(page)"></ngb-pagination>
 
 </div>
+
+
+<app-show-search-result *ngIf="showOfClickedLocation"
+                        (nextRequestedPage)="handleEventPageEmit($event)"
+                        [shows]="showOfClickedLocation" [location]="this.clickedLocation"
+                        [pageSize]="pageSize"></app-show-search-result>

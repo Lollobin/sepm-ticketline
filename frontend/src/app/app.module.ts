@@ -26,6 +26,7 @@ import { EventsComponent } from './components/events/events.component';
 import { ArtistSearchComponent } from './components/artist-search/artist-search.component';
 import { EventSearchResultComponent } from './components/event-search-result/event-search-result.component';
 import { LocationSearchComponent } from './components/location-search/location-search.component';
+import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { LocationSearchComponent } from './components/location-search/location-s
     AdminComponent,
     UnlockUserComponent,
     OrderOverviewComponent,
-    LocationSearchComponent
+    LocationSearchComponent,
+    ShowSearchResultComponent
   ],
   imports: [
     BrowserModule,
