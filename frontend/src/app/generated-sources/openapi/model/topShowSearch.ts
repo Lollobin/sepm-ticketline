@@ -9,10 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Category } from './category';
 
 
 export interface TopShowSearch { 
-    category: string;
+    category: Category;
     month: string;
 }
 

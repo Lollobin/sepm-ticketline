@@ -44,16 +44,14 @@ class ApplicationUserServiceTest implements TestData {
     private UserEncodePasswordMapper userEncodePasswordMapper;
     @Mock
     private UserValidator userValidator;
-
     private UserService userService;
     private final ApplicationUser fakePersistedUser = new ApplicationUser();
     private final UserWithPasswordDto userToSave = new UserWithPasswordDto();
 
     @BeforeEach
     void setUp() {
-        userService =
-            new CustomUserDetailService(
-                userRepository, passwordEncoder, userEncodePasswordMapper, userValidator);
+        userService = new CustomUserDetailService(userRepository, passwordEncoder,
+            userEncodePasswordMapper, userValidator);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
@@ -80,8 +78,8 @@ class ApplicationUserServiceTest implements TestData {
 
         when(userRepository.findUserByEmail("test@email.com")).thenReturn(null);
         doNothing().when(userValidator).validateUserWithPasswordDto(any());
-        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave))
-            .thenReturn(fakePersistedUser);
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(
+            fakePersistedUser);
 
         userService.save(userToSave);
 
@@ -134,12 +132,10 @@ class ApplicationUserServiceTest implements TestData {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
         UserDetails user = userService.loadUserByUsername("test@email.com");
         verify(userRepository, times(1)).findUserByEmail(("test@email.com"));
-        assertAll(
-            () -> assertTrue(user.isAccountNonLocked()),
+        assertAll(() -> assertTrue(user.isAccountNonLocked()),
             () -> assertEquals(1, user.getAuthorities().size()),
             () -> assertTrue(user.getAuthorities().contains(grantedAuthorities.get(0))),
-            () -> assertEquals(fakePersistedUser.getPassword(), user.getPassword())
-        );
+            () -> assertEquals(fakePersistedUser.getPassword(), user.getPassword()));
 
     }
 
@@ -183,10 +179,8 @@ class ApplicationUserServiceTest implements TestData {
             fakePersistedUser);
         UserDetails user = userService.loadUserByUsername(fakePersistedUser.getEmail());
         verify(userRepository, times(1)).findUserByEmail((fakePersistedUser.getEmail()));
-        assertAll(
-            () -> assertFalse(user.isAccountNonLocked()),
+        assertAll(() -> assertFalse(user.isAccountNonLocked()),
             () -> assertEquals(1, user.getAuthorities().size()),
-            () -> assertEquals(fakePersistedUser.getPassword(), user.getPassword())
-        );
+            () -> assertEquals(fakePersistedUser.getPassword(), user.getPassword()));
     }
 }

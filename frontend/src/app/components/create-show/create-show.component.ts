@@ -1,10 +1,14 @@
-import { HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EventsService, Sector, ShowsService, SeatingPlansService, SectorPrice, ShowWithoutId } from 'src/app/generated-sources/openapi';
+import {
+  EventsService, Sector, ShowsService, SeatingPlansService,
+  SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
+  ArtistsService, Artist, ArtistsSearchResult
+} from 'src/app/generated-sources/openapi';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
+import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-create-show',
@@ -19,7 +23,8 @@ export class CreateShowComponent implements OnInit {
   eventDuration: number;
   eventDescription: string;
   showWithoutId: ShowWithoutId = {
-    date: "", event: 0,
+    date: "",
+    event: 0,
     artists: [],
     seatingPlan: 0,
     sectorPrices: []
@@ -37,9 +42,16 @@ export class CreateShowComponent implements OnInit {
   faCircleQuestion = faCircleQuestion;
   sectorString = "sector";
   gotFromSeatingPlan: number;
+  locationSearchDto: LocationSearch = {};
+  seatingPlans = [];
+  artist: Artist;
+  artistForm: any;
+  artists = [];
+  display = "none";
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
-    private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService) { }
+    private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
+    private locationsService: LocationsService, private artistsService: ArtistsService) { }
 
   get date() {
     return this.showForm.get("date");
@@ -49,12 +61,32 @@ export class CreateShowComponent implements OnInit {
     return this.showForm.get("time");
   }
 
-  get artists() {
-    return this.showForm.get("artists");
-  }
-
   get validForms() {
     return this.showForm.valid && this.sectorForm.valid;
+  }
+
+  get artistFormValid() {
+    if (!this.artistForm.get("artist").value) {
+      return false;
+    }
+    for (const element of this.artists) {
+      if (element.artistId === this.artistForm.get("artist").value.artistId) {
+        return false;
+      }
+    }
+    if (this.artistForm.get("artist").value.firstName || this.artistForm.get("artist").value.lastName
+      || this.artistForm.get("artist").value.knownAs || this.artistForm.get("artist").value.bandName) {
+      return true;
+    }
+    return false;
+  }
+
+  get locationValid() {
+    return this.showForm.get("location").valid && this.showForm.get("location").value.locationId;
+  }
+
+  get seatingPlan() {
+    return this.showForm.get("seatingPlan");
   }
 
   ngOnInit(): void {
@@ -62,8 +94,12 @@ export class CreateShowComponent implements OnInit {
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
       event: [],
-      seatingPlan: [''],
+      location: ['', [Validators.required]],
+      seatingPlan: ['', [Validators.required]],
       sectorPrices: []
+    });
+    this.artistForm = this.formBuilder.group({
+      artist: []
     });
     this.route.params.subscribe(params => {
       this.eventId = params["id"];
@@ -72,13 +108,23 @@ export class CreateShowComponent implements OnInit {
       this.getDetails(this.eventId);
     });
     this.role = this.authService.getUserRole();
-
-    this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
-      console.log(val);
-      if (val !== ""){
-        this.getSectorsOfSeatingPlan(val);
+    this.showForm.get('location').valueChanges.subscribe(val => {
+      if (val && val.locationId) {
+        this.getSeatingPlansOfLocation(val.locationId);
       }
     });
+    this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
+      if (val && val.seatingPlanId) {
+        this.getSectorsOfSeatingPlan(val.seatingPlanId);
+      }
+    });
+  }
+
+  openModal() {
+    this.display = "block";
+  }
+  onCloseHandled() {
+    this.display = "none";
   }
 
   getDetails(id: number): void {
@@ -117,7 +163,11 @@ export class CreateShowComponent implements OnInit {
       this.showWithoutId.sectorPrices[i].sectorId = this.sectors[i].sectorId;
     }
     this.showWithoutId.artists = this.showForm.value.artists;
-    this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan;
+    this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan.seatingPlanId;
+    this.showWithoutId.artists = [];
+    for (const artist of this.artists) {
+      this.showWithoutId.artists.push(artist.artistId);
+    }
     console.log("POST http://localhost:8080/shows " + JSON.stringify(this.showWithoutId));
     this.showService.showsPost(this.showWithoutId, 'response').subscribe({
       next: data => {
@@ -125,6 +175,7 @@ export class CreateShowComponent implements OnInit {
         console.log(data.headers.get('Location'));
         this.error = false;
         this.clearForm();
+        this.artists = [];
       },
       error: error => {
         console.log("Error creating event", error.message);
@@ -158,21 +209,21 @@ export class CreateShowComponent implements OnInit {
     this.sectorForm.reset();
   }
 
-  createGroup(sectors: Sector[]) {
+  createGroup() {
     const group = this.formBuilder.group({});
     this.sectors.forEach(control => group.addControl("sector" + control.sectorId, this.formBuilder.control('', Validators.required)));
     return group;
   }
 
   getSectorsOfSeatingPlan(id: number) {
-    if (id === null){
+    if (id === null) {
       return;
     }
     this.seatingPlansService.seatingPlansIdSectorsGet(id).subscribe({
       next: data => {
         console.log("Succesfully got sectors of seatingPlan with id", id);
         this.sectors = data;
-        this.sectorForm = this.createGroup(data);
+        this.sectorForm = this.createGroup();
         this.error = false;
         this.gotFromSeatingPlan = id;
         this.showWithoutId.sectorPrices = [];
@@ -187,5 +238,68 @@ export class CreateShowComponent implements OnInit {
         }
       }
     });
+  }
+
+  getSeatingPlansOfLocation(id: number) {
+    if (id === null) {
+      return;
+    }
+    this.locationsService.locationsIdSeatingPlansGet(id).subscribe({
+      next: data => {
+        console.log("Succesfully got seating plans of location with id", id);
+        this.seatingPlans = data;
+        this.error = false;
+      },
+      error: error => {
+        console.log("Error getting seating plans of location with id", id);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }
+    });
+  }
+
+  locationSearch = (text$: Observable<string>) => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((search: string) => this.locationsService.locationsGet(this.getLocationSearch(search)).pipe(
+      map(locationResult => locationResult.locations)
+    )
+    )
+  );
+
+  getLocationSearch(search: string) {
+    this.locationSearchDto.name = search;
+    return this.locationSearchDto;
+  }
+
+  locationFormatter(location: Location) {
+    return location.name;
+  }
+
+  artistSearch = (text$: Observable<string>) => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
+      map(artistResult => artistResult.artists)
+    )
+    )
+  );
+
+  artistResultFormatter(artist: any) {
+    return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
+  }
+
+  artistInputFormatter(artist: any) {
+    return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
+  }
+
+  addArtist() {
+    this.artists.push(this.artistForm.get("artist").value);
+    console.log(this.artists);
+    this.artistForm.reset();
   }
 }

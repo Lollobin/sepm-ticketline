@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +23,9 @@ public class Event {
     @Column
     private long duration;
 
-    private String category;
+    @Column(nullable = false, length = 16)
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Column(columnDefinition = "CLOB")
     private String content;
@@ -89,11 +94,11 @@ public class Event {
         this.duration = duration;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

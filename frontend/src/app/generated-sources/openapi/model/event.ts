@@ -9,13 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Category } from './category';
 
 
 export interface Event { 
     eventId: number;
     name: string;
     duration?: number;
-    category?: string;
+    category?: Category;
     content?: string;
 }
 
