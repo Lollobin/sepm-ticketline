@@ -13,7 +13,7 @@ import {CustomAuthService} from "../../services/custom-auth.service";
   styleUrls: ['./create-event.component.scss']
 })
 export class CreateEventComponent implements OnInit {
-  week1 = null;
+
   categoriesType = Category;
   categories = [];
 
@@ -28,7 +28,7 @@ export class CreateEventComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router, 
     private authService: CustomAuthService) {
-    this.categories = Object.keys(this.categoriesType).filter(f => !isNaN(Number(f)));
+    this.categories = Object.keys(this.categoriesType);
   }
 
   get name() {
@@ -49,12 +49,9 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.categories = [
-      "Classical", "Country", "EDM", "Jazz", "Oldies", "Pop", "Rap", "R&B", "Rock", "Techno"
-    ];
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
-      category: ['', [Validators.required, Validators.maxLength(255)]],
+      category: ['', [Validators.required]],
       duration: [120, [Validators.min(10), Validators.max(360)]],
       description: ['']
     });
