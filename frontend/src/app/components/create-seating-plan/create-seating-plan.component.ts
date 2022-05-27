@@ -34,6 +34,7 @@ export class CreateSeatingPlanComponent implements OnInit {
   chosenElement: ClickElement;
   selectedSector: number;
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
+  seatingPlanName = ""
   location: Location = {
     //TODO: DElete test data when location get interface works
     locationId: 1,
