@@ -161,7 +161,7 @@
                         <h5>Are you sure you want to create this show?</h5>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="createShow()">Create Show</button>
+                        <button type="button" class="btn btn-primary" (click)="createShow(); onCloseHandled()">Create Show</button>
                         <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
                     </div>
                 </div>
