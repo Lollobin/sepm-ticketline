@@ -1,14 +1,14 @@
 <div>
   <div *ngIf="page === 1">
+    <h1>Create seating plan</h1>
+    <h4>for {{ location.name }} in {{ location.address.zipCode }} {{ location.address.city }},  {{ location.address.street }} {{ location.address.houseNumber }}</h4>
     <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
       <ngb-panel *ngFor="let sector of sectors; index as index">
         <ng-template ngbPanelTitle class="d-flex">
-          <button class="btn-danger btn col-auto mx-1" (click)="removeSector(index)">
-            Remove
-          </button>
+          <button class="btn-danger btn col-auto mx-1" (click)="removeSector(index)">Remove</button>
           <div style="color: {{ sector.color }}">
             <span *ngIf="sector.standingSector">Standing&nbsp;</span>
-            <span>Sector ({{sector.seatCount}} seats)</span>
+            <span>Sector ({{ sector.seatCount }} seats)</span>
           </div>
         </ng-template>
         <ng-template ngbPanelContent>
@@ -21,10 +21,7 @@
               <span class="input-group-text">Number of seats</span>
               <input type="number" class="form-control" [(ngModel)]="sector.seatCount" />
             </div>
-              <div>
-                <input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector
-              </div>
-
+            <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
           </div>
         </ng-template>
       </ngb-panel>
