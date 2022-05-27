@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.LockedUser;
 
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,12 +25,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith({MockitoExtension.class})
 @ActiveProfiles("test")
-public class LockedUserServiceTest implements TestData {
+class LockedUserServiceTest implements TestData {
 
     @Mock
     private UserRepository userRepository;
@@ -49,15 +52,15 @@ public class LockedUserServiceTest implements TestData {
 
     @BeforeEach
     void setUp() {
-        userService = new CustomUserDetailService(
-            userRepository, passwordEncoder, userEncodePasswordMapper, userValidator);
+        userService = new CustomUserDetailService(userRepository, passwordEncoder,
+            userEncodePasswordMapper, userValidator);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 
 
     }
 
     @Test
-    public void shouldThrowNotFoundExceptionBecauseUserNotPresent() {
+    void shouldThrowNotFoundExceptionBecauseUserNotPresent() {
 
         NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
             () -> lockedService.unlockApplicationUser(-100L, false));
@@ -66,15 +69,17 @@ public class LockedUserServiceTest implements TestData {
     }
 
     @Test
-    public void shouldReturnAllLockedUsers() {
+    void shouldReturnAllLockedUsers() {
 
-        List<ApplicationUser> fourUsers = saveFourUsers();
+        Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
+        when(userRepository.findByLockedAccountEquals(true, Pageable.unpaged())).thenReturn(
+            threeLockedUsers);
 
-        List<ApplicationUser> lockedUsers = userService.findAll(true);
+        List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged()).stream()
+            .toList();
 
-        assertThat(lockedUsers.size()).isEqualTo(3);
+        assertThat(lockedUsers).hasSize(3);
         assertThat(lockedUsers.get(0).isLockedAccount()).isTrue();
         assertThat(lockedUsers.get(0).getEmail()).isEqualTo(USER_EMAIL);
         assertThat(lockedUsers.get(0).getLastName()).isEqualTo(USER_LNAME);
@@ -86,27 +91,30 @@ public class LockedUserServiceTest implements TestData {
     }
 
     @Test
-    public void checkNumberOfCalledTimesToUnlock() {
+    void checkNumberOfCalledTimesToUnlock() {
 
-        List<ApplicationUser> fourUsers = saveFourUsers();
+        Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEquals(true)).thenReturn(fourUsers.subList(0, 3));
+        when(userRepository.findByLockedAccountEquals(true, Pageable.unpaged())).thenReturn(
+            threeLockedUsers);
 
-        List<ApplicationUser> lockedUsers = userService.findAll(true);
+        List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged())
+            .getContent();
 
-        assertThat(lockedUsers.size()).isEqualTo(3);
+        assertThat(lockedUsers).hasSize(3);
         assertThat(lockedUsers.get(0).isLockedAccount()).isTrue();
         assertThat(lockedUsers.get(1).isLockedAccount()).isTrue();
         assertThat(lockedUsers.get(2).isLockedAccount()).isTrue();
 
-        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fourUsers.get(0));
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(
+            threeLockedUsers.toList().get(0));
         ApplicationUser user = userService.findApplicationUserByEmail(USER_EMAIL);
 
         when(userRepository.existsById(user.getUserId())).thenReturn(true);
         doNothing().when(userRepository).unlockApplicationUser(false, user.getUserId());
         lockedService.unlockApplicationUser(user.getUserId(), false);
 
-        verify(userRepository, times(1)).findByLockedAccountEquals(true);
+        verify(userRepository, times(1)).findByLockedAccountEquals(true, Pageable.unpaged());
         verify(userRepository, times(1)).existsById(user.getUserId());
         verify(userRepository, times(1)).unlockApplicationUser(false, user.getUserId());
 
@@ -114,7 +122,7 @@ public class LockedUserServiceTest implements TestData {
     }
 
 
-    private List<ApplicationUser> saveFourUsers() {
+    private Page<ApplicationUser> getThreeLockedUsers() {
         ApplicationUser user1 = new ApplicationUser();
         user1.setUserId(1);
         user1.setLockedAccount(true);
@@ -154,26 +162,12 @@ public class LockedUserServiceTest implements TestData {
         user3.setLoginTries(0);
         user3.setMustResetPassword(false);
 
-        ApplicationUser user4 = new ApplicationUser();
-        user4.setUserId(4);
-        user4.setLockedAccount(false);
-        user4.setFirstName("nicht");
-        user4.setLastName("anzeigen");
-        user4.setGender(USER3_GENDER);
-        user4.setEmail("nicht@anzeigen.com");
-        user4.setAddress(ADDRESS4_ENTITY);
-        user4.setPassword(USER3_PASSWORD);
-        user4.setHasAdministrativeRights(true);
-        user4.setLoginTries(0);
-        user4.setMustResetPassword(false);
-
         List<ApplicationUser> allUsers = new ArrayList<>();
         allUsers.add(user1);
         allUsers.add(user2);
         allUsers.add(user3);
-        allUsers.add(user4);
 
-        return allUsers;
+        return new PageImpl<>(allUsers);
     }
 
 

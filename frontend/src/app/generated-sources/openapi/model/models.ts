@@ -37,3 +37,4 @@ export * from './topShowSearch';
 export * from './transaction';
 export * from './user';
 export * from './userWithPassword';
+export * from './usersPage';
