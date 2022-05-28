@@ -25,6 +25,7 @@ import {AuthService} from "./generated-sources/openapi";
 import { EventsComponent } from './components/events/events.component';
 import { ArtistSearchComponent } from './components/artist-search/artist-search.component';
 import { EventSearchResultComponent } from './components/event-search-result/event-search-result.component';
+import { EventSearchComponent} from "./components/event-search/event-search.component";
 import { LocationSearchComponent } from './components/location-search/location-search.component';
 import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 
@@ -49,6 +50,7 @@ import { ShowSearchResultComponent } from './components/show-search-result/show-
     AdminComponent,
     UnlockUserComponent,
     OrderOverviewComponent,
+    EventSearchComponent,
     LocationSearchComponent,
     ShowSearchResultComponent
   ],

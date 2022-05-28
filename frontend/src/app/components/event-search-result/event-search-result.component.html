@@ -1,5 +1,5 @@
-<h2>Shows by {{artist.knownAs}}</h2>
-
+<h2 *ngIf="artist">Events with {{artist.knownAs}}</h2>
+<h2 *ngIf="location">Events at {{artist.knownAs}}</h2>
 <table class="table table-striped">
   <thead>
   <tr>
@@ -19,8 +19,8 @@
       <div   class="mr-2">{{event.name}}</div>
     </td>
     <td>{{ event.category}}</td>
-    <td>{{ event.duration}}</td>
-    <td> <button class="btn btn-primary">Get shows</button> </td>
+    <td>{{ secondsToHms(event.duration)}}</td>
+    <td> <button  class="btn btn-primary">Get shows</button> </td>
   </tr>
   </tbody>
 </table>
