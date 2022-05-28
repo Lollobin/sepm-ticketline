@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,12 +72,12 @@ public interface ShowsApi {
         @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid ShowSearchDto search,
         @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
-        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") String sort
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") SortDto sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"shows\" : [ { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }, { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 } ], \"currentPage\" : 5, \"numberOfResults\" : 5, \"pagesTotal\" : 2 }";
+                    String exampleString = "{ \"shows\" : [ { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" } }, { \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" } } ], \"currentPage\" : 5, \"numberOfResults\" : 5, \"pagesTotal\" : 2 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -121,7 +122,7 @@ public interface ShowsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 1, 1 ], \"event\" : 6 }";
+                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"artists\" : [ 6, 6 ], \"location\" : { \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"locationId\" : 1, \"name\" : \"name\" }, \"event\" : { \"duration\" : 6.027456183070403, \"eventId\" : 0, \"name\" : \"name\", \"content\" : \"content\" } }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

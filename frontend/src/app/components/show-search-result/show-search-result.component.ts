@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Event, ShowSearchResult, ShowsService} from "../../generated-sources/openapi";
-import {ActivatedRoute} from "@angular/router";
+import {Location, Show, ShowSearchResult} from "../../generated-sources/openapi";
 
 @Component({
   selector: 'app-show-search-result',
@@ -8,44 +7,45 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./show-search-result.component.scss']
 })
 export class ShowSearchResultComponent implements OnInit {
+
   @Output() nextRequestedPage = new EventEmitter<number>();
   @Input() shows: ShowSearchResult;
+  @Input() location: Location;
   @Input() pageSize = 15;
+  @Input() empty = null;
   page = 1;
-  _event: Event;
-  error;
+  _show: Show;
 
-  constructor(private route: ActivatedRoute, private showService: ShowsService) {
+
+
+  constructor() {
   }
 
-  get event(): Event {
-    return this._event;
+  get show(): Show {
+    return this._show;
   }
 
-  @Input() set event(value: Event) {
-    this._event = value;
-    this.ngOnInit();
+
+  @Input() set show(value: Show) {
+    this._show = value;
   }
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      this._event.eventId = params["id"];
-    });
-    if (this.event) {
-    }
-//TODO: add eventId as a possible search parameter for showSearch
-    /*
-    this.showService.showsGet({event:this.event}, this.pageSize,page-1).subscribe(
-        {
-          next: result=> this.shows =result,
-          error: err => this.error= err
-        }
-    )
-  }*/
+
+  ngOnInit(): void {
+    console.log(this.shows);
+    console.log(this.shows.numberOfResults + " number of results");
+    this.page = this.shows?.currentPage;
+
   }
 
   onPageChange(num: number) {
-    console.log("page change?" + num);
+
     this.nextRequestedPage.emit(num);
   }
+
+  public vanishEmpty(): void {
+    this.empty = null;
+  }
+
+
 }

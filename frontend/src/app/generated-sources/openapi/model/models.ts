@@ -29,6 +29,7 @@ export * from './showSearch';
 export * from './showSearchResult';
 export * from './showWithTicketsSold';
 export * from './showWithoutId';
+export * from './sort';
 export * from './ticket';
 export * from './ticketStatus';
 export * from './ticketWithShowInfo';

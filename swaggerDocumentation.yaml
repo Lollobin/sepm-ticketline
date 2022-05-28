@@ -477,11 +477,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
 
       responses:
         200:
@@ -570,11 +566,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of articles
@@ -688,11 +680,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            enum:
-              - ASC
-              - DESC
-            default: ASC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of locations
@@ -726,7 +714,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}/seatingPlans:
     get:
-      tags: 
+      tags:
         - locations
       summary: Gets the seating plans of a location
       security:
@@ -738,9 +726,9 @@ paths:
           description: Successful retreival of the location seating plans
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/SeatingPlan"
         401:
           $ref: "#/components/responses/401-not-authenticated"
@@ -775,11 +763,7 @@ paths:
         - in: query
           name: sort
           schema:
-            type: string
-            default: ASC
-            enum:
-              - ASC
-              - DESC
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retreival of artists
@@ -1196,6 +1180,12 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Sort:
+      type: string
+      default: ASC
+      enum:
+        - ASC
+        - DESC
     Gender:
       type: string
       enum:
@@ -1309,15 +1299,18 @@ components:
           type: string
           format: date-time
         event:
-          type: integer
+          $ref: "#/components/schemas/Event"
         artists:
           type: array
           items:
             type: integer
+        location:
+          $ref: "#/components/schemas/Location"
       required:
         - showId
         - event
         - artists
+        - location
     ShowWithoutId:
       type: object
       properties:
@@ -1573,6 +1566,8 @@ components:
           type: string        
         content:
           type: string
+        content:
+          type: string
         category:
           $ref: "#/components/schemas/Category"
         duration:
@@ -1581,7 +1576,7 @@ components:
           type: integer
         artist:
           type: integer
-        
+
     TopShowSearch:
       type: object
       properties:
@@ -1605,6 +1600,13 @@ components:
           type: number
         seatingPlan:
           type: integer
+          format: int64
+        location:
+          type: integer
+          format: int64
+        eventId:
+          type: integer
+          format: int64
     LocationSearch:
       type: object
       properties:
@@ -1766,7 +1768,7 @@ components:
         sectorId:
           type: integer
           format: int64
-        price: 
+        price:
           type: number
           format: float
       required:

@@ -47,6 +47,7 @@ model/showSearch.ts
 model/showSearchResult.ts
 model/showWithTicketsSold.ts
 model/showWithoutId.ts
+model/sort.ts
 model/ticket.ts
 model/ticketStatus.ts
 model/ticketWithShowInfo.ts
