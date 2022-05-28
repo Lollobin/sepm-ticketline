@@ -1566,8 +1566,6 @@ components:
           type: string        
         content:
           type: string
-        content:
-          type: string
         category:
           $ref: "#/components/schemas/Category"
         duration:
