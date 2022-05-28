@@ -2,6 +2,7 @@ import {Component, OnInit, TemplateRef} from "@angular/core";
 import {Order, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: "app-order-overview",
@@ -65,34 +66,58 @@ export class OrderOverviewComponent implements OnInit {
 
   purchaseTickets() {
     const selectedTicketIds = this.purchaseForm.value.tickets
-    .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
-    .filter(v => v !== null);
+        .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
+        .filter(v => v !== null);
+
+    const unSelectedTicketIds: Array<number> = this.purchaseForm.value.tickets
+        .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
+        .filter(v => v !== null);
 
     console.log("Buying tickets:" + selectedTicketIds);
+    console.log("Cancelling reservations:" + selectedTicketIds);
 
-    this.ticketService
-    .ticketsPost({
-      reserved: [],
-      purchased: selectedTicketIds,
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        this.setError(error);
-      }, complete: () => {
-        this.modalService.dismissAll();
-        this.ngOnInit();
-      }
-    });
+    if (unSelectedTicketIds.length > 0) {
+      forkJoin([
+            this.ticketService.ticketsPost({
+              reserved: [],
+              purchased: selectedTicketIds
+            }),
+            this.ticketService
+                .ticketCancellationsPost({
+                  reserved: unSelectedTicketIds,
+                  purchased: [],
+                })
+          ]
+      ).subscribe({
+        next: response => console.log(response),
+        error: error => this.setError(error),
+        complete: () => {
+          this.modalService.dismissAll();
+          this.ngOnInit();
+        }
+      });
+    } else {
+      this.ticketService
+          .ticketsPost({
+            reserved: [],
+            purchased: selectedTicketIds,
+          })
+          .subscribe({
+            next: (response) => {
+              console.log(response);
+            },
+            error: (error) => {
+              this.setError(error);
+            }, complete: () => {
+              this.modalService.dismissAll();
+              this.ngOnInit();
+            }
+          });
+    }
+
 
     /*
-    TODO: uncomment when backend is implemented
-    const unSelectedTicketIds = this.purchaseForm.value.tickets
-    .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
-    .filter(v => v !== null);
-    console.log("Cancelling reservations:" + selectedTicketIds);
+
 
     this.ticketService
     .ticketCancellationsPost({
@@ -107,6 +132,7 @@ export class OrderOverviewComponent implements OnInit {
         this.setError(error);
       },
     });
+
      */
   }
 
@@ -123,10 +149,10 @@ export class OrderOverviewComponent implements OnInit {
 function minSelectedCheckboxes(min = 1) {
   const validator: ValidatorFn = (formArray: FormArray) => {
     const totalSelected = formArray.controls
-    // get a list of checkbox values (boolean)
-    .map(control => control.value)
-    // total up the number of checked checkboxes
-    .reduce((prev, next) => next ? prev + next : prev, 0);
+        // get a list of checkbox values (boolean)
+        .map(control => control.value)
+        // total up the number of checked checkboxes
+        .reduce((prev, next) => next ? prev + next : prev, 0);
 
     // if the total is not greater than the minimum, return the error message
     return totalSelected >= min ? null : {required: true};
