@@ -1563,7 +1563,7 @@ components:
       type: object
       properties:
         name:
-          type: string
+          type: string        
         content:
           type: string
         category:
