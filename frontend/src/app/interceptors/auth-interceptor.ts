@@ -20,6 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const listOfGetPublics = [
       this.globals.backendCustomUri + '/events',
       this.globals.backendCustomUri + '/artists',
+      this.globals.backendCustomUri + '/locations',
       this.globals.backendCustomUri + '/shows',
       this.globals.backendCustomUri + '/seatingPlan'];
 

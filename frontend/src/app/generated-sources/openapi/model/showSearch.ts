@@ -16,5 +16,7 @@ export interface ShowSearch {
     date?: string;
     price?: number;
     seatingPlan?: number;
+    location?: number;
+    eventId?: number;
 }
 

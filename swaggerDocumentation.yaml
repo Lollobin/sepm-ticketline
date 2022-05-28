@@ -1595,6 +1595,12 @@ components:
           type: number
         seatingPlan:
           type: integer
+        location:
+          type: integer 
+          format: int64
+        eventId:
+          type: integer 
+          format: int64 
     LocationSearch:
       type: object
       properties:
