@@ -714,7 +714,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}/seatingPlans:
     get:
-      tags: 
+      tags:
         - locations
       summary: Gets the seating plans of a location
       security:
@@ -726,9 +726,9 @@ paths:
           description: Successful retreival of the location seating plans
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/SeatingPlan"
         401:
           $ref: "#/components/responses/401-not-authenticated"
@@ -1600,11 +1600,11 @@ components:
           type: integer
           format: int64
         location:
-          type: integer 
+          type: integer
           format: int64
         eventId:
-          type: integer 
-          format: int64    
+          type: integer
+          format: int64
     LocationSearch:
       type: object
       properties:
