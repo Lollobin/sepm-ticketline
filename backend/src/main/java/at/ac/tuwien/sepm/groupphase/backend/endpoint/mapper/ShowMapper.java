@@ -2,16 +2,22 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.decoratormapper.ShowMapperDecorator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import java.util.List;
 import java.util.Set;
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(uses = EventServiceImpl.class)
+@DecoratedWith(ShowMapperDecorator.class)
 public interface ShowMapper {
+
+
 
     ShowDto showToShowDto(Show show);
 
