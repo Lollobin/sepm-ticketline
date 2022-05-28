@@ -34,7 +34,13 @@ public class ShowSearchDto   {
   private BigDecimal price;
 
   @JsonProperty("seatingPlan")
-  private Integer seatingPlan;
+  private Long seatingPlan;
+
+  @JsonProperty("location")
+  private Long location;
+
+  @JsonProperty("eventId")
+  private Long eventId;
 
   public ShowSearchDto event(String event) {
     this.event = event;
@@ -93,7 +99,7 @@ public class ShowSearchDto   {
     this.price = price;
   }
 
-  public ShowSearchDto seatingPlan(Integer seatingPlan) {
+  public ShowSearchDto seatingPlan(Long seatingPlan) {
     this.seatingPlan = seatingPlan;
     return this;
   }
@@ -104,12 +110,50 @@ public class ShowSearchDto   {
   */
   
   @Schema(name = "seatingPlan", required = false)
-  public Integer getSeatingPlan() {
+  public Long getSeatingPlan() {
     return seatingPlan;
   }
 
-  public void setSeatingPlan(Integer seatingPlan) {
+  public void setSeatingPlan(Long seatingPlan) {
     this.seatingPlan = seatingPlan;
+  }
+
+  public ShowSearchDto location(Long location) {
+    this.location = location;
+    return this;
+  }
+
+  /**
+   * Get location
+   * @return location
+  */
+  
+  @Schema(name = "location", required = false)
+  public Long getLocation() {
+    return location;
+  }
+
+  public void setLocation(Long location) {
+    this.location = location;
+  }
+
+  public ShowSearchDto eventId(Long eventId) {
+    this.eventId = eventId;
+    return this;
+  }
+
+  /**
+   * Get eventId
+   * @return eventId
+  */
+  
+  @Schema(name = "eventId", required = false)
+  public Long getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(Long eventId) {
+    this.eventId = eventId;
   }
 
   @Override
@@ -124,12 +168,14 @@ public class ShowSearchDto   {
     return Objects.equals(this.event, showSearch.event) &&
         Objects.equals(this.date, showSearch.date) &&
         Objects.equals(this.price, showSearch.price) &&
-        Objects.equals(this.seatingPlan, showSearch.seatingPlan);
+        Objects.equals(this.seatingPlan, showSearch.seatingPlan) &&
+        Objects.equals(this.location, showSearch.location) &&
+        Objects.equals(this.eventId, showSearch.eventId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(event, date, price, seatingPlan);
+    return Objects.hash(event, date, price, seatingPlan, location, eventId);
   }
 
   @Override
@@ -140,6 +186,8 @@ public class ShowSearchDto   {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("    seatingPlan: ").append(toIndentedString(seatingPlan)).append("\n");
+    sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    eventId: ").append(toIndentedString(eventId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

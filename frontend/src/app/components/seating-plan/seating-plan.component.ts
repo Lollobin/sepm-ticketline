@@ -91,7 +91,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     });
   }
   retreiveEvent(show: Show) {
-    this.eventsService.eventsIdGet(show.event).subscribe({
+    this.eventsService.eventsIdGet(show.event.eventId).subscribe({
       next: (event) => {
         this.event = event;
       },
