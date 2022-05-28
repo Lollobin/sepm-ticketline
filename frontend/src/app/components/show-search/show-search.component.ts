@@ -11,6 +11,7 @@ import {
 } from "../../generated-sources/openapi";
 import {debounceTime, distinctUntilChanged, map, Observable, switchMap} from "rxjs";
 import {FormBuilder} from "@angular/forms";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-show-search',
@@ -28,10 +29,10 @@ export class ShowSearchComponent implements OnInit {
 
   showForm;
 
-
+  offsetTime;
   seatingPlans: SeatingPlan[];
   locationSearchDto: LocationSearch = {};
-
+  faXmark = faXmark;
 
   constructor(private showService: ShowsService, private seatingPlansService: SeatingPlansService,
               private locationsService: LocationsService, private formBuilder: FormBuilder) {
@@ -61,13 +62,21 @@ export class ShowSearchComponent implements OnInit {
 
 
   onSearch() {
-    if (this.showForm.value.date.length !== 25) {
-      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+00:00";
+    if (this.showForm.value.date) {
+      this.offsetTime = this.showForm.value.date;
+
+      if (this.showForm.value.time) {
+        this.offsetTime += "T" + this.showForm.value.time + ":00+00:00";
+      } else {
+        this.offsetTime += "T" + '00:00' + ":00+00:00";
+      }
+    } else {
+      this.offsetTime = null;
     }
     const search: ShowSearch = {
-      date: this.f.date.value ? this.f.date.value : null,
-      location: this.f.location.value ? this.f.location.value : null,
-      seatingPlan: this.f.seatingPlan.value ? this.f.seatingPlan.value : null,
+      date: this.offsetTime,
+      location: this.f.location.value ? this.f.location.value.locationId : null,
+      seatingPlan: this.f.seatingPlan.value? this.f.seatingPlan.value.seatingPlanId  : null,
       price: this.f.price.value ? this.f.price.value : null,
     };
 
@@ -122,8 +131,12 @@ export class ShowSearchComponent implements OnInit {
     return location.name;
   }
 
-  handleEventPageEmit(number){
-    this.page=number;
+  handleEventPageEmit(number) {
+    this.page = number;
     this.onSearch();
+  }
+
+  resetField(fieldName: string){
+    this.showForm.get(fieldName).setValue(null);
   }
 }

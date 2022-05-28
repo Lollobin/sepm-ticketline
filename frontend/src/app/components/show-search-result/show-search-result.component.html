@@ -12,7 +12,7 @@
   <tr
       *ngFor="let show of shows.shows">
 
-    <td style="width: 40%">{{show.event}}</td>
+    <td style="width: 40%">{{show.event.name}}</td>
     <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY h:mm' }}</td>
     <td style="width: 30%; text-align: right;"><button type="button" class="btn btn-primary" style="width: 150px; margin-right: 4%;"
                                                        [routerLink]="['/buyTickets', show.showId]">Buy Tickets!</button></td>
