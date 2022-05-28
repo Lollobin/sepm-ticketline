@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanLayoutDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +51,7 @@ public interface SeatingPlanLayoutsApi {
         summary = "Retreives seating plan layout with the given ID",
         tags = { "seatingPlans" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  org.springframework.core.io.Resource.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanLayoutDto.class))),
             @ApiResponse(responseCode = "404", description = "The seating plan layout with the given ID was not found")
         },
         security = {
@@ -62,9 +63,18 @@ public interface SeatingPlanLayoutsApi {
         value = "/seatingPlanLayouts/{id}",
         produces = { "application/json" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> seatingPlanLayoutsIdGet(
+    default ResponseEntity<SeatingPlanLayoutDto> seatingPlanLayoutsIdGet(
         @Parameter(name = "id", description = "ID of the seating plan layout that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"general\" : { \"width\" : 0.8008281904610115, \"height\" : 6.027456183070403 }, \"sectors\" : [ { \"color\" : 2, \"noSeats\" : true, \"description\" : \"description\", \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 3 }, { \"color\" : 2, \"noSeats\" : true, \"description\" : \"description\", \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 3 } ], \"staticElements\" : [ { \"color\" : 7, \"description\" : \"description\", \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 4 }, { \"color\" : 7, \"description\" : \"description\", \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 4 } ], \"seats\" : [ { \"sectorId\" : 5, \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 1 }, { \"sectorId\" : 5, \"location\" : { \"w\" : 5.637376656633329, \"h\" : 2.3021358869347655, \"x\" : 7.061401241503109, \"y\" : 9.301444243932576 }, \"id\" : 1 } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

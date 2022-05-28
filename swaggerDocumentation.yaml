@@ -91,8 +91,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
+                $ref: "#/components/schemas/SeatingPlanLayout"
         404:
           description: The seating plan layout with the given ID was not found
   /images:
@@ -1957,3 +1956,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SeatingPlanStaticElement"
+      required:
+        - general
+        - seats
+        - sectors
+        - staticElements

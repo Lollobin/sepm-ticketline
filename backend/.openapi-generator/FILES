@@ -6,6 +6,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistsSearchRes
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AuthRequestDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/BookingTypeDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/CategoryDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ElementLocationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResultDto.java
@@ -18,8 +19,15 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchDt
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrderDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ProvisionalSectorDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanLayoutDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanLayoutGeneralDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanSeatDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanSectorDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanStaticElementDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatingPlanWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SectorDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SectorPriceDto.java
