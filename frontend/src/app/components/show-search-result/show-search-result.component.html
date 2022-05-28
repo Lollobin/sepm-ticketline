@@ -1,5 +1,6 @@
 <h2 *ngIf="shows">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
-<table class="table table-striped">
+
+<table class="table table-striped" *ngIf="this.shows?.numberOfResults">
   <thead>
   <tr>
 
@@ -15,11 +16,21 @@
     <td style="width: 40%">{{show.event.name}}</td>
     <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY h:mm' }}</td>
     <td style="width: 30%; text-align: right;"><button type="button" class="btn btn-primary" style="width: 150px; margin-right: 4%;"
-                [routerLink]="['/buyTickets', show.showId]">Buy Tickets!</button></td>
+                [routerLink]="['/buyTickets', show.showId]">Buy Tickets</button></td>
 
   </tr>
   </tbody>
 </table>
-<ngb-pagination [collectionSize]="shows?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
+<div class="container mt-3" *ngIf="!this.shows.numberOfResults">
+  <div class="alert alert-warning" role="alert">
+    <h4>There aren't any shows at this location!</h4>
+
+        <button type="button" class="btn-close" (click)="vanishEmpty()" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+
+  </div>
+</div>
+
+<ngb-pagination *ngIf="this.shows?.numberOfResults" [collectionSize]="shows?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
                 [pageSize]="pageSize" class="d-flex justify-content-center" (pageChange)="onPageChange(page)"></ngb-pagination>
 

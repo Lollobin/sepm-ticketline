@@ -12,8 +12,10 @@ export class ShowSearchResultComponent implements OnInit {
   @Input() shows: ShowSearchResult;
   @Input() location: Location;
   @Input() pageSize = 15;
+  @Input() empty = null;
   page = 1;
   _show: Show;
+
 
 
   constructor() {
@@ -39,6 +41,10 @@ export class ShowSearchResultComponent implements OnInit {
   onPageChange(num: number) {
 
     this.nextRequestedPage.emit(num);
+  }
+
+  public vanishEmpty(): void {
+    this.empty = null;
   }
 
 
