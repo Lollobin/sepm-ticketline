@@ -1,0 +1,25 @@
+<h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
+<table class="table table-striped">
+  <thead>
+  <tr>
+
+    <th scope="col">Event Name</th>
+    <th scope="col">Show Date & Time</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr
+      *ngFor="let show of shows.shows">
+
+    <td style="width: 40%">{{show.event}}</td>
+    <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY h:mm' }}</td>
+    <td style="width: 30%; text-align: right;"><button type="button" class="btn btn-primary" style="width: 150px; margin-right: 4%;"
+                                                       [routerLink]="['/buyTickets', show.showId]">Buy Tickets!</button></td>
+
+  </tr>
+  </tbody>
+</table>
+<ngb-pagination [collectionSize]="shows?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
+                [pageSize]="pageSize" class="d-flex justify-content-center" (pageChange)="onPageChange(page)"></ngb-pagination>
+

@@ -1,0 +1,40 @@
+
+<form [formGroup]="showForm">
+  <div class="row">
+    <div class="form-group col-md-6">
+      <small for="inputDate" class="form-label text-muted">Date</small>
+      <input id="inputDate" class="form-control form-override" formControlName="date" type="date" placeholder="yyyy-mm-dd">
+
+    </div>
+    <div class="form-group col-md-6">
+      <small for="inputTime" class="form-label text-muted">Time</small>
+      <input class="form-control form-override" type="time" formControlName="time">
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-6">
+      <small for="inputLocation" class="form-label text-muted">Location Name</small>
+      <input class="form-control" type="text" formControlName="location" [ngbTypeahead]="locationSearch"
+             #instance="ngbTypeahead" [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter"
+      />
+
+    </div>
+    <div class="form-group col-md-6">
+      <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
+      <select *ngIf="!f.location" class="form-control form-override" style="background-position: 92%"
+              disabled></select>
+
+      <select *ngIf="f.location" id="inputSeatingPlan" class="form-control form-override"
+              formControlName="seatingPlan" style="background-position: 92%">
+        <option hidden="true">Seating Plan</option>
+        <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <button (click)="onSearch()" class="btn btn-primary">Search</button>
+</form>
+
+<hr>
+<app-show-search-result *ngIf="shows"  (nextRequestedPage)="handleEventPageEmit($event)" [shows]="shows" [pageSize]="pageSize"  ></app-show-search-result>
