@@ -2,13 +2,13 @@
 <form class="form-margin" [formGroup]="eventForm">
   <div class="row">
     <div class="form-group col">
-      <input type="text" class="form-control " id="name" placeholder="Name" formControlName="name">
+      <small for="name" class="form-label text-muted"> Filter by Name</small>
+      <input type="text" class="form-control " id="name"  formControlName="name">
     </div>
     <div class="form-group col">
-
+      <small for="inputCategory" class="form-label text-muted"> Filter by Category</small>
       <select id="inputCategory" class="form-control form-override"
               formControlName="category" style="background-position: 95%" >
-        <option [value]="noCategory" disabled selected>Filter by Category</option>
         <option [value]="noCategory"></option>
         <option *ngFor="let category1 of categories" [value]="category1|uppercase">{{category1}}</option>
       </select>
@@ -16,20 +16,22 @@
 
   </div>
   <div class="form-group">
-    <input class="form-control "  formControlName="description" placeholder="Description">
+    <small for="description" class="form-label text-muted"> Filter by Description</small>
+    <input class="form-control " id="description" formControlName="description" >
   </div>
 
 
 <div class="row">
     <div class="form-group col-md-4">
-      <small  class="form-label text-muted">Duration</small>
-      <input type="range" class="form-range" min="10" max="360" step="10" value="-1"
-             id="inputDuration"
-             oninput="this.nextElementSibling.value = this.value"
-             formControlName="duration">
-      <span *ngIf = "duration.value!==null">{{secondsToHms(duration.value)}}</span>
+
+        <small for="inputDuration" class="form-label text-muted"> Filter by Duration</small>
+        <input type="range" class="form-range" min="0" max="360" step="10" value="0" id="inputDuration" formControlName="duration"
+               oninput=" this.nextElementSibling.value = this.value">
+      <span *ngIf = "duration.value!==0">{{this.secondsToHms(this.duration.value)}}</span>
+      <span *ngIf = "duration.value===0">Any</span>
+
     </div>
-  <button *ngIf="duration.value" type ="button" class="btn btn-outline-secondary col-2" style="margin: 15px " (click)="resetDuration()">Reset Duration Filter</button>
+  <button *ngIf="duration.value !== 0" type ="button" class="btn btn-outline-secondary col-2" style="margin: 15px " (click)="resetDuration()">Reset Duration Filter</button>
 </div>
   <div class="row">
 

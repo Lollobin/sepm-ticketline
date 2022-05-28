@@ -27,12 +27,7 @@ export class EventSearchComponent implements OnInit {
   events: EventSearchResult;
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService) {
-    this.eventForm = this.formBuilder.group({
-      name: [null],
-      category: [this.noCategory],
-      duration: [null],
-      description: [null]
-    });
+
     this.categories = Object.keys(this.categoriesType);
   }
 
@@ -55,7 +50,12 @@ export class EventSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
-
+    this.eventForm = this.formBuilder.group({
+      name: [null],
+      category: [this.noCategory],
+      duration: [0],
+      description: [null]
+    });
   }
 
   secondsToHms(d): string {
@@ -73,8 +73,8 @@ export class EventSearchComponent implements OnInit {
 
     const search: EventSearch = {
       name: this.name.value ? this.name.value : null,
-      category: this.category.value? this.category.value : null,
-      duration: this.duration.value ? this.duration.value : null,
+      category: this.category.value ? this.category.value : null,
+      duration: this.duration.value !== 0 ? this.duration.value : null,
       content: this.description.value ? this.description.value : null
     };
     console.log(search);
@@ -100,7 +100,7 @@ export class EventSearchComponent implements OnInit {
   }
 
   resetDuration() {
-    this.eventForm.controls.duration.setValue(null);
+    this.eventForm.controls.duration.setValue(0);
   }
 
   handleEventPageEmit(number) {
