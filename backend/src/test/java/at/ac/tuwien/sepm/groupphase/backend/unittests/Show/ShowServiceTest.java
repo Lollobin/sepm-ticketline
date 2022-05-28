@@ -10,11 +10,13 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALI
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -36,6 +38,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +50,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 @ExtendWith(MockitoExtension.class)
 class ShowServiceTest {
@@ -71,6 +79,8 @@ class ShowServiceTest {
     private SectorPriceRepository sectorPriceRepository;
     private ShowService showService;
     private EventService eventService;
+
+    Pageable pageable = PageRequest.of(0, 10, Direction.ASC, "id");
 
     @Spy
     private ShowMapper showMapper = Mappers.getMapper(ShowMapper.class);
@@ -166,6 +176,62 @@ class ShowServiceTest {
         assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
         assertThat(showArgumentCaptor.getValue().getArtists()).isNull();
         assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
+    }
+
+//    @Test
+//    void searchWithOnlyEventId_shouldCallFindEventByIdInRepo(){
+//
+//        ShowSearchDto searchDto = new ShowSearchDto();
+//        searchDto.setEventId(1L);
+
+//    List<Show> list = new ArrayList<>();
+
+//    when(showRepository.findEventById(1L).thenReturn(new PageImpl<>(list));
+//
+//        showService.search(searchDto);
+//
+//        verify(showRepository).findShowById(1L);
+//
+//    }
+//
+//    @Test
+//    void searchWithOnlyLocationId_shouldCallFindLocationByIdInRepo(){
+//
+//        ShowSearchDto searchDto = new ShowSearchDto();
+//        searchDto.setLocationId(1L);
+
+//    List<Show> list = new ArrayList<>();
+
+
+
+//    when(showRepository.findLocationById(1L).thenReturn(new PageImpl<>(list));
+
+//
+//        showService.search(searchDto);
+//
+//        verify(showRepository).findLocationById(1L);
+//
+//    }
+
+    @Test
+    void searchWithAllButLocationIdAndEventId_shouldCallSearchInRepo(){
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setEvent("test");
+        searchDto.setDate(SHOW_DATE);
+        searchDto.setPrice(BigDecimal.valueOf(30));
+        searchDto.setSeatingPlan(1L);
+
+        List<Show> list = new ArrayList<>();
+
+
+
+        when(showRepository.search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test", BigDecimal.valueOf(30), 1L, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test", BigDecimal.valueOf(30), 1L, pageable);
+
     }
 
     @Test
