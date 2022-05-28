@@ -34,7 +34,13 @@ public class ShowSearchDto   {
   private BigDecimal price;
 
   @JsonProperty("seatingPlan")
-  private Integer seatingPlan;
+  private Long seatingPlan;
+
+  @JsonProperty("location")
+  private Long location;
+
+  @JsonProperty("eventId")
+  private Long eventId;
 
   @JsonProperty("location")
   private Long location;
@@ -99,7 +105,7 @@ public class ShowSearchDto   {
     this.price = price;
   }
 
-  public ShowSearchDto seatingPlan(Integer seatingPlan) {
+  public ShowSearchDto seatingPlan(Long seatingPlan) {
     this.seatingPlan = seatingPlan;
     return this;
   }
@@ -110,11 +116,11 @@ public class ShowSearchDto   {
   */
   
   @Schema(name = "seatingPlan", required = false)
-  public Integer getSeatingPlan() {
+  public Long getSeatingPlan() {
     return seatingPlan;
   }
 
-  public void setSeatingPlan(Integer seatingPlan) {
+  public void setSeatingPlan(Long seatingPlan) {
     this.seatingPlan = seatingPlan;
   }
 
