@@ -22,7 +22,7 @@
     </thead>
     <tbody>
     <tr
-        *ngFor="let artist of artists " (click)="fakeEvents(artist,0)">
+        *ngFor="let artist of artists " (click)="artistGetEvents(artist,0)">
 
       <td>
         <div   class="mr-2">{{artist.knownAs}}</div>

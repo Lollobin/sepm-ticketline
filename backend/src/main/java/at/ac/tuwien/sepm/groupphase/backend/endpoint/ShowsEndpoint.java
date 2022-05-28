@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ShowsApi;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
@@ -39,14 +40,16 @@ public class ShowsEndpoint implements ShowsApi {
 
     @Override
     public ResponseEntity<ShowSearchResultDto> showsGet(ShowSearchDto search, Integer pageSize,
-        Integer requestedPage, String sort) {
+        Integer requestedPage, SortDto sort) {
         LOGGER.info("GET /shows with searchDto: {}", search);
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.valueOf(
+                String.valueOf(sort)),
             "showId");
         ShowSearchResultDto resultDto;
         if (search.getDate() == null && (search.getEvent() == null || search.getEvent().isBlank())
-            && search.getPrice() == null && search.getSeatingPlan() == null) {
+            && search.getPrice() == null && search.getSeatingPlan() == null
+            && search.getLocation() == null && search.getEventId() == null) {
 
             resultDto = showService.findAll(pageable);
 

@@ -13,7 +13,7 @@ import { Ticket } from './ticket';
 
 
 export interface TicketWithShowInfo { 
-    ticket: Ticket;
+    ticket: Array<Ticket>;
     type: TicketWithShowInfoTypeEnum;
     showDate: string;
     artists: Array<string>;

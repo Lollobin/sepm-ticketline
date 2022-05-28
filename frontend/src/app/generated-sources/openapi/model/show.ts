@@ -9,12 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Event } from './event';
+import { Location } from './location';
 
 
 export interface Show { 
     showId: number;
     date?: string;
-    event: number;
+    event: Event;
     artists: Array<number>;
+    location: Location;
 }
 

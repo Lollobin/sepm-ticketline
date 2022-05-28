@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
@@ -12,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArtistRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorPriceRepository;
@@ -23,8 +25,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +49,7 @@ public class ShowServiceImpl implements ShowService {
     private final TicketRepository ticketRepository;
     private final SeatingPlanRepository seatingPlanRepository;
     private final SectorPriceRepository sectorPriceRepository;
+    private final ArtistRepository artistRepository;
 
     private final ShowMapper showMapper;
 
@@ -52,7 +57,8 @@ public class ShowServiceImpl implements ShowService {
     public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator,
         SectorRepository sectorRepository, SeatRepository seatRepository,
         TicketRepository ticketRepository, SeatingPlanRepository seatingPlanRepository,
-        SectorPriceRepository sectorPriceRepository, ShowMapper showMapper) {
+        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository,
+        ShowMapper showMapper) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
         this.sectorRepository = sectorRepository;
@@ -60,6 +66,7 @@ public class ShowServiceImpl implements ShowService {
         this.ticketRepository = ticketRepository;
         this.seatingPlanRepository = seatingPlanRepository;
         this.sectorPriceRepository = sectorPriceRepository;
+        this.artistRepository = artistRepository;
         this.showMapper = showMapper;
     }
 
@@ -79,18 +86,36 @@ public class ShowServiceImpl implements ShowService {
 
         LOGGER.trace("Find all shows with pageable: {}", pageable);
 
-        Integer hours = null;
-        Integer minutes = null;
-        if (showSearchDto.getDate() != null) {
-            hours = showSearchDto.getDate().getHour();
-            minutes = showSearchDto.getDate().getMinute();
+        if (showSearchDto.getDate() == null && showSearchDto.getEvent() == null
+            && showSearchDto.getPrice() == null && showSearchDto.getSeatingPlan() == null
+            && showSearchDto.getEventId() == null && showSearchDto.getLocation() != null) {
+
+            Page<Show> showPage = showRepository.findShowByLocation(showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+
+        } else if (showSearchDto.getEventId() != null) {
+            Page<Show> showPage = showRepository.findShowByEventId(showSearchDto.getEventId(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+        } else {
+
+            Integer hours = null;
+            Integer minutes = null;
+            if (showSearchDto.getDate() != null) {
+                hours = showSearchDto.getDate().getHour();
+                minutes = showSearchDto.getDate().getMinute();
+            }
+
+            Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
+                showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
+                showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
         }
-
-        Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
-            showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
-            pageable);
-
-        return setShowSearchResultDto(showPage);
     }
 
     private ShowSearchResultDto setShowSearchResultDto(Page<Show> showPage) {
@@ -129,13 +154,25 @@ public class ShowServiceImpl implements ShowService {
                 "length of list of sectorPrices does not match with length of list of sectors");
         }
 
+        for (Artist artist : show.getArtists()) {
+            if (!artistRepository.existsById(artist.getArtistId())) {
+                throw new NotFoundException(
+                    String.format("Could not find artist with the given artistId %s",
+                        artist.getArtistId()));
+            }
+        }
+
         List<SectorPrice> sectorPrices = setUpSectorPrices(sectorPriceDtos, sectors.get());
 
         show = showRepository.save(show);
 
+        Set<SectorPrice> sectorPriceSet = new HashSet<>();
+
         for (SectorPrice sectorPrice : sectorPrices) {
             sectorPrice.setShow(show);
-            sectorPriceRepository.save(sectorPrice);
+            sectorPrice = sectorPriceRepository.save(sectorPrice);
+            sectorPriceSet.add(sectorPrice);
+
         }
 
         for (Sector sector : sectors.get()) {
@@ -151,6 +188,8 @@ public class ShowServiceImpl implements ShowService {
                 ticketRepository.save(ticket);
             }
         }
+
+        show.setSectorPrices(sectorPriceSet);
 
         return show;
     }
@@ -174,8 +213,9 @@ public class ShowServiceImpl implements ShowService {
             for (SectorPriceDto sectorPriceDto : sectorPriceDtos) {
                 if (sectorPriceDto.getSectorId().equals(sector.getSectorId())) {
                     found = true;
-                    sectorPrices.add(new SectorPrice(sector, null,
-                        BigDecimal.valueOf(sectorPriceDto.getPrice())));
+                    sectorPrices.add(
+                        new SectorPrice(sector, null,
+                            BigDecimal.valueOf(sectorPriceDto.getPrice())));
                     break;
                 }
             }

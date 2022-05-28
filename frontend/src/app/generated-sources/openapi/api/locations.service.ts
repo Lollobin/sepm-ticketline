@@ -26,6 +26,10 @@ import { LocationSearch } from '../model/locationSearch';
 import { LocationSearchResult } from '../model/locationSearchResult';
 // @ts-ignore
 import { LocationWithoutId } from '../model/locationWithoutId';
+// @ts-ignore
+import { SeatingPlan } from '../model/seatingPlan';
+// @ts-ignore
+import { Sort } from '../model/sort';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -102,10 +106,10 @@ export class LocationsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<LocationSearchResult>;
-    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<LocationSearchResult>>;
-    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<LocationSearchResult>>;
-    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: 'ASC' | 'DESC', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<LocationSearchResult>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<LocationSearchResult>>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<LocationSearchResult>>;
+    public locationsGet(search?: LocationSearch, pageSize?: number, requestedPage?: number, sort?: Sort, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (search !== undefined && search !== null) {
@@ -222,6 +226,70 @@ export class LocationsService {
         }
 
         return this.httpClient.get<Location>(`${this.configuration.basePath}/locations/${encodeURIComponent(String(id))}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Gets the seating plans of a location
+     * @param id ID of the location that is retreived
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public locationsIdSeatingPlansGet(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<SeatingPlan>>;
+    public locationsIdSeatingPlansGet(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<SeatingPlan>>>;
+    public locationsIdSeatingPlansGet(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<SeatingPlan>>>;
+    public locationsIdSeatingPlansGet(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling locationsIdSeatingPlansGet.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (BearerAuth) required
+        localVarCredential = this.configuration.lookupCredential('BearerAuth');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        return this.httpClient.get<Array<SeatingPlan>>(`${this.configuration.basePath}/locations/${encodeURIComponent(String(id))}/seatingPlans`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

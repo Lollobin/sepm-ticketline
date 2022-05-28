@@ -2,9 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.LocationsApi;
 import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -28,10 +31,10 @@ public class LocationsEndpoint implements LocationsApi {
 
     @Override
     public ResponseEntity<LocationSearchResultDto> locationsGet(LocationSearchDto search,
-        Integer pageSize, Integer requestedPage, String sort) {
+        Integer pageSize, Integer requestedPage, SortDto sort) {
         LOGGER.info("GET /locations with search: {}", search);
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
+        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort.getValue()),
             "name");
         LocationSearchResultDto searchResultDto;
         if ((search.getName() == null || search.getName().isBlank()) && (search.getCountry() == null
@@ -45,5 +48,12 @@ public class LocationsEndpoint implements LocationsApi {
 
         return ResponseEntity.ok(searchResultDto);
 
+    }
+
+    @Override
+    public ResponseEntity<List<SeatingPlanDto>> locationsIdSeatingPlansGet(Long id) {
+        LOGGER.info("GET /locations/{}/seatingPlans", id);
+
+        return ResponseEntity.ok(this.locationService.findSeatingPlans(id));
     }
 }

@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {User, UserManagementService} from "../../generated-sources/openapi";
+import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
@@ -9,6 +9,8 @@ import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
 })
 export class UnlockUserComponent implements OnInit {
 
+  data: UsersPage = null;
+  page = 1;
   users: User[];
   error = "";
   empty = false;
@@ -18,6 +20,9 @@ export class UnlockUserComponent implements OnInit {
   userEmail = "";
   faLockOpen = faLockOpen;
   errorFetch = "";
+  pageSize = 10;
+  sort: 'ASC' | 'DESC' = 'ASC';
+  numberOfElems = 0;
 
   constructor(private userManagementService: UserManagementService) {
   }
@@ -27,11 +32,11 @@ export class UnlockUserComponent implements OnInit {
   }
 
   reloadUser() {
-    this.userManagementService.usersGet(true).subscribe({
-      next: user => {
-        this.users = user;
-        console.log("received users", user);
-        this.empty = this.users.length === 0;
+    this.userManagementService.usersGet(true, this.pageSize, this.page - 1).subscribe({
+      next: data => {
+        this.numberOfElems = data.numberOfResults;
+        this.users = data.users;
+        this.empty = data.users.length === 0;
       },
       error: err => {
         console.log("Error fetching users: ", err);
@@ -39,6 +44,11 @@ export class UnlockUserComponent implements OnInit {
 
       }
     });
+  }
+
+  onPageChange(ngbpage: number) {
+    this.page = ngbpage;
+    this.reloadUser();
   }
 
   unlockUser(id: number, email: string) {
