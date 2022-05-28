@@ -714,7 +714,7 @@ paths:
           $ref: "#/components/responses/500-internal-error"
   /locations/{id}/seatingPlans:
     get:
-      tags: 
+      tags:
         - locations
       summary: Gets the seating plans of a location
       security:
@@ -726,9 +726,9 @@ paths:
           description: Successful retreival of the location seating plans
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/SeatingPlan"
         401:
           $ref: "#/components/responses/401-not-authenticated"
@@ -1437,9 +1437,8 @@ components:
       properties:
         name:
           type: string
-        seatingPlanLayoutId:
-          type: integer
-          format: int64
+        seatingPlanLayout:
+          $ref: "#/components/schemas/SeatingPlanLayout"
         locationId:
           type: integer
           format: int64
@@ -1865,5 +1864,96 @@ components:
           type: integer
         pagesTotal:
           type: integer
-
-
+    ElementLocation:
+      type: object
+      properties:
+        w:
+          type: number
+        h:
+          type: number
+        x:
+          type: number
+        y:
+          type: number
+      required:
+        - x
+        - y
+        - w
+        - h
+    SeatingPlanSeat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sectorId:
+          type: integer
+          format: int64
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+    SeatingPlanSector:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        color:
+          type: integer
+          format: int64
+        description:
+          type: string
+        noSeats:
+          type: boolean
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+        - color
+        - noSeats
+    SeatingPlanStaticElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        color:
+          type: integer
+          format: int64
+        description:
+          type: string
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+        - color
+        - location
+    SeatingPlanLayout:
+      type: object
+      properties:
+        general:
+          type: object
+          properties:
+            width:
+              type: number
+            height:
+              type: number
+          required:
+            - width
+            - height
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanSeat"
+        sectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanSector"
+        staticElements:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanStaticElement"

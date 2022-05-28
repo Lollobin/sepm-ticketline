@@ -244,7 +244,7 @@ class LocationEndpointTest {
         locationToSave.setAddress(address);
         locationToSave.setName("TestLocation");
         String json = objectMapper.writeValueAsString(locationToSave);
-        assertThat(locationRepository.findAll()).hasSize(0);
+        assertThat(locationRepository.findAll()).isEmpty();
 
         ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
             .post("/locations")
