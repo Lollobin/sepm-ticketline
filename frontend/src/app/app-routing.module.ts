@@ -17,7 +17,7 @@ import {
 } from "./components/show-search-result/show-search-result.component";
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: EventsComponent},
   {path: 'login', component: LoginComponent},
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]} },
   {path: 'buyTickets/:showId', component: SeatingPlanComponent, data: {role: "USER"}},
