@@ -11,7 +11,6 @@ import {
 } from "../../generated-sources/openapi";
 import {debounceTime, distinctUntilChanged, map, Observable, switchMap} from "rxjs";
 import {FormBuilder} from "@angular/forms";
-import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-show-search',
@@ -32,17 +31,35 @@ export class ShowSearchComponent implements OnInit {
   offsetTime;
   seatingPlans: SeatingPlan[];
   locationSearchDto: LocationSearch = {};
-  faXmark = faXmark;
+
+
+  currentlyActiveFilters: string[];
 
   constructor(private showService: ShowsService, private seatingPlansService: SeatingPlansService,
               private locationsService: LocationsService, private formBuilder: FormBuilder) {
 
   }
 
-  get f() {
-    return this.showForm.controls;
+
+  get location() {
+    return this.showForm.get("location");
   }
 
+  get price() {
+    return this.showForm.get("price");
+  }
+
+  get time() {
+    return this.showForm.get("time");
+  }
+
+  get date() {
+    return this.showForm.get("date");
+  }
+
+  get seatingPlan() {
+    return this.showForm.get("seatingPlan");
+  }
 
   ngOnInit(): void {
     this.showForm = this.formBuilder.group({
@@ -52,7 +69,7 @@ export class ShowSearchComponent implements OnInit {
       seatingPlan: [null],
       price: [null]
     });
-
+    this.onSearch();
     this.showForm.get('location').valueChanges.subscribe(val => {
       if (val && val.locationId) {
         this.getSeatingPlansOfLocation(val.locationId);
@@ -74,15 +91,18 @@ export class ShowSearchComponent implements OnInit {
       this.offsetTime = null;
     }
     const search: ShowSearch = {
+
       date: this.offsetTime,
-      location: this.f.location.value ? this.f.location.value.locationId : null,
-      seatingPlan: this.f.seatingPlan.value? this.f.seatingPlan.value.seatingPlanId  : null,
-      price: this.f.price.value ? this.f.price.value : null,
+      location: this.location.value ? this.location.value.locationId : null,
+      seatingPlan: this.seatingPlan.value ? this.seatingPlan.value.seatingPlanId : null,
+      price: this.price.value ? this.price.value : null,
     };
 
+    console.log(search);
     this.showService.showsGet(search, this.pageSize, this.page - 1).subscribe({
           next: response => {
             this.shows = response;
+            this.setCurrentlyActiveFilters();
           },
           error: err => this.error = err
         }
@@ -136,7 +156,39 @@ export class ShowSearchComponent implements OnInit {
     this.onSearch();
   }
 
-  resetField(fieldName: string){
+  setCurrentlyActiveFilters() {
+    this.currentlyActiveFilters = [];
+    if (this.location.value) {
+      this.currentlyActiveFilters.push("location");
+    }
+    if (this.time.value) {
+      this.currentlyActiveFilters.push("time");
+    }
+    if (this.date.value) {
+      this.currentlyActiveFilters.push("date");
+    }
+    if (this.seatingPlan.value) {
+      this.currentlyActiveFilters.push("seatingPlan");
+    }
+    if (this.price.value) {
+      this.currentlyActiveFilters.push("price");
+    }
+  }
+
+  resetField(fieldName: string) {
+    if (fieldName === 'date') {
+      this.showForm.get('time').setValue(null);
+    }
     this.showForm.get(fieldName).setValue(null);
+  }
+
+  resetFilterOnField(field: string) {
+    this.showForm.get(field).setValue(null);
+    this.onSearch();
+  }
+
+  resetAll() {
+    this.showForm.reset();
+    this.onSearch();
   }
 }
