@@ -97,7 +97,7 @@ export class ShowSearchComponent implements OnInit {
       date: this.offsetTime,
       location: this.location.value ? this.location.value.locationId : null,
       seatingPlan: this.seatingPlan.value ? this.seatingPlan.value.seatingPlanId : null,
-      price: this.price.value ? this.price.value : null,
+      price: this.price.value!== null || this.price.value === 0 ? this.price.value : null,
     };
 
     console.log(search);

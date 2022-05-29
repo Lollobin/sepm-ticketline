@@ -23,7 +23,7 @@
   </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.shows?.numberOfResults&&location">
+<div class="container mt-3" *ngIf="!this.shows?.numberOfResults&&(location||shows)">
   <div class="alert alert-warning" role="alert">
     <h4>There aren't any shows fitting your input!</h4>
 

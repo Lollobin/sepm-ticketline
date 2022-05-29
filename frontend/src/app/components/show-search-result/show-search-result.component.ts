@@ -44,7 +44,7 @@ export class ShowSearchResultComponent implements OnInit {
         next: response => {
         this.shows = response;
         console.log(response);
-        this.eventName= this.shows.shows[0].event.name;
+        this.eventName= this.shows.shows[0]?.event.name;
         },
         error: err => console.log(err.error.error)
       });
