@@ -1,0 +1,331 @@
+{
+  "general": { "width": 334.13330078125, "height": 330 },
+  "seats": [
+    { "id": 161, "sectorId": 0 },
+    { "id": 162, "sectorId": 0 },
+    { "id": 163, "sectorId": 0 },
+    { "id": 164, "sectorId": 0 },
+    { "id": 165, "sectorId": 0 },
+    { "id": 166, "sectorId": 0 },
+    { "id": 167, "sectorId": 0 },
+    { "id": 168, "sectorId": 0 },
+    { "id": 169, "sectorId": 0 },
+    { "id": 170, "sectorId": 0 },
+    { "id": 171, "sectorId": 0 },
+    { "id": 172, "sectorId": 0 },
+    { "id": 173, "sectorId": 0 },
+    { "id": 174, "sectorId": 0 },
+    { "id": 175, "sectorId": 0 },
+    { "id": 176, "sectorId": 0 },
+    { "id": 177, "sectorId": 0 },
+    { "id": 178, "sectorId": 0 },
+    { "id": 179, "sectorId": 0 },
+    { "id": 180, "sectorId": 0 },
+    { "id": 181, "sectorId": 0 },
+    { "id": 182, "sectorId": 0 },
+    { "id": 183, "sectorId": 0 },
+    { "id": 184, "sectorId": 0 },
+    { "id": 185, "sectorId": 0 },
+    { "id": 186, "sectorId": 0 },
+    { "id": 187, "sectorId": 0 },
+    { "id": 188, "sectorId": 0 },
+    { "id": 189, "sectorId": 0 },
+    { "id": 190, "sectorId": 0 },
+    { "id": 191, "sectorId": 0 },
+    { "id": 192, "sectorId": 0 },
+    { "id": 193, "sectorId": 0 },
+    { "id": 194, "sectorId": 0 },
+    { "id": 195, "sectorId": 0 },
+    { "id": 196, "sectorId": 0 },
+    { "id": 197, "sectorId": 0 },
+    { "id": 198, "sectorId": 0 },
+    { "id": 199, "sectorId": 0 },
+    { "id": 200, "sectorId": 0 },
+    { "id": 201, "sectorId": 0 },
+    { "id": 202, "sectorId": 0 },
+    { "id": 203, "sectorId": 0 },
+    { "id": 204, "sectorId": 0 },
+    { "id": 205, "sectorId": 0 },
+    { "id": 206, "sectorId": 0 },
+    { "id": 207, "sectorId": 0 },
+    { "id": 208, "sectorId": 0 },
+    { "id": 209, "sectorId": 0 },
+    { "id": 210, "sectorId": 0 },
+    { "id": 211, "sectorId": 1 },
+    { "id": 212, "sectorId": 1 },
+    { "id": 213, "sectorId": 1 },
+    { "id": 214, "sectorId": 1 },
+    { "id": 215, "sectorId": 1 },
+    { "id": 216, "sectorId": 1 },
+    { "id": 217, "sectorId": 1 },
+    { "id": 218, "sectorId": 1 },
+    { "id": 219, "sectorId": 1 },
+    { "id": 220, "sectorId": 1 },
+    { "id": 221, "sectorId": 1 },
+    { "id": 222, "sectorId": 1 },
+    { "id": 223, "sectorId": 1 },
+    { "id": 224, "sectorId": 1 },
+    { "id": 225, "sectorId": 1 },
+    { "id": 226, "sectorId": 1 },
+    { "id": 227, "sectorId": 1 },
+    { "id": 228, "sectorId": 1 },
+    { "id": 229, "sectorId": 1 },
+    { "id": 230, "sectorId": 1 },
+    { "id": 231, "sectorId": 1 },
+    { "id": 232, "sectorId": 1 },
+    { "id": 233, "sectorId": 1 },
+    { "id": 234, "sectorId": 1 },
+    { "id": 235, "sectorId": 1 },
+    { "id": 236, "sectorId": 1 },
+    { "id": 237, "sectorId": 1 },
+    { "id": 238, "sectorId": 1 },
+    { "id": 239, "sectorId": 1 },
+    { "id": 240, "sectorId": 1 },
+    { "id": 241, "sectorId": 1 },
+    { "id": 242, "sectorId": 1 },
+    { "id": 243, "sectorId": 1 },
+    { "id": 244, "sectorId": 1 },
+    { "id": 245, "sectorId": 1 },
+    { "id": 246, "sectorId": 1 },
+    { "id": 247, "sectorId": 1 },
+    { "id": 248, "sectorId": 1 },
+    { "id": 249, "sectorId": 1 },
+    { "id": 250, "sectorId": 1 },
+    { "id": 251, "sectorId": 1 },
+    { "id": 252, "sectorId": 1 },
+    { "id": 253, "sectorId": 1 },
+    { "id": 254, "sectorId": 1 },
+    { "id": 255, "sectorId": 1 },
+    { "id": 256, "sectorId": 1 },
+    { "id": 257, "sectorId": 1 },
+    { "id": 258, "sectorId": 1 },
+    { "id": 259, "sectorId": 1 },
+    { "id": 260, "sectorId": 1 },
+    {
+      "id": 261,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 123, "y": 123 }
+    },
+    {
+      "id": 262,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 144, "y": 123 }
+    },
+    {
+      "id": 263,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 165.25006103515625, "y": 123 }
+    },
+    {
+      "id": 264,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 186.25006103515625, "y": 123 }
+    },
+    {
+      "id": 265,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 123.25006103515625, "y": 144 }
+    },
+    {
+      "id": 266,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 144.25006103515625, "y": 144 }
+    },
+    {
+      "id": 267,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 165.25006103515625, "y": 144 }
+    },
+    {
+      "id": 268,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 186.25006103515625, "y": 144 }
+    },
+    {
+      "id": 269,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 123.25006103515625, "y": 165 }
+    },
+    {
+      "id": 270,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 144.25006103515625, "y": 165 }
+    },
+    {
+      "id": 271,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 165.25006103515625, "y": 165 }
+    },
+    {
+      "id": 272,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 186.25006103515625, "y": 165 }
+    },
+    {
+      "id": 273,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 123.25006103515625, "y": 186 }
+    },
+    {
+      "id": 274,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 144.25006103515625, "y": 186 }
+    },
+    {
+      "id": 275,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 165.25006103515625, "y": 186 }
+    },
+    {
+      "id": 276,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 186.25006103515625, "y": 186 }
+    },
+    {
+      "id": 277,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 123.25006103515625, "y": 207 }
+    },
+    {
+      "id": 278,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 144.25006103515625, "y": 207 }
+    },
+    {
+      "id": 279,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 165.25006103515625, "y": 207 }
+    },
+    {
+      "id": 280,
+      "sectorId": 2,
+      "location": { "h": 16, "w": 16, "x": 186.25006103515625, "y": 207 }
+    },
+    {
+      "id": 281,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 244.41668701171875, "y": 121 }
+    },
+    {
+      "id": 282,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 265.41668701171875, "y": 121 }
+    },
+    {
+      "id": 283,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 286.41668701171875, "y": 121 }
+    },
+    {
+      "id": 284,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 307.41668701171875, "y": 121 }
+    },
+    {
+      "id": 285,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 244.41668701171875, "y": 142 }
+    },
+    {
+      "id": 286,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 265.41668701171875, "y": 142 }
+    },
+    {
+      "id": 287,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 286.41668701171875, "y": 142 }
+    },
+    {
+      "id": 288,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 307.41668701171875, "y": 142 }
+    },
+    {
+      "id": 289,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 244.41668701171875, "y": 163 }
+    },
+    {
+      "id": 290,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 265.41668701171875, "y": 163 }
+    },
+    {
+      "id": 291,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 286.41668701171875, "y": 163 }
+    },
+    {
+      "id": 292,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 307.41668701171875, "y": 163 }
+    },
+    {
+      "id": 293,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 244.41668701171875, "y": 184 }
+    },
+    {
+      "id": 294,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 265.41668701171875, "y": 184 }
+    },
+    {
+      "id": 295,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 286.41668701171875, "y": 184 }
+    },
+    {
+      "id": 296,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 307.41668701171875, "y": 184 }
+    },
+    {
+      "id": 297,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 244.41668701171875, "y": 205 }
+    },
+    {
+      "id": 298,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 265.41668701171875, "y": 205 }
+    },
+    {
+      "id": 299,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 286.41668701171875, "y": 205 }
+    },
+    {
+      "id": 300,
+      "sectorId": 3,
+      "location": { "h": 16, "w": 16, "x": 307.41668701171875, "y": 205 }
+    }
+  ],
+  "sectors": [
+    {
+      "location": { "h": 100, "w": 100, "x": 234.13330078125, "y": 11 },
+      "noSeats": true,
+      "id": 0,
+      "color": 16087296,
+      "description": "Right wing"
+    },
+    {
+      "location": { "h": 100, "w": 100, "x": 112, "y": 10 },
+      "noSeats": true,
+      "id": 1,
+      "color": 7688315,
+      "description": "Left Wing"
+    },
+    { "noSeats": false, "id": 2, "color": 170 },
+    { "noSeats": false, "id": 3, "color": 0 }
+  ],
+  "staticElements": [
+    {
+      "id": 301,
+      "color": 0,
+      "location": { "h": 100, "w": 180, "x": 137.41668701171875, "y": 230 },
+      "description": "Main Stage"
+    }
+  ]
+}
