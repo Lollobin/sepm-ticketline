@@ -36,6 +36,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_DATE;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,7 +45,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithoutIdDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
@@ -66,6 +66,10 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,6 +82,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -91,67 +97,47 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class ShowEndpointTest {
 
     @Autowired
+    ObjectMapper objectMapper;
+    @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private EventRepository eventRepository;
-
     @Autowired
     private ShowRepository showRepository;
-
     @Autowired
     private AddressRepository addressRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private SeatingPlanLayoutRepository seatingPlanLayoutRepository;
-
     @Autowired
     private SeatingPlanRepository seatingPlanRepository;
-
     @Autowired
     private SectorPriceRepository sectorPriceRepository;
-
     @Autowired
     private TicketRepository ticketRepository;
-
     @Autowired
     private SectorRepository sectorRepository;
-
     @Autowired
     private SeatRepository seatRepository;
-
     @Autowired
     private ArtistRepository artistRepository;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
     @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
     private SecurityProperties securityProperties;
 
+
     @BeforeEach
     public void setup() {
-        ticketRepository.deleteAll();
-        seatRepository.deleteAll();
-        sectorPriceRepository.deleteAll();
-        showRepository.deleteAll();
-        eventRepository.deleteAll();
-        artistRepository.deleteAll();
-        sectorRepository.deleteAll();
-        seatingPlanRepository.deleteAll();
-        seatingPlanLayoutRepository.deleteAll();
-        locationRepository.deleteAll();
-        addressRepository.deleteAll();
+
     }
 
     @Test
     void should_ReturnAllStoredShows_When_RepoNotEmpty() throws Exception {
+
+        deleteAll();
 
         saveThreeShowsAndEvents();
 
@@ -185,7 +171,7 @@ class ShowEndpointTest {
 
     @Test
     void should_ReturnShowById_When_ShowIsPresent() throws Exception {
-
+        deleteAll();
         saveThreeShowsAndEvents();
 
         List<Show> allShows = showRepository.findAll();
@@ -210,7 +196,7 @@ class ShowEndpointTest {
 
     @Test
     void shouldReturn404DueToNotPresentShow() throws Exception {
-
+        deleteAll();
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/shows/-100")
                 .header(
@@ -222,8 +208,81 @@ class ShowEndpointTest {
     }
 
     @Test
-    void should_Return403_When_RoleIsInvalid() throws Exception {
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithEventName_shouldReturnShowsAtEventWithNameContainingPop() throws Exception {
 
+        String eventName = "pop";
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(
+                    get("/shows").param("event", eventName))
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        ShowSearchResultDto searchResultDto = objectMapper.readValue(response.getContentAsString(),
+            ShowSearchResultDto.class);
+
+        List<ShowDto> shows = searchResultDto.getShows();
+
+        //Verifying that search is case-insensitive
+        assertThat(shows).hasSize(2);
+        assertThat(shows.get(0).getEvent().getName().toUpperCase()).contains(
+            eventName.toUpperCase());
+
+        assertThat(shows.get(1).getEvent().getName().toUpperCase()).contains(
+            eventName.toUpperCase());
+        assertThat(shows.get(1).getEvent().getName()).doesNotContain(eventName);
+    }
+
+    @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithDateHourAndMinute0_shouldReturnThreeShowsSameDate() throws Exception {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), ZoneOffset.UTC);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(
+                    get("/shows").param("date", String.valueOf(date)))
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        ShowSearchResultDto searchResultDto = objectMapper.readValue(response.getContentAsString(),
+            ShowSearchResultDto.class);
+
+        List<ShowDto> shows = searchResultDto.getShows();
+
+        assertThat(shows).hasSize(3);
+        assertThat(shows.get(0).getShowId()).isEqualTo(-7);
+        assertThat(shows.get(1).getShowId()).isEqualTo(-6);
+        assertThat(shows.get(2).getShowId()).isEqualTo(-2);
+
+    }
+
+
+    @Test
+    void should_Return403_When_RoleIsInvalid() throws Exception {
+        deleteAll();
         Event event1 = new Event();
         event1.setCategory(EVENT_CATEGORY);
         event1.setContent(EVENT_CONTENT);
@@ -270,7 +329,7 @@ class ShowEndpointTest {
 
     @Test
     void should_CreateNewShow_When_ShowDtoIsValid() throws Exception {
-
+        deleteAll();
         Event event1 = new Event();
         event1.setCategory(EVENT_CATEGORY);
         event1.setContent(EVENT_CONTENT);
@@ -376,6 +435,19 @@ class ShowEndpointTest {
             seat3.getSeatId());
     }
 
+    private void deleteAll() {
+        ticketRepository.deleteAll();
+        seatRepository.deleteAll();
+        sectorPriceRepository.deleteAll();
+        showRepository.deleteAll();
+        eventRepository.deleteAll();
+        artistRepository.deleteAll();
+        sectorRepository.deleteAll();
+        seatingPlanRepository.deleteAll();
+        seatingPlanLayoutRepository.deleteAll();
+        locationRepository.deleteAll();
+        addressRepository.deleteAll();
+    }
 
     private void saveThreeShowsAndEvents() {
 

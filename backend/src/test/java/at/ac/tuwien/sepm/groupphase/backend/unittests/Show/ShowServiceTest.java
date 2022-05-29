@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
@@ -40,6 +41,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,251 +51,308 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 @ExtendWith(MockitoExtension.class)
 class ShowServiceTest {
 
-  private final ShowValidator showValidator = new ShowValidator();
-  private final Event fakePersistedEvent = new Event();
-  private final Show fakePersistedShow = new Show();
-  private final EventValidator eventValidator = new EventValidator();
-  @Mock
-  private EventRepository eventRepository;
-  @Mock
-  private ShowRepository showRepository;
-  @Mock
-  private SectorRepository sectorRepository;
-  @Mock
-  private SeatRepository seatRepository;
-  @Mock
-  private TicketRepository ticketRepository;
-  @Mock
-  private SeatingPlanRepository seatingPlanRepository;
-  @Mock
-  private SectorPriceRepository sectorPriceRepository;
-  @Mock
-  private ArtistRepository artistRepository;
-  @Spy
-  private ShowMapper showMapper;
-  private ShowService showService;
-  private EventService eventService;
+    private final ShowValidator showValidator = new ShowValidator();
+    private final Event fakePersistedEvent = new Event();
+    private final Show fakePersistedShow = new Show();
+    private final EventValidator eventValidator = new EventValidator();
+    Pageable pageable = PageRequest.of(0, 10, Direction.fromString("ASC"), "showId");
+    @Mock
+    private EventRepository eventRepository;
+    @Mock
+    private ShowRepository showRepository;
+    @Mock
+    private SectorRepository sectorRepository;
+    @Mock
+    private SeatRepository seatRepository;
+    @Mock
+    private TicketRepository ticketRepository;
+    @Mock
+    private SeatingPlanRepository seatingPlanRepository;
+    @Mock
+    private SectorPriceRepository sectorPriceRepository;
+    @Mock
+    private ArtistRepository artistRepository;
+    @Spy
+    private ShowMapper showMapper;
+    private ShowService showService;
+    private EventService eventService;
+    @Spy
+    private EventMapper eventMapper;
 
-  @Spy
-  private EventMapper eventMapper;
-
-  @BeforeEach
-  void setUp() {
-    eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
-    showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
-        seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
-        artistRepository, showMapper);
-    showRepository.deleteAll();
-  }
-
-  @Test
-  void should_CreateNewShow_When_ShowIsValid() {
-
-    ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(
-        Event.class);
-
-    ArgumentCaptor<Show> showArgumentCaptor = ArgumentCaptor.forClass(
-        Show.class);
-
-    fakePersistedEvent.setEventId(1L);
-    fakePersistedEvent.setCategory(EVENT_CATEGORY);
-    fakePersistedEvent.setContent(EVENT_CONTENT);
-    fakePersistedEvent.setName(EVENT_NAME);
-    fakePersistedEvent.setDuration(EVENT_DURATION);
-
-    fakePersistedShow.setDate(SHOW_DATE);
-    Set<Artist> artists = new HashSet<>();
-    Artist artist1 = new Artist();
-    artist1.setArtistId(1L);
-    Artist artist2 = new Artist();
-    artist2.setArtistId(2L);
-    artists.add(artist1);
-    artists.add(artist2);
-
-    fakePersistedShow.setArtists(artists);
-    fakePersistedShow.setShowId(1L);
-    fakePersistedShow.setEvent(fakePersistedEvent);
-
-    Show showToSave = new Show();
-
-    Event showsEvent = new Event();
-    showsEvent.setDuration(EVENT_DURATION);
-    showsEvent.setCategory(EVENT_CATEGORY);
-    showsEvent.setContent(EVENT_CONTENT);
-    showsEvent.setName(EVENT_NAME);
-
-    showToSave.setEvent(showsEvent);
-    showToSave.setDate(SHOW_DATE);
-    showToSave.setArtists(artists);
-
-    when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
-
-    when(artistRepository.existsById(1L)).thenReturn(true);
-    when(artistRepository.existsById(2L)).thenReturn(true);
-
-    eventService.createEvent(fakePersistedEvent);
-
-    verify(eventRepository).save(eventArgumentCaptor.capture());
-
-    when(showRepository.save(showToSave)).thenReturn(fakePersistedShow);
-
-    SeatingPlan fakePersistedSeatingPlan = new SeatingPlan();
-    fakePersistedSeatingPlan.setName(SEATINGPLAN_NAME);
-    fakePersistedSeatingPlan.setSeatingPlanId(1L);
-    when(seatingPlanRepository.findById(any())).thenReturn(
-        Optional.of(fakePersistedSeatingPlan));
-
-    Optional<List<Sector>> sectors = Optional.of(new ArrayList<>());
-    List<SectorPriceDto> sectorPriceDtos = new ArrayList<>();
-    List<Seat> seats = new ArrayList<>();
-
-    Sector sector = new Sector();
-    sector.setSectorId(1L);
-    sectors.get().add(sector);
-
-    SectorPriceDto sectorPriceDto = new SectorPriceDto();
-    sectorPriceDto.setSectorId(1L);
-    sectorPriceDto.setPrice(1F);
-    sectorPriceDtos.add(sectorPriceDto);
-
-    for (int i = 0; i < 3; i++) {
-      Seat seat = new Seat();
-      seat.setSeatId((long) (i + 1));
-      seats.add(seat);
+    @BeforeEach
+    void setUp() {
+        eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
+        showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
+            seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
+            artistRepository, showMapper);
+        showRepository.deleteAll();
     }
 
-    when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(sectors);
-    when(sectorPriceRepository.save(any())).thenReturn(null);
-    when(seatRepository.findBySector(any())).thenReturn(Optional.of(seats));
-    when(ticketRepository.save(any())).thenReturn(null);
+    @Test
+    void should_CreateNewShow_When_ShowIsValid() {
 
-    showService.createShow(showToSave, 1L, sectorPriceDtos);
-    verify(showRepository).save(showArgumentCaptor.capture());
-    verify(seatingPlanRepository, times(1)).findById(any());
-    verify(sectorRepository, times(1)).findAllBySeatingPlan(any());
-    verify(sectorPriceRepository, times(1)).save(any());
-    verify(seatRepository, times(1)).findBySector(any());
-    verify(ticketRepository, times(3)).save(any());
+        ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(
+            Event.class);
 
-    assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
-    assertFalse(showArgumentCaptor.getValue().getArtists().isEmpty());
-    assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
-  }
+        ArgumentCaptor<Show> showArgumentCaptor = ArgumentCaptor.forClass(
+            Show.class);
 
-  @Test
-  void should_ThrowValidationException_When_DateInPast() {
+        fakePersistedEvent.setEventId(1L);
+        fakePersistedEvent.setCategory(EVENT_CATEGORY);
+        fakePersistedEvent.setContent(EVENT_CONTENT);
+        fakePersistedEvent.setName(EVENT_NAME);
+        fakePersistedEvent.setDuration(EVENT_DURATION);
 
-    fakePersistedEvent.setEventId(1L);
-    fakePersistedEvent.setCategory(EVENT_CATEGORY);
-    fakePersistedEvent.setContent(EVENT_CONTENT);
-    fakePersistedEvent.setName(EVENT_NAME);
-    fakePersistedEvent.setDuration(EVENT_DURATION);
+        fakePersistedShow.setDate(SHOW_DATE);
+        Set<Artist> artists = new HashSet<>();
+        Artist artist1 = new Artist();
+        artist1.setArtistId(1L);
+        Artist artist2 = new Artist();
+        artist2.setArtistId(2L);
+        artists.add(artist1);
+        artists.add(artist2);
 
-    fakePersistedShow.setDate(SHOW_DATE);
-    fakePersistedShow.setArtists(null);
-    fakePersistedShow.setShowId(1L);
-    fakePersistedShow.setEvent(fakePersistedEvent);
+        fakePersistedShow.setArtists(artists);
+        fakePersistedShow.setShowId(1L);
+        fakePersistedShow.setEvent(fakePersistedEvent);
 
-    Show showToSave = new Show();
+        Show showToSave = new Show();
 
-    Event showsEvent = new Event();
-    showsEvent.setDuration(EVENT_DURATION);
-    showsEvent.setCategory(EVENT_CATEGORY);
-    showsEvent.setContent(EVENT_CONTENT);
-    showsEvent.setName(EVENT_NAME);
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
 
-    showToSave.setEvent(showsEvent);
-    showToSave.setArtists(null);
-    showToSave.setDate(SHOW_INVALID_DATE);
+        showToSave.setEvent(showsEvent);
+        showToSave.setDate(SHOW_DATE);
+        showToSave.setArtists(artists);
 
-    when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
+        when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
 
-    eventService.createEvent(fakePersistedEvent);
+        when(artistRepository.existsById(1L)).thenReturn(true);
+        when(artistRepository.existsById(2L)).thenReturn(true);
 
-    assertThrows(ValidationException.class, () -> showService.createShow(showToSave, 1L, null));
+        eventService.createEvent(fakePersistedEvent);
 
-  }
+        verify(eventRepository).save(eventArgumentCaptor.capture());
 
-  @Test
-  void whenSeatingPlanDoesNotExist_shouldThrowNotFoundException() {
+        when(showRepository.save(showToSave)).thenReturn(fakePersistedShow);
 
-    Show showToSave = new Show();
+        SeatingPlan fakePersistedSeatingPlan = new SeatingPlan();
+        fakePersistedSeatingPlan.setName(SEATINGPLAN_NAME);
+        fakePersistedSeatingPlan.setSeatingPlanId(1L);
+        when(seatingPlanRepository.findById(any())).thenReturn(
+            Optional.of(fakePersistedSeatingPlan));
 
-    Event showsEvent = new Event();
-    showsEvent.setDuration(EVENT_DURATION);
-    showsEvent.setCategory(EVENT_CATEGORY);
-    showsEvent.setContent(EVENT_CONTENT);
-    showsEvent.setName(EVENT_NAME);
+        Optional<List<Sector>> sectors = Optional.of(new ArrayList<>());
+        List<SectorPriceDto> sectorPriceDtos = new ArrayList<>();
+        List<Seat> seats = new ArrayList<>();
 
-    showToSave.setEvent(showsEvent);
-    showToSave.setArtists(null);
-    showToSave.setDate(SHOW_DATE);
+        Sector sector = new Sector();
+        sector.setSectorId(1L);
+        sectors.get().add(sector);
 
-    when(seatingPlanRepository.findById(any())).thenReturn(Optional.ofNullable(null));
+        SectorPriceDto sectorPriceDto = new SectorPriceDto();
+        sectorPriceDto.setSectorId(1L);
+        sectorPriceDto.setPrice(1F);
+        sectorPriceDtos.add(sectorPriceDto);
 
-    assertThrows(NotFoundException.class,
-        () -> showService.createShow(showToSave, 1L, null));
+        for (int i = 0; i < 3; i++) {
+            Seat seat = new Seat();
+            seat.setSeatId((long) (i + 1));
+            seats.add(seat);
+        }
 
-  }
+        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(sectors);
+        when(sectorPriceRepository.save(any())).thenReturn(null);
+        when(seatRepository.findBySector(any())).thenReturn(Optional.of(seats));
+        when(ticketRepository.save(any())).thenReturn(null);
 
-  @Test
-  void whenSectorDoesNotExist_shouldThrowNotFoundException() {
+        showService.createShow(showToSave, 1L, sectorPriceDtos);
+        verify(showRepository).save(showArgumentCaptor.capture());
+        verify(seatingPlanRepository, times(1)).findById(any());
+        verify(sectorRepository, times(1)).findAllBySeatingPlan(any());
+        verify(sectorPriceRepository, times(1)).save(any());
+        verify(seatRepository, times(1)).findBySector(any());
+        verify(ticketRepository, times(3)).save(any());
 
-    Show showToSave = new Show();
+        assertThat(showArgumentCaptor.getValue().getDate()).isEqualTo(SHOW_DATE);
+        assertFalse(showArgumentCaptor.getValue().getArtists().isEmpty());
+        assertThat(showArgumentCaptor.getValue().getEvent().getName()).isEqualTo(EVENT_NAME);
+    }
 
-    Event showsEvent = new Event();
-    showsEvent.setDuration(EVENT_DURATION);
-    showsEvent.setCategory(EVENT_CATEGORY);
-    showsEvent.setContent(EVENT_CONTENT);
-    showsEvent.setName(EVENT_NAME);
+    @Test
+    void should_ThrowValidationException_When_DateInPast() {
 
-    showToSave.setEvent(showsEvent);
-    showToSave.setArtists(null);
-    showToSave.setDate(SHOW_DATE);
+        fakePersistedEvent.setEventId(1L);
+        fakePersistedEvent.setCategory(EVENT_CATEGORY);
+        fakePersistedEvent.setContent(EVENT_CONTENT);
+        fakePersistedEvent.setName(EVENT_NAME);
+        fakePersistedEvent.setDuration(EVENT_DURATION);
 
-    when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
-    when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.ofNullable(null));
+        fakePersistedShow.setDate(SHOW_DATE);
+        fakePersistedShow.setArtists(null);
+        fakePersistedShow.setShowId(1L);
+        fakePersistedShow.setEvent(fakePersistedEvent);
 
-    assertThrows(NotFoundException.class,
-        () -> showService.createShow(showToSave, 1L, null));
+        Show showToSave = new Show();
 
-  }
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
 
-  @Test
-  void whenArtistDoesNotExist_shouldThrowNotFoundException() {
+        showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
+        showToSave.setDate(SHOW_INVALID_DATE);
 
-    Show showToSave = new Show();
+        when(eventRepository.save(fakePersistedEvent)).thenReturn(fakePersistedEvent);
 
-    Event showsEvent = new Event();
-    showsEvent.setDuration(EVENT_DURATION);
-    showsEvent.setCategory(EVENT_CATEGORY);
-    showsEvent.setContent(EVENT_CONTENT);
-    showsEvent.setName(EVENT_NAME);
+        eventService.createEvent(fakePersistedEvent);
 
-    showToSave.setEvent(showsEvent);
-    Set<Artist> artists = new HashSet<>();
-    Artist artist = new Artist();
-    artist.setArtistId(3L);
-    artists.add(artist);
+        assertThrows(ValidationException.class, () -> showService.createShow(showToSave, 1L, null));
 
-    showToSave.setArtists(artists);
-    showToSave.setDate(SHOW_DATE);
+    }
 
-    when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
-    when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.of(new ArrayList<>()));
-    when(artistRepository.existsById(3L)).thenReturn(false);
+    @Test
+    void whenSeatingPlanDoesNotExist_shouldThrowNotFoundException() {
 
-    assertThrows(NotFoundException.class,
-        () -> showService.createShow(showToSave, 1L, Collections.EMPTY_LIST));
+        Show showToSave = new Show();
 
-  }
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
+
+        showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
+        showToSave.setDate(SHOW_DATE);
+
+        when(seatingPlanRepository.findById(any())).thenReturn(Optional.ofNullable(null));
+
+        assertThrows(NotFoundException.class,
+            () -> showService.createShow(showToSave, 1L, null));
+
+    }
+
+    @Test
+    void searchWithOnlyEventId_shouldCallFindEventByIdInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setEventId(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.findShowsByEventId(1L, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).findShowsByEventId(1L, pageable);
+
+    }
+
+    @Test
+    void searchWithOnlyLocationId_shouldCallFindLocationByIdInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setLocation(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.findShowsByLocation(1L, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).findShowsByLocation(1L, pageable);
+
+    }
+
+    @Test
+    void searchWithAllButLocationIdAndEventId_shouldCallSearchInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setEvent("test");
+        searchDto.setDate(SHOW_DATE);
+        searchDto.setPrice(BigDecimal.valueOf(30));
+        searchDto.setSeatingPlan(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test",
+            BigDecimal.valueOf(30), 1L, null, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test",
+            BigDecimal.valueOf(30), 1L, null, pageable);
+
+    }
+
+    @Test
+    void whenSectorDoesNotExist_shouldThrowNotFoundException() {
+
+        Show showToSave = new Show();
+
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
+
+        showToSave.setEvent(showsEvent);
+        showToSave.setArtists(null);
+        showToSave.setDate(SHOW_DATE);
+
+        when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
+        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.ofNullable(null));
+
+        assertThrows(NotFoundException.class,
+            () -> showService.createShow(showToSave, 1L, null));
+
+    }
+
+    @Test
+    void whenArtistDoesNotExist_shouldThrowNotFoundException() {
+
+        Show showToSave = new Show();
+
+        Event showsEvent = new Event();
+        showsEvent.setDuration(EVENT_DURATION);
+        showsEvent.setCategory(EVENT_CATEGORY);
+        showsEvent.setContent(EVENT_CONTENT);
+        showsEvent.setName(EVENT_NAME);
+
+        showToSave.setEvent(showsEvent);
+        Set<Artist> artists = new HashSet<>();
+        Artist artist = new Artist();
+        artist.setArtistId(3L);
+        artists.add(artist);
+
+        showToSave.setArtists(artists);
+        showToSave.setDate(SHOW_DATE);
+
+        when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
+        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(
+            Optional.of(new ArrayList<>()));
+        when(artistRepository.existsById(3L)).thenReturn(false);
+
+        assertThrows(NotFoundException.class,
+            () -> showService.createShow(showToSave, 1L, Collections.EMPTY_LIST));
+
+    }
 }
