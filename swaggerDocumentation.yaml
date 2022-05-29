@@ -999,15 +999,26 @@ paths:
       summary: Shows orders for the user possessing the token
       security:
         - BearerAuth: []
+      parameters:
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
       responses:
         200:
           description: Successful retreival of orders
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Order"
+                $ref: "#/components/schemas/OrdersPage"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -1831,6 +1842,19 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/User"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+    OrdersPage:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
         currentPage:
           type: integer
         numberOfResults:

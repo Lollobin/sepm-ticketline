@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
@@ -13,7 +15,7 @@ public interface OrderService {
      *
      * @return all orders belonging to the current user
      */
-    List<Transaction> findAllByCurrentUser();
+    Page<Transaction> findAllByCurrentUser(Pageable pageable);
 
     /**
      * Generates a Transaction based on a list of tickets.

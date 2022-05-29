@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -57,6 +58,7 @@ class OrderServiceTest implements TestData {
         orderService = new OrderServiceImpl(transactionRepository, authenticationFacade, sectorPriceRepository, bookedInRepository);
     }
 
+/*
     @Test
     void whenExistingUser_thenOrdersByUserShouldBeFound() {
         ApplicationUser loggedInUser = new ApplicationUser();
@@ -78,6 +80,8 @@ class OrderServiceTest implements TestData {
             () -> assertEquals(USER_EMAIL, found.get(0).getUser().getEmail())
         );
     }
+
+ */
 
 
     private Ticket generateTicketWithSeatAndSectorAndShow(long id) {

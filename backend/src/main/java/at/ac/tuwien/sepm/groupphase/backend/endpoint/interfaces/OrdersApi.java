@@ -5,7 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrdersPageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -41,6 +41,8 @@ public interface OrdersApi {
     /**
      * GET /orders : Shows orders for the user possessing the token
      *
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
      * @return Successful retreival of orders (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
@@ -52,7 +54,7 @@ public interface OrdersApi {
         summary = "Shows orders for the user possessing the token",
         tags = { "tickets" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  OrderDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of orders", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  OrdersPageDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "404", description = "The user with the given token was not found"),
@@ -67,13 +69,14 @@ public interface OrdersApi {
         value = "/orders",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<OrderDto>> ordersGet(
-        
+    default ResponseEntity<OrdersPageDto> ordersGet(
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"locationName\" : \"locationName\", \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"transactionDate\" : \"2000-01-23T04:56:07.000+00:00\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\", \"transactionId\" : 0, \"ticketIds\" : [ 6, 6 ] }";
+                    String exampleString = "{ \"orders\" : [ { \"locationName\" : \"locationName\", \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"transactionDate\" : \"2000-01-23T04:56:07.000+00:00\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\", \"transactionId\" : 0, \"ticketIds\" : [ 6, 6 ] }, { \"locationName\" : \"locationName\", \"artists\" : [ \"artists\", \"artists\" ], \"city\" : \"city\", \"eventName\" : \"eventName\", \"transactionDate\" : \"2000-01-23T04:56:07.000+00:00\", \"showDate\" : \"2000-01-23T04:56:07.000+00:00\", \"transactionId\" : 0, \"ticketIds\" : [ 6, 6 ] } ], \"currentPage\" : 1, \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
