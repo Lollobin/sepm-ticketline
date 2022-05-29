@@ -102,8 +102,8 @@ public class ShowServiceImpl implements ShowService {
             return setShowSearchResultDto(showPage);
         } else {
 
-            Integer hours = null;
-            Integer minutes = null;
+            Integer hours = 0;
+            Integer minutes = 0;
             if (showSearchDto.getDate() != null) {
                 hours = showSearchDto.getDate().getHour();
                 minutes = showSearchDto.getDate().getMinute();
