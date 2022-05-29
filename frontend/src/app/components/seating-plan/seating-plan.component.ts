@@ -13,7 +13,7 @@ import {
   ShowsService,
   TicketsService,
 } from "src/app/generated-sources/openapi";
-import { SeatingPlan, drawSeatingPlan } from "./seatingPlanGraphics";
+import { SeatingPlan, drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
 import { ActivatedRoute } from "@angular/router";
 

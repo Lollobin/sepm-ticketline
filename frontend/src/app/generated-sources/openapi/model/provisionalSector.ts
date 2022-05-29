@@ -9,15 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Seat } from './seat';
-import { ProvisionalSector } from './provisionalSector';
 
 
-export interface SeatingPlanWithoutId { 
-    name: string;
-    seatingPlanLayoutId: number;
-    locationId: number;
-    sectors: Array<ProvisionalSector>;
-    seats: Array<Seat>;
+export interface ProvisionalSector { 
+    id: number;
 }
 

@@ -31,24 +31,33 @@ interface StaticElement {
   location: Location;
 }
 
+interface Seat {
+  id: number;
+  sectorId: number;
+  location?: Location;
+}
+
 interface SeatingPlan {
   general: {
     [key: string]: string | number;
     width: number;
     height: number;
   };
-  seats: Array<{
-    id: number;
-    sectorId: number;
-    location?: Location;
-  }>;
+  seats: Array<Seat>;
   sectors: Array<Sector | SectorWithLocation>;
   staticElements: Array<StaticElement>;
 }
 
+interface SectorBuilder {
+  color: string;
+  standingSector: boolean;
+  description: string;
+  seatCount: number;
+}
+
 const generateSeatId = (id: number) => `seat${id}`;
 const generateStandingAreaId = (id: number) => `standingArea${id}`;
-
+const generateStaticAreaId = (id: number) => `staticArea${id}`;
 const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlan) => {
   drawSeats(stage, seatingPlan);
   drawStandingAreas(stage, seatingPlan);
@@ -81,8 +90,8 @@ const drawSeats = (stage: Container, seatingPlan: SeatingPlan) => {
   }
 };
 const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlan) => {
-  const standingAreas = (
-    seatingPlan.sectors.filter((sector) => sector.noSeats)
+  const standingAreas = seatingPlan.sectors.filter(
+    (sector) => sector.noSeats
   ) as Array<SectorWithLocation>;
   const seatCounts = countBy(seatingPlan.seats, "sectorId");
   for (const standingArea of standingAreas) {
@@ -105,6 +114,7 @@ const drawStaticAreas = (stage: Container, seatingPlan: SeatingPlan) => {
       { baseColor: 0xf0f0f0, strokeColor: staticArea.color },
       staticArea.description ? staticArea.description : ""
     );
+    staticGraphics.name = generateStaticAreaId(staticArea.id);
     stage.addChild(staticGraphics);
   }
 };
@@ -217,9 +227,10 @@ const drawText = (text: string, fontSize: number, maxWidth: number) => {
 };
 const drawArea = (location: Location, color: Color, radius: number) => {
   const areaGraphics = new Graphics();
+  const lineWidth = 3;
   areaGraphics
     .beginFill(color.baseColor)
-    .lineStyle({ width: 3, color: color.strokeColor, alignment: 1 })
+    .lineStyle({ width: lineWidth, color: color.strokeColor, alignment: 0 })
     .setTransform(location.x, location.y)
     .drawRoundedRect(0, 0, location.w, location.h, radius);
   return areaGraphics;
@@ -229,7 +240,12 @@ export {
   drawSeatingPlan,
   generateStandingAreaId,
   generateSeatId,
+  generateStaticAreaId,
   SeatingPlan,
   Sector,
   SectorWithLocation,
+  SectorBuilder,
+  Seat,
+  StaticElement,
+  Location,
 };

@@ -1,0 +1,130 @@
+<div class="card">
+  <header class="card-header">
+    <h4 class="card-title mt-2">Create Location</h4>
+  </header>
+  <article class="card-body">
+    <form [formGroup]="locationForm" (ngSubmit)="signUpUser()">
+      <div class="form-group">
+        <label>Name</label>
+        <input
+          [maxlength]="100"
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder=" "
+        />
+        <div
+          *ngIf="(locationForm.get('name').touched || submitted) && locationForm.get('name').errors"
+          class="error"
+        >
+          <small class="form-text text-warning" *ngIf="locationForm.get('name').errors.required"
+            >A name is required!
+          </small>
+        </div>
+      </div>
+      <div class="m-3">
+        <h5>Postal Address</h5>
+      </div>
+
+      <div formGroupName="address">
+        <div class="row">
+          <div class="form-group col-8">
+            <label for="street">Street</label>
+            <input
+              [maxlength]="100"
+              type="text"
+              id="street"
+              value="street"
+              formControlName="street"
+              class="form-control"
+            />
+            <div *ngIf="locationForm.get('address.street').touched || submitted" class="error">
+              <small
+                class="form-text text-warning"
+                *ngIf="locationForm.get('address.street').errors?.required"
+                >Street must be filled in!
+              </small>
+            </div>
+          </div>
+
+          <div class="col form-group">
+            <label for="houseNumber">House No.</label>
+            <input
+              [maxlength]="40"
+              type="text"
+              id="houseNumber"
+              value="houseNumber"
+              formControlName="houseNumber"
+              class="form-control"
+            />
+            <div *ngIf="locationForm.get('address.houseNumber').touched || submitted" class="error">
+              <small
+                class="form-text text-warning"
+                *ngIf="locationForm.get('address.houseNumber').errors?.required"
+                >House Number must be filled in!
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col">
+            <label for="zipCode">Zip Code</label>
+            <input
+              [maxlength]="16"
+              type="text"
+              id="zipCode"
+              value="zipCode"
+              formControlName="zipCode"
+              class="form-control"
+            />
+            <div *ngIf="locationForm.get('address.zipCode').touched || submitted" class="error">
+              <small
+                class="form-text text-warning"
+                *ngIf="locationForm.get('address.zipCode').errors?.required"
+                >Zip Code must be filled in!
+              </small>
+            </div>
+          </div>
+          <div class="form-group col-7">
+            <label for="city">City</label>
+            <input
+              [maxlength]="100"
+              type="text"
+              id="city"
+              value="city"
+              formControlName="city"
+              class="form-control"
+            />
+            <div *ngIf="locationForm.get('address.city').touched || submitted" class="error">
+              <small
+                class="form-text text-warning"
+                *ngIf="locationForm.get('address.city').errors?.required"
+                >City must be filled in!
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input
+            [maxlength]="100"
+            type="text"
+            id="country"
+            value="country"
+            formControlName="country"
+            class="form-control"
+          />
+          <div *ngIf="locationForm.get('address.country').touched || submitted" class="error">
+            <small
+              class="form-text text-warning"
+              *ngIf="locationForm.get('address.country').errors?.required"
+              >Country must be filled in!
+            </small>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Create location</button>
+    </form>
+  </article>
+</div>
