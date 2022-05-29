@@ -255,7 +255,6 @@ class ShowEndpointTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), zoneOffSet);
 
         MvcResult mvcResult =

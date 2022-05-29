@@ -35,7 +35,7 @@ class ShowMapperTest {
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
         @Sql("classpath:/sql/insert_sectorPrice.sql"),})
-    void showToShowDto_shouldMapLocationCorrectly(){
+    void showToShowDto_shouldMapLocationCorrectly() {
 
         Show showEntity = showRepository.getByShowId(-1L);
 

@@ -250,11 +250,10 @@ class ShowRepositoryTest {
         @Sql("classpath:/sql/insert_sectorPrice.sql"),})
     void searchWithEventName_shouldReturnShowAtEventWithNameContainingPop() {
 
-
-
         String eventName = "pop";
 
-        List<Show> shows = showRepository.search(null, null, null, eventName, null, null, null, pageable)
+        List<Show> shows = showRepository.search(null, null, null, eventName, null, null, null,
+                pageable)
             .getContent();
 
         //Verifying that search is case-insensitive
@@ -282,7 +281,7 @@ class ShowRepositoryTest {
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 18, 45), zoneOffSet);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
-            null, null,pageable).getContent();
+            null, null, pageable).getContent();
 
         assertThat(shows).hasSize(1);
         assertThat(shows.get(0).getDate()).isEqualTo(date);
@@ -298,22 +297,22 @@ class ShowRepositoryTest {
         @Sql("classpath:/sql/insert_sectorPrice.sql"),})
     void searchWithHours0AndMinutes0_shouldListAllShowsOnSameDate() {
 
-
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 0, 0), zoneOffSet);
 
-        OffsetDateTime showDate1 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
-        OffsetDateTime showDate2 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 19, 30), zoneOffSet);
+        OffsetDateTime showDate1 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30),
+            zoneOffSet);
+        OffsetDateTime showDate2 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 19, 30),
+            zoneOffSet);
 
-
-        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null, null, null, pageable).getContent();
+        List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
+            null, null, pageable).getContent();
 
         assertThat(shows).hasSize(2);
         assertThat(shows.get(0).getDate()).isEqualTo(showDate2);
         assertThat(shows.get(1).getDate()).isEqualTo(showDate1);
-
 
 
     }
@@ -329,8 +328,8 @@ class ShowRepositoryTest {
 
         BigDecimal price = BigDecimal.valueOf(53.00);
 
-
-        List<Show> shows = showRepository.search(null, null, null, null, price, null,null, pageable)
+        List<Show> shows = showRepository.search(null, null, null, null, price, null, null,
+                pageable)
             .getContent();
 
         SectorPrice savedPrice = shows.get(0).getSectorPrices().iterator().next();
@@ -360,7 +359,7 @@ class ShowRepositoryTest {
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
-            price, null,null, pageable).getContent();
+            price, null, null, pageable).getContent();
 
         assertThat(shows).isEmpty();
 
@@ -378,7 +377,8 @@ class ShowRepositoryTest {
         Long seatingPlan = -1L;
         BigDecimal priceOfShow = BigDecimal.valueOf(70);
 
-        List<Show> shows = showRepository.search(null, null, null, null, priceOfShow, seatingPlan, null,
+        List<Show> shows = showRepository.search(null, null, null, null, priceOfShow, seatingPlan,
+            null,
             pageable).getContent();
 
         assertThat(shows.get(0).getEvent().getName()).isEqualTo("Rapevent");
@@ -387,8 +387,6 @@ class ShowRepositoryTest {
         assertThat(shows).hasSize(2);
         assertThat(shows.get(1).getEvent().getName()).isEqualTo("Zweitespopevent");
         SectorPrice price = shows.get(1).getSectorPrices().iterator().next();
-
-
 
         assertThat(price.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
         assertThat(price2.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
@@ -445,7 +443,7 @@ class ShowRepositoryTest {
         BigDecimal priceOfShow = BigDecimal.valueOf(154.31);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), eventName,
-            priceOfShow, seatingPlan,null, pageable).getContent();
+            priceOfShow, seatingPlan, null, pageable).getContent();
 
         assertThat(shows).isEmpty();
     }
@@ -472,7 +470,7 @@ class ShowRepositoryTest {
         BigDecimal priceOfShow = BigDecimal.valueOf(154.32);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), eventName,
-            priceOfShow, seatingPlan, null,pageable).getContent();
+            priceOfShow, seatingPlan, null, pageable).getContent();
 
         assertThat(shows).isEmpty();
     }
@@ -491,10 +489,8 @@ class ShowRepositoryTest {
 
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), zoneOffSet);
 
-
-
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
-            null, null, null,pageable).getContent();
+            null, null, null, pageable).getContent();
 
         assertThat(shows).hasSize(3);
     }
@@ -510,7 +506,7 @@ class ShowRepositoryTest {
 
         Long seatingPlan = -1L;
 
-        List<Show> shows = showRepository.search(null, null, null, null, null, seatingPlan,null,
+        List<Show> shows = showRepository.search(null, null, null, null, null, seatingPlan, null,
             pageable).getContent();
 
         assertThat(shows).hasSize(5);
@@ -574,7 +570,6 @@ class ShowRepositoryTest {
         assertThat(shows).isEmpty();
 
 
-
     }
 
     @Test
@@ -592,7 +587,6 @@ class ShowRepositoryTest {
 
         assertThat(shows).hasSize(1);
         assertThat(shows.get(0).getShowId()).isEqualTo(-1);
-
 
 
     }
@@ -616,10 +610,7 @@ class ShowRepositoryTest {
         assertThat(shows.get(2).getShowId()).isEqualTo(-3);
 
 
-
     }
-
-
 
 
 }
