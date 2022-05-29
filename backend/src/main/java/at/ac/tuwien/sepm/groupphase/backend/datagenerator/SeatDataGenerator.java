@@ -60,7 +60,7 @@ public class SeatDataGenerator {
 
         LOGGER.debug("generating seating plan layouts, seating plans, sectors and seats");
 
-        List<Location> locations = locationRepository.findAll();
+
 
         FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
                 "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan2_19_seats.json")
@@ -73,6 +73,7 @@ public class SeatDataGenerator {
         seatingPlanLayout.setSeatingLayoutPath(path);
         seatingPlanLayoutRepository.save(seatingPlanLayout);
 
+        List<Location> locations = locationRepository.findAll();
         SeatingPlan seatingPlan = generateSeatingPlan("Hall A",
             locations.get(0), seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
