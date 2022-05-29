@@ -55,6 +55,7 @@
 
 
 </form>
+<hr>
 <app-event-search-result *ngIf="eventsResult"  (nextRequestedPage)="handleEventPageEmit($event)" [events]="eventsResult" [pageSize]="pageSize" ></app-event-search-result>
 
 
