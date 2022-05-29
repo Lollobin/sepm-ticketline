@@ -77,7 +77,6 @@ class EventsEndpointTest {
     @BeforeEach
     public void setup() {
         eventRepository.deleteAll();
-
     }
 
     @Test
@@ -101,19 +100,21 @@ class EventsEndpointTest {
         List<EventDto> eventResult = resultDto.getEvents();
 
         assertThat(eventResult).hasSize(3);
+
         assertThat(eventResult.get(0).getName()).isEqualTo(EVENT2_NAME);
         assertThat(eventResult.get(0).getDuration().longValue()).isEqualTo(EVENT2_DURATION);
         assertThat(eventResult.get(0).getCategory()).isEqualTo(EVENT2_CATEGORY_DTO);
         assertThat(eventResult.get(0).getContent()).isEqualTo(EVENT2_CONTENT);
 
+        assertThat(eventResult.get(1).getName()).isEqualTo(EVENT3_NAME);
+        assertThat(eventResult.get(1).getDuration().longValue()).isEqualTo(EVENT3_DURATION);
+        assertThat(eventResult.get(1).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
+        assertThat(eventResult.get(1).getContent()).isEqualTo(EVENT3_CONTENT);
+
         assertThat(eventResult.get(2).getName()).isEqualTo(EVENT_NAME);
         assertThat(eventResult.get(2).getDuration().longValue()).isEqualTo(EVENT_DURATION);
         assertThat(eventResult.get(2).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
         assertThat(eventResult.get(2).getContent()).isEqualTo(EVENT_CONTENT);
-
-        assertThat(eventResult.get(0).getEventId()).isEqualTo(2);
-        assertThat(eventResult.get(1).getEventId()).isEqualTo(3);
-        assertThat(eventResult.get(2).getEventId()).isEqualTo(1);
     }
 
     @Test
@@ -235,6 +236,99 @@ class EventsEndpointTest {
 
     }
 
+    @Test
+    void getByName_shouldReturnCorrectEvent() throws Exception {
+
+        saveThreeValidEvents();
+
+        String name = EVENT_NAME;
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/events").param("name", name)
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        EventSearchResultDto eventSearchResultDto = objectMapper.readValue(
+            servletResponse.getContentAsString(), EventSearchResultDto.class);
+
+        assertThat(eventSearchResultDto.getEvents()).hasSize(1);
+        assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT_NAME);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT_CATEGORY_DTO);
+        assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT_CONTENT);
+        assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT_DURATION));
+    }
+
+    @Test
+    void getByContent_shouldReturnCorrectEvents() throws Exception {
+
+        saveThreeValidEvents();
+
+        String content = "is a";
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/events").param("content", content)
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        EventSearchResultDto eventSearchResultDto = objectMapper.readValue(
+            servletResponse.getContentAsString(), EventSearchResultDto.class);
+
+        assertThat(eventSearchResultDto.getEvents()).hasSize(2);
+        assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT2_NAME);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT2_CATEGORY_DTO);
+        assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT2_CONTENT);
+        assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT2_DURATION));
+        assertThat(eventSearchResultDto.getEvents().get(1).getName()).isEqualTo(EVENT3_NAME);
+        assertThat(eventSearchResultDto.getEvents().get(1).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
+        assertThat(eventSearchResultDto.getEvents().get(1).getContent()).isEqualTo(EVENT3_CONTENT);
+        assertThat(eventSearchResultDto.getEvents().get(1).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT3_DURATION));
+    }
+
+    @Test
+    void getByCategoryAndDuration_shouldReturnCorrectEvent() throws Exception {
+
+        saveThreeValidEvents();
+
+        String category = EVENT3_CATEGORY.toString();
+        String duration = "20";
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/events").param("category", category).param("duration", duration)
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        EventSearchResultDto eventSearchResultDto = objectMapper.readValue(
+            servletResponse.getContentAsString(), EventSearchResultDto.class);
+
+        assertThat(eventSearchResultDto.getEvents()).hasSize(1);
+        assertThat(eventSearchResultDto.getEvents().get(0).getName()).isEqualTo(EVENT3_NAME);
+        assertThat(eventSearchResultDto.getEvents().get(0).getCategory()).isEqualTo(EVENT3_CATEGORY_DTO);
+        assertThat(eventSearchResultDto.getEvents().get(0).getContent()).isEqualTo(EVENT3_CONTENT);
+        assertThat(eventSearchResultDto.getEvents().get(0).getDuration()).isEqualTo(BigDecimal.valueOf(EVENT3_DURATION));
+    }
+
+    @Test
+    void getByIncorrectName_shouldReturnNoEvents() throws Exception {
+
+        saveThreeValidEvents();
+
+        String name = "INVALID NAME";
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/events").param("name", name)
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        EventSearchResultDto eventSearchResultDto = objectMapper.readValue(
+            servletResponse.getContentAsString(), EventSearchResultDto.class);
+
+        assertThat(eventSearchResultDto.getEvents()).isEmpty();
+    }
+
     private void saveThreeValidEvents() {
         Event event1 = new Event();
         event1.setCategory(EVENT_CATEGORY);
@@ -260,7 +354,5 @@ class EventsEndpointTest {
 
         eventRepository.save(event3);
     }
-
-
 }
 
