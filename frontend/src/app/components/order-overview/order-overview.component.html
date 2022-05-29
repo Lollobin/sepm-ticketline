@@ -95,7 +95,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let order of orders.orders"
+    <tr *ngFor="let order of orders?.orders"
         [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
       <td>{{ order.transactionDate | date }} <br> {{ order.transactionDate | date:'HH:mm' }}</td>
 
