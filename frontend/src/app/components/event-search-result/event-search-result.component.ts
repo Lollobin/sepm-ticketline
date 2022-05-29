@@ -11,6 +11,7 @@ export class EventSearchResultComponent implements OnInit {
   @Input() events: EventSearchResult;
   @Input() location?: Location;
   @Input() pageSize;
+  @Input() empty = null;
   page = 1;
   _artist: Artist;
 
@@ -40,5 +41,9 @@ export class EventSearchResultComponent implements OnInit {
     const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
     const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
     return hDisplay + mDisplay + sDisplay;
+  }
+
+  public vanishEmpty(): void {
+    this.empty = null;
   }
 }
