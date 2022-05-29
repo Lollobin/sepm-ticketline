@@ -66,6 +66,10 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -210,17 +214,14 @@ class ShowEndpointTest {
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
         @Sql("classpath:/sql/insert_sectorPrice.sql"),})
-    void searchWithEventName_shouldReturnShowAtEventWithNameContainingPop() throws Exception {
+    void searchWithEventName_shouldReturnShowsAtEventWithNameContainingPop() throws Exception {
 
         String eventName = "pop";
 
         MvcResult mvcResult =
             this.mockMvc
                 .perform(
-                    get("/shows").param("event", eventName)
-                        .header(
-                            securityProperties.getAuthHeader(),
-                            jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
+                    get("/shows").param("event", eventName))
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
@@ -232,11 +233,50 @@ class ShowEndpointTest {
 
         List<ShowDto> shows = searchResultDto.getShows();
 
-//        //Verifying that search is case-insensitive
-//        assertThat(shows).hasSize(1);
-//        assertThat(shows.get(0).getEvent().getName().toUpperCase()).contains(
-//            eventName.toUpperCase());
-//        assertThat(shows.get(0).getEvent().getName()).doesNotContain(eventName);
+        //Verifying that search is case-insensitive
+        assertThat(shows).hasSize(2);
+        assertThat(shows.get(0).getEvent().getName().toUpperCase()).contains(
+            eventName.toUpperCase());
+
+        assertThat(shows.get(1).getEvent().getName().toUpperCase()).contains(
+            eventName.toUpperCase());
+        assertThat(shows.get(1).getEvent().getName()).doesNotContain(eventName);
+    }
+
+    @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),})
+    void searchWithDateHourAndMinute0_shouldReturnThreeShowsSameDate() throws Exception {
+
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+
+
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), zoneOffSet);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(
+                    get("/shows").param("date", String.valueOf(date)))
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+
+        ShowSearchResultDto searchResultDto = objectMapper.readValue(response.getContentAsString(),
+            ShowSearchResultDto.class);
+
+        List<ShowDto> shows = searchResultDto.getShows();
+
+        assertThat(shows).hasSize(3);
+        assertThat(shows.get(0).getShowId()).isEqualTo(-7);
+        assertThat(shows.get(1).getShowId()).isEqualTo(-6);
+        assertThat(shows.get(2).getShowId()).isEqualTo(-2);
 
     }
 

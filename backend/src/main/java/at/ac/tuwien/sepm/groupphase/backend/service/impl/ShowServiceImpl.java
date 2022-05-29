@@ -90,13 +90,13 @@ public class ShowServiceImpl implements ShowService {
             && showSearchDto.getPrice() == null && showSearchDto.getSeatingPlan() == null
             && showSearchDto.getEventId() == null && showSearchDto.getLocation() != null) {
 
-            Page<Show> showPage = showRepository.findShowByLocation(showSearchDto.getLocation(),
+            Page<Show> showPage = showRepository.findShowsByLocation(showSearchDto.getLocation(),
                 pageable);
 
             return setShowSearchResultDto(showPage);
 
         } else if (showSearchDto.getEventId() != null) {
-            Page<Show> showPage = showRepository.findShowByEventId(showSearchDto.getEventId(),
+            Page<Show> showPage = showRepository.findShowsByEventId(showSearchDto.getEventId(),
                 pageable);
 
             return setShowSearchResultDto(showPage);
