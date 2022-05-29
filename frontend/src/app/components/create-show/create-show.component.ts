@@ -171,7 +171,7 @@ export class CreateShowComponent implements OnInit {
           this.errorMessage = error.error;
         }
       }
-    })
+    });
   }
 
   createShow(): void {
