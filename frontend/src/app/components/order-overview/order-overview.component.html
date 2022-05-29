@@ -27,12 +27,10 @@
           </ng-template>
           <ng-template #multipleReservations>Reservations</ng-template>
         </ng-template>
-
       </td>
       <td>{{ ticket.artists.join(', ') + " - " + ticket.eventName }} <br>
         {{ ticket.city + ", " + ticket.locationName }}</td>
       <td>{{ ticket.showDate | date }} <br> {{ ticket.showDate | date:'HH:mm' }}</td>
-
       <td>
         <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary"
                 id="{{'purchaseBtn'+i}}" (click)="openPurchaseModal(purchaseModal, ticket)">Purchase
@@ -63,22 +61,17 @@
         </label>
       </div>
     </form>
-
     <div class="text-danger mt-3">Any reservations that are not bought will be cancelled.</div>
-
   </div>
   <div class="modal-footer">
-
     <button type="button" class="btn btn-secondary" id="close-modal-btn"
             (click)="modal.dismiss('close')">Close
     </button>
     <button type="button" class="btn btn-primary" id="buy-now-btn"
-            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy
-      Now
+            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy Now
     </button>
   </div>
 </ng-template>
-
 
 <div>
   <h2 class="h2 mt-3">Transaction History</h2>
