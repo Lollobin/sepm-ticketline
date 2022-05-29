@@ -61,18 +61,18 @@
     {
       "location": { "h": 100, "w": 100, "x": 106, "y": 31 },
       "noSeats": true,
-      "id": 0,
+      "id": 1,
       "color": 16087296,
       "description": "Left Standing Area"
     },
     {
       "location": { "h": 100, "w": 100, "x": 309, "y": 33 },
       "noSeats": true,
-      "id": 1,
+      "id": 2,
       "color": 7688315,
       "description": "Right Standing Area"
     },
-    { "noSeats": false, "id": 2, "color": 170 }
+    { "noSeats": false, "id": 3, "color": 170 }
   ],
   "staticElements": [
     {
