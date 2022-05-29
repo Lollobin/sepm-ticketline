@@ -284,7 +284,7 @@ class ShowRepositoryTest {
             null, null, pageable).getContent();
 
         assertThat(shows).hasSize(1);
-        assertThat(shows.get(0).getDate()).isEqualTo(date);
+        assertThat(shows.get(0).getShowId()).isEqualTo(-2);
 
     }
 
@@ -302,10 +302,6 @@ class ShowRepositoryTest {
 
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 0, 0), zoneOffSet);
 
-        OffsetDateTime showDate1 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30),
-            zoneOffSet);
-        OffsetDateTime showDate2 = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 19, 30),
-            zoneOffSet);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
             null, null, pageable).getContent();
@@ -360,6 +356,8 @@ class ShowRepositoryTest {
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
             price, null, null, pageable).getContent();
+
+
 
         assertThat(shows).isEmpty();
 
