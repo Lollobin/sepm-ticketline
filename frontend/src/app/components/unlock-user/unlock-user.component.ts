@@ -16,6 +16,7 @@ export class UnlockUserComponent implements OnInit {
   empty = false;
   success = false;
   firstName = "";
+  lastName = "";
   userEmail = "";
   faLockOpen = faLockOpen;
   errorFetch = "";

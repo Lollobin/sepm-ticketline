@@ -91,7 +91,7 @@ public class LocationServiceImpl implements LocationService {
 
         searchResultDto.setLocations(
             locationPage.getContent().stream().map(locationMapper::locationToLocationDto).toList());
-        searchResultDto.setNumberOfResults(locationPage.getNumberOfElements());
+        searchResultDto.setNumberOfResults((int) locationPage.getTotalElements());
         searchResultDto.setCurrentPage(locationPage.getNumber());
         searchResultDto.setPagesTotal(locationPage.getTotalPages());
 

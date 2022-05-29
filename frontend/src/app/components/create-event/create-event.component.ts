@@ -85,10 +85,10 @@ export class CreateEventComponent implements OnInit {
     this.eventService.eventsPost(this.eventWithoutId, 'response').subscribe({
       next: (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
-        console.log("Succesfully created event");
+        console.log("Successfully created event");
         console.log(location);
         const id = location.split("/").pop();
-        this.router.navigateByUrl("/events/" + id + "/shows");
+        this.router.navigateByUrl("/events/" + id + "/shows/create");
         this.error = false;
       },
       error: error => {

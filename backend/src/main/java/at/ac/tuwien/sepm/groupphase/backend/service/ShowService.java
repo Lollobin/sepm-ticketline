@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import java.util.List;
 
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import org.springframework.data.domain.Pageable;
 
 public interface ShowService {
 
@@ -23,12 +26,6 @@ public interface ShowService {
      */
     Show createShow(Show show, Long seatingPlanId, List<SectorPriceDto> sectorPriceDtos);
 
-    /**
-     * finds all shows in ShowRepository.
-     *
-     * @return list of all shows
-     */
-    List<Show> findAll();
 
     /**
      * Find a single show entry by id.
@@ -37,4 +34,21 @@ public interface ShowService {
      * @return the show entry
      */
     Show findOne(Long id);
+
+    /**
+     * Return a page of shows.
+     *
+     * @param pageable contains information about the page
+     * @return page of shows
+     */
+    ShowSearchResultDto findAll(Pageable pageable);
+
+    /**
+     * Return a page of shows that match the showSearchDto param.
+     *
+     * @param showSearchDto contains various fields to search for
+     * @param pageable      contains information about the page
+     * @return page of shows matching the showSearchDto param
+     */
+    ShowSearchResultDto search(ShowSearchDto showSearchDto, Pageable pageable);
 }
