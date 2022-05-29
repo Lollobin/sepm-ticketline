@@ -10,8 +10,8 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/message"
-           routerLinkActive="active">Message</a>
+<!--        <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/message"-->
+<!--           routerLinkActive="active">Message</a>-->
         <a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/events/create"
            routerLinkActive="active">Create New Event</a>
       </li>
