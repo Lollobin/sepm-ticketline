@@ -1,27 +1,23 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrdersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +41,6 @@ class OrderEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private AddressRepository addressRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -96,7 +89,7 @@ class OrderEndpointTest implements TestData {
     }
 
     @Test
-    void ordersGet_shouldReturnListWithOrders() throws Exception {
+    void ordersGet_shouldReturnOrdersPage() throws Exception {
         Address address = new Address();
         address.setStreet("TestStreet 1233");
         address.setZipCode("219338");
@@ -135,14 +128,15 @@ class OrderEndpointTest implements TestData {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 
-        List<OrderDto> orderDtos = Arrays.asList(
-            objectMapper.readValue(response.getContentAsString(), OrderDto[].class));
+        OrdersPageDto ordersPageDto =
+            objectMapper.readValue(response.getContentAsString(), OrdersPageDto.class);
 
-        assertEquals(1, orderDtos.size());
-
-        OrderDto orderDto = orderDtos.get(0);
-
-        assertEquals(transaction.getTransactionId(), orderDto.getTransactionId().longValue());
+        assertAll(
+            () -> assertEquals(1, ordersPageDto.getOrders().size()),
+            () -> assertEquals(1, ordersPageDto.getNumberOfResults()),
+            () -> assertEquals(transaction.getTransactionId(),
+                ordersPageDto.getOrders().get(0).getTransactionId()
+            )
+        );
     }
-
 }

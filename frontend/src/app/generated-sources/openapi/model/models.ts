@@ -20,6 +20,7 @@ export * from './locationWithoutId';
 export * from './order';
 export * from './provisionalSector';
 export * from './seat';
+export * from './ordersPage';
 export * from './seatWithBookingStatus';
 export * from './seatingPlan';
 export * from './seatingPlanWithoutId';

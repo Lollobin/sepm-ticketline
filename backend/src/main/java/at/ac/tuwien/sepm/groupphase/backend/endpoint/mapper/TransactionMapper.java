@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.BookingTypeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrdersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.BookedIn;
@@ -13,6 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.springframework.data.domain.Page;
 
 @Mapper
 public interface TransactionMapper {
@@ -52,5 +54,13 @@ public interface TransactionMapper {
         return orderDto;
     }
 
-    List<OrderDto> transActionToOrderDto(List<Transaction> transactions);
+    default OrdersPageDto transactionPageToOrdersPageDto(Page<Transaction> transactionPage) {
+        OrdersPageDto ordersPageDto = new OrdersPageDto();
+        ordersPageDto.setCurrentPage(transactionPage.getNumber());
+        ordersPageDto.setNumberOfResults((int) transactionPage.getTotalElements());
+        ordersPageDto.setPagesTotal(transactionPage.getTotalPages());
+        ordersPageDto.setOrders(
+            transactionPage.getContent().stream().map(this::transActionToOrderDto).toList());
+        return ordersPageDto;
+    }
 }

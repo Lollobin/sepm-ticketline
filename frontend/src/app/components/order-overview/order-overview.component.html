@@ -3,7 +3,7 @@
 </div>
 
 <div>
-  <table class="table">
+  <table class="table table-striped align-middle">
     <thead>
     <tr>
       <th scope="col">Ticket Information</th>
@@ -78,7 +78,7 @@
 </div>
 
 <div>
-  <table class="table">
+  <table class="table table-striped">
     <thead>
     <tr>
       <th scope="col">Transaction Date</th>
@@ -88,7 +88,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let order of orders"
+    <tr *ngFor="let order of orders?.orders"
         [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
       <td>{{ order.transactionDate | date }} <br> {{ order.transactionDate | date:'HH:mm' }}</td>
 
@@ -116,9 +116,11 @@
         </ng-template>
       </td>
     </tr>
-
     </tbody>
   </table>
+  <ngb-pagination [collectionSize]="orders?.numberOfResults" [(page)]="currentPage" [maxSize]="5"
+                  [boundaryLinks]="true" [pageSize]="pageSize" class="d-flex justify-content-center"
+                  (pageChange)=onPageChange(currentPage)></ngb-pagination>
 </div>
 
 <app-error-alert [(error)]="error"></app-error-alert>
