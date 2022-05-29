@@ -60,6 +60,8 @@ public class SeatDataGenerator {
 
         LOGGER.debug("generating seating plan layouts, seating plans, sectors and seats");
 
+        List<Location> locations = locationRepository.findAll();
+
         FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
                 "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan2_19_seats.json")
             .getAbsoluteFile());
@@ -71,7 +73,6 @@ public class SeatDataGenerator {
         seatingPlanLayout.setSeatingLayoutPath(path);
         seatingPlanLayoutRepository.save(seatingPlanLayout);
 
-        List<Location> locations = locationRepository.findAll();
         SeatingPlan seatingPlan = generateSeatingPlan("Hall A",
             locations.get(0), seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
@@ -93,6 +94,45 @@ public class SeatDataGenerator {
         for (int j = 0; j < 9; j++) {
             seatRepository.save(generateSeat(sector3));
         }
+
+        fis = new FileInputStream(ResourceUtils.getFile(
+                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan3_139_seats.json")
+            .getAbsoluteFile());
+        path = this.fileSystemRepository.save(
+            fis.readAllBytes(), "test");
+        fis.close();
+
+        seatingPlanLayout = new SeatingPlanLayout();
+        seatingPlanLayout.setSeatingLayoutPath(path);
+        seatingPlanLayoutRepository.save(seatingPlanLayout);
+
+        seatingPlan = generateSeatingPlan("Hall B",
+            locations.get(0), seatingPlanLayout);
+        seatingPlanRepository.save(seatingPlan);
+
+        sector1 = generateSector(seatingPlan);
+        sector2 = generateSector(seatingPlan);
+        sector3 = generateSector(seatingPlan);
+        Sector sector4 = generateSector(seatingPlan);
+        sectorRepository.save(sector1);
+        sectorRepository.save(sector2);
+        sectorRepository.save(sector3);
+        sectorRepository.save(sector4);
+
+        for (int j = 0; j < 50; j++) {
+            seatRepository.save(generateSeat(sector1));
+        }
+        for (int j = 0; j < 50; j++) {
+            seatRepository.save(generateSeat(sector2));
+        }
+        for (int j = 0; j < 20; j++) {
+            seatRepository.save(generateSeat(sector3));
+        }
+        for (int j = 0; j < 20; j++) {
+            seatRepository.save(generateSeat(sector4));
+        }
+
+
     }
 
     private SeatingPlan generateSeatingPlan(String name, Location location,
