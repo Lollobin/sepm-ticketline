@@ -2,7 +2,7 @@ import {Component, OnInit, TemplateRef} from "@angular/core";
 import {Order, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
-import {forkJoin} from 'rxjs';
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: "app-order-overview",
@@ -10,11 +10,9 @@ import {forkJoin} from 'rxjs';
   styleUrls: ["./order-overview.component.scss"]
 })
 export class OrderOverviewComponent implements OnInit {
+  error = undefined;
   orders: Order[];
   tickets: TicketWithShowInfo[];
-  today = new Date();
-  error = undefined;
-
   selectedReservation: TicketWithShowInfo;
   purchaseForm: FormGroup;
 
@@ -65,13 +63,13 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   purchaseTickets() {
-    const selectedTicketIds = this.purchaseForm.value.tickets
-        .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
-        .filter(v => v !== null);
+    const selectedTicketIds: Array<number> = this.purchaseForm.value.tickets
+    .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
+    .filter(v => v !== null);
 
     const unSelectedTicketIds: Array<number> = this.purchaseForm.value.tickets
-        .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
-        .filter(v => v !== null);
+    .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
+    .filter(v => v !== null);
 
     console.log("Buying tickets:" + selectedTicketIds);
     console.log("Cancelling reservations:" + selectedTicketIds);
@@ -83,10 +81,10 @@ export class OrderOverviewComponent implements OnInit {
               purchased: selectedTicketIds
             }),
             this.ticketService
-                .ticketCancellationsPost({
-                  reserved: unSelectedTicketIds,
-                  purchased: [],
-                })
+            .ticketCancellationsPost({
+              reserved: unSelectedTicketIds,
+              purchased: [],
+            })
           ]
       ).subscribe({
         next: response => console.log(response),
@@ -98,42 +96,22 @@ export class OrderOverviewComponent implements OnInit {
       });
     } else {
       this.ticketService
-          .ticketsPost({
-            reserved: [],
-            purchased: selectedTicketIds,
-          })
-          .subscribe({
-            next: (response) => {
-              console.log(response);
-            },
-            error: (error) => {
-              this.setError(error);
-            }, complete: () => {
-              this.modalService.dismissAll();
-              this.ngOnInit();
-            }
-          });
+      .ticketsPost({
+        reserved: [],
+        purchased: selectedTicketIds,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          this.setError(error);
+        }, complete: () => {
+          this.modalService.dismissAll();
+          this.ngOnInit();
+        }
+      });
     }
-
-
-    /*
-
-
-    this.ticketService
-    .ticketCancellationsPost({
-      reserved: [unSelectedTicketIds],
-      purchased: [],
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        this.setError(error);
-      },
-    });
-
-     */
   }
 
   setError(error: any) {
@@ -149,10 +127,10 @@ export class OrderOverviewComponent implements OnInit {
 function minSelectedCheckboxes(min = 1) {
   const validator: ValidatorFn = (formArray: FormArray) => {
     const totalSelected = formArray.controls
-        // get a list of checkbox values (boolean)
-        .map(control => control.value)
-        // total up the number of checked checkboxes
-        .reduce((prev, next) => next ? prev + next : prev, 0);
+    // get a list of checkbox values (boolean)
+    .map(control => control.value)
+    // total up the number of checked checkboxes
+    .reduce((prev, next) => next ? prev + next : prev, 0);
 
     // if the total is not greater than the minimum, return the error message
     return totalSelected >= min ? null : {required: true};

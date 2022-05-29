@@ -63,8 +63,6 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
             purchaseMode ? BookingType.CANCELLATION : BookingType.DERESERVATION);
 
         return ticketsToCancel;
-
-
     }
 
     private void updateTicketStatus(boolean purchaseMode, List<Ticket> ticketList) {
