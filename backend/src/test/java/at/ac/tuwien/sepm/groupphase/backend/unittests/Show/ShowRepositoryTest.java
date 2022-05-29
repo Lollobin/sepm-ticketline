@@ -300,7 +300,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 0, 0), ZoneOffset.UTC);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 0, 0), zoneOffSet);
 
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
@@ -485,7 +485,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), ZoneOffset.UTC);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), zoneOffSet);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
             null, null, null, pageable).getContent();
