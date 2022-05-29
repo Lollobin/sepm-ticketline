@@ -73,6 +73,8 @@ export class ShowSearchComponent implements OnInit {
     this.showForm.get('location').valueChanges.subscribe(val => {
       if (val && val.locationId) {
         this.getSeatingPlansOfLocation(val.locationId);
+      } else {
+        this.resetFilterOnField("seatingPlan");
       }
     });
   }
@@ -175,14 +177,10 @@ export class ShowSearchComponent implements OnInit {
     }
   }
 
-  resetField(fieldName: string) {
-    if (fieldName === 'date') {
+  resetFilterOnField(field: string) {
+    if (field === 'date') {
       this.showForm.get('time').setValue(null);
     }
-    this.showForm.get(fieldName).setValue(null);
-  }
-
-  resetFilterOnField(field: string) {
     this.showForm.get(field).setValue(null);
     this.onSearch();
   }

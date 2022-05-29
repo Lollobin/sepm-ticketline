@@ -6,9 +6,10 @@
       <input id="inputDate" class="form-control form-override" formControlName="date" type="date" placeholder="yyyy-mm-dd">
 
     </div>
-    <div *ngIf="this.date.value" class=" form-group col-md-6 ">
+    <div class=" form-group col-md-6 ">
       <small for="inputTime" class="form-label text-muted" >Time</small>
-      <input class="form-control form-override col" type="time" min="00:00" max="23:30" step="900" formControlName="time">
+      <input *ngIf="!this.date.value" disabled class="form-control form-override col" type="time" min="00:00" max="23:30" step="900" formControlName="time">
+      <input *ngIf="this.date.value" class="form-control form-override col" type="time" min="00:00" max="23:30" step="900" formControlName="time">
     </div>
   </div>
   <div class="row">
@@ -21,10 +22,10 @@
     </div>
     <div class="form-group col-md-6">
       <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
-      <select *ngIf="!this.location" class="form-control form-override" style="background-position: 92%"
+      <select *ngIf="!this.location.value || !this.location.value.locationId" class="form-control form-override" style="background-position: 92%"
               disabled></select>
 
-      <select *ngIf="this.location" id="inputSeatingPlan" class="form-control form-override"
+      <select *ngIf="this.location.value && this.location.value.locationId" id="inputSeatingPlan" class="form-control form-override"
               formControlName="seatingPlan" style="background-position: 92%">
         <option hidden="true">Seating Plan</option>
         <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">{{seatingPlan.name}}
@@ -38,9 +39,9 @@
 
     </div>
 
-  <button (click)="onSearch()" class="btn btn-primary">Search</button>
+  <button (click)="onSearch()" class="btn btn-primary" style="margin-top: 1%;">Search</button>
   <button *ngIf="currentlyActiveFilters?.length===0" type="button"
-          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+          style="margin-left: 1%; margin-top: 1%;" class="btn btn-secondary" (click)="resetAll()">
     Clear all
   </button>
   <div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
