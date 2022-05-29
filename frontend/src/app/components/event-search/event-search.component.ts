@@ -77,13 +77,10 @@ export class EventSearchComponent implements OnInit {
       duration: this.duration.value !== 0 ? this.duration.value : null,
       content: this.description.value ? this.description.value : null
     };
-    console.log(search);
-
     this.eventService.eventsGet(search, this.pageSize, this.page - 1).subscribe(
         {
           next: events => {
             this.eventsResult = events;
-            console.log(events);
           },
           error: err => {
             console.log('Could not fetch events: ');

@@ -1,5 +1,5 @@
-<h2 *ngIf="shows">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
-
+<h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
+<h2 *ngIf="shows&&eventId&&eventName">All Shows of Event <strong style="color: #4d61ff">{{eventName}}</strong></h2>
 <table class="table table-striped" *ngIf="this.shows?.numberOfResults">
   <thead>
   <tr>
@@ -21,7 +21,7 @@
   </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.shows.numberOfResults">
+<div class="container mt-3" *ngIf="!this.shows?.numberOfResults">
   <div class="alert alert-warning" role="alert">
     <h4>There aren't any shows at this location!</h4>
 

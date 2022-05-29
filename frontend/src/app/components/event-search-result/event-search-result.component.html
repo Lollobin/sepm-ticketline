@@ -20,7 +20,7 @@
     </td>
     <td>{{ event.category}}</td>
     <td>{{ secondsToHms(event.duration)}}</td>
-    <td> <button  class="btn btn-primary">Get shows</button> </td>
+    <td> <button  routerLink="/events/{{event.eventId}}/shows" class="btn btn-primary">Get shows</button> </td>
   </tr>
   </tbody>
 </table>
