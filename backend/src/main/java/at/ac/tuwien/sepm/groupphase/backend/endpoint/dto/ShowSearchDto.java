@@ -42,12 +42,6 @@ public class ShowSearchDto   {
   @JsonProperty("eventId")
   private Long eventId;
 
-  @JsonProperty("location")
-  private Long location;
-
-  @JsonProperty("eventId")
-  private Long eventId;
-
   public ShowSearchDto event(String event) {
     this.event = event;
     return this;
