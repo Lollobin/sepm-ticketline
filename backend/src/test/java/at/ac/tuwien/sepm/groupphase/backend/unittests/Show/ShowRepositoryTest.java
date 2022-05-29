@@ -311,8 +311,8 @@ class ShowRepositoryTest {
             null, null, pageable).getContent();
 
         assertThat(shows).hasSize(2);
-        assertThat(shows.get(0).getDate()).isEqualTo(showDate2);
-        assertThat(shows.get(1).getDate()).isEqualTo(showDate1);
+        assertThat(shows.get(0).getShowId()).isEqualTo(-3);
+        assertThat(shows.get(1).getShowId()).isEqualTo(-1);
 
 
     }
@@ -418,7 +418,7 @@ class ShowRepositoryTest {
 
         assertThat(shows).hasSize(1);
         assertThat(shows.get(0).getEvent().getName()).contains("Popevent");
-        assertThat(shows.get(0).getDate()).isEqualTo(date);
+        assertThat(shows.get(0).getShowId()).isEqualTo(-1);
         assertThat(price.getSector().getSeatingPlan().getName()).isEqualTo("plan1");
     }
 
