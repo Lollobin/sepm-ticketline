@@ -55,7 +55,7 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"
                 formControlName="description"></textarea>
         </div>
-        <button class="btn btn-outline-primary" (click)="goToHome()">Go to home screen</button>
+
         <button type="button" style="margin-left: 5px;"  class="btn btn-primary" (click)="openModal()"
             [disabled]="!eventForm.valid">Submit</button>
         <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
@@ -72,5 +72,7 @@
                 </div>
             </div>
         </div>
+
+        <button type="button" class="btn btn-outline-primary m-3" (click)="goToHome()">Cancel</button>
     </form>
 </div>
