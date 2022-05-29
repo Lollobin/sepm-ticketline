@@ -13,7 +13,7 @@
     <p class="h2 form-margin form-group">
         <fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faCircleQuestion" data-bs-toggle="tooltip"
             data-placement="bottom"
-            title="In this step an event is created, to which we can later add specific shows that act as specific implementations of an event. The show specifies an event. After creating an event you get redirected to the add shows screen.">
+            title="In this step an event is created, to which we can later add specific shows that act as specific implementations of an event. After creating an event you get redirected to the add shows screen.">
         </fa-icon>
         Create a new event
     </p>
@@ -55,7 +55,8 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"
                 formControlName="description"></textarea>
         </div>
-        <button type="button" class="btn btn-primary" (click)="openModal()"
+        <button class="btn btn-outline-primary" (click)="goToHome()">Go to home screen</button>
+        <button type="button" style="margin-left: 5px;"  class="btn btn-primary" (click)="openModal()"
             [disabled]="!eventForm.valid">Submit</button>
         <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
             style="background: rgba(0,0,0, .5); padding-top: 15%">
