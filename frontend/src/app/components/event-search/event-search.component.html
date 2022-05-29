@@ -2,11 +2,11 @@
 <form class="form-margin" [formGroup]="eventForm">
   <div class="row">
     <div class="form-group col">
-      <small for="name" class="form-label text-muted"> Filter by Name</small>
+      <small for="name" class="form-label text-muted"> Name</small>
       <input type="text" class="form-control " id="name"  formControlName="name">
     </div>
     <div class="form-group col">
-      <small for="inputCategory" class="form-label text-muted"> Filter by Category</small>
+      <small for="inputCategory" class="form-label text-muted"> Category</small>
       <select id="inputCategory" class="form-control form-override"
               formControlName="category" style="background-position: 95%" >
         <option [value]="noCategory"></option>
@@ -16,7 +16,7 @@
 
   </div>
   <div class="form-group">
-    <small for="description" class="form-label text-muted"> Filter by Description</small>
+    <small for="description" class="form-label text-muted"> Description</small>
     <input class="form-control " id="description" formControlName="description" >
   </div>
 
@@ -24,7 +24,7 @@
 <div class="row">
     <div class="form-group col-md-4">
 
-        <small for="inputDuration" class="form-label text-muted"> Filter by Duration</small>
+        <small for="inputDuration" class="form-label text-muted"> Duration</small>
         <input type="range" class="form-range" min="0" max="360" step="10" value="0" id="inputDuration" formControlName="duration"
                oninput=" this.nextElementSibling.value = this.value">
       <span *ngIf = "duration.value!==0">{{this.secondsToHms(this.duration.value)}}</span>
