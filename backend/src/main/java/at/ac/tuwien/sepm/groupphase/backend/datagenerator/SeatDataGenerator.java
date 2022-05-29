@@ -61,7 +61,7 @@ public class SeatDataGenerator {
         LOGGER.debug("generating seating plan layouts, seating plans, sectors and seats");
 
         FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
-                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json")
+                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan2_19_seats.json")
             .getAbsoluteFile());
         String path = this.fileSystemRepository.save(
             fis.readAllBytes(), "test");
@@ -72,35 +72,26 @@ public class SeatDataGenerator {
         seatingPlanLayoutRepository.save(seatingPlanLayout);
 
         List<Location> locations = locationRepository.findAll();
+        SeatingPlan seatingPlan = generateSeatingPlan("Hall A",
+            locations.get(0), seatingPlanLayout);
+        seatingPlanRepository.save(seatingPlan);
 
-        for (Location location : locations) {
-            int numberOfSeatingPlans = faker.number().numberBetween(1, maxSeatingPlansPerLocation);
+        // TODO: generate sectors and seats based on seating plan layout
+        Sector sector1 = generateSector(seatingPlan);
+        Sector sector2 = generateSector(seatingPlan);
+        Sector sector3 = generateSector(seatingPlan);
+        sectorRepository.save(sector1);
+        sectorRepository.save(sector2);
+        sectorRepository.save(sector3);
 
-            //generate seatingplans for each location
-            for (int i = 0; i < numberOfSeatingPlans; i++) {
-
-                int numberOfSeatingPlanLayouts = seatingPlanLayoutRepository.findAll().size();
-                SeatingPlanLayout randomLayout = seatingPlanLayoutRepository.getById(
-                    (long) faker.number().numberBetween(1, numberOfSeatingPlanLayouts));
-
-                SeatingPlan seatingPlan = generateSeatingPlan(String.valueOf((char) (i + 65)),
-                    location, randomLayout);
-                seatingPlanRepository.save(seatingPlan);
-
-                // generate sectors for each seating plan
-                // TODO: generate sectors based on seating plan layout
-                for (int j = 0; j < 5; j++) {
-                    Sector sector = generateSector(seatingPlan);
-                    sectorRepository.save(sector);
-
-                    // generate seats for each sector
-                    // TODO: generate seats based on seating plan layout
-                    for (int k = 0; k < 5; k++) {
-                        Seat seat = generateSeat(sector);
-                        seatRepository.save(seat);
-                    }
-                }
-            }
+        for (int j = 0; j < 5; j++) {
+            seatRepository.save(generateSeat(sector1));
+        }
+        for (int j = 0; j < 5; j++) {
+            seatRepository.save(generateSeat(sector2));
+        }
+        for (int j = 0; j < 9; j++) {
+            seatRepository.save(generateSeat(sector3));
         }
     }
 
