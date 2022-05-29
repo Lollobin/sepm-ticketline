@@ -111,5 +111,9 @@ export class CreateEventComponent implements OnInit {
   clearForm() {
     this.eventForm.reset();
   }
+
+  goToHome() {
+    this.router.navigateByUrl("/admin");
+  }
 }
 

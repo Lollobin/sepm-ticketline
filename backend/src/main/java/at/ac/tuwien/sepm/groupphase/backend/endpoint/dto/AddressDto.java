@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
+ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public class AddressDto   {
    * Get houseNumber
    * @return houseNumber
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "houseNumber", required = true)
   public String getHouseNumber() {
     return houseNumber;
@@ -63,7 +63,7 @@ public class AddressDto   {
    * Get street
    * @return street
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "street", required = true)
   public String getStreet() {
     return street;
@@ -82,7 +82,7 @@ public class AddressDto   {
    * Get city
    * @return city
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "city", required = true)
   public String getCity() {
     return city;
@@ -101,7 +101,7 @@ public class AddressDto   {
    * Get country
    * @return country
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "country", required = true)
   public String getCountry() {
     return country;
@@ -120,7 +120,7 @@ public class AddressDto   {
    * Get zipCode
    * @return zipCode
   */
-  @NotNull 
+  @NotNull
   @Schema(name = "zipCode", required = true)
   public String getZipCode() {
     return zipCode;
