@@ -79,4 +79,9 @@ export class ArtistSearchComponent implements OnInit{
     this.artistGetEvents(this.clickedArtist, number);
   }
 
+  resetAll() {
+    this.search=null;
+    this.onSearch();
+  }
+
 }

@@ -30,11 +30,18 @@
   </div>
 
   <button class="btn btn-primary" (click)="onSearch()">Search</button>
-  <button type="button"
-          style="margin-left: 1%" class="btn btn-secondary" (click)="this.locationForm.reset()">
+  <button *ngIf="currentlyActiveFilters?.length===0" type="button"
+          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
     Clear all
   </button>
-
+<div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
+  <strong> Active Filters: </strong>
+  <button type="button" class="btn btn-secondary m-1" (click)="resetFilterOnField(filter)" *ngFor="let filter of currentlyActiveFilters">{{filter}} &times;</button>
+  <button type="button"
+          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+    Clear all
+  </button>
+</div>
 </form>
 
 <div *ngIf="locations">

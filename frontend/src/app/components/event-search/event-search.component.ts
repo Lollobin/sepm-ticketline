@@ -23,6 +23,7 @@ export class EventSearchComponent implements OnInit {
   categoriesType = Category;
   categories = [];
 
+  currentlyActiveFilters: string[];
 
   events: EventSearchResult;
 
@@ -86,6 +87,7 @@ export class EventSearchComponent implements OnInit {
         {
           next: events => {
             this.eventsResult = events;
+            this.setCurrentlyActiveFilters();
           },
           error: err => {
             console.log('Could not fetch events: ');
@@ -107,6 +109,36 @@ export class EventSearchComponent implements OnInit {
 
   handleEventPageEmit(number) {
     this.page = number;
+    this.onSearch();
+  }
+
+  setCurrentlyActiveFilters() {
+    this.currentlyActiveFilters = [];
+    if (this.name.value) {
+      this.currentlyActiveFilters.push("name");
+    }
+    if (this.category.value) {
+      this.currentlyActiveFilters.push("category");
+    }
+    if (this.description.value) {
+      this.currentlyActiveFilters.push("description");
+    }
+    if (this.duration.value !== 0) {
+      this.currentlyActiveFilters.push("duration");
+    }
+  }
+
+  resetFilterOnField(field: string) {
+    if (field !== 'duration') {
+      this.eventForm.get(field).setValue(null);
+    } else {
+      this.eventForm.get(field).setValue(0);
+    }
+    this.onSearch();
+  }
+
+  resetAll() {
+    this.eventForm.reset();
     this.onSearch();
   }
 }

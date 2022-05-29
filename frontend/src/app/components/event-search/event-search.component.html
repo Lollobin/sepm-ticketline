@@ -33,12 +33,25 @@
     </div>
   <button *ngIf="duration.value !== 0" type ="button" class="btn btn-outline-secondary col-2" style="margin: 15px " (click)="resetDuration()">Reset Duration Filter</button>
 </div>
-  <div class="row">
+
 
     <button type="submit" class="btn btn-primary col" (click)="onSearch()"
     >Search
     </button>
-  </div>
+
+    <button *ngIf="currentlyActiveFilters?.length===0" type="button"
+            style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+      Clear all
+    </button>
+    <div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
+      <strong> Active Filters: </strong>
+      <button type="button" class="btn btn-secondary m-1" (click)="resetFilterOnField(filter)" *ngFor="let filter of currentlyActiveFilters">{{filter}} &times;</button>
+      <button type="button"
+              style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+        Clear all
+      </button>
+    </div>
+
 
 
 </form>
