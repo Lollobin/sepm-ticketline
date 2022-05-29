@@ -25,6 +25,8 @@ export class LocationSearchComponent implements OnInit {
   clickedLocation: Location = null;
   showPage: 1;
 
+  currentlyActiveFilters: string[];
+
   constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService) {
     this.locationForm = this._formBuilder.group({
       name: [],
@@ -63,10 +65,13 @@ export class LocationSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.onSearch();
+
   }
 
 
   onSearch() {
+
     this.showOfClickedLocation = null;
     const search: LocationSearch = {
       name: this.name.value,
@@ -83,7 +88,7 @@ export class LocationSearchComponent implements OnInit {
         this.locationResult = locationResult;
         this.numberOfResult = locationResult.numberOfResults;
         this.locations = locationResult.locations;
-        
+        this.setCurrentlyActiveFilters();
       },
       error: err => {
         this.err = err;
@@ -115,5 +120,34 @@ export class LocationSearchComponent implements OnInit {
   scroll(el: HTMLElement) {
     el.scrollIntoView({behavior: "smooth"});
     
+  }
+
+  setCurrentlyActiveFilters(){
+    this.currentlyActiveFilters=[];
+    if(this.name.value){
+      this.currentlyActiveFilters.push("name");
+    }
+    if(this.street.value){
+      this.currentlyActiveFilters.push("street");
+    }
+    if(this.country.value){
+      this.currentlyActiveFilters.push("country");
+    }
+    if(this.city.value){
+      this.currentlyActiveFilters.push("city");
+    }
+    if(this.zip.value){
+      this.currentlyActiveFilters.push("zip");
+    }
+  }
+
+  resetFilterOnField(field: string){
+    this.locationForm.get(field).setValue(null);
+    this.onSearch();
+  }
+
+  resetAll(){
+    this.locationForm.reset();
+    this.onSearch();
   }
 }

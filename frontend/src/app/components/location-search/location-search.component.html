@@ -1,41 +1,47 @@
 <form [formGroup]="locationForm">
   <div class="row">
     <div class="col-md-7 mb-3">
-      <label for="validationDefault01">Name</label>
-      <input type="text" class="form-control" id="validationDefault01" formControlName="name"
-             placeholder="Location name">
+      <small for="validationDefault01" class="form-label text-muted"> Location
+        Name</small>
+      <input type="text" class="form-control" id="validationDefault01" formControlName="name">
     </div>
     <div class="col-md-5 mb-3">
-      <label for="validationDefault02">Country</label>
-      <input type="text" class="form-control" id="validationDefault02" formControlName="country"
-             placeholder="Country">
+      <small for="validationDefault02" class="form-label text-muted"> Country</small>
+      <input type="text" class="form-control" id="validationDefault02" formControlName="country">
     </div>
   </div>
   <div class="row">
     <div class="col-md-6 mb-3">
-      <label for="validationDefault03">City</label>
-      <input type="text" class="form-control" id="validationDefault03" formControlName="city"
-             placeholder="City">
+      <small for="validationDefault03" class="form-label text-muted"> City</small>
+      <input type="text" class="form-control" id="validationDefault03" formControlName="city">
     </div>
     <div class="col-md-3 mb-3">
-      <label for="validationDefault04">Street</label>
+      <small for="validationDefault04" class="form-label text-muted"> Street</small>
       <input type="text" class="form-control" id="validationDefault04" formControlName="street"
-             placeholder="Street">
+      >
     </div>
     <div class="col-md-3 mb-3">
-      <label for="validationDefault05">Zip</label>
+      <small for="validationDefault05" class="form-label text-muted"> ZIP-Code</small>
       <input type="text" class="form-control" id="validationDefault05" formControlName="zip"
-             placeholder="Zip">
+      >
     </div>
   </div>
 
   <button class="btn btn-primary" (click)="onSearch()">Search</button>
-  <button type="button"
-          style="margin-left: 1%" class="btn btn-secondary" (click)="this.locationForm.reset()">
+  <button *ngIf="currentlyActiveFilters?.length===0" type="button"
+          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
     Clear all
   </button>
-
+<div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
+  <strong> Active Filters: </strong>
+  <button type="button" class="btn btn-secondary m-1" (click)="resetFilterOnField(filter)" *ngFor="let filter of currentlyActiveFilters">{{filter}} &times;</button>
+  <button type="button"
+          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+    Clear all
+  </button>
+</div>
 </form>
+<hr>
 
 <div *ngIf="locations">
   <table class="table table-striped table-hover">

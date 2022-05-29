@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Location, Show, ShowSearchResult} from "../../generated-sources/openapi";
+import {Location, Show, ShowSearchResult, ShowsService} from "../../generated-sources/openapi";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-show-search-result',
@@ -16,9 +17,12 @@ export class ShowSearchResultComponent implements OnInit {
   page = 1;
   _show: Show;
 
+  eventId?;
+  eventName;
 
 
-  constructor() {
+  constructor(private showService: ShowsService, private route: ActivatedRoute) {
+
   }
 
   get show(): Show {
@@ -32,8 +36,22 @@ export class ShowSearchResultComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.shows);
-    console.log(this.shows.numberOfResults + " number of results");
+    this.route.params.subscribe(params => {
+      this.eventId = params["id"];
+    });
+    if (this.eventId) {
+      this.showService.showsGet({eventId: this.eventId}, this.pageSize, this.page-1).subscribe({
+        next: response => {
+        this.shows = response;
+        console.log(response);
+        this.eventName= this.shows.shows[0]?.event.name;
+        },
+        error: err => console.log(err.error.error)
+      });
+    } else {
+      console.log(this.shows);
+      console.log(this.shows.numberOfResults + " number of results");
+    }
     this.page = this.shows?.currentPage;
 
   }

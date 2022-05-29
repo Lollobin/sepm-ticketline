@@ -23,6 +23,7 @@ export class EventSearchComponent implements OnInit {
   categoriesType = Category;
   categories = [];
 
+  currentlyActiveFilters: string[];
 
   events: EventSearchResult;
 
@@ -50,12 +51,17 @@ export class EventSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.eventForm = this.formBuilder.group({
       name: [null],
       category: [this.noCategory],
       duration: [0],
       description: [null]
     });
+
+
+    this.onSearch();
+
   }
 
   secondsToHms(d): string {
@@ -77,13 +83,11 @@ export class EventSearchComponent implements OnInit {
       duration: this.duration.value !== 0 ? this.duration.value : null,
       content: this.description.value ? this.description.value : null
     };
-    console.log(search);
-
     this.eventService.eventsGet(search, this.pageSize, this.page - 1).subscribe(
         {
           next: events => {
             this.eventsResult = events;
-            console.log(events);
+            this.setCurrentlyActiveFilters();
           },
           error: err => {
             console.log('Could not fetch events: ');
@@ -105,6 +109,36 @@ export class EventSearchComponent implements OnInit {
 
   handleEventPageEmit(number) {
     this.page = number;
+    this.onSearch();
+  }
+
+  setCurrentlyActiveFilters() {
+    this.currentlyActiveFilters = [];
+    if (this.name.value) {
+      this.currentlyActiveFilters.push("name");
+    }
+    if (this.category.value) {
+      this.currentlyActiveFilters.push("category");
+    }
+    if (this.description.value) {
+      this.currentlyActiveFilters.push("description");
+    }
+    if (this.duration.value !== 0) {
+      this.currentlyActiveFilters.push("duration");
+    }
+  }
+
+  resetFilterOnField(field: string) {
+    if (field !== 'duration') {
+      this.eventForm.get(field).setValue(null);
+    } else {
+      this.eventForm.get(field).setValue(0);
+    }
+    this.onSearch();
+  }
+
+  resetAll() {
+    this.eventForm.reset();
     this.onSearch();
   }
 }

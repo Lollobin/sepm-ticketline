@@ -1,6 +1,6 @@
-<h2 *ngIf="artist">Events with {{artist.knownAs}}</h2>
-<h2 *ngIf="location">Events at {{artist.knownAs}}</h2>
-<table class="table table-striped">
+<h2 *ngIf="artist">Events with <strong style="color: #4d61ff">{{artist.knownAs}}</strong></h2>
+<h2 *ngIf="location">Events at <strong style="color: #4d61ff">{{artist.knownAs}}</strong></h2>
+<table class="table table-striped" *ngIf="this.events?.numberOfResults">
   <thead>
   <tr>
 
@@ -20,9 +20,18 @@
     </td>
     <td>{{ event.category}}</td>
     <td>{{ secondsToHms(event.duration)}}</td>
-    <td> <button  class="btn btn-primary">Get shows</button> </td>
+    <td> <button  routerLink="/events/{{event.eventId}}/shows" class="btn btn-primary">Get shows</button> </td>
   </tr>
   </tbody>
 </table>
-<ngb-pagination [collectionSize]="events?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
+<div class="container mt-3" *ngIf="!this.events?.numberOfResults&&events">
+  <div class="alert alert-warning" role="alert">
+    <h4>There aren't any events fitting this input!</h4>
+
+    <button type="button" class="btn-close" (click)="(vanishEmpty())" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+
+  </div>
+</div>
+<ngb-pagination *ngIf="this.events?.numberOfResults" [collectionSize]="events?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
                 [pageSize]="pageSize" class="d-flex justify-content-center" (pageChange)="onPageChange(page)"></ngb-pagination>

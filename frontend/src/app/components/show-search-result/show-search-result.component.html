@@ -1,11 +1,11 @@
 <h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
-
+<h2 *ngIf="shows&&eventId&&eventName" style="margin-top: 4%">All Shows of Event <strong style="color: #4d61ff">{{eventName}}</strong></h2>
 <table class="table table-striped" *ngIf="this.shows?.numberOfResults">
   <thead>
   <tr>
 
-    <th scope="col">Event Name</th>
-    <th scope="col">Location</th>
+    <th scope="col"  *ngIf="!(shows&&eventId&&eventName)">Event</th>
+    <th scope="col"  *ngIf="!(shows&&location)">Location</th>
     <th scope="col">Show Date & Time</th>
 
   </tr>
@@ -14,8 +14,8 @@
   <tr
       *ngFor="let show of shows.shows">
 
-    <td style="width: 40%">{{show.event.name}}</td>
-    <td style="width: 40%">{{show.location.name}}</td>
+    <td style="width: 40%" *ngIf="!(shows&&eventId&&eventName)" >{{show.event.name}}</td>
+    <td style="width: 40%" *ngIf="!(shows&&location)" >{{show.location.name}}</td>
     <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
     <td style="width: 30%; text-align: right;"><button type="button" class="btn btn-primary" style="width: 150px; margin-right: 4%;"
                 [routerLink]="['/buyTickets', show.showId]">Buy Tickets</button></td>
@@ -23,7 +23,7 @@
   </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.shows.numberOfResults">
+<div class="container mt-3" *ngIf="!this.shows?.numberOfResults&&(location||shows)">
   <div class="alert alert-warning" role="alert">
     <h4>There aren't any shows fitting your input!</h4>
 

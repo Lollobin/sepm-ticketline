@@ -29,7 +29,7 @@ export class CreateEventComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router,
     private authService: CustomAuthService) {
-    this.categories = Object.keys(this.categoriesType);
+    this.categories = Object.values(this.categoriesType);
   }
 
   get name() {
