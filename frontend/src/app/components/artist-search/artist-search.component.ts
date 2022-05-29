@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   Artist,
   ArtistsSearchResult,
@@ -13,7 +13,7 @@ import {
   templateUrl: './artist-search.component.html',
   styleUrls: ['./artist-search.component.scss']
 })
-export class ArtistSearchComponent {
+export class ArtistSearchComponent implements OnInit{
   data: ArtistsSearchResult = null;
   page = 1;
 
@@ -29,6 +29,9 @@ export class ArtistSearchComponent {
   constructor(private artistService: ArtistsService, private eventsService: EventsService) {
   }
 
+  ngOnInit() {
+    this.onSearch();
+  }
 
   onSearch() {
     this.eventsOfClickedArtist = null;

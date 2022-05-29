@@ -50,12 +50,17 @@ export class EventSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.eventForm = this.formBuilder.group({
       name: [null],
       category: [this.noCategory],
       duration: [0],
       description: [null]
     });
+
+
+    this.onSearch();
+
   }
 
   secondsToHms(d): string {

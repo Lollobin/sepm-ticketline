@@ -63,6 +63,7 @@ export class LocationSearchComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.onSearch();
   }
 
 
