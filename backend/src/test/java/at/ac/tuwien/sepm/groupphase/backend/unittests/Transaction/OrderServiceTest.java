@@ -29,11 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 
@@ -55,10 +59,10 @@ class OrderServiceTest implements TestData {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderServiceImpl(transactionRepository, authenticationFacade, sectorPriceRepository, bookedInRepository);
+        orderService = new OrderServiceImpl(transactionRepository, authenticationFacade,
+            sectorPriceRepository, bookedInRepository);
     }
 
-/*
     @Test
     void whenExistingUser_thenOrdersByUserShouldBeFound() {
         ApplicationUser loggedInUser = new ApplicationUser();
@@ -70,18 +74,21 @@ class OrderServiceTest implements TestData {
 
         transactionsToReturn.add(transaction);
 
-        when(transactionRepository.findAllByUserEmailOrderByDateDesc(USER_EMAIL)).thenReturn(transactionsToReturn);
+        Page<Transaction> transactionPage = new PageImpl<>(transactionsToReturn);
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("date").descending());
+
+        when(transactionRepository.findAllByUserEmail(USER_EMAIL, pageable)).thenReturn(
+            transactionPage);
         when(authenticationFacade.getEmail()).thenReturn(USER_EMAIL);
 
-        List<Transaction> found = orderService.findAllByCurrentUser();
+        Page<Transaction> found = orderService.findAllByCurrentUser(pageable);
 
         assertAll(
-            () -> assertEquals(1, found.size()),
-            () -> assertEquals(USER_EMAIL, found.get(0).getUser().getEmail())
+            () -> assertEquals(1, found.getContent().size()),
+            () -> assertEquals(USER_EMAIL, found.getContent().get(0).getUser().getEmail())
         );
     }
-
- */
 
 
     private Ticket generateTicketWithSeatAndSectorAndShow(long id) {
@@ -99,7 +106,8 @@ class OrderServiceTest implements TestData {
         return ticket;
     }
 
-    private BookedIn generateBookedInFromTicket(Transaction transaction, Ticket ticket, SectorPrice sectorPrice){
+    private BookedIn generateBookedInFromTicket(Transaction transaction, Ticket ticket,
+        SectorPrice sectorPrice) {
         BookedIn bookedIn = new BookedIn();
         BookedInKey bookedInKey = new BookedInKey();
         bookedInKey.setTicketId(ticket.getTicketId());
@@ -112,7 +120,7 @@ class OrderServiceTest implements TestData {
     }
 
     @Test
-    void testGenerateTransaction_shouldSaveBookedInAndTransaction(){
+    void testGenerateTransaction_shouldSaveBookedInAndTransaction() {
         ApplicationUser applicationUser = new ApplicationUser();
         List<Ticket> ticketList = List.of(generateTicketWithSeatAndSectorAndShow(1L));
         SectorPrice sectorPrice = new SectorPrice();
@@ -122,14 +130,16 @@ class OrderServiceTest implements TestData {
         when(sectorPriceRepository.findOneByShowIdBySectorId(1L, 1L)).thenReturn(sectorPrice);
         orderService.generateTransaction(ticketList, applicationUser, BookingType.PURCHASE);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
-        verify(bookedInRepository).saveAll(Set.of(generateBookedInFromTicket(transaction, ticketList.get(0), sectorPrice)));
+        verify(bookedInRepository).saveAll(
+            Set.of(generateBookedInFromTicket(transaction, ticketList.get(0), sectorPrice)));
 
     }
 
     @Test
-    void testGenerateTransaction_shouldSaveMultipleBookedInsAndTransaction(){
+    void testGenerateTransaction_shouldSaveMultipleBookedInsAndTransaction() {
         ApplicationUser applicationUser = new ApplicationUser();
-        List<Ticket> ticketList = List.of(generateTicketWithSeatAndSectorAndShow(1L), generateTicketWithSeatAndSectorAndShow(2L));
+        List<Ticket> ticketList = List.of(generateTicketWithSeatAndSectorAndShow(1L),
+            generateTicketWithSeatAndSectorAndShow(2L));
         SectorPrice sectorPrice = new SectorPrice();
         sectorPrice.setPrice(BigDecimal.TEN);
         Transaction transaction = new Transaction();
@@ -140,11 +150,14 @@ class OrderServiceTest implements TestData {
 
         orderService.generateTransaction(ticketList, applicationUser, BookingType.PURCHASE);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
-        verify(bookedInRepository).saveAll(Set.of(generateBookedInFromTicket(transaction, ticketList.get(0), sectorPrice), generateBookedInFromTicket(transaction, ticketList.get(1), sectorPrice)));
+        verify(bookedInRepository).saveAll(
+            Set.of(generateBookedInFromTicket(transaction, ticketList.get(0), sectorPrice),
+                generateBookedInFromTicket(transaction, ticketList.get(1), sectorPrice)));
 
     }
+
     @Test
-    void testGenerateTransaction_shouldDoNothingWhenTicketListEmpty(){
+    void testGenerateTransaction_shouldDoNothingWhenTicketListEmpty() {
         ApplicationUser applicationUser = new ApplicationUser();
         List<Ticket> ticketList = List.of();
         orderService.generateTransaction(ticketList, applicationUser, BookingType.PURCHASE);
