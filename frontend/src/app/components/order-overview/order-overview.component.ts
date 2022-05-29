@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef} from "@angular/core";
-import {Order, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
+import {OrdersPage, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
 
@@ -9,10 +9,13 @@ import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angu
   styleUrls: ["./order-overview.component.scss"]
 })
 export class OrderOverviewComponent implements OnInit {
-  orders: Order[];
   tickets: TicketWithShowInfo[];
   today = new Date();
   error = undefined;
+
+  orders: OrdersPage;
+  currentPage = 1;
+  pageSize = 10;
 
   selectedReservation: TicketWithShowInfo;
   purchaseForm: FormGroup;
@@ -39,8 +42,11 @@ export class OrderOverviewComponent implements OnInit {
         console.log("Received tickets");
       }
     });
+    this.reloadOrders();
+  }
 
-    this.ticketService.ordersGet().subscribe({
+  reloadOrders() {
+    this.ticketService.ordersGet(this.pageSize, this.currentPage - 1).subscribe({
       next: data => {
         this.orders = data;
       },
@@ -52,6 +58,11 @@ export class OrderOverviewComponent implements OnInit {
         console.log("Received orders");
       }
     });
+  }
+
+  onPageChange(ngbpage: number) {
+    this.currentPage = ngbpage;
+    this.reloadOrders();
   }
 
   openPurchaseModal(messageAddModal: TemplateRef<any>, reservation: TicketWithShowInfo) {

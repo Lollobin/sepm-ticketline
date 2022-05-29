@@ -9,14 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Order } from './order';
 
 
-export interface ShowSearch { 
-    event?: string;
-    date?: string;
-    price?: number;
-    seatingPlan?: number;
-    location?: number;
-    eventId?: number;
+export interface OrdersPage { 
+    orders?: Array<Order>;
+    currentPage?: number;
+    numberOfResults?: number;
+    pagesTotal?: number;
 }
 
