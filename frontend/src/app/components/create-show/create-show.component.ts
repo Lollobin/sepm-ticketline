@@ -153,7 +153,7 @@ export class CreateShowComponent implements OnInit {
   createShow(): void {
     this.showForm.value.event = this.eventId;
     if (this.showForm.value.date.length !== 25) {
-      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+00:00";
+      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+02:00";
     }
     this.showWithoutId.date = this.showForm.value.date;
     this.showWithoutId.event = this.eventId;
