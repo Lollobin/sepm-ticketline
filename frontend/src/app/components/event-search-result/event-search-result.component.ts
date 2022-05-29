@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Artist, EventSearchResult} from "../../generated-sources/openapi";
 
 @Component({
@@ -14,11 +6,11 @@ import {Artist, EventSearchResult} from "../../generated-sources/openapi";
   templateUrl: './event-search-result.component.html',
   styleUrls: ['./event-search-result.component.scss']
 })
-export class EventSearchResultComponent implements OnInit{
+export class EventSearchResultComponent implements OnInit {
   @Output() nextRequestedPage = new EventEmitter<number>();
   @Input() events: EventSearchResult;
   @Input() location?: Location;
-  @Input() pageSize = 15;
+  @Input() pageSize;
   page = 1;
   _artist: Artist;
 
@@ -32,14 +24,13 @@ export class EventSearchResultComponent implements OnInit{
   }
 
   ngOnInit() {
-    console.log(this.events?.currentPage);
-    this.page = this.events?.currentPage;
+    this.page = this.events?.currentPage + 1;
   }
 
   onPageChange(num: number) {
-
     this.nextRequestedPage.emit(num);
   }
+
   secondsToHms(d): string {
     d = Number(d * 60);
     const h = Math.floor(d / 3600);

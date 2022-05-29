@@ -3,7 +3,6 @@ import {
   Artist,
   ArtistsSearchResult,
   ArtistsService,
-  Category,
   EventSearch,
   EventSearchResult,
   EventsService
@@ -17,7 +16,7 @@ import {
 export class ArtistSearchComponent {
   data: ArtistsSearchResult = null;
   page = 1;
-  //rest expects page values beginning with 0
+
 
   pageSize = 10;
   artists: Artist[];
@@ -25,7 +24,7 @@ export class ArtistSearchComponent {
   sort: 'ASC' | 'DESC' = 'ASC';
   eventsOfClickedArtist: EventSearchResult = null;
   clickedArtist: Artist;
-
+  eventPageSize = 5;
 
   constructor(private artistService: ArtistsService, private eventsService: EventsService) {
   }
@@ -57,41 +56,15 @@ export class ArtistSearchComponent {
   }
 
 
-//faker until eventsearch is done
-  fakeEvents(artist: Artist, eventPage: number) {
-    console.log("a new page was requeted" + eventPage);
-    const imp = artist.firstName;
-    this.clickedArtist = artist;
-    this.eventsOfClickedArtist = {
-      currentPage: 1,
-      numberOfResults: 6,
-      events: [{
-        eventId: 1,
-        name: imp,
-        category: Category.Pop,
-        duration: 3
-      }, {eventId: 2, name: imp + '2', category: Category.Classical, duration: 3}, {
-        eventId: 4,
-        name: imp,
-        category: Category.Edm,
-        duration: 3
-      }, {eventId: 5, name: imp + '2', category: Category.Country, duration: 3}, {
-        eventId: 1,
-        name: imp,
-        category: Category.Rap,
-        duration: 3
-      }, {eventId: 6, name: imp + '2', category: Category.RnB, duration: 3},]
-    };
 
-  }
-
-//real implementation, not yet in use
-  artistGetEvents(artist: Artist, page: number) {
+  artistGetEvents(artist: Artist, childpage: number) {
     const id = artist.artistId;
     this.clickedArtist = artist;
     const searchParams: EventSearch = {artist: id};
-    this.eventsService.eventsGet(searchParams, 15, page).subscribe({
-      next: response => this.eventsOfClickedArtist = response,
+    this.eventsService.eventsGet(searchParams, this.eventPageSize, childpage - 1).subscribe({
+      next: response => {
+        this.eventsOfClickedArtist = response;
+      },
       error: err => {
         console.log(err.error?.error);
       }
@@ -99,9 +72,8 @@ export class ArtistSearchComponent {
     });
   }
 
-  handleEventPageEmit(number){
-    console.log("hndleemit"+number);
-   //here we will call artistsGetEvents(this.clickedArtist,number)
+  handleEventPageEmit(number) {
+    this.artistGetEvents(this.clickedArtist, number);
   }
 
 }
