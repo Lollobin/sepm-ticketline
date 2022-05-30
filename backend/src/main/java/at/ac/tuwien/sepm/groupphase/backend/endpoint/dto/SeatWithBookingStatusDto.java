@@ -23,6 +23,9 @@ public class SeatWithBookingStatusDto   {
   @JsonProperty("seatId")
   private Long seatId;
 
+  @JsonProperty("ticketId")
+  private Long ticketId;
+
   @JsonProperty("reserved")
   private Boolean reserved;
 
@@ -55,6 +58,25 @@ public class SeatWithBookingStatusDto   {
 
   public void setSeatId(Long seatId) {
     this.seatId = seatId;
+  }
+
+  public SeatWithBookingStatusDto ticketId(Long ticketId) {
+    this.ticketId = ticketId;
+    return this;
+  }
+
+  /**
+   * Get ticketId
+   * @return ticketId
+  */
+  @NotNull 
+  @Schema(name = "ticketId", required = true)
+  public Long getTicketId() {
+    return ticketId;
+  }
+
+  public void setTicketId(Long ticketId) {
+    this.ticketId = ticketId;
   }
 
   public SeatWithBookingStatusDto reserved(Boolean reserved) {
@@ -162,6 +184,7 @@ public class SeatWithBookingStatusDto   {
     }
     SeatWithBookingStatusDto seatWithBookingStatus = (SeatWithBookingStatusDto) o;
     return Objects.equals(this.seatId, seatWithBookingStatus.seatId) &&
+        Objects.equals(this.ticketId, seatWithBookingStatus.ticketId) &&
         Objects.equals(this.reserved, seatWithBookingStatus.reserved) &&
         Objects.equals(this.purchased, seatWithBookingStatus.purchased) &&
         Objects.equals(this.rowNumber, seatWithBookingStatus.rowNumber) &&
@@ -171,7 +194,7 @@ public class SeatWithBookingStatusDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(seatId, reserved, purchased, rowNumber, seatNumber, sector);
+    return Objects.hash(seatId, ticketId, reserved, purchased, rowNumber, seatNumber, sector);
   }
 
   @Override
@@ -179,6 +202,7 @@ public class SeatWithBookingStatusDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class SeatWithBookingStatusDto {\n");
     sb.append("    seatId: ").append(toIndentedString(seatId)).append("\n");
+    sb.append("    ticketId: ").append(toIndentedString(ticketId)).append("\n");
     sb.append("    reserved: ").append(toIndentedString(reserved)).append("\n");
     sb.append("    purchased: ").append(toIndentedString(purchased)).append("\n");
     sb.append("    rowNumber: ").append(toIndentedString(rowNumber)).append("\n");

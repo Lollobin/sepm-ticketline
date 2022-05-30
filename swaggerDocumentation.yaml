@@ -1532,6 +1532,9 @@ components:
         seatId:
           type: integer
           format: int64
+        ticketId:
+          type: integer
+          format: int64
         reserved:
           type: boolean
         purchased:
@@ -1549,6 +1552,7 @@ components:
         - seatId
         - reserved
         - purchased
+        - ticketId
         - sector
     ProvisionalSector:
       type: object

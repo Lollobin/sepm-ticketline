@@ -57,6 +57,7 @@ public class ShowTicketServiceImpl implements ShowTicketService {
         SeatingPlanDto seatingPlanDto = new SeatingPlanDto();
         for (Ticket ticket : ticketList) {
             SeatWithBookingStatusDto element = new SeatWithBookingStatusDto();
+            element.setTicketId(ticket.getTicketId());
             element.setPurchased(ticket.getPurchasedBy() != null);
             element.setReserved(ticket.getReservedBy() != null);
             Seat seat = ticket.getSeat();
