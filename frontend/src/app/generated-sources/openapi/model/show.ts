@@ -13,7 +13,6 @@ import { Event } from './event';
 import { Location } from './location';
 
 
-
 export interface Show { 
     showId: number;
     date?: string;
