@@ -19,6 +19,7 @@ export * from './locationSearch';
 export * from './locationSearchResult';
 export * from './locationWithoutId';
 export * from './order';
+export * from './ordersPage';
 export * from './provisionalSector';
 export * from './seat';
 export * from './seatWithBookingStatus';

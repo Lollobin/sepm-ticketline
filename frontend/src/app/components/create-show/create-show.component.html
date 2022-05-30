@@ -15,7 +15,7 @@
     <p class="h2 form-margin form-group">
         <fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faCircleQuestion" data-bs-toggle="tooltip"
             data-placement="bottom"
-            title="In this step a specific show is created. It specifies the given event and gives it a date, a location, a seating plan and artists. After the seating plan is selected make sure to use the corresponding button to render the sectors!">
+            title="In this step a specific show is created. It specifies the given event and gives it a date, a location, a seating plan and artists. After the seating plan is selected make sure set the sector prices! To add artists please click on the 'Add to show' button.">
         </fa-icon>
         Add shows to "{{this.eventName}}"
     </p>
@@ -151,8 +151,9 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary form-group" (click)="openModal()"
-            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Submit</button>
+
+        <button type="submit" class="btn btn-primary form-group" style="margin-left: 5px;" (click)="openModal()"
+            [disabled]="!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId">Save Show</button>
         <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
             style="background: rgba(0,0,0, .5); padding-top: 15%">
             <div class="modal-dialog" role="document">
@@ -161,15 +162,34 @@
                         <h5>Are you sure you want to create this show?</h5>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="createShow(); onCloseHandled()">Create Show</button>
+                        <button type="button" class="btn btn-primary" (click)="createShow(); onCloseHandled()">Create
+                            Show</button>
                         <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- TODO: add *ngif to below div element to check wether there are shows for the given event -->
-        <div class="form-group">
-            <small for="inputLocation" class="form-label text-muted">Shows of "{{this.eventName}}"</small>
+
+      <button *ngIf="shows.length===0" class="btn btn-outline-primary form-group" style="margin-left: 5px;" (click)="goToHome()">Cancel</button>
+
+        <hr>
+        <div class="form-group" *ngIf="this.shows.length > 0">
+            <h5 *ngIf="shows">Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Location</th>
+                        <th scope="col">Show Date & Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let show of shows">
+                        <td>{{show.location.name}}</td>
+                        <td>{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+      <button *ngIf="shows.length>0" type="button" class="btn btn-outline-primary form-group" style="margin-left: 5px;" (click)="goToHome()">Finish</button>
     </form>
 </div>

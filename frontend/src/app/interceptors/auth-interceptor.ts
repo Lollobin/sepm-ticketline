@@ -20,11 +20,19 @@ export class AuthInterceptor implements HttpInterceptor {
     const listOfGetPublics = [
       this.globals.backendCustomUri + '/events',
       this.globals.backendCustomUri + '/artists',
+      this.globals.backendCustomUri + '/locations',
       this.globals.backendCustomUri + '/shows',
       this.globals.backendCustomUri + '/seatingPlan'];
+    console.log(req.url);
 
-
-    const dontInterceptPublic = req.method === "GET" && listOfGetPublics.indexOf(req.url) !== -1;
+    const isget = req.method === "GET";
+    let publicResource;
+    let i = 0;
+    while (!publicResource && i < listOfGetPublics.length) {
+      publicResource = req.url.startsWith(listOfGetPublics[i]);
+      i++;
+    }
+    const dontInterceptPublic = isget && publicResource;
 
     // Do not intercept authentication / registration requests
     if ((req.url === authUri || req.url === signUpUri || dontInterceptPublic) && !isLoggedIn) {

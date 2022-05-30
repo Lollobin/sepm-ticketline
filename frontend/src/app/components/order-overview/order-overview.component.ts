@@ -1,7 +1,8 @@
 import {Component, OnInit, TemplateRef} from "@angular/core";
-import {Order, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
+import {OrdersPage, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: "app-order-overview",
@@ -9,10 +10,13 @@ import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angu
   styleUrls: ["./order-overview.component.scss"]
 })
 export class OrderOverviewComponent implements OnInit {
-  orders: Order[];
+  error = undefined;
   tickets: TicketWithShowInfo[];
   today = new Date();
-  error = undefined;
+
+  orders: OrdersPage;
+  currentPage = 1;
+  pageSize = 10;
 
   selectedReservation: TicketWithShowInfo;
   purchaseForm: FormGroup;
@@ -39,8 +43,11 @@ export class OrderOverviewComponent implements OnInit {
         console.log("Received tickets");
       }
     });
+    this.reloadOrders();
+  }
 
-    this.ticketService.ordersGet().subscribe({
+  reloadOrders() {
+    this.ticketService.ordersGet(this.pageSize, this.currentPage - 1).subscribe({
       next: data => {
         this.orders = data;
       },
@@ -54,6 +61,11 @@ export class OrderOverviewComponent implements OnInit {
     });
   }
 
+  onPageChange(ngbpage: number) {
+    this.currentPage = ngbpage;
+    this.reloadOrders();
+  }
+
   openPurchaseModal(messageAddModal: TemplateRef<any>, reservation: TicketWithShowInfo) {
     this.selectedReservation = reservation;
     this.purchaseForm = this.formBuilder.group({
@@ -64,50 +76,55 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   purchaseTickets() {
-    const selectedTicketIds = this.purchaseForm.value.tickets
+    const selectedTicketIds: Array<number> = this.purchaseForm.value.tickets
     .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
     .filter(v => v !== null);
 
-    console.log("Buying tickets:" + selectedTicketIds);
-
-    this.ticketService
-    .ticketsPost({
-      reserved: [],
-      purchased: selectedTicketIds,
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        this.setError(error);
-      }, complete: () => {
-        this.modalService.dismissAll();
-        this.ngOnInit();
-      }
-    });
-
-    /*
-    TODO: uncomment when backend is implemented
-    const unSelectedTicketIds = this.purchaseForm.value.tickets
+    const unSelectedTicketIds: Array<number> = this.purchaseForm.value.tickets
     .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
     .filter(v => v !== null);
+
+    console.log("Buying tickets:" + selectedTicketIds);
     console.log("Cancelling reservations:" + selectedTicketIds);
 
-    this.ticketService
-    .ticketCancellationsPost({
-      reserved: [unSelectedTicketIds],
-      purchased: [],
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        this.setError(error);
-      },
-    });
-     */
+    if (unSelectedTicketIds.length > 0) {
+      forkJoin([
+            this.ticketService.ticketsPost({
+              reserved: [],
+              purchased: selectedTicketIds
+            }),
+            this.ticketService
+            .ticketCancellationsPost({
+              reserved: unSelectedTicketIds,
+              purchased: [],
+            })
+          ]
+      ).subscribe({
+        next: response => console.log(response),
+        error: error => this.setError(error),
+        complete: () => {
+          this.modalService.dismissAll();
+          this.ngOnInit();
+        }
+      });
+    } else {
+      this.ticketService
+      .ticketsPost({
+        reserved: [],
+        purchased: selectedTicketIds,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          this.setError(error);
+        }, complete: () => {
+          this.modalService.dismissAll();
+          this.ngOnInit();
+        }
+      });
+    }
   }
 
   setError(error: any) {

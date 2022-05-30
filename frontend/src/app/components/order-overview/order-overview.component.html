@@ -3,7 +3,7 @@
 </div>
 
 <div>
-  <table class="table">
+  <table class="table table-striped align-middle">
     <thead>
     <tr>
       <th scope="col">Ticket Information</th>
@@ -27,12 +27,10 @@
           </ng-template>
           <ng-template #multipleReservations>Reservations</ng-template>
         </ng-template>
-
       </td>
       <td>{{ ticket.artists.join(', ') + " - " + ticket.eventName }} <br>
         {{ ticket.city + ", " + ticket.locationName }}</td>
       <td>{{ ticket.showDate | date }} <br> {{ ticket.showDate | date:'HH:mm' }}</td>
-
       <td>
         <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary"
                 id="{{'purchaseBtn'+i}}" (click)="openPurchaseModal(purchaseModal, ticket)">Purchase
@@ -63,29 +61,24 @@
         </label>
       </div>
     </form>
-
     <div class="text-danger mt-3">Any reservations that are not bought will be cancelled.</div>
-
   </div>
   <div class="modal-footer">
-
     <button type="button" class="btn btn-secondary" id="close-modal-btn"
             (click)="modal.dismiss('close')">Close
     </button>
     <button type="button" class="btn btn-primary" id="buy-now-btn"
-            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy
-      Now
+            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy Now
     </button>
   </div>
 </ng-template>
-
 
 <div>
   <h2 class="h2 mt-3">Transaction History</h2>
 </div>
 
 <div>
-  <table class="table">
+  <table class="table table-striped">
     <thead>
     <tr>
       <th scope="col">Transaction Date</th>
@@ -95,7 +88,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let order of orders"
+    <tr *ngFor="let order of orders?.orders"
         [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
       <td>{{ order.transactionDate | date }} <br> {{ order.transactionDate | date:'HH:mm' }}</td>
 
@@ -123,9 +116,11 @@
         </ng-template>
       </td>
     </tr>
-
     </tbody>
   </table>
+  <ngb-pagination [collectionSize]="orders?.numberOfResults" [(page)]="currentPage" [maxSize]="5"
+                  [boundaryLinks]="true" [pageSize]="pageSize" class="d-flex justify-content-center"
+                  (pageChange)=onPageChange(currentPage)></ngb-pagination>
 </div>
 
 <app-error-alert [(error)]="error"></app-error-alert>

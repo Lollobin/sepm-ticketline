@@ -59,7 +59,7 @@
   <ngb-pagination [collectionSize]="numberOfElems" [(page)]="page" [maxSize]="5"
                   [boundaryLinks]="true"
                   [pageSize]="pageSize" class="d-flex justify-content-center"
-                  (pageChange)="onPageChange(page)"></ngb-pagination>
+                  (pageChange)="onPageChange(page)" *ngIf="this.users && this.users.length > 0"></ngb-pagination>
 
 
 </div>

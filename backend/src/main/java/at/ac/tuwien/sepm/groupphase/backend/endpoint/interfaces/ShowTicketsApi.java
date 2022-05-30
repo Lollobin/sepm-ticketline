@@ -72,7 +72,7 @@ public interface ShowTicketsApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 0, \"price\" : 6.027456183070403 }, { \"sectorId\" : 0, \"price\" : 6.027456183070403 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 6, \"sector\" : 5, \"seatNumber\" : 1 } ] }";
+                    String exampleString = "{ \"sectors\" : [ { \"sectorId\" : 0, \"price\" : 6.027456183070403 }, { \"sectorId\" : 0, \"price\" : 6.027456183070403 } ], \"seatingPlan\" : { \"seatingPlanLayoutId\" : 6, \"locationId\" : 1, \"seatingPlanId\" : 0, \"name\" : \"name\" }, \"seats\" : [ { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 1, \"sector\" : 5, \"ticketId\" : 6, \"seatNumber\" : 5 }, { \"purchased\" : true, \"reserved\" : true, \"seatId\" : 0, \"rowNumber\" : 1, \"sector\" : 5, \"ticketId\" : 6, \"seatNumber\" : 5 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

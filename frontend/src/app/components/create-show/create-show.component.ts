@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   EventsService, Sector, ShowsService, SeatingPlansService,
   SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
-  ArtistsService, Artist, ArtistsSearchResult
+  ArtistsService, Artist, Show, ShowSearch
 } from 'src/app/generated-sources/openapi';
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
@@ -48,10 +48,12 @@ export class CreateShowComponent implements OnInit {
   artistForm: any;
   artists = [];
   display = "none";
+  shows = [];
+  showSearch: ShowSearch = { event: null };
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
-    private locationsService: LocationsService, private artistsService: ArtistsService) { }
+    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router) { }
 
   get date() {
     return this.showForm.get("date");
@@ -107,6 +109,7 @@ export class CreateShowComponent implements OnInit {
       this.notFound = true;
       this.getDetails(this.eventId);
     });
+    this.getShowsOfEvent(this.eventId);
     this.role = this.authService.getUserRole();
     this.showForm.get('location').valueChanges.subscribe(val => {
       if (val && val.locationId) {
@@ -150,10 +153,31 @@ export class CreateShowComponent implements OnInit {
     });
   }
 
+  getShowsOfEvent(id: number): void {
+    this.showSearch.eventId = id;
+    this.showService.showsGet(this.showSearch).subscribe({
+      next: data => {
+        console.log("Succesfully got shows of event with id " + id);
+        this.error = false;
+        this.shows = data.shows;
+        console.log(data.shows);
+      },
+      error: error => {
+        console.error('Error getting shows', error.message);
+        this.error = true;
+        if (typeof error.error === 'object') {
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+      }
+    });
+  }
+
   createShow(): void {
     this.showForm.value.event = this.eventId;
     if (this.showForm.value.date.length !== 25) {
-      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+00:00";
+      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+02:00";
     }
     this.showWithoutId.date = this.showForm.value.date;
     this.showWithoutId.event = this.eventId;
@@ -173,6 +197,7 @@ export class CreateShowComponent implements OnInit {
       next: data => {
         console.log("Succesfully created show");
         console.log(data.headers.get('Location'));
+        this.getShowsOfEvent(this.eventId);
         this.error = false;
         this.clearForm();
         this.artists = [];
@@ -301,5 +326,9 @@ export class CreateShowComponent implements OnInit {
     this.artists.push(this.artistForm.get("artist").value);
     console.log(this.artists);
     this.artistForm.reset();
+  }
+
+  goToHome() {
+    this.router.navigateByUrl("/admin");
   }
 }

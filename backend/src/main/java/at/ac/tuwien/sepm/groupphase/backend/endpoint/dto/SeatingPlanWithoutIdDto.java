@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProvisionalSectorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanLayoutDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.ArrayList;
@@ -28,8 +27,8 @@ public class SeatingPlanWithoutIdDto   {
   @JsonProperty("name")
   private String name;
 
-  @JsonProperty("seatingPlanLayout")
-  private SeatingPlanLayoutDto seatingPlanLayout;
+  @JsonProperty("seatingPlanLayoutId")
+  private Long seatingPlanLayoutId;
 
   @JsonProperty("locationId")
   private Long locationId;
@@ -61,8 +60,8 @@ public class SeatingPlanWithoutIdDto   {
     this.name = name;
   }
 
-  public SeatingPlanWithoutIdDto seatingPlanLayout(SeatingPlanLayoutDto seatingPlanLayout) {
-    this.seatingPlanLayout = seatingPlanLayout;
+  public SeatingPlanWithoutIdDto seatingPlanLayoutId(Long seatingPlanLayoutId) {
+    this.seatingPlanLayoutId = seatingPlanLayoutId;
     return this;
   }
 
@@ -70,14 +69,14 @@ public class SeatingPlanWithoutIdDto   {
    * Get seatingPlanLayout
    * @return seatingPlanLayout
   */
-  @Valid 
-  @Schema(name = "seatingPlanLayout", required = false)
-  public SeatingPlanLayoutDto getSeatingPlanLayout() {
-    return seatingPlanLayout;
+  @NotNull 
+  @Schema(name = "seatingPlanLayoutId", required = true)
+  public Long getSeatingPlanLayoutId() {
+    return seatingPlanLayoutId;
   }
 
-  public void setSeatingPlanLayout(SeatingPlanLayoutDto seatingPlanLayout) {
-    this.seatingPlanLayout = seatingPlanLayout;
+  public void setSeatingPlanLayoutId(Long seatingPlanLayoutId) {
+    this.seatingPlanLayoutId = seatingPlanLayoutId;
   }
 
   public SeatingPlanWithoutIdDto locationId(Long locationId) {
@@ -163,7 +162,7 @@ public class SeatingPlanWithoutIdDto   {
     }
     SeatingPlanWithoutIdDto seatingPlanWithoutId = (SeatingPlanWithoutIdDto) o;
     return Objects.equals(this.name, seatingPlanWithoutId.name) &&
-        Objects.equals(this.seatingPlanLayout, seatingPlanWithoutId.seatingPlanLayout) &&
+        Objects.equals(this.seatingPlanLayoutId, seatingPlanWithoutId.seatingPlanLayoutId) &&
         Objects.equals(this.locationId, seatingPlanWithoutId.locationId) &&
         Objects.equals(this.sectors, seatingPlanWithoutId.sectors) &&
         Objects.equals(this.seats, seatingPlanWithoutId.seats);
@@ -171,7 +170,7 @@ public class SeatingPlanWithoutIdDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, seatingPlanLayout, locationId, sectors, seats);
+    return Objects.hash(name, seatingPlanLayoutId, locationId, sectors, seats);
   }
 
   @Override

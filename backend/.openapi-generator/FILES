@@ -19,6 +19,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchDt
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchResultDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrderDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrdersPageDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ProvisionalSectorDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingStatusDto.java

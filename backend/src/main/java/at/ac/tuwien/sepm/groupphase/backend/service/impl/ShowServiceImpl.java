@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
@@ -22,12 +25,16 @@ import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,11 +51,14 @@ public class ShowServiceImpl implements ShowService {
     private final SectorPriceRepository sectorPriceRepository;
     private final ArtistRepository artistRepository;
 
+    private final ShowMapper showMapper;
+
     @Autowired
     public ShowServiceImpl(ShowRepository showRepository, ShowValidator showValidator,
         SectorRepository sectorRepository, SeatRepository seatRepository,
         TicketRepository ticketRepository, SeatingPlanRepository seatingPlanRepository,
-        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository) {
+        SectorPriceRepository sectorPriceRepository, ArtistRepository artistRepository,
+        ShowMapper showMapper) {
         this.showRepository = showRepository;
         this.showValidator = showValidator;
         this.sectorRepository = sectorRepository;
@@ -57,13 +67,68 @@ public class ShowServiceImpl implements ShowService {
         this.seatingPlanRepository = seatingPlanRepository;
         this.sectorPriceRepository = sectorPriceRepository;
         this.artistRepository = artistRepository;
+        this.showMapper = showMapper;
     }
 
 
     @Override
-    public List<Show> findAll() {
-        LOGGER.debug("Find all shows");
-        return showRepository.findAll();
+    public ShowSearchResultDto findAll(Pageable pageable) {
+        LOGGER.trace("Find all shows");
+
+        Page<Show> showPage = showRepository.findAll(pageable);
+
+        return setShowSearchResultDto(showPage);
+
+    }
+
+    @Override
+    public ShowSearchResultDto search(ShowSearchDto showSearchDto, Pageable pageable) {
+
+        LOGGER.trace("Find all shows with pageable: {}", pageable);
+
+        if (showSearchDto.getDate() == null && showSearchDto.getEvent() == null
+            && showSearchDto.getPrice() == null && showSearchDto.getSeatingPlan() == null
+            && showSearchDto.getEventId() == null && showSearchDto.getLocation() != null) {
+
+            Page<Show> showPage = showRepository.findShowsByLocation(showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+
+        } else if (showSearchDto.getEventId() != null) {
+            Page<Show> showPage = showRepository.findShowsByEventId(showSearchDto.getEventId(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+        } else {
+
+            Integer hours = 0;
+            Integer minutes = 0;
+            if (showSearchDto.getDate() != null) {
+                hours = showSearchDto.getDate().getHour();
+                minutes = showSearchDto.getDate().getMinute();
+            }
+
+            Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
+                showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
+                showSearchDto.getLocation(),
+                pageable);
+
+            return setShowSearchResultDto(showPage);
+        }
+    }
+
+    private ShowSearchResultDto setShowSearchResultDto(Page<Show> showPage) {
+        LOGGER.trace("setting ShowSearchResultDto");
+        ShowSearchResultDto searchResultDto = new ShowSearchResultDto();
+
+        searchResultDto.setShows(
+            showPage.getContent().stream().map(showMapper::showToShowDto).toList());
+        searchResultDto.setNumberOfResults((int) showPage.getTotalElements());
+        searchResultDto.setCurrentPage(showPage.getNumber());
+        searchResultDto.setPagesTotal(showPage.getTotalPages());
+
+        return searchResultDto;
     }
 
     @Override
@@ -101,9 +166,13 @@ public class ShowServiceImpl implements ShowService {
 
         show = showRepository.save(show);
 
+        Set<SectorPrice> sectorPriceSet = new HashSet<>();
+
         for (SectorPrice sectorPrice : sectorPrices) {
             sectorPrice.setShow(show);
-            sectorPriceRepository.save(sectorPrice);
+            sectorPrice = sectorPriceRepository.save(sectorPrice);
+            sectorPriceSet.add(sectorPrice);
+
         }
 
         for (Sector sector : sectors.get()) {
@@ -120,6 +189,8 @@ public class ShowServiceImpl implements ShowService {
             }
         }
 
+        show.setSectorPrices(sectorPriceSet);
+
         return show;
     }
 
@@ -134,15 +205,17 @@ public class ShowServiceImpl implements ShowService {
         }
     }
 
-    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos, List<Sector> sectors) {
+    private List<SectorPrice> setUpSectorPrices(List<SectorPriceDto> sectorPriceDtos,
+        List<Sector> sectors) {
         List<SectorPrice> sectorPrices = new ArrayList<>();
         for (Sector sector : sectors) {
             boolean found = false;
             for (SectorPriceDto sectorPriceDto : sectorPriceDtos) {
                 if (sectorPriceDto.getSectorId().equals(sector.getSectorId())) {
                     found = true;
-                    sectorPrices.add(new SectorPrice(sector, null,
-                        BigDecimal.valueOf(sectorPriceDto.getPrice())));
+                    sectorPrices.add(
+                        new SectorPrice(sector, null,
+                            BigDecimal.valueOf(sectorPriceDto.getPrice())));
                     break;
                 }
             }

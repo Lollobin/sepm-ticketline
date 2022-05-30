@@ -998,15 +998,26 @@ paths:
       summary: Shows orders for the user possessing the token
       security:
         - BearerAuth: []
+      parameters:
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
       responses:
         200:
           description: Successful retreival of orders
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Order"
+                $ref: "#/components/schemas/OrdersPage"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -1298,15 +1309,18 @@ components:
           type: string
           format: date-time
         event:
-          type: integer
+          $ref: "#/components/schemas/Event"
         artists:
           type: array
           items:
             type: integer
+        location:
+          $ref: "#/components/schemas/Location"
       required:
         - showId
         - event
         - artists
+        - location
     ShowWithoutId:
       type: object
       properties:
@@ -1516,6 +1530,9 @@ components:
         seatId:
           type: integer
           format: int64
+        ticketId:
+          type: integer
+          format: int64
         reserved:
           type: boolean
         purchased:
@@ -1533,6 +1550,7 @@ components:
         - seatId
         - reserved
         - purchased
+        - ticketId
         - sector
     ProvisionalSector:
       type: object
@@ -1596,7 +1614,7 @@ components:
       type: object
       properties:
         name:
-          type: string
+          type: string        
         content:
           type: string
         category:
@@ -1631,6 +1649,13 @@ components:
           type: number
         seatingPlan:
           type: integer
+          format: int64
+        location:
+          type: integer
+          format: int64
+        eventId:
+          type: integer
+          format: int64
     LocationSearch:
       type: object
       properties:
@@ -1961,3 +1986,18 @@ components:
         - seats
         - sectors
         - staticElements
+    OrdersPage:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+
+

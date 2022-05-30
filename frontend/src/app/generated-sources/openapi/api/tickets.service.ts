@@ -21,7 +21,7 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { FullTicketWithStatus } from '../model/fullTicketWithStatus';
 // @ts-ignore
-import { Order } from '../model/order';
+import { OrdersPage } from '../model/ordersPage';
 // @ts-ignore
 import { TicketStatus } from '../model/ticketStatus';
 // @ts-ignore
@@ -147,13 +147,25 @@ export class TicketsService {
 
     /**
      * Shows orders for the user possessing the token
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public ordersGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Order>>;
-    public ordersGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Order>>>;
-    public ordersGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Order>>>;
-    public ordersGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public ordersGet(pageSize?: number, requestedPage?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<OrdersPage>;
+    public ordersGet(pageSize?: number, requestedPage?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<OrdersPage>>;
+    public ordersGet(pageSize?: number, requestedPage?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<OrdersPage>>;
+    public ordersGet(pageSize?: number, requestedPage?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -193,9 +205,10 @@ export class TicketsService {
             }
         }
 
-        return this.httpClient.get<Array<Order>>(`${this.configuration.basePath}/orders`,
+        return this.httpClient.get<OrdersPage>(`${this.configuration.basePath}/orders`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

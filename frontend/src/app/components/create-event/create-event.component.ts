@@ -29,7 +29,7 @@ export class CreateEventComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router,
     private authService: CustomAuthService) {
-    this.categories = Object.keys(this.categoriesType);
+    this.categories = Object.values(this.categoriesType);
   }
 
   get name() {
@@ -85,10 +85,10 @@ export class CreateEventComponent implements OnInit {
     this.eventService.eventsPost(this.eventWithoutId, 'response').subscribe({
       next: (res: HttpResponse<Event>) => {
         const location = res.headers.get('Location');
-        console.log("Succesfully created event");
+        console.log("Successfully created event");
         console.log(location);
         const id = location.split("/").pop();
-        this.router.navigateByUrl("/events/" + id + "/shows");
+        this.router.navigateByUrl("/events/" + id + "/shows/create");
         this.error = false;
       },
       error: error => {
@@ -110,6 +110,10 @@ export class CreateEventComponent implements OnInit {
 
   clearForm() {
     this.eventForm.reset();
+  }
+
+  goToHome() {
+    this.router.navigateByUrl("/admin");
   }
 }
 

@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,11 +43,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Transaction> findAllByCurrentUser() {
+    public Page<Transaction> findAllByCurrentUser(Pageable pageable) {
         String email = authenticationFacade.getEmail();
         LOGGER.debug("Looking for orders by '{}'", email);
-
-        return transactionRepository.findAllByUserEmailOrderByDateDesc(email);
+        return transactionRepository.findAllByUserEmail(email, pageable);
     }
 
     @Override

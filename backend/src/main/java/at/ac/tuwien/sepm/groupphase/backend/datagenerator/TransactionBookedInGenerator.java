@@ -62,7 +62,7 @@ public class TransactionBookedInGenerator {
 
         List<ApplicationUser> users = userRepository.findAll();
         for (ApplicationUser user : users) {
-            int numberOfPurchases = faker.number().numberBetween(1, 10);
+            int numberOfPurchases = faker.number().numberBetween(1, 40);
 
             for (int i = 0; i < numberOfPurchases; i++) {
                 long numberOfShows = showRepository.findAll().size();

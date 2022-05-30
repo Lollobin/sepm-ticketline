@@ -10,14 +10,15 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.SHOW_INVALI
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectorPriceDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ShowMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -40,6 +41,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.ShowServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ShowValidator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,18 +51,25 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 @ExtendWith(MockitoExtension.class)
 class ShowServiceTest {
 
+    private final ShowValidator showValidator = new ShowValidator();
+    private final Event fakePersistedEvent = new Event();
+    private final Show fakePersistedShow = new Show();
+    private final EventValidator eventValidator = new EventValidator();
+    Pageable pageable = PageRequest.of(0, 10, Direction.fromString("ASC"), "showId");
     @Mock
     private EventRepository eventRepository;
-
     @Mock
     private ShowRepository showRepository;
     @Mock
@@ -75,24 +84,19 @@ class ShowServiceTest {
     private SectorPriceRepository sectorPriceRepository;
     @Mock
     private ArtistRepository artistRepository;
-
     @Spy
-    private final EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
-
-    private final ShowValidator showValidator = new ShowValidator();
+    private ShowMapper showMapper;
     private ShowService showService;
-    private final Event fakePersistedEvent = new Event();
-    private final Show fakePersistedShow = new Show();
-    private final EventValidator eventValidator = new EventValidator();
     private EventService eventService;
-
+    @Spy
+    private EventMapper eventMapper;
 
     @BeforeEach
     void setUp() {
         eventService = new EventServiceImpl(eventRepository, eventValidator, eventMapper);
         showService = new ShowServiceImpl(showRepository, showValidator, sectorRepository,
             seatRepository, ticketRepository, seatingPlanRepository, sectorPriceRepository,
-            artistRepository);
+            artistRepository, showMapper);
         showRepository.deleteAll();
     }
 
@@ -247,6 +251,59 @@ class ShowServiceTest {
     }
 
     @Test
+    void searchWithOnlyEventId_shouldCallFindEventByIdInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setEventId(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.findShowsByEventId(1L, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).findShowsByEventId(1L, pageable);
+
+    }
+
+    @Test
+    void searchWithOnlyLocationId_shouldCallFindLocationByIdInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setLocation(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.findShowsByLocation(1L, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).findShowsByLocation(1L, pageable);
+
+    }
+
+    @Test
+    void searchWithAllButLocationIdAndEventId_shouldCallSearchInRepo() {
+
+        ShowSearchDto searchDto = new ShowSearchDto();
+        searchDto.setEvent("test");
+        searchDto.setDate(SHOW_DATE);
+        searchDto.setPrice(BigDecimal.valueOf(30));
+        searchDto.setSeatingPlan(1L);
+
+        List<Show> list = new ArrayList<>();
+
+        when(showRepository.search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test",
+            BigDecimal.valueOf(30), 1L, null, pageable)).thenReturn(new PageImpl<>(list));
+
+        showService.search(searchDto, pageable);
+
+        verify(showRepository).search(SHOW_DATE, SHOW_DATE.getHour(), SHOW_DATE.getMinute(), "test",
+            BigDecimal.valueOf(30), 1L, null, pageable);
+
+    }
+
+    @Test
     void whenSectorDoesNotExist_shouldThrowNotFoundException() {
 
         Show showToSave = new Show();
@@ -290,7 +347,8 @@ class ShowServiceTest {
         showToSave.setDate(SHOW_DATE);
 
         when(seatingPlanRepository.findById(any())).thenReturn(Optional.of(new SeatingPlan()));
-        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(Optional.of(new ArrayList<>()));
+        when(sectorRepository.findAllBySeatingPlan(any())).thenReturn(
+            Optional.of(new ArrayList<>()));
         when(artistRepository.existsById(3L)).thenReturn(false);
 
         assertThrows(NotFoundException.class,

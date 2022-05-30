@@ -15,7 +15,7 @@ import {
 } from "src/app/generated-sources/openapi";
 import { SeatingPlan, drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 interface SeatBookingInformation {
   color: number;
@@ -61,7 +61,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private eventsService: EventsService,
     private seatingPlansService: SeatingPlansService,
     private ticketsService: TicketsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
   async ngOnInit() {
     this.route.paramMap.subscribe({
@@ -91,7 +92,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     });
   }
   retreiveEvent(show: Show) {
-    this.eventsService.eventsIdGet(show.event).subscribe({
+    this.eventsService.eventsIdGet(show.event.eventId).subscribe({
       next: (event) => {
         this.event = event;
       },
@@ -114,7 +115,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (showInformation) => {
         this.showInformation = showInformation;
         this.seatingPlansService
-          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanId)
+          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
           .subscribe({
             next: async (seatingPlan) => {
               this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
@@ -163,15 +164,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     return `#${color.toString(16).padStart(6, "0")}`;
   }
   confirmPurchase() {
-    //TODO: Add redirect to bill and show purchase overview
+    //TODO: Add redirect to bill
     this.ticketsService
       .ticketsPost({
         reserved: [],
-        purchased: map(this.chosenSeats, (seatId) => seatId.seatId),
+        purchased: map(this.chosenSeats, (seat) => seat.ticketId),
       })
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.router.navigate(["/", "orders"]);
         },
         error: (error) => {
           this.setError(error);
@@ -179,16 +181,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       });
   }
   confirmReservation() {
-    //TODO: Add redirect to "reservation"-bill and show purchase overview
+    //TODO: Add redirect to "reservation"-bill
     this.ticketsService
       .ticketsPost({
-        reserved: map(this.chosenSeats, (seatId) => seatId.seatId),
+        reserved: map(this.chosenSeats, (seat) => seat.ticketId),
         purchased: [],
       })
       .subscribe({
         next: (response) => {
-          console.log("YOU RESERVED THEM TICKETS");
           console.log(response);
+          this.router.navigate(["/", "orders"]);
         },
       });
   }

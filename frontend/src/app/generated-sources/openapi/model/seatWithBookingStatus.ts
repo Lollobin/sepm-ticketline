@@ -13,6 +13,7 @@
 
 export interface SeatWithBookingStatus { 
     seatId: number;
+    ticketId: number;
     reserved: boolean;
     purchased: boolean;
     rowNumber?: number;
