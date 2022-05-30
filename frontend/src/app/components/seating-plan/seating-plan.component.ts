@@ -15,7 +15,7 @@ import {
 } from "src/app/generated-sources/openapi";
 import { SeatingPlan, drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 interface SeatBookingInformation {
   color: number;
@@ -61,7 +61,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private eventsService: EventsService,
     private seatingPlansService: SeatingPlansService,
     private ticketsService: TicketsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
   async ngOnInit() {
     this.route.paramMap.subscribe({
@@ -163,7 +164,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     return `#${color.toString(16).padStart(6, "0")}`;
   }
   confirmPurchase() {
-    //TODO: Add redirect to bill and show purchase overview
+    //TODO: Add redirect to bill
     this.ticketsService
       .ticketsPost({
         reserved: [],
@@ -172,6 +173,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.router.navigate(["/", "orders"])
         },
         error: (error) => {
           this.setError(error);
@@ -179,7 +181,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       });
   }
   confirmReservation() {
-    //TODO: Add redirect to "reservation"-bill and show purchase overview
+    //TODO: Add redirect to "reservation"-bill
     this.ticketsService
       .ticketsPost({
         reserved: map(this.chosenSeats, (seatId) => seatId.seatId),
@@ -187,8 +189,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       })
       .subscribe({
         next: (response) => {
-          console.log("YOU RESERVED THEM TICKETS");
           console.log(response);
+          this.router.navigate(["/", "orders"])
         },
       });
   }
