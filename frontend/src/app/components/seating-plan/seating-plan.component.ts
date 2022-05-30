@@ -168,12 +168,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     this.ticketsService
       .ticketsPost({
         reserved: [],
-        purchased: map(this.chosenSeats, (seatId) => seatId.seatId),
+        purchased: map(this.chosenSeats, (seat) => seat.ticketId),
       })
       .subscribe({
         next: (response) => {
           console.log(response);
-          this.router.navigate(["/", "orders"])
+          this.router.navigate(["/", "orders"]);
         },
         error: (error) => {
           this.setError(error);
@@ -184,13 +184,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     //TODO: Add redirect to "reservation"-bill
     this.ticketsService
       .ticketsPost({
-        reserved: map(this.chosenSeats, (seatId) => seatId.seatId),
+        reserved: map(this.chosenSeats, (seat) => seat.ticketId),
         purchased: [],
       })
       .subscribe({
         next: (response) => {
           console.log(response);
-          this.router.navigate(["/", "orders"])
+          this.router.navigate(["/", "orders"]);
         },
       });
   }
