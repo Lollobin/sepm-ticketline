@@ -16,7 +16,7 @@ public class DataGeneratorManager {
     private static final int NUMBER_OF_ARTISTS = 20;
     private static final int NUMBER_OF_EVENTS = 30;
     private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 5;
-    private static final int NUMBER_OF_LOCATIONS = 4;
+    private static final int NUMBER_OF_LOCATIONS = 1;
     private static final int MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION = 3;
 
     private static final Logger LOGGER =
