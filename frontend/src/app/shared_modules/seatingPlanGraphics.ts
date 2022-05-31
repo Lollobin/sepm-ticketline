@@ -39,7 +39,6 @@ interface Seat {
 
 interface SeatingPlan {
   general: {
-    [key: string]: string | number;
     width: number;
     height: number;
   };

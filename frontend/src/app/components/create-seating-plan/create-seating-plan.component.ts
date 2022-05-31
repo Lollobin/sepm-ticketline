@@ -99,7 +99,6 @@ export class CreateSeatingPlanComponent implements OnInit {
       //TODO: Get locationId after saving location
       locationId: 0,
       //TODO: Get locationId after saving location
-      seatingPlanLayoutId: 0,
       sectors: [],
       seats: [],
     };

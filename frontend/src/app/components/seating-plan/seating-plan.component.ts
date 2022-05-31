@@ -118,7 +118,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
           .subscribe({
             next: async (seatingPlan) => {
-              this.seatingPlan = JSON.parse(await seatingPlan.text()) as SeatingPlan;
+              this.seatingPlan = seatingPlan;
               this.showInformation.sectors.forEach((sector) => {
                 this.sectorPriceMap[sector.sectorId] = sector.price;
               });
