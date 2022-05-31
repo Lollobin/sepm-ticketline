@@ -9,6 +9,7 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
 
     @Override
     public Long createSeatingPlan(SeatingPlanWithoutIdDto seatingPlan) {
+
         return null;
     }
 }
