@@ -6,6 +6,7 @@ import {
   ArtistsService,
   Event,
   EventsService,
+  SeatingPlanLayout,
   SeatingPlansService,
   SeatWithBookingStatus,
   Show,
@@ -13,7 +14,7 @@ import {
   ShowsService,
   TicketsService,
 } from "src/app/generated-sources/openapi";
-import { SeatingPlan, drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
+import { drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
 import { ActivatedRoute, Router } from "@angular/router";
 
@@ -41,7 +42,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     undefined;
   showInformation: ShowInformation;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
-  seatingPlan: SeatingPlan;
+  seatingPlan: SeatingPlanLayout;
   sectorBookingInformation: SeatBookingInformation[] = [];
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;

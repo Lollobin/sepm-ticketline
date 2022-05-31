@@ -1,11 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import {
-  Seat,
-  SeatingPlan,
-  Sector,
   SectorBuilder,
-  SectorWithLocation,
-  StaticElement,
 } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
@@ -13,16 +8,19 @@ import {
   LocationsService,
   SeatingPlanWithoutId,
   Location,
+  SeatingPlanSector,
+  SeatingPlanSeat,
+  SeatingPlanStaticElement,
 } from "src/app/generated-sources/openapi";
 import { ActivatedRoute } from "@angular/router";
 
 type ClickElement =
   | {
-      data: SectorWithLocation;
+      data: SeatingPlanSector;
       type: "SectorWithLocation";
     }
-  | { data: Seat; type: "Seat" }
-  | { data: StaticElement; type: "StaticElement" };
+  | { data: SeatingPlanSeat; type: "Seat" }
+  | { data: SeatingPlanStaticElement; type: "StaticElement" };
 
 @Component({
   selector: "app-create-seating-plan",
