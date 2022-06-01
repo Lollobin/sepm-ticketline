@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
@@ -57,6 +58,13 @@ public class LocationsEndpoint implements LocationsApi {
 
         return ResponseEntity.ok(searchResultDto);
 
+    }
+
+    @Override
+    public ResponseEntity<LocationDto> locationsIdGet(Long id) {
+        LOGGER.info("GET /locations/{}", id);
+        return ResponseEntity.ok(
+            this.locationMapper.locationToLocationDto((this.locationService.findOne(id))));
     }
 
     @Override

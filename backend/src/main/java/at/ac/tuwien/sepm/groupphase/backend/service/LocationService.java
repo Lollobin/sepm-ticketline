@@ -35,4 +35,12 @@ public interface LocationService {
      * @return location object that was saved
      */
     Location saveLocation(Location location);
+
+    /**
+     * Finds a location by its id.
+     *
+     * @param id The id that will be searched for
+     * @return The found location with the given ID
+     */
+    Location findOne(Long id);
 }

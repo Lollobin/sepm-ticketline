@@ -39,7 +39,8 @@ public class LocationServiceImpl implements LocationService {
     private final LocationValidator locationValidator;
 
     public LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper,
-        SearchValidator searchValidator, SeatingPlanRepository seatingPlanRepository, SeatingPlanMapper seatingPlanMapper,  LocationValidator locationValidator) {
+        SearchValidator searchValidator, SeatingPlanRepository seatingPlanRepository,
+        SeatingPlanMapper seatingPlanMapper, LocationValidator locationValidator) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
         this.searchValidator = searchValidator;
@@ -119,12 +120,14 @@ public class LocationServiceImpl implements LocationService {
             throw new NotFoundException("No location exists with id " + id);
         }
 
-        Optional<List<SeatingPlan>> seatingPlans = seatingPlanRepository.findAllByLocation(location.get());
+        Optional<List<SeatingPlan>> seatingPlans = seatingPlanRepository.findAllByLocation(
+            location.get());
         if (seatingPlans.isEmpty()) {
             throw new ConflictException("No seating plans exist for location with id " + id);
         }
 
-        return seatingPlans.get().stream().map(seatingPlanMapper::seatingPlanToSeatingPlanDto).toList();
+        return seatingPlans.get().stream().map(seatingPlanMapper::seatingPlanToSeatingPlanDto)
+            .toList();
     }
 
     @Override
@@ -132,5 +135,15 @@ public class LocationServiceImpl implements LocationService {
         LOGGER.trace("Saving location {}", location);
         locationValidator.checkLocationIsValid(location);
         return locationRepository.save(location);
+    }
+
+    @Override
+    public Location findOne(Long id) {
+        LOGGER.trace("Finding location with ID {}", id);
+        Optional<Location> location = this.locationRepository.findById(id);
+        if (location.isEmpty()) {
+            throw new NotFoundException(String.format("Could not find location with id %s", id));
+        }
+        return location.get();
     }
 }
