@@ -33,6 +33,7 @@ public interface TestData {
     String USERS_BASE_URI = "/users";
     String ORDERS_BASE_URI = "/orders";
     String TICEKTS_BASE_URI = "/tickets";
+    String CANCELLATION_BASE_URI = "/ticketCancellations";
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES =
         new ArrayList<>() {
