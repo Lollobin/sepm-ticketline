@@ -16,7 +16,7 @@ import { SeatingPlanLayout } from './seatingPlanLayout';
 
 export interface SeatingPlanWithoutId { 
     name: string;
-    seatingPlanLayout?: SeatingPlanLayout;
+    seatingPlanLayout: SeatingPlanLayout;
     locationId: number;
     sectors: Array<ProvisionalSector>;
     seats: Array<Seat>;

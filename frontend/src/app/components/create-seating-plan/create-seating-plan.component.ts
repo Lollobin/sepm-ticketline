@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import {
-  SectorBuilder,
-} from "src/app/shared_modules/seatingPlanGraphics";
+import { SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
 import {
@@ -11,6 +9,8 @@ import {
   SeatingPlanSector,
   SeatingPlanSeat,
   SeatingPlanStaticElement,
+  SeatingPlansService,
+  SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
 import { ActivatedRoute } from "@angular/router";
 
@@ -51,7 +51,11 @@ export class CreateSeatingPlanComponent implements OnInit {
     },
   };
 
-  constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private locationsService: LocationsService,
+    private seatingPlansService: SeatingPlansService
+  ) {}
 
   ngOnInit(): void {
     this.page = 1;
@@ -90,19 +94,36 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.page--;
   }
   finish() {
-    //const seatingPlanLayout: SeatingPlan = {}
+    const seatingPlanLayout: SeatingPlanLayout = {
+      general: {
+        width: 1000,
+        height: 1000
+      },
+      seats: [],
+      sectors: [],
+      staticElements: []
+    }
 
     const seatingPlan: SeatingPlanWithoutId = {
-      name: "",
+      name: "test",
       //TODO: Get locationId after saving location
-      locationId: 0,
+      locationId: 1,
       //TODO: Get locationId after saving location
       sectors: [],
       seats: [],
+      seatingPlanLayout
     };
     //TODO: Send locationWithout ID
     //Get back ID of location
     //Send seating plan with location ID
+    this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
+      next: ()=>{
+        console.log("SAVED")
+      }, 
+      error: (error)=>{
+        console.log(error)
+      }
+    })
   }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });

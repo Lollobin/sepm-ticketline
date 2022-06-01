@@ -10,13 +10,22 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface SeatingPlanMapper {
+
     @Mapping(target = "locationId", source = "location")
     @Mapping(target = "seatingPlanLayoutId", source = "seatingPlanLayout")
     SeatingPlanDto seatingPlanToSeatingPlanDto(SeatingPlan seatingPlan);
 
     SeatingPlan seatingPlanDtoToSeatingPlan(SeatingPlanDto seatingPlanDto);
 
+    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "seatingPlanLayout", source = "seatingPlan")
     SeatingPlan seatingPlanWithoutIdDtoToSeatingPlan(SeatingPlanWithoutIdDto seatingPlan);
+
+    default Location map(Long value) {
+        Location location = new Location();
+        location.setId(value);
+        return location;
+    }
 
     default Long map(Location location) {
         return location.getId();

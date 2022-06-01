@@ -22,15 +22,19 @@ import at.ac.tuwien.sepm.groupphase.backend.service.SeatingPlanService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SeatingPlanValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SeatingPlanServiceImpl implements SeatingPlanService {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
     private final SeatingPlanValidator seatingPlanValidator;
     private final SeatingPlanRepository seatingPlanRepository;
     private final SeatingPlanLayoutRepository seatingPlanLayoutRepository;
@@ -111,6 +115,8 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
         SeatingPlanLayout seatingPlanLayout) {
         SeatingPlan seatingPlan = seatingPlanMapper.seatingPlanWithoutIdDtoToSeatingPlan(
             seatingPlanWithoutIdDto);
+        LOGGER.debug("{}", seatingPlan);
+
         seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
         return seatingPlanRepository.save(seatingPlan);
     }

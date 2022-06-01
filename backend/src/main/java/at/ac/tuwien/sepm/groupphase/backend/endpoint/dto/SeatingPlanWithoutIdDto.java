@@ -70,8 +70,8 @@ public class SeatingPlanWithoutIdDto   {
    * Get seatingPlanLayout
    * @return seatingPlanLayout
   */
-  @Valid 
-  @Schema(name = "seatingPlanLayout", required = false)
+  @NotNull @Valid 
+  @Schema(name = "seatingPlanLayout", required = true)
   public SeatingPlanLayoutDto getSeatingPlanLayout() {
     return seatingPlanLayout;
   }
