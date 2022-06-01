@@ -94,36 +94,33 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.page--;
   }
   finish() {
-    const seatingPlanLayout: SeatingPlanLayout = {
-      general: {
-        width: 1000,
-        height: 1000
-      },
-      seats: [],
-      sectors: [],
-      staticElements: []
-    }
+    const seatingPlanLayout: SeatingPlanLayout = this.seatingPlanEditor.seatingPlan;
 
     const seatingPlan: SeatingPlanWithoutId = {
-      name: "test",
+      name: this.seatingPlanName,
       //TODO: Get locationId after saving location
-      locationId: 1,
+      locationId: this.location.locationId,
       //TODO: Get locationId after saving location
-      sectors: [],
-      seats: [],
-      seatingPlanLayout
+      sectors: seatingPlanLayout.sectors.map((sector) => ({ id: sector.id })),
+      seats: seatingPlanLayout.seats.map((seat) => ({
+        id: seat.id,
+        seatNumber: this.seatInformation[seat.id]?.seatNumber,
+        rowNumber: this.seatInformation[seat.id]?.rowNumber,
+        sector: seat.sectorId
+      })),
+      seatingPlanLayout,
     };
     //TODO: Send locationWithout ID
     //Get back ID of location
     //Send seating plan with location ID
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
-      next: ()=>{
-        console.log("SAVED")
-      }, 
-      error: (error)=>{
-        console.log(error)
-      }
-    })
+      next: () => {
+        console.log("SAVED");
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
