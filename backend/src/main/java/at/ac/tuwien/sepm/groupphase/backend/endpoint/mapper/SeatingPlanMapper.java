@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlanLayout;
@@ -14,6 +15,8 @@ public interface SeatingPlanMapper {
     SeatingPlanDto seatingPlanToSeatingPlanDto(SeatingPlan seatingPlan);
 
     SeatingPlan seatingPlanDtoToSeatingPlan(SeatingPlanDto seatingPlanDto);
+
+    SeatingPlan seatingPlanWithoutIdDtoToSeatingPlan(SeatingPlanWithoutIdDto seatingPlan);
 
     default Long map(Location location) {
         return location.getId();

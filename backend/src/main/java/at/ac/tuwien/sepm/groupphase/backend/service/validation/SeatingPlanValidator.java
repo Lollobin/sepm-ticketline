@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SeatingPlanValidator {
 
-    void checkSeatingPlanValid(SeatingPlanWithoutIdDto seatingPlanWithoutId) {
+    public void checkSeatingPlanValid(SeatingPlanWithoutIdDto seatingPlanWithoutId) {
         if (seatingPlanWithoutId.getName().isBlank()) {
             throw new ValidationException("A valid name must be set for the seating plan");
         }
