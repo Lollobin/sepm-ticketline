@@ -10,7 +10,8 @@ import { Location, LocationsService, SeatingPlan } from "src/app/generated-sourc
 export class LocationSeatingPlansComponent implements OnInit {
   locationId = 1;
   location: Location;
-  seatingPlans: SeatingPlan[]
+  seatingPlans: SeatingPlan[];
+  error: Error;
   constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
 
   ngOnInit(): void {
@@ -18,17 +19,19 @@ export class LocationSeatingPlansComponent implements OnInit {
       this.locationId = params["id"];
       this.locationsService.locationsIdGet(this.locationId).subscribe({
         next: (location) => {
-          this.location = location
+          this.location = location;
           this.locationsService.locationsIdSeatingPlansGet(this.locationId).subscribe({
-            next: (seatingPlans)=>{
-              this.seatingPlans = seatingPlans
-            }, 
-            error: ()=>{
-              //TODO: Add error handling
-            }
-          })
+            next: (seatingPlans) => {
+              this.seatingPlans = seatingPlans;
+            },
+            error: (error) => {
+              this.error = error;
+            },
+          });
         },
-        error: () => {},
+        error: (error) => {
+          this.error = error;
+        },
       });
     });
   }

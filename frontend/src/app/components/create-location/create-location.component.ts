@@ -10,10 +10,14 @@ import { LocationsService, LocationWithoutId } from "src/app/generated-sources/o
 })
 export class CreateLocationComponent implements OnInit {
   locationForm: FormGroup;
-
+  error: Error;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private locationsService: LocationsService, private router: Router) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private locationsService: LocationsService,
+    private router: Router
+  ) {
     this.locationForm = this.formBuilder.group({
       name: ["", [Validators.required]],
       address: this.formBuilder.group({
@@ -33,18 +37,14 @@ export class CreateLocationComponent implements OnInit {
         name: this.locationForm.get("name").value,
         address: this.locationForm.get("address").value,
       };
-      //TOOD: Navigate to location with ID
       this.locationsService.locationsPost(location).subscribe({
-        next: ()=>{
-          console.log("SUCCESS")
-          this.router.navigate(["/", "locations"])
+        next: () => {
+          this.router.navigate(["/", "locations"]);
         },
-        error: ()=>{
-          console.log("ERROR")
-        }
-      })
-    } else {
-      console.log("Invalid input");
+        error: (error) => {
+          this.error = error;
+        },
+      });
     }
   }
 

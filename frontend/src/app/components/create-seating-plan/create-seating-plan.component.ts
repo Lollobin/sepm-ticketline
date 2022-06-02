@@ -29,7 +29,7 @@ type ClickElement =
 })
 export class CreateSeatingPlanComponent implements OnInit {
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
-
+  error: Error;
   locationId: number;
   page: number;
   faXmark = faXmark;
@@ -57,7 +57,9 @@ export class CreateSeatingPlanComponent implements OnInit {
           //TODO: Add location get interface
           console.log(location);
         },
-        error: () => {},
+        error: (error) => {
+          this.error = error;
+        },
       });
     });
   }
@@ -101,11 +103,10 @@ export class CreateSeatingPlanComponent implements OnInit {
     };
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
       next: () => {
-        console.log("SAVED");
-        this.router.navigate(["/", "locations", this.location.locationId])
+        this.router.navigate(["/", "locations", this.location.locationId]);
       },
       error: (error) => {
-        console.log(error);
+        this.error = error;
       },
     });
   }
