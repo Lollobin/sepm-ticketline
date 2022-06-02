@@ -8,12 +8,13 @@ import { Location, LocationsService } from "src/app/generated-sources/openapi";
   styleUrls: ["./location-admin-overview.component.scss"],
 })
 export class LocationAdminOverviewComponent implements OnInit {
-  constructor(private locationsService: LocationsService, private router: Router) {}
   locations: Location[];
   error: Error;
   page = 1;
   pageSize = 10;
   numberOfResults = 0;
+  constructor(private locationsService: LocationsService, private router: Router) {}
+
   ngOnInit(): void {
     this.searchLocations();
   }
@@ -27,7 +28,7 @@ export class LocationAdminOverviewComponent implements OnInit {
         this.numberOfResults = locationSearchResult.numberOfResults;
       },
       error: (error) => {
-        this.error = error
+        this.error = error;
       },
     });
   }
