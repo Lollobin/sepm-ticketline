@@ -25,6 +25,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.SeatingPlanService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.SeatingPlanServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SeatingPlanValidator;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -65,7 +66,7 @@ public class SeatingPlanServiceTest {
             seatingPlanLayoutRepository, fileSystemRepository, seatingPlanMapper, sectorRepository,
             seatMapper, seatRepository);
     }
-    
+
     @Test
     void createSeatingPlan_shouldCreateSeatingPlanWithValidId() throws IOException {
         AtomicLong counter = new AtomicLong();
@@ -95,29 +96,41 @@ public class SeatingPlanServiceTest {
         assertEquals(result, seatingPlanId);
     }
 
-    private SeatingPlanSectorDto generateSeatingPlanSector(long id, boolean noSeats) {
+    private static SeatingPlanSectorDto generateSeatingPlanSector(long id, boolean noSeats) {
         SeatingPlanSectorDto sector = new SeatingPlanSectorDto();
         sector.setId(id);
         sector.setNoSeats(noSeats);
         sector.setColor(0L);
         sector.setDescription("Test");
         if (noSeats) {
-            sector.setLocation(new ElementLocationDto());
+            ElementLocationDto location = new ElementLocationDto();
+            location.setX(BigDecimal.TEN);
+            location.setY(BigDecimal.TEN);
+            location.setW(BigDecimal.TEN);
+            location.setH(BigDecimal.TEN);
+
+            sector.setLocation(location);
         }
         return sector;
     }
 
-    private SeatingPlanSeatDto generateSeatingPlanSeat(long id, long sector, boolean hasLocation) {
+    private static SeatingPlanSeatDto generateSeatingPlanSeat(long id, long sector,
+        boolean hasLocation) {
         SeatingPlanSeatDto seat = new SeatingPlanSeatDto();
         seat.setId(id);
         seat.setSectorId(sector);
         if (hasLocation) {
-            seat.setLocation(new ElementLocationDto());
+            ElementLocationDto location = new ElementLocationDto();
+            location.setX(BigDecimal.TEN);
+            location.setY(BigDecimal.TEN);
+            location.setW(BigDecimal.TEN);
+            location.setH(BigDecimal.TEN);
+            seat.setLocation(location);
         }
         return seat;
     }
 
-    private SeatingPlanWithoutIdDto generateSeatingPlanWithoutIdDto(long numberOfSectors,
+    public static SeatingPlanWithoutIdDto generateSeatingPlanWithoutIdDto(long numberOfSectors,
         long numberOfSeatsPerSector) {
         List<SeatingPlanSectorDto> seatingPlanSectors = new ArrayList<>();
         List<SeatingPlanSeatDto> seatingPlanSeats = new ArrayList<>();
@@ -135,6 +148,8 @@ public class SeatingPlanServiceTest {
         seatingPlanLayoutDto.setSeats(seatingPlanSeats);
         seatingPlanLayoutDto.setStaticElements(new ArrayList<>());
         SeatingPlanLayoutGeneralDto generalDto = new SeatingPlanLayoutGeneralDto();
+        generalDto.setHeight(BigDecimal.valueOf(100));
+        generalDto.setWidth(BigDecimal.valueOf(100));
         seatingPlanLayoutDto.setGeneral(generalDto);
 
         SeatingPlanWithoutIdDto seatingPlanWithoutIdDto = new SeatingPlanWithoutIdDto();
