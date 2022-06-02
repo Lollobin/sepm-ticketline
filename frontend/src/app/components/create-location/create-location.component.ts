@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { LocationsService, LocationWithoutId } from "src/app/generated-sources/openapi";
 
 @Component({
@@ -12,7 +13,7 @@ export class CreateLocationComponent implements OnInit {
 
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private locationsService: LocationsService) {
+  constructor(private formBuilder: FormBuilder, private locationsService: LocationsService, private router: Router) {
     this.locationForm = this.formBuilder.group({
       name: ["", [Validators.required]],
       address: this.formBuilder.group({
@@ -25,7 +26,7 @@ export class CreateLocationComponent implements OnInit {
     });
   }
 
-  signUpUser() {
+  createLocation() {
     this.submitted = true;
     if (this.locationForm.valid) {
       const location: LocationWithoutId = {
@@ -36,6 +37,7 @@ export class CreateLocationComponent implements OnInit {
       this.locationsService.locationsPost(location).subscribe({
         next: ()=>{
           console.log("SUCCESS")
+          this.router.navigate(["/", "locations"])
         },
         error: ()=>{
           console.log("ERROR")

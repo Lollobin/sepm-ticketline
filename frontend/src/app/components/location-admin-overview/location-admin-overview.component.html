@@ -1,6 +1,6 @@
 <h1>Manage Locations</h1>
 <div>
-  <table class="table table-striped">
+  <table class="table table-striped  table-hover">
     <thead>
       <tr>
         <th scope="col">Name</th>
@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let location of locations">
+      <tr *ngFor="let location of locations" (click)="navigateToLocation(location)" style="cursor: pointer;">
         <td>{{ location.name }}</td>
         <td>{{ location.address.zipCode }}</td>
         <td>{{ location.address.city }}</td>

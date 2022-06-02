@@ -12,7 +12,7 @@ import {
   SeatingPlansService,
   SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Route, Router } from "@angular/router";
 
 type ClickElement =
   | {
@@ -43,7 +43,8 @@ export class CreateSeatingPlanComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private locationsService: LocationsService,
-    private seatingPlansService: SeatingPlansService
+    private seatingPlansService: SeatingPlansService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +102,7 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
       next: () => {
         console.log("SAVED");
+        this.router.navigate(["/", "locations", this.location.locationId])
       },
       error: (error) => {
         console.log(error);
