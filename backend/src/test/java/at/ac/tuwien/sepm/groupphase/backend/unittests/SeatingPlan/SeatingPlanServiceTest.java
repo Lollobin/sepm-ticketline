@@ -72,7 +72,7 @@ public class SeatingPlanServiceTest {
         AtomicLong counter = new AtomicLong();
         String pathName = "anyPAth";
         Long seatingPlanId = 1L;
-        SeatingPlanWithoutIdDto seatingPlanDto = generateSeatingPlanWithoutIdDto(5,5);
+        SeatingPlanWithoutIdDto seatingPlanDto = generateSeatingPlanWithoutIdDto(5,5, 1);
         SeatingPlan seatingPlan = new SeatingPlan();
         seatingPlan.setSeatingPlanId(seatingPlanId);
         seatingPlan.setName(seatingPlanDto.getName());
@@ -131,7 +131,7 @@ public class SeatingPlanServiceTest {
     }
 
     public static SeatingPlanWithoutIdDto generateSeatingPlanWithoutIdDto(long numberOfSectors,
-        long numberOfSeatsPerSector) {
+        long numberOfSeatsPerSector, long locationId) {
         List<SeatingPlanSectorDto> seatingPlanSectors = new ArrayList<>();
         List<SeatingPlanSeatDto> seatingPlanSeats = new ArrayList<>();
         for (long count = 0; count < numberOfSectors; count++) {
@@ -154,7 +154,7 @@ public class SeatingPlanServiceTest {
 
         SeatingPlanWithoutIdDto seatingPlanWithoutIdDto = new SeatingPlanWithoutIdDto();
         seatingPlanWithoutIdDto.setSeatingPlanLayout(seatingPlanLayoutDto);
-        seatingPlanWithoutIdDto.setLocationId(1L);
+        seatingPlanWithoutIdDto.setLocationId(locationId);
         seatingPlanWithoutIdDto.setName("Test");
         seatingPlanWithoutIdDto.setSectors(seatingPlanSectors.stream().map(sector -> {
             ProvisionalSectorDto sectorDto = new ProvisionalSectorDto();

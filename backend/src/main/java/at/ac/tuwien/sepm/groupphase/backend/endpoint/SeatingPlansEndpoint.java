@@ -45,6 +45,7 @@ public class SeatingPlansEndpoint implements SeatingPlansApi {
 
     }
 
+    @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<Void> seatingPlansPost(SeatingPlanWithoutIdDto seatingPlanWithoutIdDto) {
         LOGGER.info("POST /seatingPlans with body  {}", seatingPlanWithoutIdDto);

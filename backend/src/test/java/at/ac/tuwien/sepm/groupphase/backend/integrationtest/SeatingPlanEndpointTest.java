@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,13 +63,15 @@ public class SeatingPlanEndpointTest {
     @Autowired
     private SecurityProperties securityProperties;
 
+    Location location;
     @BeforeEach
     public void beforeEach() {
-        seatingPlanLayoutRepository.deleteAll();
-        seatingPlanRepository.deleteAll();
-        sectorRepository.deleteAll();
         seatRepository.deleteAll();
-        Location location = new Location();
+        sectorRepository.deleteAll();
+        seatingPlanRepository.deleteAll();
+        seatingPlanLayoutRepository.deleteAll();
+        locationRepository.deleteAll();
+        location = new Location();
         location.setId(1L);
         location.setName("Tew");
         Address address = new Address();
@@ -78,28 +81,46 @@ public class SeatingPlanEndpointTest {
         address.setCountry("");
         address.setHouseNumber("");
         location.setAddress(address);
-        locationRepository.save(location);
+        location = locationRepository.save(location);
     }
 
     @Test
     void postSeatingPlan_shouldCreateSeatingPlan() throws Exception {
         SeatingPlanWithoutIdDto seatingPlanWithoutIdDto = SeatingPlanServiceTest.generateSeatingPlanWithoutIdDto(
-            5, 5);
+            5, 5, location.getId());
+        String json = objectMapper.writeValueAsString(seatingPlanWithoutIdDto);
+
+        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
+                .post("/seatingPlans")
+                .header(
+                    securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
+            .andExpect(header().exists("location"));
+
+        assertThat(seatRepository.findAll().size()).isEqualTo(25);
+        assertThat(sectorRepository.findAll().size()).isEqualTo(5);
+        assertThat(seatingPlanRepository.findAll().size()).isEqualTo(1);
+        assertThat(seatingPlanLayoutRepository.findAll().size()).isEqualTo(1);
+
+    }
+
+    @Test
+    void postSeatingPlan_shouldThrowNotAuthorizedAsUser() throws Exception {
+        SeatingPlanWithoutIdDto seatingPlanWithoutIdDto = SeatingPlanServiceTest.generateSeatingPlanWithoutIdDto(
+            5, 5,1);
         String json = objectMapper.writeValueAsString(seatingPlanWithoutIdDto);
 
         ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
             .post("/seatingPlans")
             .header(
                 securityProperties.getAuthHeader(),
-                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                jwtTokenizer.getAuthToken(ADMIN_USER, USER_ROLES))
             .content(json)
             .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(header().string("location", "http://localhost/seatingPlans/1"));
-
-        assertThat(seatRepository.findAll().size()).isEqualTo(25);
-        assertThat(sectorRepository.findAll().size()).isEqualTo(5);
-        assertThat(seatingPlanRepository.findAll().size()).isEqualTo(1);
-        assertThat(seatingPlanLayoutRepository.findAll().size()).isEqualTo(1);
+            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
 
     }
 }

@@ -115,8 +115,6 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
         SeatingPlanLayout seatingPlanLayout) {
         SeatingPlan seatingPlan = seatingPlanMapper.seatingPlanWithoutIdDtoToSeatingPlan(
             seatingPlanWithoutIdDto);
-        LOGGER.debug("{}", seatingPlan);
-
         seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
         return seatingPlanRepository.save(seatingPlan);
     }
