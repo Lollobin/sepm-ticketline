@@ -1,15 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+import { Location, LocationsService } from "src/app/generated-sources/openapi";
 
 @Component({
-  selector: 'app-location-admin-overview',
-  templateUrl: './location-admin-overview.component.html',
-  styleUrls: ['./location-admin-overview.component.scss']
+  selector: "app-location-admin-overview",
+  templateUrl: "./location-admin-overview.component.html",
+  styleUrls: ["./location-admin-overview.component.scss"],
 })
 export class LocationAdminOverviewComponent implements OnInit {
-
-  constructor() { }
-
+  constructor(private locationsService: LocationsService) {}
+  locations: Location[];
+  page = 1;
+  pageSize = 10;
+  numberOfResults = 0;
   ngOnInit(): void {
+    this.searchLocations();
   }
-
+  searchLocations() {
+    this.locationsService.locationsGet(undefined, this.pageSize, this.page - 1).subscribe({
+      next: (locationSearchResult) => {
+        this.locations = locationSearchResult.locations;
+        this.numberOfResults = locationSearchResult.numberOfResults;
+      },
+      error: () => {
+        //TODO: ADD ERROR HANDLING
+      },
+    });
+  }
+  onPageChange(ngbpage: number) {
+    this.page = ngbpage;
+    this.searchLocations();
+  }
 }

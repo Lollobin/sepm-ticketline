@@ -1,1 +1,35 @@
-<p>location-admin-overview works!</p>
+<h1>Manage Locations</h1>
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Postal-code</th>
+        <th scope="col">City</th>
+        <th scope="col">Street</th>
+        <th scope="col">House number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let location of locations">
+        <td>{{ location.name }}</td>
+        <td>{{ location.address.zipCode }}</td>
+        <td>{{ location.address.city }}</td>
+        <td>{{ location.address.street }}</td>
+        <td>{{ location.address.houseNumber }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ngb-pagination [collectionSize]="this.numberOfResults" [(page)]="page" [maxSize]="5"
+  [boundaryLinks]="true"
+  [pageSize]="pageSize" class="d-flex justify-content-center"
+  (pageChange)="onPageChange(page)"></ngb-pagination>
+
+</div>
+<button
+  class="btn btn-primary"
+  style="width: 100%"
+  routerLink="/locations/create"
+>
+  Add location
+</button>
