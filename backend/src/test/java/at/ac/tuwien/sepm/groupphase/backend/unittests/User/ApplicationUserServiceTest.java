@@ -258,7 +258,6 @@ class ApplicationUserServiceTest implements TestData {
     @Test
     void attemptPasswordUpdate_whenPasswordInvalidThrowValidationExceptionAndDoNothing(){
         PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("pass").token("valid");
-        when(userRepository.findByResetPasswordToken("valid")).thenReturn(fakePersistedUser);
         doThrow(ValidationException.class).when(userValidator).validatePassword("pass");
         assertThrows(ValidationException.class, () -> userService.attemptPasswordUpdate(updateDto));
         verify(userRepository,times(0)).save(any());
