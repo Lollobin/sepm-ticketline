@@ -1,20 +1,27 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -23,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class CustomUserDetailService implements UserService {
@@ -32,15 +40,25 @@ public class CustomUserDetailService implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
+    private final EmailService emailService;
+    private final ResetTokenService resetTokenService;
+    private final MailBuilderService mailBuilderService;
 
     private final UserValidator userValidator;
 
     @Autowired
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper, UserValidator userValidator) {
+        UserEncodePasswordMapper encodePasswordMapper,
+        EmailService emailService,
+        ResetTokenService resetTokenService,
+        MailBuilderService mailBuilderService,
+        UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
+        this.emailService = emailService;
+        this.resetTokenService = resetTokenService;
+        this.mailBuilderService = mailBuilderService;
         this.userValidator = userValidator;
 
     }
@@ -94,6 +112,7 @@ public class CustomUserDetailService implements UserService {
             String.format("Could not find the user with the email address %s", email));
     }
 
+
     @Override
     public void save(UserWithPasswordDto user) {
         ApplicationUser applicationUser = userRepository.findUserByEmail(user.getEmail());
@@ -132,4 +151,58 @@ public class CustomUserDetailService implements UserService {
     public void resetNumberOfFailedLoginAttempts(ApplicationUser user) {
         userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
     }
+
+    @Override
+    public void requestPasswordReset(PasswordResetDto passwordResetDto) {
+        LOGGER.debug("Try to find user with mail and generate resettoken and send mail {}",
+            passwordResetDto);
+        ApplicationUser user = userRepository.findUserByEmail(passwordResetDto.getEmail());
+        if (user != null) {
+            String token = resetTokenService.generateToken();
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+            URI resetUri = buildResetUri(passwordResetDto.getClientURI(), token);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(
+                passwordResetDto.getEmail(), resetUri);
+            emailService.sendEmail(message);
+        }
+
+    }
+
+
+    @Override
+    public void attemptPasswordUpdate(
+        PasswordUpdateDto passwordUpdateDto) {
+        LOGGER.debug("Attempting to update password of user with token {}",
+            passwordUpdateDto.getToken());
+        userValidator.validatePassword(passwordUpdateDto.getNewPassword());
+        ApplicationUser user = getByResetPasswordToken(passwordUpdateDto.getToken());
+        if (user != null) {
+            LOGGER.debug("User with token {} was found, saving new password...",
+                passwordUpdateDto.getToken());
+            updatePassword(user, passwordUpdateDto.getNewPassword());
+        } else {
+            throw new ValidationException(
+                "The password reset token is not valid. Please request a new one.");
+        }
+    }
+
+
+    private ApplicationUser getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    private void updatePassword(ApplicationUser user, String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setResetPasswordToken(null);
+        user.setMustResetPassword(false);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
+    private URI buildResetUri(String clientUri, String token) {
+        return UriComponentsBuilder.fromHttpUrl(clientUri)
+            .query("token={token}").buildAndExpand(token).toUri();
+    }
+
 }
