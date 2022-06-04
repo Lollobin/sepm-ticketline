@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
+
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Event {
@@ -29,6 +31,9 @@ public class Event {
 
     @Column(columnDefinition = "CLOB")
     private String content;
+
+    @Transient
+    private long ticketsSold;
 
     @Override
     public boolean equals(Object o) {
@@ -110,4 +115,11 @@ public class Event {
         this.content = content;
     }
 
+    public long getTicketsSold() {
+        return ticketsSold;
+    }
+
+    public void setTicketsSold(long ticketsSold) {
+        this.ticketsSold = ticketsSold;
+    }
 }

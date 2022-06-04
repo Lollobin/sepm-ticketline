@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface EventService {
 
     /**
@@ -39,5 +41,7 @@ public interface EventService {
      * @return the event entry
      */
     Event findOne(Long id);
+
+    List<Event> getTopEvents();
 
 }

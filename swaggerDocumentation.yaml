@@ -598,28 +598,26 @@ paths:
           description: The show with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /topShows:
+  /topEvents:
     get:
       tags:
-        - shows
-      summary: Searches for shows that have the highest amount of tickets sold per category for a given month
-      description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
-      security:
-        - BearerAuth: []
+        - events
+      summary: Searches for events that have the highest amount of tickets sold per category for a given month
+      description: Searches for data depending on the query parameters. When no query parameters are given, an error is returned.
       parameters:
         - name: search
           in: query
           schema:
-            $ref: "#/components/schemas/TopShowSearch"
+            $ref: "#/components/schemas/TopEventSearch"
       responses:
         200:
-          description: Successful retreival of locations
+          description: Successful retreival of events
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ShowWithTicketsSold"
+                  $ref: "#/components/schemas/EventWithTicketsSold"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         500:
@@ -1346,28 +1344,25 @@ components:
         - artists
         - seatingPlan
         - sectorPrices
-    ShowWithTicketsSold:
+    EventWithTicketsSold:
       type: object
       properties:
-        showId:
+        eventId:
           type: integer
-        date:
+          format: int-64
+        name:
           type: string
-          format: date-time
-        event:
+        duration:
           type: integer
+        category:
+          $ref: "#/components/schemas/Category"
         ticketsSold:
           type: integer
-        artists:
-          type: array
-          items:
-            type: number
       required:
         - showId
         - date
         - event
         - ticketsSold
-        - artists
     Article:
       type: object
       properties:
@@ -1628,7 +1623,7 @@ components:
         artist:
           type: integer
 
-    TopShowSearch:
+    TopEventSearch:
       type: object
       properties:
         category:
@@ -1903,5 +1898,4 @@ components:
           type: integer
         pagesTotal:
           type: integer
-
 

@@ -8,8 +8,11 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
+
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Optional;
+
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,7 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator,
-        EventMapper eventMapper) {
+                            EventMapper eventMapper) {
         this.eventRepository = eventRepository;
         this.eventValidator = eventValidator;
         this.eventMapper = eventMapper;
@@ -93,5 +96,9 @@ public class EventServiceImpl implements EventService {
         eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
 
         return eventSearchResultDto;
+    }
+
+    public List<Event> getTopEvents() {
+        return eventRepository.getTopEvents();
     }
 }

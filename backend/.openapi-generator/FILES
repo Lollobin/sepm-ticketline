@@ -9,6 +9,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/CategoryDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResultDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventWithTicketsSoldDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/FullTicketWithStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/GenderDto.java
@@ -30,13 +31,12 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowInformationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowSearchResultDto.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithTicketsSoldDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ShowWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SortDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TicketWithShowInfoDto.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TopShowSearchDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TopEventSearchDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/TransactionDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/UserWithPasswordDto.java
@@ -62,5 +62,5 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketCan
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketInfoApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketPrintsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketsApi.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TopShowsApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TopEventsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/UsersApi.java
