@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class PasswordUpdateEndpointTest implements TestData {
-
+    static final String RESET_TEST_EMAIL ="reset_test@email.com";
     static final String PASSWORD_UPDATE_URI = "/passwordUpdate";
     static final String NEW_PASSWORD = "newpassword";
     static final String PSEUDO_TOKEN = "resettoken";
@@ -59,7 +59,7 @@ class PasswordUpdateEndpointTest implements TestData {
         user.setFirstName(USER_FNAME);
         user.setLastName(USER_LNAME);
         user.setGender(USER_GENDER);
-        user.setEmail(USER_EMAIL);
+        user.setEmail(RESET_TEST_EMAIL);
         user.setAddress(ADDRESS_ENTITY);
         user.setPassword(USER_PASSWORD);
         user.setResetPasswordToken(PSEUDO_TOKEN);
@@ -79,7 +79,7 @@ class PasswordUpdateEndpointTest implements TestData {
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse result = mvcResult1.getResponse();
-        ApplicationUser userAfterUpdate = userRepository.findUserByEmail(USER_EMAIL);
+        ApplicationUser userAfterUpdate = userRepository.findUserByEmail(RESET_TEST_EMAIL);
         assertAll(
             () -> assertEquals(HttpStatus.NO_CONTENT.value(), result.getStatus()),
             () -> assertNotEquals(USER_PASSWORD, userAfterUpdate.getPassword()),
@@ -102,7 +102,7 @@ class PasswordUpdateEndpointTest implements TestData {
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse result = mvcResult1.getResponse();
-        ApplicationUser userAfter = userRepository.findUserByEmail(USER_EMAIL);
+        ApplicationUser userAfter = userRepository.findUserByEmail(RESET_TEST_EMAIL);
         assertAll(
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), result.getStatus()),
             () -> assertEquals(USER_PASSWORD, userAfter.getPassword()),
@@ -124,7 +124,7 @@ class PasswordUpdateEndpointTest implements TestData {
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse result = mvcResult1.getResponse();
-        ApplicationUser userAfter = userRepository.findUserByEmail(USER_EMAIL);
+        ApplicationUser userAfter = userRepository.findUserByEmail(RESET_TEST_EMAIL);
         assertAll(
             () -> assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), result.getStatus()),
             () -> assertEquals(user.getEmail(), userAfter.getEmail()),

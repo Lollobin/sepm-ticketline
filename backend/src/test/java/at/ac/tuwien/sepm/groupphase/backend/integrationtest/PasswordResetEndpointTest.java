@@ -12,7 +12,6 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class PasswordResetEndpointTest implements TestData {
-
+    static final String RESET_TEST_EMAIL ="reset_test@email.com";
     static final String PASSWORD_RESET_URI="/passwordReset";
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +55,7 @@ class PasswordResetEndpointTest implements TestData {
         user.setFirstName(USER_FNAME);
         user.setLastName(USER_LNAME);
         user.setGender(USER_GENDER);
-        user.setEmail(USER_EMAIL);
+        user.setEmail(RESET_TEST_EMAIL);
         user.setAddress(ADDRESS_ENTITY);
         user.setPassword(USER_PASSWORD);
         userRepository.save(user);
@@ -66,7 +65,7 @@ class PasswordResetEndpointTest implements TestData {
     void passwordResetPost_responseShouldBeIdenticalForExistingOrNonexistingMail()
         throws Exception {
         //this mail exists
-        passwordResetDto.email(USER_EMAIL);
+        passwordResetDto.email(RESET_TEST_EMAIL);
         String body = objectMapper.writeValueAsString(passwordResetDto);
 
         MvcResult mvcResult1 =
@@ -89,7 +88,7 @@ class PasswordResetEndpointTest implements TestData {
 
     @Test
     void passwordResetPost_ifAccountExistsTokenIsSet() throws Exception {
-        passwordResetDto.email(USER_EMAIL);
+        passwordResetDto.email(RESET_TEST_EMAIL);
         String body = objectMapper.writeValueAsString(passwordResetDto);
 
         MvcResult mvcResult =
@@ -101,7 +100,7 @@ class PasswordResetEndpointTest implements TestData {
 
         assertAll(
             () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-            () -> assertNotNull(userRepository.findUserByEmail(USER_EMAIL).getResetPasswordToken())
+            () -> assertNotNull(userRepository.findUserByEmail(RESET_TEST_EMAIL).getResetPasswordToken())
             );
     }
 }

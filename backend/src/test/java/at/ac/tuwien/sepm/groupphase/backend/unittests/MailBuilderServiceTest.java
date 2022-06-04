@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.MailBuilderServiceImpl;
@@ -21,10 +20,10 @@ class MailBuilderServiceTest {
     private static final String MAIL_FROM = "ticketline.2000@gmail.com";
 
 
-
     MailBuilderService mailBuilderService;
-    String exampleMail="test@email.com";
+    String exampleMail = "test@email.com";
     URI exampleUri = URI.create("http://localhost:4200/test");
+
     @BeforeEach
     void setUp() {
         mailBuilderService = new MailBuilderServiceImpl();
@@ -32,14 +31,14 @@ class MailBuilderServiceTest {
     }
 
     @Test
-    void buildPasswordResetMail_givenInputBuildSimpleMailMessage(){
-        SimpleMailMessage msg = mailBuilderService.buildPasswordResetMail(exampleMail,exampleUri);
+    void buildPasswordResetMail_givenInputBuildSimpleMailMessage() {
+        SimpleMailMessage msg = mailBuilderService.buildPasswordResetMail(exampleMail, exampleUri);
 
         assertAll(
             () -> assertEquals(MAIL_FROM, msg.getFrom()),
-            () -> assertEquals(exampleMail,msg.getTo()[0]),
+            () -> assertEquals(exampleMail, msg.getTo()[0]),
             () -> assertEquals(SUBJECT_RESET_PASSWORD_MAIL, msg.getSubject()),
-            () -> assertEquals(CONTENT_RESET_PASSWORD_MAIL+exampleUri.toString(), msg.getText())
+            () -> assertEquals(CONTENT_RESET_PASSWORD_MAIL + exampleUri.toString(), msg.getText())
         );
     }
 
