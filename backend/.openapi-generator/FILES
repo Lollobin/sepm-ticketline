@@ -19,6 +19,8 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchRe
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrderDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/OrdersPageDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/PasswordResetDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/PasswordUpdateDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ProvisionalSectorDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/SeatWithBookingStatusDto.java
@@ -53,6 +55,7 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/LockStatu
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/LoginApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/OrdersApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/PasswordResetApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/PasswordUpdateApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/ReadArticleStatusApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/SeatingPlanLayoutsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/SeatingPlansApi.java
