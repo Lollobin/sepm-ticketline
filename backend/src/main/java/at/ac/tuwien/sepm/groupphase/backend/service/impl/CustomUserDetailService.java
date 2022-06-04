@@ -175,7 +175,12 @@ public class CustomUserDetailService implements UserService {
         PasswordUpdateDto passwordUpdateDto) {
         LOGGER.debug("Attempting to update password of user with token {}",
             passwordUpdateDto.getToken());
-        userValidator.validatePassword(passwordUpdateDto.getNewPassword());
+        try {
+            userValidator.validatePassword(passwordUpdateDto.getNewPassword());
+        } catch (ValidationException e) {
+            throw new ValidationException(
+                "Token or password invalid. Try again or request new token.");
+        }
         ApplicationUser user = getByResetPasswordToken(passwordUpdateDto.getToken());
         if (user != null) {
             LOGGER.debug("User with token {} was found, saving new password...",
@@ -183,7 +188,7 @@ public class CustomUserDetailService implements UserService {
             updatePassword(user, passwordUpdateDto.getNewPassword());
         } else {
             throw new ValidationException(
-                "The password reset token is not valid. Please request a new one.");
+                "Token or password invalid. Try again or request new token.");
         }
     }
 
