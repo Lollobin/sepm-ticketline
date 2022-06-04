@@ -84,7 +84,7 @@ class PasswordResetEndpointTest implements TestData {
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse responseDoesntExist = mvcResult2.getResponse();
-        assertEquals(responseDoesntExist, responseMailexists);
+        assertEquals(responseDoesntExist.getStatus(), responseMailexists.getStatus());
     }
 
     @Test
