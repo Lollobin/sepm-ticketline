@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class PasswordResetEndpointTest implements TestData {
-    static final String RESET_TEST_EMAIL ="reset_test@email.com";
+    static final String RESET_TEST_EMAIL ="ticketline.2022@gmail.com";
     static final String PASSWORD_RESET_URI="/passwordReset";
     @Autowired
     private MockMvc mockMvc;

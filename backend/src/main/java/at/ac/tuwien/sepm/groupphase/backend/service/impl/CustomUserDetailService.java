@@ -206,8 +206,13 @@ public class CustomUserDetailService implements UserService {
     }
 
     private URI buildResetUri(String clientUri, String token) {
-        return UriComponentsBuilder.fromHttpUrl(clientUri)
-            .query("token={token}").buildAndExpand(token).toUri();
+        URI parsedClientUri = UriComponentsBuilder.fromHttpUrl(clientUri).build().toUri();
+        String fragment = parsedClientUri.getFragment();
+        //we are using a singlepage application, token is part of a fragment
+        return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
+            .build()
+            .toUri();
+
     }
 
 }
