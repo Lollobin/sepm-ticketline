@@ -231,13 +231,12 @@ class ApplicationUserServiceTest implements TestData {
     @Test
     void requestPasswordReset_whenMailValidBuildAndSendMail() {
         PasswordResetDto resetDto = new PasswordResetDto().email(USER_EMAIL)
-            .clientURI("http://localhost:4200");
+            .clientURI("http://localhost:4200/#/passwordUpdate");
         when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(USER_EMAIL);
         when(mailBuilderService.buildPasswordResetMail(any(), any())).thenReturn(msg);
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:4200").query("token={token}")
-            .buildAndExpand("123").toUri();
+        URI uri = UriComponentsBuilder.fromUri(URI.create(resetDto.getClientURI())).fragment("/passwordUpdate?token="+"123").build().toUri();
 
         when(resetTokenService.generateToken()).thenReturn("123");
         userService.requestPasswordReset(resetDto);

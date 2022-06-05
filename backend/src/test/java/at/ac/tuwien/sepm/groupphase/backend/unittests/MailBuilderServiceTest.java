@@ -17,7 +17,7 @@ class MailBuilderServiceTest {
 
     private static final String SUBJECT_RESET_PASSWORD_MAIL = "Ticketline 4.0: Reset Password";
     private static final String CONTENT_RESET_PASSWORD_MAIL = "A password reset was requested for your account on ticketline, please click this link to reset your password: ";
-    private static final String MAIL_FROM = "ticketline.2000@gmail.com";
+    private static final String MAIL_FROM = "ticketline.2022@gmail.com";
 
 
     MailBuilderService mailBuilderService;
