@@ -33,6 +33,8 @@ import { LocationSearchComponent } from './components/location-search/location-s
 import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
+import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { LocationSeatingPlansComponent } from './components/location-seating-pla
     LocationSearchComponent,
     ShowSearchResultComponent,
     CreateLocationComponent,
-    LocationSeatingPlansComponent
+    LocationSeatingPlansComponent,
+    PasswordResetComponent,
+    PasswordUpdateComponent
   ],
   imports: [
     BrowserModule,
