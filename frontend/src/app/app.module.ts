@@ -33,6 +33,8 @@ import { LocationSearchComponent } from './components/location-search/location-s
 import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { LocationSeatingPlansComponent } from './components/location-seating-pla
     LocationSearchComponent,
     ShowSearchResultComponent,
     CreateLocationComponent,
-    LocationSeatingPlansComponent
+    LocationSeatingPlansComponent,
+    UserManagementComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +77,7 @@ import { LocationSeatingPlansComponent } from './components/location-seating-pla
     FormsModule,
     FontAwesomeModule,
   ],
-  providers: [httpInterceptorProviders, AuthService],
+  providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
