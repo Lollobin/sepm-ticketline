@@ -29,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class TicketCancellationServiceTest {
+class TicketCancellationServiceTest {
 
     @Mock
     private CancellationValidator cancellationValidator;
@@ -67,17 +67,18 @@ public class TicketCancellationServiceTest {
 
     @Test
     void cancelTickets_shouldReturnSinglePurchasedId() {
-        TicketStatusDto ticketStatusDto = new TicketStatusDto();
-        long id = atomicLong.get();
-
-        List<Long> ticketIds = List.of(id);
-        ticketStatusDto.setPurchased(ticketIds);
-        List<Ticket> ticketList = List.of(generateTicketWithSeatAndSector(id));
-        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
-
         ApplicationUser user = new ApplicationUser();
         when(authenticationFacade.getEmail()).thenReturn("");
         when(userRepository.findUserByEmail(any())).thenReturn(user);
+
+        TicketStatusDto ticketStatusDto = new TicketStatusDto();
+        long id = atomicLong.get();
+        List<Long> ticketIds = List.of(id);
+        ticketStatusDto.setPurchased(ticketIds);
+        Ticket ticket = generateTicketWithSeatAndSector(id);
+        ticket.setPurchasedBy(user);
+        List<Ticket> ticketList = List.of(ticket);
+        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
 
         TicketStatusDto ticketDto = ticketCancellationService.cancelTickets(ticketStatusDto);
         assertThat(ticketDto.getPurchased()).containsAll(
@@ -87,19 +88,24 @@ public class TicketCancellationServiceTest {
 
     @Test
     void cancelTickets_shouldReturnMultipleReservedIds() {
+        ApplicationUser user = new ApplicationUser();
+        when(authenticationFacade.getEmail()).thenReturn("");
+        when(userRepository.findUserByEmail(any())).thenReturn(user);
+
         TicketStatusDto ticketStatusDto = new TicketStatusDto();
         long id1 = 1L;
         long id2 = 2L;
 
         List<Long> ticketIds = List.of(id1, id2);
         ticketStatusDto.setReserved(ticketIds);
-        List<Ticket> ticketList = List.of(generateTicketWithSeatAndSector(id1),
-            generateTicketWithSeatAndSector(id2));
-        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
+        Ticket ticket1 = generateTicketWithSeatAndSector(id1);
+        ticket1.setReservedBy(user);
+        Ticket ticket2 = generateTicketWithSeatAndSector(id2);
+        ticket2.setReservedBy(user);
 
-        ApplicationUser user = new ApplicationUser();
-        when(authenticationFacade.getEmail()).thenReturn("");
-        when(userRepository.findUserByEmail(any())).thenReturn(user);
+        List<Ticket> ticketList = List.of(ticket1,
+            ticket2);
+        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
 
         when(ticketRepository.saveAllAndFlush(ticketList)).thenReturn(ticketList);
 

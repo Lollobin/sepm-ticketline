@@ -446,7 +446,6 @@ class ShowEndpointTest {
         seatingPlanRepository.deleteAll();
         seatingPlanLayoutRepository.deleteAll();
         locationRepository.deleteAll();
-        addressRepository.deleteAll();
     }
 
     private void saveThreeShowsAndEvents() {
