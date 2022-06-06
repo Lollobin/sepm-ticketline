@@ -55,11 +55,8 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
                 : ticketsToCancel.getReserved());
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationUtil.getEmail());
-        List<Ticket> unavailableTickets = getUnavailableTickets(ticketList, user, bookingType);
 
-        if (!unavailableTickets.isEmpty()) {
-            throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
-        }
+        checkIfUserOwnsTickets(ticketList, user, bookingType);
 
         for (Ticket ticket : ticketList) {
             ticket.setReservedBy(null);
@@ -72,10 +69,11 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
         return ticketsToCancel;
     }
 
-    private List<Ticket> getUnavailableTickets(List<Ticket> ticketList, ApplicationUser user,
+    private void checkIfUserOwnsTickets(List<Ticket> tickets, ApplicationUser user,
         BookingType bookingType) {
+
         List<Ticket> unavailableTickets = new ArrayList<>();
-        for (Ticket ticket : ticketList) {
+        for (Ticket ticket : tickets) {
             if (bookingType == BookingType.CANCELLATION) {
                 if (ticket.getPurchasedBy().getUserId() != user.getUserId()) {
                     unavailableTickets.add(ticket);
@@ -87,6 +85,9 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
                 }
             }
         }
-        return unavailableTickets;
+
+        if (!unavailableTickets.isEmpty()) {
+            throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
+        }
     }
 }
