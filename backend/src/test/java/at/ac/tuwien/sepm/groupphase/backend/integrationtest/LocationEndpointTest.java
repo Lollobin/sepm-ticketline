@@ -66,9 +66,6 @@ class LocationEndpointTest {
     private LocationRepository locationRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
@@ -77,7 +74,6 @@ class LocationEndpointTest {
     @BeforeEach
     public void beforeEach() {
         locationRepository.deleteAll();
-        addressRepository.deleteAll();
     }
 
     @Test
