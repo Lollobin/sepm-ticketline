@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ProvisionalSectorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanLayoutDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class SeatingPlanWithoutIdDto   {
   @JsonProperty("name")
   private String name;
 
-  @JsonProperty("seatingPlanLayoutId")
-  private Long seatingPlanLayoutId;
+  @JsonProperty("seatingPlanLayout")
+  private SeatingPlanLayoutDto seatingPlanLayout;
 
   @JsonProperty("locationId")
   private Long locationId;
@@ -60,23 +61,23 @@ public class SeatingPlanWithoutIdDto   {
     this.name = name;
   }
 
-  public SeatingPlanWithoutIdDto seatingPlanLayoutId(Long seatingPlanLayoutId) {
-    this.seatingPlanLayoutId = seatingPlanLayoutId;
+  public SeatingPlanWithoutIdDto seatingPlanLayout(SeatingPlanLayoutDto seatingPlanLayout) {
+    this.seatingPlanLayout = seatingPlanLayout;
     return this;
   }
 
   /**
-   * Get seatingPlanLayoutId
-   * @return seatingPlanLayoutId
+   * Get seatingPlanLayout
+   * @return seatingPlanLayout
   */
-  @NotNull 
-  @Schema(name = "seatingPlanLayoutId", required = true)
-  public Long getSeatingPlanLayoutId() {
-    return seatingPlanLayoutId;
+  @NotNull @Valid 
+  @Schema(name = "seatingPlanLayout", required = true)
+  public SeatingPlanLayoutDto getSeatingPlanLayout() {
+    return seatingPlanLayout;
   }
 
-  public void setSeatingPlanLayoutId(Long seatingPlanLayoutId) {
-    this.seatingPlanLayoutId = seatingPlanLayoutId;
+  public void setSeatingPlanLayout(SeatingPlanLayoutDto seatingPlanLayout) {
+    this.seatingPlanLayout = seatingPlanLayout;
   }
 
   public SeatingPlanWithoutIdDto locationId(Long locationId) {
@@ -162,7 +163,7 @@ public class SeatingPlanWithoutIdDto   {
     }
     SeatingPlanWithoutIdDto seatingPlanWithoutId = (SeatingPlanWithoutIdDto) o;
     return Objects.equals(this.name, seatingPlanWithoutId.name) &&
-        Objects.equals(this.seatingPlanLayoutId, seatingPlanWithoutId.seatingPlanLayoutId) &&
+        Objects.equals(this.seatingPlanLayout, seatingPlanWithoutId.seatingPlanLayout) &&
         Objects.equals(this.locationId, seatingPlanWithoutId.locationId) &&
         Objects.equals(this.sectors, seatingPlanWithoutId.sectors) &&
         Objects.equals(this.seats, seatingPlanWithoutId.seats);
@@ -170,7 +171,7 @@ public class SeatingPlanWithoutIdDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, seatingPlanLayoutId, locationId, sectors, seats);
+    return Objects.hash(name, seatingPlanLayout, locationId, sectors, seats);
   }
 
   @Override
@@ -178,7 +179,7 @@ public class SeatingPlanWithoutIdDto   {
     StringBuilder sb = new StringBuilder();
     sb.append("class SeatingPlanWithoutIdDto {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    seatingPlanLayoutId: ").append(toIndentedString(seatingPlanLayoutId)).append("\n");
+    sb.append("    seatingPlanLayout: ").append(toIndentedString(seatingPlanLayout)).append("\n");
     sb.append("    locationId: ").append(toIndentedString(locationId)).append("\n");
     sb.append("    sectors: ").append(toIndentedString(sectors)).append("\n");
     sb.append("    seats: ").append(toIndentedString(seats)).append("\n");

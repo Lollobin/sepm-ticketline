@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,4 +14,6 @@ public interface LocationMapper {
 
     @Mapping(target = "id", source = "locationId")
     Location locationDtoToLocation(LocationDto locationDto);
+
+    Location locationDtoToLocation(LocationWithoutIdDto locationDto);
 }

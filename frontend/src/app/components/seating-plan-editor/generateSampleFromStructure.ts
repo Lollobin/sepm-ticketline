@@ -4,11 +4,11 @@
  */
 
 import { uniqueId } from "lodash";
-import { ShowInformation } from "src/app/generated-sources/openapi";
-import { SeatingPlan, SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
+import { SeatingPlanLayout, ShowInformation } from "src/app/generated-sources/openapi";
+import { SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
 
-const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlan => {
-  const seatingPlan: SeatingPlan = {
+const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlanLayout => {
+  const seatingPlan: SeatingPlanLayout = {
     general: {
       width: 2000,
       height: 1000,
@@ -21,7 +21,7 @@ const generateFromSectorBuilder = (sectors: SectorBuilder[]): SeatingPlan => {
 };
 
 const parseColor = (color: string): number => Number.parseInt(color.substring(1), 16);
-const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["sectors"] =>
+const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlanLayout["sectors"] =>
   sectors.map((sector, index) =>
     sector.standingSector
       ? {
@@ -37,8 +37,8 @@ const createSectorsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["sector
         }
   );
 
-const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["seats"] => {
-  const seats: SeatingPlan["seats"] = [];
+const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlanLayout["seats"] => {
+  const seats: SeatingPlanLayout["seats"] = [];
   sectors.forEach((sector, index) => {
     let seatCount = 0;
     while (seatCount < sector.seatCount) {
@@ -67,8 +67,8 @@ const createSeatsFromBuilder = (sectors: SectorBuilder[]): SeatingPlan["seats"] 
   return seats;
 };
 
-const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlan => {
-  const seatingPlan: SeatingPlan = {
+const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlanLayout => {
+  const seatingPlan: SeatingPlanLayout = {
     general: {
       width: 1000,
       height: 1000,
@@ -80,7 +80,7 @@ const generateFromShowInfo = (showInformation: ShowInformation): SeatingPlan => 
   return seatingPlan;
 };
 
-const createSeats = (showInformation: ShowInformation): SeatingPlan["seats"] =>
+const createSeats = (showInformation: ShowInformation): SeatingPlanLayout["seats"] =>
   showInformation.seats.map((seat) => ({
     id: seat.seatId,
     sectorId: seat.sector,
@@ -90,7 +90,7 @@ const createSeats = (showInformation: ShowInformation): SeatingPlan["seats"] =>
         : undefined,
   }));
 
-const createSectors = (showInformation: ShowInformation): SeatingPlan["sectors"] => {
+const createSectors = (showInformation: ShowInformation): SeatingPlanLayout["sectors"] => {
   const standingSectors: { [sectorId: number]: true } = {};
   showInformation.seats.forEach((seat) => {
     if (seat.rowNumber === undefined || seat.seatNumber === undefined) {
