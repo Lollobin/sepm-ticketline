@@ -3,24 +3,32 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests.User;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.CustomUserDetailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
+import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,10 +36,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @ExtendWith(MockitoExtension.class)
 class ApplicationUserServiceTest implements TestData {
@@ -44,6 +54,16 @@ class ApplicationUserServiceTest implements TestData {
     private UserEncodePasswordMapper userEncodePasswordMapper;
     @Mock
     private UserValidator userValidator;
+
+    @Mock
+    private MailBuilderService mailBuilderService;
+
+    @Mock
+    private ResetTokenService resetTokenService;
+
+    @Mock
+    private EmailService emailService;
+
     private UserService userService;
     private final ApplicationUser fakePersistedUser = new ApplicationUser();
     private final UserWithPasswordDto userToSave = new UserWithPasswordDto();
@@ -51,7 +71,8 @@ class ApplicationUserServiceTest implements TestData {
     @BeforeEach
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
-            userEncodePasswordMapper, userValidator);
+            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
+            userValidator);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
@@ -183,4 +204,104 @@ class ApplicationUserServiceTest implements TestData {
             () -> assertEquals(1, user.getAuthorities().size()),
             () -> assertEquals(fakePersistedUser.getPassword(), user.getPassword()));
     }
+
+    @Test
+    void requestPasswordReset_whenMailInvalidDoNothing() {
+        PasswordResetDto resetDto = new PasswordResetDto().email("someinvalidmail");
+        when(userRepository.findUserByEmail("someinvalidmail")).thenReturn(null);
+        userService.requestPasswordReset(resetDto);
+        verify(userRepository, times(0)).save(any());
+        verify(resetTokenService, times(0)).generateToken();
+        verify(mailBuilderService, times(0)).buildPasswordResetMail(any(), any());
+        verify(emailService, times(0)).sendEmail(any());
+    }
+
+    @Test
+    void requestPasswordReset_whenMailValidGenerateAndSaveToken() {
+        PasswordResetDto resetDto = new PasswordResetDto().email(USER_EMAIL)
+            .clientURI("http://localhost:4200");
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
+        when(resetTokenService.generateToken()).thenReturn("123");
+        userService.requestPasswordReset(resetDto);
+        verify(resetTokenService, times(1)).generateToken();
+        verify(userRepository, times(1)).save(fakePersistedUser);
+        assertEquals("123", fakePersistedUser.getResetPasswordToken());
+    }
+
+    @Test
+    void requestPasswordReset_whenMailValidBuildAndSendMail() {
+        PasswordResetDto resetDto = new PasswordResetDto().email(USER_EMAIL)
+            .clientURI("http://localhost:4200/#/passwordUpdate");
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(USER_EMAIL);
+        when(mailBuilderService.buildPasswordResetMail(any(), any())).thenReturn(msg);
+        URI uri = UriComponentsBuilder.fromUri(URI.create(resetDto.getClientURI())).fragment("/passwordUpdate?token="+"123").build().toUri();
+
+        when(resetTokenService.generateToken()).thenReturn("123");
+        userService.requestPasswordReset(resetDto);
+        verify(mailBuilderService, times(1)).buildPasswordResetMail(USER_EMAIL, uri);
+        verify(emailService, times(1)).sendEmail(msg);
+    }
+
+
+    @Test
+    void attemptPasswordUpdate_whenTokenInvalidThrowValidationExceptionAndDoNothing(){
+        PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("password").token("invalid");
+        when(userRepository.findByResetPasswordToken("invalid")).thenReturn(null);
+        assertThrows(ValidationException.class, () -> userService.attemptPasswordUpdate(updateDto));
+        verify(userRepository,times(0)).save(any());
+    }
+
+
+    @Test
+    void attemptPasswordUpdate_whenPasswordInvalidThrowValidationExceptionAndDoNothing(){
+        PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("pass").token("valid");
+        doThrow(ValidationException.class).when(userValidator).validatePassword("pass");
+        assertThrows(ValidationException.class, () -> userService.attemptPasswordUpdate(updateDto));
+        verify(userRepository,times(0)).save(any());
+    }
+
+    @Test
+    void attemptPasswordUpdate_whenDtoIsValidThenSaveNewPassword(){
+        PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("newpassword").token("valid");
+        when(userRepository.findByResetPasswordToken("valid")).thenReturn(fakePersistedUser);
+        when(passwordEncoder.encode("newpassword")).thenReturn("newpassword");
+
+        userService.attemptPasswordUpdate(updateDto);
+
+        verify(userRepository,times(1)).save(fakePersistedUser);
+        assertEquals("newpassword", fakePersistedUser.getPassword());
+
+    }
+
+    @Test
+    void attemptPasswordUpdate_whenDtoIsValidThenResetTokenField(){
+        PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("newpassword").token("valid");
+        when(userRepository.findByResetPasswordToken("valid")).thenReturn(fakePersistedUser);
+        when(passwordEncoder.encode("newpassword")).thenReturn("newpassword");
+
+        userService.attemptPasswordUpdate(updateDto);
+
+        verify(userRepository,times(1)).save(fakePersistedUser);
+
+        assertNull(fakePersistedUser.getResetPasswordToken());
+    }
+
+    @Test
+    void attemptPasswordUpdate_whenDtoIsValidThenSetMustResetPasswordFalse(){
+        PasswordUpdateDto updateDto = new PasswordUpdateDto().newPassword("newpassword").token("valid");
+        when(userRepository.findByResetPasswordToken("valid")).thenReturn(fakePersistedUser);
+        when(passwordEncoder.encode("newpassword")).thenReturn("newpassword");
+
+        userService.attemptPasswordUpdate(updateDto);
+
+        verify(userRepository,times(1)).save(fakePersistedUser);
+
+        assertFalse(fakePersistedUser.isMustResetPassword());
+    }
+
+
+
+
 }

@@ -47,6 +47,52 @@ paths:
           $ref: "#/components/responses/403-forbidden"
         500:
           $ref: "#/components/responses/500-internal-error"
+  /passwordReset:
+    post:
+      tags:
+        - userManagement
+      summary: Resets a password for a user with the email in the body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordReset"
+        
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+
+  /passwordUpdate:
+    post:
+      tags:
+        - userManagement
+      summary: Updates account with unique token, sets the password 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordUpdate"
+      responses:
+        204:
+          description: Successful update of password
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts:
     post:
       tags:
@@ -1903,5 +1949,24 @@ components:
           type: integer
         pagesTotal:
           type: integer
-
+    PasswordReset:
+      type: object
+      properties:
+        email:
+          type: string
+        clientURI:
+          type: string          
+      required:
+        - email
+        - clientURI
+    PasswordUpdate:
+      type: object
+      properties:
+        newPassword:
+          type: string
+        token:
+          type: string
+      required:
+        - newPassword
+        - token
 
