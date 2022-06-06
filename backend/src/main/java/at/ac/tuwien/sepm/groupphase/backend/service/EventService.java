@@ -4,10 +4,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
-import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTickets;
-import org.springframework.data.domain.Pageable;
-
+import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface EventService {
 
@@ -44,6 +43,13 @@ public interface EventService {
      */
     Event findOne(Long id);
 
-    List<EventWithTickets> getTopEvents(TopEventSearchDto topEventSearchDto);
+    /**
+     * Returns the top 10 events of the given category by number of tickets sold for shows in the
+     * month of the given date.
+     *
+     * @param topEventSearchDto search criteria
+     * @return events with number of tickets sold
+     */
+    List<EventWithTicketsSold> getTopEvents(TopEventSearchDto topEventSearchDto);
 
 }

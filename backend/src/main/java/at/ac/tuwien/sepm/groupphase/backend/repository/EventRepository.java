@@ -1,8 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
-import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTickets;
 import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,15 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     /**
-     * Searched the table Event if there is an event that has the following parameters as fields or relations.
-     * All parameters are case insensitive.
+     * Searched the table Event if there is an event that has the following parameters as fields or
+     * relations. All parameters are case insensitive.
      *
      * @param name     of the searched event
      * @param content  of the searched event
@@ -46,16 +44,32 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         and ((:content is null) or upper(event1.content) like upper(concat('%', :content, '%')))
         and ((:category is null) or upper(event1.category) like upper(:category))
         """)
-    Page<Event> search(@Param(value = "name") String name, @Param(value = "content") String content, @Param(value = "duration") Integer duration,
-                       @Param(value = "category") String category, @Param(value = "location") Long location, @Param(value = "artist") Long artist,
-                       Pageable pageable);
+    Page<Event> search(@Param(value = "name") String name, @Param(value = "content") String content,
+        @Param(value = "duration") Integer duration,
+        @Param(value = "category") String category, @Param(value = "location") Long location,
+        @Param(value = "artist") Long artist,
+        Pageable pageable);
 
-    @Query(value = "SELECT e.event_id AS eventId, e.name AS name, e.category AS category, e.content AS content, e.duration AS duration, COUNT(*) AS ticketsSold "
-        + "FROM event e NATURAL JOIN show s NATURAL JOIN ticket t "
-        + "WHERE e.category IS :category AND s.date >= :fromDate AND s.date <= :toDate "
-        + "GROUP BY e.event_id ORDER BY ticketsSold DESC LIMIT 10",
+
+    /**
+     * Returns the top 10 events of a given category by the number of tickets sold for shows in the
+     * specified time.
+     *
+     * @param category category of the searched events
+     * @param fromDate start of time period to look for
+     * @param toDate   end of time period to look for
+     * @return top events with ticket sold count
+     */
+    @Query(value =
+        "SELECT e.event_id AS eventId, e.name AS name, e.category AS category, e.content AS content, e.duration AS duration, COUNT(*) AS ticketsSold "
+            + "FROM event e NATURAL JOIN show s NATURAL JOIN ticket t "
+            + "WHERE ((:category IS NULL) OR upper(e.category) = upper(:category)) "
+            + "AND ((:fromDate IS NULL) OR s.date >= :fromDate) "
+            + "AND ((:toDate IS NULL) OR s.date <= :toDate) "
+            + "GROUP BY e.event_id, e.name, e.category, e.content, e.duration "
+            + "ORDER BY ticketsSold DESC LIMIT 10",
         nativeQuery = true)
-    List<EventWithTickets> getTopEvents(@Param(value = "category") String category, @Param(value = "fromDate") OffsetDateTime fromDate, @Param(value = "toDate") OffsetDateTime toDate);
-
-
+    List<EventWithTicketsSold> getTopEvents(@Param(value = "category") String category,
+        @Param(value = "fromDate") OffsetDateTime fromDate,
+        @Param(value = "toDate") OffsetDateTime toDate);
 }

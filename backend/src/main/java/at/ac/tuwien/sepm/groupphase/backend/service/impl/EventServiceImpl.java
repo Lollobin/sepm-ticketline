@@ -7,21 +7,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTickets;
 import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
-
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.OffsetDateTime;
-import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +34,7 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, EventValidator eventValidator,
-                            EventMapper eventMapper) {
+        EventMapper eventMapper) {
         this.eventRepository = eventRepository;
         this.eventValidator = eventValidator;
         this.eventMapper = eventMapper;
@@ -107,18 +100,18 @@ public class EventServiceImpl implements EventService {
         return eventSearchResultDto;
     }
 
-    public List<EventWithTickets> getTopEvents(TopEventSearchDto topEventSearchDto) {
-        String category = topEventSearchDto.getCategory() == null ? null : topEventSearchDto.getCategory().getValue();
-        LocalDateTime date = LocalDateTime.from(topEventSearchDto.getMonth());
+    public List<EventWithTicketsSold> getTopEvents(TopEventSearchDto topEventSearchDto) {
+        String category = topEventSearchDto.getCategory() == null ? null
+            : topEventSearchDto.getCategory().getValue();
 
         OffsetDateTime fromDate = null;
         OffsetDateTime toDate = null;
 
-        if (date != null) {
-            Month month = date.getMonth();
-            int daysOfMonth = month.length(date.isLeapYear());
-            fromDate = OffsetDateTime.of(LocalDateTime.from(date.withDayOfMonth(1)), ZoneOffset.UTC);
-            toDate = OffsetDateTime.of(LocalDateTime.from(date.withDayOfMonth(daysOfMonth)), ZoneOffset.UTC);
+        if (topEventSearchDto.getMonth() != null) {
+            int year = topEventSearchDto.getMonth().getYear();
+            int month = topEventSearchDto.getMonth().getMonthValue();
+            fromDate = OffsetDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+            toDate = OffsetDateTime.of(year, month + 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         }
 
         return eventRepository.getTopEvents(category, fromDate, toDate);

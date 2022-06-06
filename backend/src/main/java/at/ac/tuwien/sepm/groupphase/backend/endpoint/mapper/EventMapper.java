@@ -3,12 +3,10 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithTicketsSoldDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
-import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTickets;
-import org.mapstruct.Mapper;
-
+import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
 import java.util.List;
+import org.mapstruct.Mapper;
 
 @Mapper
 public interface EventMapper {
@@ -21,7 +19,7 @@ public interface EventMapper {
 
     EventWithoutIdDto eventToEventWithoutIdDto(Event event);
 
-    EventWithTicketsSoldDto eventToEventWithTicketsSoldDto(EventWithTickets event);
+    EventWithTicketsSoldDto eventToEventWithTicketsSoldDto(EventWithTicketsSold event);
 
-    List<EventWithTicketsSoldDto> eventToEventWithTicketsSoldDto(List<EventWithTickets> events);
+    List<EventWithTicketsSoldDto> eventToEventWithTicketsSoldDto(List<EventWithTicketsSold> events);
 }
