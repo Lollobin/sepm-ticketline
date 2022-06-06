@@ -603,7 +603,7 @@ paths:
       tags:
         - events
       summary: Searches for events that have the highest amount of tickets sold per category for a given month
-      description: Searches for data depending on the query parameters. When no query parameters are given, an error is returned.
+      description: Searches for data depending on the query parameters. When no query parameters are given, all events are compared.
       parameters:
         - name: search
           in: query
