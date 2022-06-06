@@ -174,6 +174,18 @@ export class OrderOverviewComponent implements OnInit {
     this.error = error;
   }
 
+  selectAll() {
+    for (let i = 0; i < this.ticketsFormArray.length; i++) {
+      this.ticketsFormArray.at(i).setValue(true);
+    }
+  }
+
+  clearAll() {
+    for (let i = 0; i < this.ticketsFormArray.length; i++) {
+      this.ticketsFormArray.at(i).setValue(false);
+    }
+  }
+
   private addCheckboxes() {
     this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
   }
