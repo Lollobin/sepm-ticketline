@@ -31,8 +31,8 @@ public class TopEventsEndpoint implements TopEventsApi {
     public ResponseEntity<List<EventWithTicketsSoldDto>> topEventsGet(TopEventSearchDto search) {
         LOGGER.info("GET /topEvents body: {}", search);
 
-        return ResponseEntity.ok(
-            eventMapper.eventToEventWithTicketsSoldDto(eventService.getTopEvents())
+        return ResponseEntity.ok().body(
+            eventMapper.eventToEventWithTicketsSoldDto(eventService.getTopEvents(search))
         );
     }
 }

@@ -1631,9 +1631,6 @@ components:
         month:
           type: string
           format: date
-      required:
-        - category
-        - month
     ShowSearch:
       type: object
       properties:

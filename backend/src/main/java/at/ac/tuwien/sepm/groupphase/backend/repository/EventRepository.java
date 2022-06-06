@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTickets;
+import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -47,11 +50,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                        @Param(value = "category") String category, @Param(value = "location") Long location, @Param(value = "artist") Long artist,
                        Pageable pageable);
 
-    @Query(value = "SELECT e.event_id, e.name, e.duration, COUNT(*) AS ticketsSold "
+    @Query(value = "SELECT e.event_id AS eventId, e.name AS name, e.category AS category, e.content AS content, e.duration AS duration, COUNT(*) AS ticketsSold "
         + "FROM event e NATURAL JOIN show s NATURAL JOIN ticket t "
-        + "GROUP BY e.event_id ORDER BY ticketsSoldAndReserved DESC LIMIT 10",
+        + "WHERE e.category IS :category AND s.date >= :fromDate AND s.date <= :toDate "
+        + "GROUP BY e.event_id ORDER BY ticketsSold DESC LIMIT 10",
         nativeQuery = true)
-    List<Event> getTopEvents();
+    List<EventWithTickets> getTopEvents(@Param(value = "category") String category, @Param(value = "fromDate") OffsetDateTime fromDate, @Param(value = "toDate") OffsetDateTime toDate);
 
 
 }

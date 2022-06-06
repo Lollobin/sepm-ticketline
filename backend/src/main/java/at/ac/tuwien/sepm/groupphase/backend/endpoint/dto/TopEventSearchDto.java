@@ -39,8 +39,8 @@ public class TopEventSearchDto   {
    * Get category
    * @return category
   */
-  @NotNull @Valid 
-  @Schema(name = "category", required = true)
+  @Valid 
+  @Schema(name = "category", required = false)
   public CategoryDto getCategory() {
     return category;
   }
@@ -58,8 +58,8 @@ public class TopEventSearchDto   {
    * Get month
    * @return month
   */
-  @NotNull @Valid 
-  @Schema(name = "month", required = true)
+  @Valid 
+  @Schema(name = "month", required = false)
   public LocalDate getMonth() {
     return month;
   }
