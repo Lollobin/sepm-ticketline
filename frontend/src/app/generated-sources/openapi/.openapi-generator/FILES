@@ -39,6 +39,8 @@ model/locationWithoutId.ts
 model/models.ts
 model/order.ts
 model/ordersPage.ts
+model/passwordReset.ts
+model/passwordUpdate.ts
 model/provisionalSector.ts
 model/seat.ts
 model/seatWithBookingStatus.ts
