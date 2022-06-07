@@ -1,0 +1,41 @@
+
+
+<form [formGroup]="articleForm" style="margin-top: 4%">
+  <h2>Create Article</h2>
+  <div class="form-group">
+       <small for="validationDefault01" class="form-label text-muted"> Title </small>
+      <input type="text" class="form-control" id="validationDefault01" formControlName="title">
+  </div>
+  <div *ngIf="articleForm.get('title').touched || submitted" class="error">
+    <small
+        class="form-text text-warning"
+        *ngIf="articleForm.get('title').errors?.required"
+    >Title must be filled in!
+    </small>
+  </div>
+  <div class="form-group">
+  <small for="validationDefault02" class="form-label text-muted"> Summary</small>
+      <textarea type="text" class="form-control" id="validationDefault02" formControlName="summary"></textarea>
+  </div>
+  <div class="form-group">
+      <small for="validationDefault03" class="form-label text-muted"> Text </small>
+      <textarea type="text" class="form-control" id="validationDefault03" formControlName="text"></textarea>
+    </div>
+
+    <div class="input-group" style="margin-top: 2%">
+      <input type="file" multiple class="form-control" id="inputGroupFile04"  aria-describedby="inputGroupFileAddon04" aria-label="Upload" (change)="onFileChange($event)" />
+      <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" (click)="uploadImage()">Upload</button>
+
+  </div>
+  <div *ngIf="submitted && (!uploaded && fileToUpload?.length > 0)" class="error">
+    <small
+        class="form-text text-warning"
+    >You must upload the images before creating the article!
+    </small>
+  </div>
+
+  <button [disabled]="(fileToUpload?.length > 0 && !uploaded) && submitted" class="btn btn-primary" (click)="createArticle()">Create Article</button>
+
+</form>
+
+<app-error-alert [error]="error"></app-error-alert>
