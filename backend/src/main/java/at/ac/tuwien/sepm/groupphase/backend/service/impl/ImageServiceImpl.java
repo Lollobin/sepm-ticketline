@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ImageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ImageService;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.ImageValidator;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Optional;
@@ -23,10 +24,13 @@ public class ImageServiceImpl implements ImageService {
     private final FileSystemRepository fileSystemRepository;
     private final ImageRepository imageRepository;
 
+    private final ImageValidator imageValidator;
+
     public ImageServiceImpl(FileSystemRepository fileSystemRepository,
-        ImageRepository imageRepository) {
+        ImageRepository imageRepository, ImageValidator imageValidator) {
         this.fileSystemRepository = fileSystemRepository;
         this.imageRepository = imageRepository;
+        this.imageValidator = imageValidator;
     }
 
     @Override
@@ -37,6 +41,8 @@ public class ImageServiceImpl implements ImageService {
         Image toSave = new Image();
 
         try {
+
+            imageValidator.checkIfImageMimeTypeIsCorrect(body);
 
             toSave.setFilePath(fileSystemRepository.save(body.getBytes(),
                 body.getOriginalFilename()));
