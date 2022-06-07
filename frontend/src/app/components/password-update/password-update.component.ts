@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, Validators} from "@angular/forms";
-import {UserManagementService} from "../../generated-sources/openapi";
+import {PasswordUpdate, UserManagementService} from "../../generated-sources/openapi";
 import {passwordMatchValidator} from "../registration/passwords-match-validator";
 
 @Component({
@@ -43,17 +43,39 @@ export class PasswordUpdateComponent implements OnInit {
   }
 
   updatePassword() {
-    const passwordUpdate = {
-      newPassword: this.f.password,
+    const passwordUpdate: PasswordUpdate = {
+      newPassword: this.f.password.value,
       token: this.token
     };
 
-    console.log("passwordupdate was created");
-/*    this.userManagementService.passwordResetIdPost(passwordUpdate).subscribe(
+    console.log(passwordUpdate);
+    this.userManagementService.passwordUpdatePost(passwordUpdate).subscribe(
         {
-          next: (success) => this.success = success,
-          error: (err) => this.error = err
+          next: () => {
+            this.submitted = true;
+            this.success = "Successfully saved new password!";
+
+          },
+          error: (err) => {
+            this.handleError(err);
+            console.log(err);
+          }
         }
-    );*/
+    );
+  }
+
+  vanishSuccess() {
+    this.success = null;
+  }
+
+  vanishError() {
+    this.error = null;
+  }
+  handleError(error){
+    if (error?.status===422){
+      this.error="Your password reset link seems to be invalid. Please request a new one.";
+    } else {
+      this.error="An error occurred processing your password reset, please try again later.";
+    }
   }
 }
