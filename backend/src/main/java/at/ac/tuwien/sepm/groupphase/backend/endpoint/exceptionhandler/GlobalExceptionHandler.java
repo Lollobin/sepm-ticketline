@@ -17,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -40,8 +41,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(RuntimeException ex,
+        WebRequest request) {
+        LOGGER.warn(ex.getMessage());
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(),
+            HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+
     @ExceptionHandler(value = {ValidationException.class})
-    protected ResponseEntity<Object> handleValidationException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleValidationException(RuntimeException ex,
+        WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
@@ -49,7 +59,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(value = ConflictException.class)
-    protected ResponseEntity<Object> handleConflictException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleConflictException(RuntimeException ex,
+        WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(
             ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
