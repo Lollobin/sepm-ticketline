@@ -22,6 +22,9 @@ spring:
     open-in-view: false
   h2:
     console.enabled: true
+  servlet:
+    multipart:
+      max-file-size: 4MB
 
 server:
   error:

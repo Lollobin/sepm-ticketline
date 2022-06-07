@@ -103,12 +103,14 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        required: true
         content:
-          image/*:
+          multipart/form-data:
             schema:
-              type: string
-              format: binary
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
       responses:
         201:
           description: Successful upload of an image.
