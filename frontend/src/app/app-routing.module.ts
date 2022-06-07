@@ -18,6 +18,7 @@ import {
 } from "./components/show-search-result/show-search-result.component";
 import { CreateLocationComponent } from "./components/create-location/create-location.component";
 import { LocationSeatingPlansComponent } from "./components/location-seating-plans/location-seating-plans.component";
+import { LocationAdminOverviewComponent } from "./components/location-admin-overview/location-admin-overview.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'locations/create', component: CreateLocationComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id/seatingPlans/create', component: CreateSeatingPlanComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id', component: LocationSeatingPlansComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
+  {path: 'locations', component: LocationAdminOverviewComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/:id/shows', component: ShowSearchResultComponent},

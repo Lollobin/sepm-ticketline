@@ -32,9 +32,13 @@
         {{ ticket.city + ", " + ticket.locationName }}</td>
       <td>{{ ticket.showDate | date }} <br> {{ ticket.showDate | date:'HH:mm' }}</td>
       <td>
-        <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary"
-                id="{{'purchaseBtn'+i}}" (click)="openPurchaseModal(purchaseModal, ticket)">Purchase
-          Tickets
+        <button *ngIf="ticket.type === 'reserved'" class="btn btn-outline-primary me-1"
+                id="{{'purchaseBtn'+i}}" (click)="openTicketSelectionModal(purchaseModal, ticket)">
+          Purchase
+        </button>
+        <button class="btn btn-outline-primary" id="{{'cancelBtn'+i}}"
+                (click)="openTicketSelectionModal(cancelModal, ticket)">
+          Cancel
         </button>
       </td>
     </tr>
@@ -44,20 +48,20 @@
 
 <ng-template #purchaseModal let-modal>
   <div class="modal-header">
-    <h5 class="modal-title">Purchase tickets for '{{selectedReservation.eventName}}'</h5>
+    <h5 class="modal-title">Purchase tickets for '{{selectedTickets.eventName}}'</h5>
     <button type="button" class="close" (click)="modal.dismiss('X')" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="purchaseForm" (ngSubmit)="purchaseTickets()">
+    <form [formGroup]="ticketSelectionForm" (ngSubmit)="purchaseTickets()">
       <div class="form-check" formArrayName="tickets"
            *ngFor="let ticket of ticketsFormArray.controls; let i = index">
         <input class="form-check-input" type="checkbox" [formControlName]="i">
         <label class="form-check-label">
-          Sector {{this.selectedReservation.ticket[i].sector}},
-          Row {{this.selectedReservation.ticket[i].rowNumber}},
-          Seat {{this.selectedReservation.ticket[i].seatNumber}}
+          Sector {{this.selectedTickets.ticket[i].sector}},
+          Row {{this.selectedTickets.ticket[i].rowNumber}},
+          Seat {{this.selectedTickets.ticket[i].seatNumber}}
         </label>
       </div>
     </form>
@@ -68,10 +72,50 @@
             (click)="modal.dismiss('close')">Close
     </button>
     <button type="button" class="btn btn-primary" id="buy-now-btn"
-            (click)="purchaseTickets()" [disabled]="!purchaseForm.valid">Buy Now
+            (click)="purchaseTickets()" [disabled]="!ticketSelectionForm.valid">Buy Now
     </button>
   </div>
 </ng-template>
+
+<ng-template #cancelModal let-modal>
+  <div class="modal-header">
+    <h5 *ngIf="selectedTickets.type ==='purchased'" class="modal-title">Cancel tickets for
+      '{{selectedTickets.eventName}}'</h5>
+    <h5 *ngIf="selectedTickets.type ==='reserved'" class="modal-title">Cancel reservations for
+      '{{selectedTickets.eventName}}'</h5>
+    <button type="button" class="close" (click)="modal.dismiss('X')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="ticketSelectionForm" (ngSubmit)="cancelTickets()">
+      <button type="button" class="btn btn-outline-secondary btn-sm mb-1 me-1" (click)="selectAll()">
+        Select All
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-sm mb-1 me-1" (click)="clearAll()">
+        Clear All
+      </button>
+      <div class="form-check" formArrayName="tickets"
+           *ngFor="let ticket of ticketsFormArray.controls; let i = index">
+        <input class="form-check-input" type="checkbox" [formControlName]="i">
+        <label class="form-check-label">
+          Sector {{this.selectedTickets.ticket[i].sector}},
+          Row {{this.selectedTickets.ticket[i].rowNumber}},
+          Seat {{this.selectedTickets.ticket[i].seatNumber}}
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="close-cancel-modal-btn"
+            (click)="modal.dismiss('close')">Close
+    </button>
+    <button type="button" class="btn btn-primary" id="cancel-now-btn"
+            (click)="cancelTickets()" [disabled]="!ticketSelectionForm.valid">Cancel Now
+    </button>
+  </div>
+</ng-template>
+
 
 <div>
   <h2 class="h2 mt-3">Transaction History</h2>
@@ -89,7 +133,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let order of orders?.orders"
-        [ngClass]="{'text-danger': order.type==='cancellation'|| order.type ==='dereservation'}">
+        [ngClass]="{'cancelled': order.type==='cancellation'|| order.type ==='dereservation'}">
       <td>{{ order.transactionDate | date }} <br> {{ order.transactionDate | date:'HH:mm' }}</td>
 
       <td>{{ order.artists.join(', ') + " - " + order.eventName }} <br>

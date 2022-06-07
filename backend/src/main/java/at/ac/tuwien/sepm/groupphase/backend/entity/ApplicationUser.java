@@ -79,6 +79,8 @@ public class ApplicationUser {
             + lockedAccount
             + ", articles="
             + articles
+            + ", resetPasswordToken="
+            + resetPasswordToken
             + '}';
     }
 
@@ -101,7 +103,8 @@ public class ApplicationUser {
             && Objects.equals(lastName, user.lastName)
             && gender == user.gender
             && Objects.equals(address, user.address) && Objects.equals(password, user.password)
-            && Objects.equals(articles, user.articles);
+            && Objects.equals(articles, user.articles)
+            && Objects.equals(resetPasswordToken, user.resetPasswordToken);
     }
 
     @Override
@@ -118,7 +121,8 @@ public class ApplicationUser {
             mustResetPassword,
             lockedAccount,
             articles,
-            password);
+            password,
+            resetPasswordToken);
     }
 
     @Column(nullable = false)
@@ -132,6 +136,9 @@ public class ApplicationUser {
 
     @Column(nullable = false)
     private boolean lockedAccount;
+
+    @Column(length = 100)
+    private String resetPasswordToken;
 
     @ManyToMany
     @Fetch(FetchMode.JOIN)
@@ -242,5 +249,13 @@ public class ApplicationUser {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 }

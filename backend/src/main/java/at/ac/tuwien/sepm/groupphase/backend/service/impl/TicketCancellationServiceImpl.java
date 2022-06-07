@@ -11,13 +11,12 @@ import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TicketCancellationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.CancellationValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TicketCancellationServiceImpl implements TicketCancellationService {
@@ -31,8 +30,10 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
     private final AuthenticationUtil authenticationUtil;
     private final OrderService orderService;
 
-    public TicketCancellationServiceImpl(CancellationValidator cancellationValidator, TicketRepository ticketRepository, UserRepository userRepository, AuthenticationUtil authenticationUtil,
-                                         OrderService orderService) {
+    public TicketCancellationServiceImpl(CancellationValidator cancellationValidator,
+        TicketRepository ticketRepository, UserRepository userRepository,
+        AuthenticationUtil authenticationUtil,
+        OrderService orderService) {
         this.cancellationValidator = cancellationValidator;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
@@ -44,49 +45,49 @@ public class TicketCancellationServiceImpl implements TicketCancellationService 
     public TicketStatusDto cancelTickets(TicketStatusDto ticketsToCancel) {
         LOGGER.debug("Started ticket cancellation with following tickets: {}", ticketsToCancel);
 
-        boolean purchaseMode = ticketsToCancel.getReserved().isEmpty();
         this.cancellationValidator.validateTicketInformation(ticketsToCancel);
 
+        BookingType bookingType = ticketsToCancel.getReserved().isEmpty() ? BookingType.CANCELLATION
+            : BookingType.DERESERVATION;
+
         List<Ticket> ticketList = ticketRepository.findAllById(
-            purchaseMode ? ticketsToCancel.getPurchased() : ticketsToCancel.getReserved());
+            bookingType == BookingType.CANCELLATION ? ticketsToCancel.getPurchased()
+                : ticketsToCancel.getReserved());
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationUtil.getEmail());
-        List<Ticket> unavailableTickets = getUnavailableTickets(ticketList, user);
 
-        if (!unavailableTickets.isEmpty()) {
-            throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
+        checkIfUserOwnsTickets(ticketList, user, bookingType);
+
+        for (Ticket ticket : ticketList) {
+            ticket.setReservedBy(null);
+            ticket.setPurchasedBy(null);
         }
+        ticketRepository.saveAllAndFlush(ticketList);
 
-        updateTicketStatus(purchaseMode, ticketList);
-
-        this.orderService.generateTransaction(ticketList, user,
-            purchaseMode ? BookingType.CANCELLATION : BookingType.DERESERVATION);
+        this.orderService.generateTransaction(ticketList, user, bookingType);
 
         return ticketsToCancel;
     }
 
-    private void updateTicketStatus(boolean purchaseMode, List<Ticket> ticketList) {
-        for (Ticket ticket : ticketList) {
-            ticket.setReservedBy(null);
-            if (purchaseMode) {
-                ticket.setPurchasedBy(null);
-            }
-        }
-        ticketRepository.saveAllAndFlush(ticketList);
-    }
+    private void checkIfUserOwnsTickets(List<Ticket> tickets, ApplicationUser user,
+        BookingType bookingType) {
 
-    private List<Ticket> getUnavailableTickets(List<Ticket> ticketList, ApplicationUser user) {
         List<Ticket> unavailableTickets = new ArrayList<>();
-        for (Ticket ticket : ticketList) {
-            if (ticket.getPurchasedBy() != null) {
-                unavailableTickets.add(ticket);
-            } else if (ticket.getReservedBy() != null) {
+        for (Ticket ticket : tickets) {
+            if (bookingType == BookingType.CANCELLATION) {
+                if (ticket.getPurchasedBy().getUserId() != user.getUserId()) {
+                    unavailableTickets.add(ticket);
+                }
+            }
+            if (bookingType == BookingType.DERESERVATION) {
                 if (ticket.getReservedBy().getUserId() != user.getUserId()) {
                     unavailableTickets.add(ticket);
                 }
             }
         }
-        return unavailableTickets;
-    }
 
+        if (!unavailableTickets.isEmpty()) {
+            throw new ValidationException(unavailableTickets.size() + " ticket(s) not available");
+        }
+    }
 }

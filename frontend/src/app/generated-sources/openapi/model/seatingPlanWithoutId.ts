@@ -11,11 +11,12 @@
  */
 import { Seat } from './seat';
 import { ProvisionalSector } from './provisionalSector';
+import { SeatingPlanLayout } from './seatingPlanLayout';
 
 
 export interface SeatingPlanWithoutId { 
     name: string;
-    seatingPlanLayoutId: number;
+    seatingPlanLayout: SeatingPlanLayout;
     locationId: number;
     sectors: Array<ProvisionalSector>;
     seats: Array<Seat>;

@@ -33,6 +33,7 @@ import { LocationSearchComponent } from './components/location-search/location-s
 import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
+import { LocationAdminOverviewComponent } from './components/location-admin-overview/location-admin-overview.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { LocationSeatingPlansComponent } from './components/location-seating-pla
     LocationSearchComponent,
     ShowSearchResultComponent,
     CreateLocationComponent,
-    LocationSeatingPlansComponent
+    LocationSeatingPlansComponent,
+    LocationAdminOverviewComponent
   ],
   imports: [
     BrowserModule,

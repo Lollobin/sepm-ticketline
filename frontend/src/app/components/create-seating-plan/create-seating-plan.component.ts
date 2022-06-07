@@ -1,28 +1,26 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import {
-  Seat,
-  SeatingPlan,
-  Sector,
-  SectorBuilder,
-  SectorWithLocation,
-  StaticElement,
-} from "src/app/shared_modules/seatingPlanGraphics";
+import { SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
 import {
   LocationsService,
   SeatingPlanWithoutId,
   Location,
+  SeatingPlanSector,
+  SeatingPlanSeat,
+  SeatingPlanStaticElement,
+  SeatingPlansService,
+  SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Route, Router } from "@angular/router";
 
 type ClickElement =
   | {
-      data: SectorWithLocation;
+      data: SeatingPlanSector;
       type: "SectorWithLocation";
     }
-  | { data: Seat; type: "Seat" }
-  | { data: StaticElement; type: "StaticElement" };
+  | { data: SeatingPlanSeat; type: "Seat" }
+  | { data: SeatingPlanStaticElement; type: "StaticElement" };
 
 @Component({
   selector: "app-create-seating-plan",
@@ -31,7 +29,7 @@ type ClickElement =
 })
 export class CreateSeatingPlanComponent implements OnInit {
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
-
+  error: Error;
   locationId: number;
   page: number;
   faXmark = faXmark;
@@ -40,20 +38,14 @@ export class CreateSeatingPlanComponent implements OnInit {
   selectedSector: number;
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   seatingPlanName = "";
-  location: Location = {
-    //TODO: DElete test data when location get interface works
-    locationId: 1,
-    name: "Capital Arena",
-    address: {
-      houseNumber: "12",
-      street: "Imaginary street",
-      city: "City Capital",
-      country: "Imaginarium",
-      zipCode: "1212",
-    },
-  };
+  location: Location;
 
-  constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private locationsService: LocationsService,
+    private seatingPlansService: SeatingPlansService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.page = 1;
@@ -61,10 +53,13 @@ export class CreateSeatingPlanComponent implements OnInit {
       this.locationId = params["id"];
       this.locationsService.locationsIdGet(this.locationId).subscribe({
         next: (location) => {
+          this.location = location;
           //TODO: Add location get interface
           console.log(location);
         },
-        error: () => {},
+        error: (error) => {
+          this.error = error;
+        },
       });
     });
   }
@@ -92,20 +87,28 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.page--;
   }
   finish() {
-    //const seatingPlanLayout: SeatingPlan = {}
+    const seatingPlanLayout: SeatingPlanLayout = this.seatingPlanEditor.seatingPlan;
 
     const seatingPlan: SeatingPlanWithoutId = {
-      name: "",
-      //TODO: Get locationId after saving location
-      locationId: 0,
-      //TODO: Get locationId after saving location
-      seatingPlanLayoutId: 0,
-      sectors: [],
-      seats: [],
+      name: this.seatingPlanName,
+      locationId: this.location.locationId,
+      sectors: seatingPlanLayout.sectors.map((sector) => ({ id: sector.id })),
+      seats: seatingPlanLayout.seats.map((seat) => ({
+        id: seat.id,
+        seatNumber: this.seatInformation[seat.id]?.seatNumber,
+        rowNumber: this.seatInformation[seat.id]?.rowNumber,
+        sector: seat.sectorId,
+      })),
+      seatingPlanLayout,
     };
-    //TODO: Send locationWithout ID
-    //Get back ID of location
-    //Send seating plan with location ID
+    this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
+      next: () => {
+        this.router.navigate(["/", "locations", this.location.locationId]);
+      },
+      error: (error) => {
+        this.error = error;
+      },
+    });
   }
   convertToCurrency(value: number) {
     return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.validation;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,14 @@ import org.springframework.stereotype.Component;
 public class AddressValidator {
 
     public void validateAddress(AddressDto address) {
+        validateStreet(address.getStreet());
+        validateCountry(address.getCountry());
+        validateCity(address.getCity());
+        validateHouseNo(address.getHouseNumber());
+        validateZipCode(address.getZipCode());
+    }
+
+    public void validateAddress(Address address) {
         validateStreet(address.getStreet());
         validateCountry(address.getCountry());
         validateCity(address.getCity());
