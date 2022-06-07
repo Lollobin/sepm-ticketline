@@ -27,11 +27,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Transactional
 class PasswordUpdateEndpointTest implements TestData {
     static final String RESET_TEST_EMAIL ="reset_test@email.com";
     static final String PASSWORD_UPDATE_URI = "/passwordUpdate";

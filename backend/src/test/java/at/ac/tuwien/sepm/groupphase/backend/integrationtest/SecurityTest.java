@@ -43,6 +43,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,6 +60,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Transactional
 public class SecurityTest implements TestData {
 
     private static final List<Class<?>> mappingAnnotations =

@@ -31,7 +31,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,9 +50,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class LocationEndpointTest {
@@ -66,9 +67,6 @@ class LocationEndpointTest {
     private LocationRepository locationRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
     private JwtTokenizer jwtTokenizer;
 
     @Autowired
@@ -77,7 +75,6 @@ class LocationEndpointTest {
     @BeforeEach
     public void beforeEach() {
         locationRepository.deleteAll();
-        addressRepository.deleteAll();
     }
 
     @Test
