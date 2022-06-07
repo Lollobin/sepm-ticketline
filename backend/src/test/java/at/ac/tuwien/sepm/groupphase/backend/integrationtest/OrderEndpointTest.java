@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +33,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Transactional
 class OrderEndpointTest implements TestData {
 
     @Autowired
@@ -113,6 +116,7 @@ class OrderEndpointTest implements TestData {
         Transaction transaction = new Transaction();
         transaction.setUser(user);
         transaction.setDate(OffsetDateTime.now());
+        transaction.setBookedIns(new HashSet<>());
         transactionRepository.save(transaction);
 
         MvcResult mvcResult = this.mockMvc.perform(MockMvcRequestBuilders
