@@ -1,9 +1,31 @@
-<h1>{{ location.name }}</h1>
-<h4>
+<h1 *ngIf="location">{{ location.name }}</h1>
+<h4 *ngIf="location">
   in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
   {{ location.address.houseNumber }}
 </h4>
-<!--TODO: ADD QUERY FOR ALL SEATING PLANS A LOCATION HAS-->
-<button class="btn btn-primary" style="width: 100%" routerLink="/locations/{{locationId}}/seatingPlans/create">
+<div *ngIf="seatingPlans && seatingPlans.length > 0">
+  <h3>Seating plans</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let seatingPlan of seatingPlans">
+        <td>{{ seatingPlan.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="seatingPlans && seatingPlans.length === 0">No seating plan found</div>
+<button
+  class="btn btn-primary"
+  style="width: 100%"
+  routerLink="/locations/{{ locationId }}/seatingPlans/create"
+>
   Add seating plan
 </button>
+
+<app-error-alert [(error)]="error"></app-error-alert>
+

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { LocationWithoutId } from "src/app/generated-sources/openapi";
+import { Router } from "@angular/router";
+import { LocationsService, LocationWithoutId } from "src/app/generated-sources/openapi";
 
 @Component({
   selector: "app-create-location",
@@ -9,10 +10,14 @@ import { LocationWithoutId } from "src/app/generated-sources/openapi";
 })
 export class CreateLocationComponent implements OnInit {
   locationForm: FormGroup;
-
+  error: Error;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private locationsService: LocationsService,
+    private router: Router
+  ) {
     this.locationForm = this.formBuilder.group({
       name: ["", [Validators.required]],
       address: this.formBuilder.group({
@@ -25,17 +30,21 @@ export class CreateLocationComponent implements OnInit {
     });
   }
 
-  signUpUser() {
+  createLocation() {
     this.submitted = true;
     if (this.locationForm.valid) {
       const location: LocationWithoutId = {
         name: this.locationForm.get("name").value,
         address: this.locationForm.get("address").value,
       };
-      //TODO: Add backend service
-      //TOOD: Navigate to location with ID
-    } else {
-      console.log("Invalid input");
+      this.locationsService.locationsPost(location).subscribe({
+        next: () => {
+          this.router.navigate(["/", "locations"]);
+        },
+        error: (error) => {
+          this.error = error;
+        },
+      });
     }
   }
 

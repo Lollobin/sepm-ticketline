@@ -12,6 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.LocationValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -35,14 +36,17 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationMapper locationMapper;
     private final SeatingPlanMapper seatingPlanMapper;
+    private final LocationValidator locationValidator;
 
     public LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper,
-        SearchValidator searchValidator, SeatingPlanRepository seatingPlanRepository, SeatingPlanMapper seatingPlanMapper) {
+        SearchValidator searchValidator, SeatingPlanRepository seatingPlanRepository,
+        SeatingPlanMapper seatingPlanMapper, LocationValidator locationValidator) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
         this.searchValidator = searchValidator;
         this.seatingPlanRepository = seatingPlanRepository;
         this.seatingPlanMapper = seatingPlanMapper;
+        this.locationValidator = locationValidator;
     }
 
     @Override
@@ -116,11 +120,30 @@ public class LocationServiceImpl implements LocationService {
             throw new NotFoundException("No location exists with id " + id);
         }
 
-        Optional<List<SeatingPlan>> seatingPlans = seatingPlanRepository.findAllByLocation(location.get());
+        Optional<List<SeatingPlan>> seatingPlans = seatingPlanRepository.findAllByLocation(
+            location.get());
         if (seatingPlans.isEmpty()) {
             throw new ConflictException("No seating plans exist for location with id " + id);
         }
 
-        return seatingPlans.get().stream().map(seatingPlanMapper::seatingPlanToSeatingPlanDto).toList();
+        return seatingPlans.get().stream().map(seatingPlanMapper::seatingPlanToSeatingPlanDto)
+            .toList();
+    }
+
+    @Override
+    public Location saveLocation(Location location) {
+        LOGGER.trace("Saving location {}", location);
+        locationValidator.checkLocationIsValid(location);
+        return locationRepository.save(location);
+    }
+
+    @Override
+    public Location findOne(Long id) {
+        LOGGER.trace("Finding location with ID {}", id);
+        Optional<Location> location = this.locationRepository.findById(id);
+        if (location.isEmpty()) {
+            throw new NotFoundException(String.format("Could not find location with id %s", id));
+        }
+        return location.get();
     }
 }

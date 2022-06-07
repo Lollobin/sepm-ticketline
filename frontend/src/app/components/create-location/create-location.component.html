@@ -3,7 +3,7 @@
     <h4 class="card-title mt-2">Create Location</h4>
   </header>
   <article class="card-body">
-    <form [formGroup]="locationForm" (ngSubmit)="signUpUser()">
+    <form [formGroup]="locationForm" (ngSubmit)="createLocation()">
       <div class="form-group">
         <label>Name</label>
         <input
@@ -128,3 +128,4 @@
     </form>
   </article>
 </div>
+<app-error-alert [(error)]="error"></app-error-alert>
