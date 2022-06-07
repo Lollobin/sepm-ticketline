@@ -63,9 +63,8 @@ public class ImageServiceImpl implements ImageService {
             imageToUpdate.setArticle(article);
             imageRepository.save(imageToUpdate);
         } else {
-            throw new NotFoundException("image not found");
+            throw new NotFoundException("Image with ID " + imageId + " not found");
         }
-
 
     }
 
