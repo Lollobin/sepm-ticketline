@@ -73,7 +73,7 @@ public interface ImagesApi {
     /**
      * POST /images : Uploads an image.
      *
-     * @param body  (required)
+     * @param fileName  (optional)
      * @return Successful upload of an image. (status code 201)
      *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
@@ -94,10 +94,10 @@ public interface ImagesApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/images",
-        consumes = { "image/_*" }
+        consumes = { "multipart/form-data" }
     )
     default ResponseEntity<Void> imagesPost(
-        @Parameter(name = "body", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody org.springframework.core.io.Resource body
+        @Parameter(name = "fileName", description = "", schema = @Schema(description = "")) @RequestPart(value = "fileName", required = false) MultipartFile fileName
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
