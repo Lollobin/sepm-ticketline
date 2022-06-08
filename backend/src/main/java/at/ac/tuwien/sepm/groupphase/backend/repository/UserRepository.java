@@ -39,6 +39,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
 
     /**
      * checks if there exists a user with the given email.
+     *
      * @param email to be searched for
      * @return boolean if the given user exists
      */

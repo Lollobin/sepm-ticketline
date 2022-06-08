@@ -135,7 +135,7 @@ public class CustomUserDetailService implements UserService {
         ApplicationUser applicationUser = this.userRepository.findUserByEmail(
             this.authenticationFacade.getEmail());
         if (applicationUser == null) {
-            throw new ValidationException("User with logged in id does not exist");
+            throw new ValidationException("User with logged in email does not exist");
         }
         int userId = Math.toIntExact(applicationUser.getUserId());
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
