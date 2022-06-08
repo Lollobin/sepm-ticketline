@@ -36,6 +36,11 @@
         >
       </li>
       <li>
+        <a *ngIf="!adminView" class="nav-link" routerLink="/news/overview" routerLinkActive="active"
+        ><fa-icon style="padding-left: 0; padding-right: 2.5px" [icon]="info"></fa-icon>News</a
+        >
+      </li>
+      <li>
         <a
           class="nav-link"
           *ngIf="authService.isLoggedIn() && adminView"
