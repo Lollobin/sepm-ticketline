@@ -20,6 +20,8 @@ export * from './locationSearchResult';
 export * from './locationWithoutId';
 export * from './order';
 export * from './ordersPage';
+export * from './passwordReset';
+export * from './passwordUpdate';
 export * from './provisionalSector';
 export * from './seat';
 export * from './seatWithBookingStatus';
