@@ -20,23 +20,23 @@
     <form class="form-margin" [formGroup]="eventForm">
         <div class="form-group">
             <small for="name" class="form-label text-muted">Name</small>
-            <input type="text" class="form-control" id="name" [class.is-invalid]="!this.name.valid"
-                [class.is-valid]="this.name.valid" formControlName="name">
+            <input type="text" class="form-control" id="name" [class.is-invalid]="!this.name.valid && this.name.touched"
+                formControlName="name">
             <div *ngIf="this.name.errors" class="invalid-feedback" style="display: block">
-                <div *ngIf="this.name.errors.required">Name is required!</div>
-                <div *ngIf="this.name.errors.maxlength">The Name is too long!</div>
+                <div *ngIf="this.name.errors?.required && this.name.touched">Name is required!</div>
+                <div *ngIf="this.name.errors?.maxlength">The Name is too long!</div>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-6">
                 <small for="inputCategory" class="form-label text-muted">Category</small>
-                <select id="inputCategory" class="form-control form-override" [class.is-invalid]="!this.category.valid"
-                    [class.is-valid]="this.category.valid" formControlName="category" style="background-position: 92%">
+                <select id="inputCategory" class="form-control form-override" [class.is-invalid]="!this.category.valid && this.category.touched"
+                    formControlName="category" style="background-position: 92%">
                     <option hidden="true">Pick one</option>
                     <option *ngFor="let category1 of categories">{{category1}}</option>
                 </select>
                 <div *ngIf="this.category.errors" class="invalid-feedback" style="display: block">
-                    <div *ngIf="this.category.errors?.required">Category is required!</div>
+                    <div *ngIf="this.category.errors?.required && this.category.touched">Category is required!</div>
                 </div>
             </div>
             <div class="form-group col-md-6">
