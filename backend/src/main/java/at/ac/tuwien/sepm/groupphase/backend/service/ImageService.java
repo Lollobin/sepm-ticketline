@@ -13,6 +13,13 @@ public interface ImageService {
      */
     long save(MultipartFile body);
 
+    /**
+     * Update the article field of already persisted images when newly created article contains an
+     * image.
+     *
+     * @param imageId used to identify which persisted image should be updated
+     * @param article sets the article to the image
+     */
     void updateArticle(Long imageId, Article article);
 
 }
