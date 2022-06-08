@@ -271,6 +271,26 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
+  /userInfo:
+    get:
+      tags:
+        - userManagement
+      summary: Gets user info of user possesing the token.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
   /users/{id}:
     get:
       tags:

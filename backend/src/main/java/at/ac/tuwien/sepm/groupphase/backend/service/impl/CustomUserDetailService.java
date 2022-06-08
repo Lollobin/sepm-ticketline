@@ -158,6 +158,14 @@ public class CustomUserDetailService implements UserService {
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
     }
 
+    @Override
+    public ApplicationUser findByCurrentUser() {
+        String email = authenticationFacade.getEmail();
+        LOGGER.debug("Looking for user with email {}", email);
+
+        return this.findApplicationUserByEmail(email);
+    }
+
 
     @Override
     public void increaseNumberOfFailedLoginAttempts(ApplicationUser user) {

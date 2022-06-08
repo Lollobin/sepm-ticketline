@@ -23,22 +23,42 @@ export class EditUserComponent implements OnInit {
   }, {description: "Other", value: "other"}];
 
   ngOnInit(): void {
-    this.userManagementService.usersPut();
+    this.userManagementService.userInfoGet().subscribe({
+      next: (next) => {
+        this.user = next;
+        console.log("Succesfully got user with id " + next.userId);
+        this.error = false;
+        this.registrationForm.value.firstName = this.user.firstName;
+        this.registrationForm.value.lastName = this.user.lastName;
+        this.registrationForm.value.email = this.user.email;
+        this.registrationForm.value.address.houseNumber = this.user.address.houseNumber;
+        this.registrationForm.value.address.street = this.user.address.street;
+        this.registrationForm.value.address.zipCode = this.user.address.zipCode;
+        this.registrationForm.value.address.city = this.user.address.city;
+        this.registrationForm.value.address.country = this.user.address.country;
+        this.registrationForm.value.gender = this.user.gender;
+      },
+      error: (error) => {
+        console.error("Error getting user from authentication token", error);
+        this.errorMessage = error;
+        this.error = true;
+      }
+    });
   }
 
   constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, private router: Router, userService: UserManagementService) {
     this.registrationForm = this.formBuilder.group({
-          firstName: ['', [Validators.required]],
-          lastName: ['', [Validators.required]],
-          email: ['', [Validators.required, Validators.email]],
+          firstName: ["", [Validators.required]],
+          lastName: ["", [Validators.required]],
+          email: ["", [Validators.required, Validators.email]],
           address: this.formBuilder.group({
-            houseNumber: ['', [Validators.required]],
-            street: ['', [Validators.required]],
-            zipCode: ['', [Validators.required]],
-            city: ['', [Validators.required]],
-            country: ['', [Validators.required]]
+            houseNumber: ["", [Validators.required]],
+            street: ["", [Validators.required]],
+            zipCode: ["", [Validators.required]],
+            city: ["", [Validators.required]],
+            country: ["", [Validators.required]]
           }),
-          gender: ['', [Validators.required]],
+          gender: ["", [Validators.required]],
           password: ['', [Validators.required, Validators.minLength(8)]],
           confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
 
