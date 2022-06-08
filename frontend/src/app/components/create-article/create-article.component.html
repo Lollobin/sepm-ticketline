@@ -1,4 +1,14 @@
 
+<div class="container mt-3" *ngIf="success">
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Success!</h4>
+    <strong>Succesfully</strong> created article "<strong>{{title}}</strong>"
+    <p></p>
+    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+  </div>
+</div>
+
 
 <form [formGroup]="articleForm" style="margin-top: 4%">
   <h2>Create Article</h2>
@@ -22,19 +32,13 @@
       <textarea type="text" class="form-control" id="validationDefault03" formControlName="text"></textarea>
     </div>
 
-    <div class="input-group" style="margin-top: 2%">
+    <div class="input-group" style="margin: 2% auto">
       <input type="file" multiple class="form-control" id="inputGroupFile04"  aria-describedby="inputGroupFileAddon04" aria-label="Upload" (change)="onFileChange($event)" />
-      <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04" (click)="uploadImage()">Upload</button>
+
 
   </div>
-  <div *ngIf="submitted && (!uploaded && fileToUpload?.length > 0)" class="error">
-    <small
-        class="form-text text-warning"
-    >You must upload the images before creating the article!
-    </small>
-  </div>
 
-  <button [disabled]="(fileToUpload?.length > 0 && !uploaded) && submitted" class="btn btn-primary" (click)="createArticle()">Create Article</button>
+  <button style="margin-bottom: 2%" [disabled]="articleForm.get('title').value === '' && articleForm.get('title').touched || (articleForm.get('title').value === '' && submitted) " class="btn btn-primary" (click)="createArticle()">Create Article</button>
 
 </form>
 
