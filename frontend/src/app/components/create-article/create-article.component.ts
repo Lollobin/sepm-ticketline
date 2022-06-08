@@ -17,7 +17,6 @@ export class CreateArticleComponent implements OnInit {
 
   error: Error;
   submitted = false;
-  uploaded = false;
   success = false;
   title = "";
 
@@ -38,9 +37,6 @@ export class CreateArticleComponent implements OnInit {
 
   onFileChange(event) {
     this.fileToUpload = event.target.files;
-
-
-    console.log("onfilechange", this.fileToUpload);
   }
 
   async uploadImage() {
@@ -48,9 +44,6 @@ export class CreateArticleComponent implements OnInit {
     this.imageIds = [];
 
     this.submitted = false;
-
-
-    this.imageIds = [];
 
     const promises = map(this.fileToUpload, file =>
         firstValueFrom(this.articleService.imagesPost(file, "response")));
@@ -62,7 +55,6 @@ export class CreateArticleComponent implements OnInit {
       const location = res.headers.get("location");
       const id = location.split("/").pop();
       this.imageIds.push(id);
-      this.uploaded = true;
 
     });
 
@@ -91,20 +83,24 @@ export class CreateArticleComponent implements OnInit {
           text: form.text,
           images: this.imageIds
         };
-        this.imageIds = [];
+
 
         this.articleService.articlesPost(article).subscribe({
           next: () => {
 
             this.submitted = false;
-            this.uploaded = false;
             this.success = true;
 
 
           },
           error: err1 => {
             this.success = false;
-            this.error = err1;
+            if(err1 instanceof Object){
+              this.error = err1.error;
+            } else {
+
+              this.error = err1;
+            }
           }
         });
 
