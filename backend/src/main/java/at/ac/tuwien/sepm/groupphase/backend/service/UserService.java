@@ -46,6 +46,13 @@ public interface UserService extends UserDetailsService {
     void save(UserWithPasswordDto user);
 
     /**
+     * Updates a User with the given id from token in the database.
+     *
+     * @param userWithPasswordDto with new user data to be updated to
+     */
+    void put(UserWithPasswordDto userWithPasswordDto);
+
+    /**
      * * Return a page of users whose locked status is according to the parameter.
      *
      * @param filterLocked true searches for locked users, false searches for all users.

@@ -5,9 +5,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
@@ -43,6 +45,7 @@ public class CustomUserDetailService implements UserService {
     private final EmailService emailService;
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
+    private final AuthenticationUtil authenticationFacade;
 
     private final UserValidator userValidator;
 
@@ -52,7 +55,8 @@ public class CustomUserDetailService implements UserService {
         EmailService emailService,
         ResetTokenService resetTokenService,
         MailBuilderService mailBuilderService,
-        UserValidator userValidator) {
+        UserValidator userValidator,
+        AuthenticationUtil authenticationFacade) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
@@ -60,7 +64,7 @@ public class CustomUserDetailService implements UserService {
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
         this.userValidator = userValidator;
-
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -123,6 +127,25 @@ public class CustomUserDetailService implements UserService {
         userValidator.validateUserWithPasswordDto(user);
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(user);
         LOGGER.debug("Attempting to save {}", appUser);
+        userRepository.save(appUser);
+    }
+
+    @Override
+    public void put(UserWithPasswordDto userWithPasswordDto) {
+        ApplicationUser applicationUser = this.userRepository.findUserByEmail(
+            this.authenticationFacade.getEmail());
+        if (applicationUser == null) {
+            throw new ValidationException("User with logged in id does not exist");
+        }
+        int userId = Math.toIntExact(applicationUser.getUserId());
+        userValidator.validateUserWithPasswordDto(userWithPasswordDto);
+        if (Boolean.TRUE.equals(this.userRepository.existsByEmail(userWithPasswordDto.getEmail()))
+            && this.userRepository.findUserByEmail(userWithPasswordDto.getEmail()).getUserId() != userId) {
+            throw new ConflictException("User with given email already exists, use another email");
+        }
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        appUser.setUserId(userId);
+        LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
     }
 

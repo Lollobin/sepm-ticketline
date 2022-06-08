@@ -38,6 +38,13 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     Page<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount, Pageable pageable);
 
     /**
+     * checks if there exists a user with the given email.
+     * @param email to be searched for
+     * @return boolean if the given user exists
+     */
+    Boolean existsByEmail(String email);
+
+    /**
      * Unlocks a user and resets number of failed attempts.
      *
      * @param lockedAccount if false user will be unlocked and loginTries will be reset to 0
