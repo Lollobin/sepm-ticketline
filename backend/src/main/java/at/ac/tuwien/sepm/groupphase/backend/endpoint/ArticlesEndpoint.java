@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ArticlesApi;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArticleService;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +20,13 @@ public class ArticlesEndpoint implements ArticlesApi {
         MethodHandles.lookup().lookupClass());
     private final ArticleService articleService;
 
+    private final AuthenticationUtil authenticationUtil;
 
-    public ArticlesEndpoint(ArticleService articleService) {
+
+    public ArticlesEndpoint(ArticleService articleService, AuthenticationUtil authenticationUtil) {
         this.articleService = articleService;
 
+        this.authenticationUtil = authenticationUtil;
     }
 
     @Secured("ROLE_ADMIN")
@@ -33,4 +39,29 @@ public class ArticlesEndpoint implements ArticlesApi {
 
         return ResponseEntity.noContent().build();
     }
+
+    @Secured("ROLE_USER")
+    @Override
+    public ResponseEntity<List<ArticleDto>> articlesGet(Boolean filterRead) {
+        LOGGER.info("GET /articles with filterRead: {}", filterRead);
+
+        String userEmail = authenticationUtil.getEmail();
+
+        List<ArticleDto> articleDtos = articleService.getArticles(filterRead, userEmail);
+
+        return ResponseEntity.ok().body(articleDtos);
+    }
+
+    @Secured("ROLE_USER")
+    @Override
+    public ResponseEntity<ArticleDto> articlesIdGet(Long id) {
+
+        LOGGER.info("GET /articles/{}", id);
+
+        ArticleDto articleDto = articleService.getArticleDtoById(id);
+
+        return ResponseEntity.ok().body(articleDto);
+
+    }
+
 }
