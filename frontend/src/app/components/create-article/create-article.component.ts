@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ArticlesService, ArticleWithoutId} from "../../generated-sources/openapi";
 import {map} from "lodash";
 import {firstValueFrom} from "rxjs";
+import {ViewportScroller} from "@angular/common";
 
 @Component({
   selector: 'app-create-article',
@@ -21,13 +22,13 @@ export class CreateArticleComponent implements OnInit {
   title = "";
 
   imageIds = [];
+  previews: string[] = [];
 
-
-  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService) {
+  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller) {
     this.articleForm = this._formBuilder.group({
       title: ["", [Validators.required]],
-      summary: [""],
-      text: [""],
+      summary: ["", [Validators.required]],
+      text: ["", [Validators.required]],
       image: []
     });
   }
@@ -37,6 +38,22 @@ export class CreateArticleComponent implements OnInit {
 
   onFileChange(event) {
     this.fileToUpload = event.target.files;
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const numberOfFiles = event.target.files.length;
+
+      for (let i = 0; i < numberOfFiles; i++) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+
+          this.previews.push(e.target.result);
+        };
+
+        reader.readAsDataURL(this.fileToUpload[i]);
+      }
+
+
+    }
   }
 
   async uploadImage() {
@@ -90,12 +107,13 @@ export class CreateArticleComponent implements OnInit {
 
             this.submitted = false;
             this.success = true;
+            this.scroll.scrollToPosition([0, 0]);
 
 
           },
           error: err1 => {
             this.success = false;
-            if(err1 instanceof Object){
+            if (err1 instanceof Object) {
               this.error = err1.error;
             } else {
 
