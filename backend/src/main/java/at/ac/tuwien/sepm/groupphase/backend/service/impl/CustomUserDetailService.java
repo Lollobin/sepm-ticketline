@@ -1,13 +1,16 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
@@ -16,6 +19,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +48,7 @@ public class CustomUserDetailService implements UserService {
     private final EmailService emailService;
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
+    private final AuthenticationUtil authenticationFacade;
 
     private final UserValidator userValidator;
 
@@ -52,6 +58,7 @@ public class CustomUserDetailService implements UserService {
         EmailService emailService,
         ResetTokenService resetTokenService,
         MailBuilderService mailBuilderService,
+        AuthenticationUtil authenticationFacade,
         UserValidator userValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -59,6 +66,7 @@ public class CustomUserDetailService implements UserService {
         this.emailService = emailService;
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
+        this.authenticationFacade = authenticationFacade;
         this.userValidator = userValidator;
 
     }
@@ -97,7 +105,8 @@ public class CustomUserDetailService implements UserService {
 
         UserBuilder retrievedUser = User.builder();
         retrievedUser.username(applicationUser.getEmail()).password(applicationUser.getPassword())
-            .authorities(grantedAuthorities).accountLocked(applicationUser.isLockedAccount());
+            .authorities(grantedAuthorities).accountLocked(
+                applicationUser.isLockedAccount() || applicationUser.isMustResetPassword());
         return retrievedUser.build();
     }
 
@@ -150,6 +159,30 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void resetNumberOfFailedLoginAttempts(ApplicationUser user) {
         userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
+    }
+
+    @Override
+    public void forcePasswordReset(Integer id, AdminPasswordResetDto dto) {
+        String email = authenticationFacade.getEmail();
+
+        ApplicationUser loggedOnUser = userRepository.findUserByEmail(email);
+        Optional<ApplicationUser> userToReset = userRepository.findById((long) id);
+        if (userToReset.isEmpty()) {
+            throw new NotFoundException("User with id " + id + " does not exist in the database!");
+        } else if ((Objects.equals(loggedOnUser.getEmail(), userToReset.get().getEmail()))
+            || loggedOnUser.isHasAdministrativeRights()) {
+            ApplicationUser user = userToReset.get();
+            String token = resetTokenService.generateToken();
+            user.setResetPasswordToken(token);
+            user.setMustResetPassword(true);
+            userRepository.save(user);
+            URI resetUri = buildResetUri(dto.getClientURI(), token);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(
+                user.getEmail(), resetUri);
+            emailService.sendEmail(message);
+        } else {
+            throw new CustomAuthenticationException("You are not authorized for this action!");
+        }
     }
 
     @Override

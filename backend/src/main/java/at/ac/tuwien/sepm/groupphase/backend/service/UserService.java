@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
@@ -77,7 +78,8 @@ public interface UserService extends UserDetailsService {
     /**
      * Request a password reset mail. this will be called if a user requests the reset himself
      *
-     * @param passwordResetDto contains email and clientURI of the user that requested the password reset
+     * @param passwordResetDto contains email and clientURI of the user that requested the password
+     *                         reset
      */
     void requestPasswordReset(PasswordResetDto passwordResetDto);
 
@@ -90,4 +92,14 @@ public interface UserService extends UserDetailsService {
      *                                                                            valid.
      */
     void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto);
+
+    /**
+     * Reset the password of a user with given id and force the password reset.
+     *
+     * @param id of the user who has to reste password.
+     * @param dto Passwordreset dto containing clienturi for reseturl building and useremail
+     *
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException when user not found
+     */
+    void forcePasswordReset(Integer id, AdminPasswordResetDto dto);
 }
