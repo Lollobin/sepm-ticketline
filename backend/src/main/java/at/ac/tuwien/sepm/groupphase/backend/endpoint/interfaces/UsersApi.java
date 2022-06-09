@@ -42,6 +42,41 @@ public interface UsersApi {
     }
 
     /**
+     * DELETE /users : Deletes the user possesing the token.
+     * Only the user itself can delete a user account.
+     *
+     * @return Successful deletion of an user. (status code 204)
+     *         or The user is not logged in (status code 401)
+     *         or The user needs administrative rights (status code 403)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "usersDelete",
+        summary = "Deletes the user possesing the token.",
+        tags = { "userManagement" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Successful deletion of an user."),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.DELETE,
+        value = "/users"
+    )
+    default ResponseEntity<Void> usersDelete(
+        
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
      * GET /users : Gets a list of users
      *
      * @param filterLocked Only return locked users if this is set to true (optional)
@@ -81,44 +116,6 @@ public interface UsersApi {
                 }
             }
         });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    /**
-     * DELETE /users/{id} : Deletes the user with the given ID.
-     * Only an administrator or the user itself can delete a given user account.
-     *
-     * @param id ID of the user that is retreived (required)
-     * @return Successful deletion of an user. (status code 204)
-     *         or The user is not logged in (status code 401)
-     *         or The user needs administrative rights (status code 403)
-     *         or The user with the given ID was not found (status code 404)
-     *         or Internal Server Error (status code 500)
-     */
-    @Operation(
-        operationId = "usersIdDelete",
-        summary = "Deletes the user with the given ID.",
-        tags = { "userManagement" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Successful deletion of an user."),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
-            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/users/{id}"
-    )
-    default ResponseEntity<Void> usersIdDelete(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
-    ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -206,6 +203,7 @@ public interface UsersApi {
      * @param userWithPasswordDto  (required)
      * @return Successful update of an user. (status code 204)
      *         or The user is not logged in (status code 401)
+     *         or The user needs administrative rights (status code 403)
      *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
      */
@@ -216,6 +214,7 @@ public interface UsersApi {
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful update of an user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },

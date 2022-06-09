@@ -267,8 +267,26 @@ paths:
           description: Successful update of an user.
         401:
           $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
         422:
           description: Validation failed for an input
+        500:
+          $ref: "#/components/responses/500-internal-error"
+    delete:
+      tags:
+        - userManagement
+      summary: Deletes the user possesing the token.
+      description: Only the user itself can delete a user account.
+      security:
+        - BearerAuth: []
+      responses:
+        204:
+          description: Successful deletion of an user.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
         500:
           $ref: "#/components/responses/500-internal-error"
   /users/{id}:
@@ -289,26 +307,6 @@ paths:
                 $ref: "#/components/schemas/User"
         401:
           $ref: "#/components/responses/401-not-authenticated"
-        404:
-          description: The user with the given ID was not found
-        500:
-          $ref: "#/components/responses/500-internal-error"
-    delete:
-      tags:
-        - userManagement
-      summary: Deletes the user with the given ID.
-      description: Only an administrator or the user itself can delete a given user account.
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      security:
-        - BearerAuth: []
-      responses:
-        204:
-          description: Successful deletion of an user.
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
-        403:
-          $ref: "#/components/responses/403-forbidden"
         404:
           description: The user with the given ID was not found
         500:
