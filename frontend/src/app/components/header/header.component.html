@@ -21,6 +21,8 @@
       <li class="nav-item">
         <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/orders"
           routerLinkActive="active">Your Orders</a>
+      <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/users"
+         routerLinkActive="active">User Management</a>
       </li>
 
     </ul>

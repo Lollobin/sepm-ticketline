@@ -76,12 +76,6 @@ const routes: Routes = [
   },
   {path: "orders", component: OrderOverviewComponent},
   {
-    path: "users/:id",
-    component: UserDetailComponent,
-    canActivate: [AuthGuard],
-    data: {role: "ADMIN"}
-  },
-  {
     path: "users",
     component: UserManagementComponent,
     canActivate: [AuthGuard],

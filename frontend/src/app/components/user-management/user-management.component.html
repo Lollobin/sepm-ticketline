@@ -28,34 +28,25 @@
   </div>
 </div>
 
-
-<div id="around">
+<div class="row">
+<div class ="col" id="around">
   <h1 class="mainHeader">Users</h1>
 
   <table class="table table-striped table-hover" style="text-align:center">
     <thead>
     <tr>
 
-      <th scope="col">Username</th>
+      <th  scope="col">Username</th>
       <th scope="col">Full Name</th>
-      <th scope="col" ></th>
+
 
 
     </tr>
     </thead>
     <tbody>
-    <tr  style="cursor: pointer"  routerLink="/users/{{user.userId}}" *ngFor="let user of users" class="bottom-line">
+    <tr  style="cursor: pointer"  (click)="getDetail(user)" *ngFor="let user of users" class="bottom-line" [class.alert-primary]="user===userDetail" >
       <td class="left col-5">{{user.email}}</td>
       <td class="mid col-5">{{user.firstName}} {{user.lastName}}</td>
-      <td class="right">
-        <button *ngIf=user.lockedAccount type="button" (click)="unlockUser(user.userId, user.email)"
-                class="btn   btn-primary ">
-          <fa-icon style="padding-left: 0" [icon]="faLockOpen"></fa-icon>
-          Unlock
-        </button>
-
-      </td>
-
     </tr>
     </tbody>
   </table>
@@ -67,4 +58,9 @@
 
 </div>
 
+<div *ngIf="userDetail"   class="col">
+  <app-user-detail [user]="userDetail"></app-user-detail>
+
+</div>
+</div>
 

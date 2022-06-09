@@ -1,7 +1,7 @@
-
 import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
-import {faLockOpen, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faLockOpen} from "@fortawesome/free-solid-svg-icons";
+
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
@@ -16,7 +16,7 @@ export class UserManagementComponent implements OnInit {
   users: User[];
   error = "";
   faLockOpen = faLockOpen;
-  faArrowRight=faArrowRight;
+  faArrowRight = faArrowRight;
   success;
   firstName = "";
   lastName = "";
@@ -57,7 +57,7 @@ export class UserManagementComponent implements OnInit {
     this.userManagementService.lockStatusIdPut(id, false).subscribe({
       next: () => {
         this.userEmail = email;
-        this.success = "Successfully unlocked user with email "+ email+"!";
+        this.success = "Successfully unlocked user with email " + email + "!";
         this.reloadUser();
       },
       error: err => {
@@ -68,6 +68,9 @@ export class UserManagementComponent implements OnInit {
   }
 
 
+  getDetail(user: User) {
+    this.userDetail = user;
+  }
   public vanishError(): void {
     this.error = null;
   }
@@ -87,6 +90,5 @@ export class UserManagementComponent implements OnInit {
   private showErrorFetch(msg: string) {
     this.errorFetch = msg;
   }
-
 
 }
