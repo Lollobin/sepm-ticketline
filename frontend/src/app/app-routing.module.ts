@@ -38,7 +38,7 @@ const routes: Routes = [
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "orders", component: OrderOverviewComponent},
-  {path: "profile", component: EditUserComponent}
+  {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}}
 ];
 
 @NgModule({

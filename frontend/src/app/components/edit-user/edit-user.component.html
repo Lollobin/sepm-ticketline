@@ -173,7 +173,7 @@
                 <div class="modal-header">
                   <h5>Are you sure you want to {{this.action}} your profile?</h5>
                 </div>
-                <div class="form-group form-control" [formGroup]="passwordForm">
+                <div class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm">
                   <label for="password">Please enter your current password to confirm the changes</label>
                   <input [maxlength]="64" type="password" name="password" formControlName="password"
                     class="form-control" id="password">

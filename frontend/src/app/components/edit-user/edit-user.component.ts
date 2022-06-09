@@ -197,6 +197,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.passwordForm.reset();
       }
     });
   }
