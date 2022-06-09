@@ -132,17 +132,16 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public void put(UserWithPasswordDto userWithPasswordDto) {
-        ApplicationUser applicationUser = this.userRepository.findUserByEmail(
-            this.authenticationFacade.getEmail());
-        if (applicationUser == null) {
-            throw new ValidationException("User with email from authentication token does not exist");
-        }
-        int userId = Math.toIntExact(applicationUser.getUserId());
+        ApplicationUser tokenUser = findByCurrentUser();
+        int userId = Math.toIntExact(tokenUser.getUserId());
+
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
-        if (Boolean.TRUE.equals(this.userRepository.existsByEmail(userWithPasswordDto.getEmail()))
-            && this.userRepository.findUserByEmail(userWithPasswordDto.getEmail()).getUserId() != userId) {
-            throw new ConflictException("User with given email already exists, use another email");
+
+        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        if (emailUser != null && emailUser.getUserId() != userId) {
+            throw new ConflictException("This email is not allowed, try another one");
         }
+
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
         appUser.setUserId(userId);
         LOGGER.debug("Attempting to update {}", appUser);
@@ -156,6 +155,14 @@ public class CustomUserDetailService implements UserService {
         boolean isLocked = filterLocked != null && filterLocked;
 
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
+    }
+
+    @Override
+    public ApplicationUser findByCurrentUser() {
+        String email = authenticationFacade.getEmail();
+        LOGGER.debug("Looking for user with email {}", email);
+
+        return this.findApplicationUserByEmail(email);
     }
 
 
