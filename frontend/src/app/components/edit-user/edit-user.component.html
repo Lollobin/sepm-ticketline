@@ -23,7 +23,7 @@
           </button></h4>
       </header>
       <article class="card-body">
-        <form [formGroup]="registrationForm">
+        <form [formGroup]="editForm">
 
           <div class="row">
             <div class="col form-group">
@@ -86,9 +86,9 @@
                 <label for="street">Street</label>
                 <input [maxlength]="100" type="text" id="street" value="street" formControlName="street"
                   class="form-control" placeholder="{{this.user.address.street}}">
-                <div *ngIf="registrationForm.get('address.street').touched || submitted" class="error">
+                <div *ngIf="editForm.get('address.street').touched || submitted" class="error">
                   <small class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.street').errors?.required">Street must be filled in!
+                    *ngIf="editForm.get('address.street').errors?.required">Street must be filled in!
                   </small>
                 </div>
               </div>
@@ -98,9 +98,9 @@
                 <label for="houseNumber">House No.</label>
                 <input [maxlength]="40" type="text" id="houseNumber" value="houseNumber" formControlName="houseNumber"
                   class="form-control" placeholder="{{this.user.address.houseNumber}}">
-                <div *ngIf="registrationForm.get('address.houseNumber').touched || submitted" class="error">
+                <div *ngIf="editForm.get('address.houseNumber').touched || submitted" class="error">
                   <small class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.houseNumber').errors?.required">House Number must be filled in!
+                    *ngIf="editForm.get('address.houseNumber').errors?.required">House Number must be filled in!
                   </small>
                 </div>
               </div>
@@ -113,9 +113,9 @@
                 <label for="zipCode">Zip Code</label>
                 <input [maxlength]="16" type="text" id="zipCode" value="zipCode" formControlName="zipCode"
                   class="form-control" placeholder="{{this.user.address.zipCode}}">
-                <div *ngIf="registrationForm.get('address.zipCode').touched || submitted" class="error">
+                <div *ngIf="editForm.get('address.zipCode').touched || submitted" class="error">
                   <small class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.zipCode').errors?.required">Zip Code must be filled in!
+                    *ngIf="editForm.get('address.zipCode').errors?.required">Zip Code must be filled in!
                   </small>
                 </div>
               </div>
@@ -123,9 +123,9 @@
                 <label for="city">City</label>
                 <input [maxlength]="100" type="text" id="city" value="city" formControlName="city" class="form-control"
                   placeholder="{{this.user.address.city}}">
-                <div *ngIf="registrationForm.get('address.city').touched || submitted" class="error">
+                <div *ngIf="editForm.get('address.city').touched || submitted" class="error">
                   <small class="form-text text-warning"
-                    *ngIf="registrationForm.get('address.city').errors?.required">City must be filled in!
+                    *ngIf="editForm.get('address.city').errors?.required">City must be filled in!
                   </small>
                 </div>
               </div>
@@ -136,35 +136,21 @@
               <label for="country">Country</label>
               <input [maxlength]="100" type="text" id="country" value="country" formControlName="country"
                 class="form-control" placeholder="{{this.user.address.country}}">
-              <div *ngIf="registrationForm.get('address.country').touched || submitted" class="error">
+              <div *ngIf="editForm.get('address.country').touched || submitted" class="error">
                 <small class="form-text text-warning"
-                  *ngIf="registrationForm.get('address.country').errors?.required">Country must be filled in!
+                  *ngIf="editForm.get('address.country').errors?.required">Country must be filled in!
                 </small>
               </div>
             </div>
 
           </div>
           <hr>
-          <!-- <div class="form-group">
-            <label for="password">Current Password</label>
-            <input [maxlength]="64" type="password" name="password" formControlName="password" class="form-control"
-              id="password">
-            <div *ngIf="(f.password.touched|| submitted) && f.password.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.password.errors.required">Your password
-                is
-                required!
-              </small>
-              <small class="form-text text-warning" *ngIf="f.password.errors.minlength">Your password must be at least 8
-                characters long!
-              </small>
-            </div>
-          </div> -->
-
           <button type="button" class="btn btn-outline-primary" routerLink="/" (click)="clearForm()"> Cancel
           </button>
-          <button type="submit" class="btn btn-primary form-group" style="margin-left: 5px;" (click)="openModal(); setAction('edit')"
-            [disabled]="!this.registrationForm.valid">Submit</button>
-          <button type="delete" class="btn btn-danger form-group float-end" style="margin-left: 5px;" (click)="openModal(); setAction('delete')">Delete
+          <button type="submit" class="btn btn-primary form-group" style="margin-left: 5px;"
+            (click)="openModal(); setAction('edit')" [disabled]="!this.editForm.valid">Submit</button>
+          <button type="delete" class="btn btn-danger form-group float-end" style="margin-left: 5px;"
+            (click)="openModal(); setAction('delete')">Delete
             Profile</button>
           <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
             style="background: rgba(0,0,0, .5); padding-top: 15%">
@@ -191,7 +177,8 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-primary" (click)="confirmUser(); onCloseHandled()"
                     [disabled]="!this.passwordForm.valid">Confirm</button>
-                  <button type="button" class="btn btn-secondary" (click)="onCloseHandled(); this.passwordForm.reset()">Close</button>
+                  <button type="button" class="btn btn-secondary"
+                    (click)="onCloseHandled(); this.passwordForm.reset()">Close</button>
                 </div>
               </div>
             </div>

@@ -13,7 +13,7 @@ import { AuthRequest } from 'src/app/dtos/auth-request';
 })
 export class EditUserComponent implements OnInit {
 
-  registrationForm: FormGroup;
+  editForm: FormGroup;
   passwordForm: FormGroup;
   submitted = false;
   user = {
@@ -31,9 +31,9 @@ export class EditUserComponent implements OnInit {
   display = "none";
   action = "none";
 
-  constructor(private formBuilder: FormBuilder, private authService: CustomAuthService, 
+  constructor(private formBuilder: FormBuilder, private authService: CustomAuthService,
     private userManagementService: UserManagementService, private router: Router) {
-    this.registrationForm = this.formBuilder.group({
+    this.editForm = this.formBuilder.group({
       firstName: ["", [Validators.required]],
       lastName: ["", [Validators.required]],
       email: ["", [Validators.required, Validators.email]],
@@ -53,7 +53,7 @@ export class EditUserComponent implements OnInit {
   }
 
   get f() {
-    return this.registrationForm.controls;
+    return this.editForm.controls;
   }
 
   get p() {
@@ -70,10 +70,10 @@ export class EditUserComponent implements OnInit {
         this.user = next;
         console.log("Succesfully got user with id " + next.userId);
         this.error = false;
-        this.registrationForm.controls['firstName'].setValue(this.user.firstName);
-        this.registrationForm.controls['lastName'].setValue(this.user.lastName);
-        this.registrationForm.controls['gender'].setValue(this.user.gender);
-        this.registrationForm.controls['email'].setValue(this.user.email);
+        this.editForm.controls['firstName'].setValue(this.user.firstName);
+        this.editForm.controls['lastName'].setValue(this.user.lastName);
+        this.editForm.controls['gender'].setValue(this.user.gender);
+        this.editForm.controls['email'].setValue(this.user.email);
         const address = {
           houseNumber: this.user.address.houseNumber,
           street: this.user.address.street,
@@ -81,7 +81,7 @@ export class EditUserComponent implements OnInit {
           city: this.user.address.city,
           country: this.user.address.country
         };
-        this.registrationForm.controls['address'].patchValue(address);
+        this.editForm.controls['address'].setValue(address);
         this.error = false;
       },
       error: (error) => {
@@ -99,26 +99,26 @@ export class EditUserComponent implements OnInit {
 
   putUser() {
     const user = {
-      firstName: this.registrationForm.value.firstName,
-      lastName: this.registrationForm.value.lastName,
-      gender: this.registrationForm.value.gender,
-      email: this.registrationForm.value.email,
+      firstName: this.editForm.value.firstName,
+      lastName: this.editForm.value.lastName,
+      gender: this.editForm.value.gender,
+      email: this.editForm.value.email,
       address: {
-        houseNumber: this.registrationForm.value.address.houseNumber,
-        street: this.registrationForm.value.address.street,
-        zipCode: this.registrationForm.value.address.zipCode,
-        city: this.registrationForm.value.address.city,
-        country: this.registrationForm.value.address.country
+        houseNumber: this.editForm.value.address.houseNumber,
+        street: this.editForm.value.address.street,
+        zipCode: this.editForm.value.address.zipCode,
+        city: this.editForm.value.address.city,
+        country: this.editForm.value.address.country
       },
       password: this.passwordForm.value.password
     };
     this.userManagementService.usersPut(user).subscribe({
-      next: (next) => {
+      next: (_next) => {
         console.log("Succesfully updated user information");
         this.reloadToken();
         this.error = false;
         this.success = true;
-      }, 
+      },
       error: (error) => {
         console.error("Error putting user from authentication token");
         this.error = true;
@@ -129,6 +129,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.passwordForm.reset();
       }
     });
   }
@@ -150,7 +151,7 @@ export class EditUserComponent implements OnInit {
   }
 
   clearForm() {
-    this.registrationForm.reset();
+    this.editForm.reset();
   }
 
   setAction(text: string) {
@@ -162,14 +163,14 @@ export class EditUserComponent implements OnInit {
   }
 
   confirm() {
-    if (this.action === "edit"){
+    if (this.action === "edit") {
       this.putUser();
     } else if (this.action === "delete") {
-
+      // TODO: implement delete functionality
     }
   }
 
-   confirmUser() {
+  confirmUser() {
     this.submitted = true;
     if (this.passwordForm.valid) {
       const authRequest: AuthRequest = new AuthRequest(this.user.email, this.passwordForm.controls.password.value);
@@ -203,7 +204,7 @@ export class EditUserComponent implements OnInit {
   }
 
   reloadToken() {
-    const authRequest: AuthRequest = new AuthRequest(this.registrationForm.controls.email.value, this.passwordForm.controls.password.value);
+    const authRequest: AuthRequest = new AuthRequest(this.editForm.controls.email.value, this.passwordForm.controls.password.value);
     this.passwordForm.reset();
     console.log('Try to authenticate user: ' + authRequest.email);
     this.authService.loginUser(authRequest).subscribe({

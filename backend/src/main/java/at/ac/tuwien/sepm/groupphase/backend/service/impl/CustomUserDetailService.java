@@ -132,12 +132,16 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public void put(UserWithPasswordDto userWithPasswordDto) {
-        ApplicationUser applicationUser = findByCurrentUser();
-        int userId = Math.toIntExact(applicationUser.getUserId());
+        ApplicationUser tokenUser = findByCurrentUser();
+        int userId = Math.toIntExact(tokenUser.getUserId());
+
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
-        if (applicationUser.getUserId() != userId) {
-            throw new ConflictException("User with given email already exists, use another email");
+
+        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        if (emailUser != null && emailUser.getUserId() != userId) {
+            throw new ConflictException("This email is not allowed, try another one");
         }
+
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
         appUser.setUserId(userId);
         LOGGER.debug("Attempting to update {}", appUser);
