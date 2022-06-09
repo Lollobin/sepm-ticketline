@@ -19,6 +19,8 @@ import {
 import { CreateLocationComponent } from "./components/create-location/create-location.component";
 import { LocationSeatingPlansComponent } from "./components/location-seating-plans/location-seating-plans.component";
 import { LocationAdminOverviewComponent } from "./components/location-admin-overview/location-admin-overview.component";
+import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -36,7 +38,9 @@ const routes: Routes = [
   {path: 'events/:id/shows', component: ShowSearchResultComponent},
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path: "orders", component: OrderOverviewComponent}
+  {path: "orders", component: OrderOverviewComponent},
+  {path:'passwordReset', component: PasswordResetComponent},
+  {path:'passwordUpdate', component: PasswordUpdateComponent}
 ];
 
 @NgModule({
