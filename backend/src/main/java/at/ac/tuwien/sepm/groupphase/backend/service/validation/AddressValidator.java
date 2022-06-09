@@ -34,14 +34,14 @@ public class AddressValidator {
 
     private void validateHouseNo(String houseNumber) {
         if (houseNumber.length() > 40) {
-            throw new ValidationException("houseNumber must be at most 16 characters long");
+            throw new ValidationException("houseNumber must be at most 40 characters long");
         }
         validateNotEmpty(houseNumber, "Check House number! ");
     }
 
     private void validateCountry(String country) {
         if (country.length() > 100) {
-            throw new ValidationException("country must be at most 16 characters long");
+            throw new ValidationException("country must be at most 100 characters long");
         }
         validateNotEmpty(country, "Check Country! ");
         if (!Pattern.matches("([A-Za-z0-9_äÄöÖüÜß])+", country)) {
@@ -51,14 +51,14 @@ public class AddressValidator {
 
     private void validateStreet(String street) {
         if (street.length() > 100) {
-            throw new ValidationException("street must be at most 16 characters long");
+            throw new ValidationException("street must be at most 100 characters long");
         }
         validateNotEmpty(street, "Check Street! ");
     }
 
     private void validateCity(String city) {
         if (city.length() > 100) {
-            throw new ValidationException("city must be at most 16 characters long");
+            throw new ValidationException("city must be at most 100 characters long");
         }
         validateNotEmpty(city, "Check City! ");
     }
