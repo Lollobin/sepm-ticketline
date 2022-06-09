@@ -6,6 +6,8 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,5 +35,12 @@ public class ImagesEndpoint implements ImagesApi {
             .buildAndExpand(imageId).toUri();
 
         return ResponseEntity.noContent().location(location).build();
+    }
+
+    @Override
+    public ResponseEntity<Resource> imagesIdGet(Integer id) {
+        LOGGER.info("GET /images/{}", id);
+        Resource resource = imageService.getImageById(Long.valueOf(id));
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(resource);
     }
 }
