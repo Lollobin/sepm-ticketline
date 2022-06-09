@@ -19,7 +19,7 @@ export class EditUserComponent implements OnInit {
   user = {
     firstName: "", lastName: "", email: "", gender: "",
     address: { houseNumber: "", street: "", zipCode: "", city: "", country: "" }
-  }
+  };
   error = false;
   errorMessage = '';
   success = false;
@@ -49,7 +49,7 @@ export class EditUserComponent implements OnInit {
     );
     this.passwordForm = this.formBuilder.group({
       password: ["", [Validators.required, Validators.minLength(8)]]
-    })
+    });
   }
 
   get f() {
@@ -98,7 +98,7 @@ export class EditUserComponent implements OnInit {
   }
 
   putUser() {
-    let user = {
+    const user = {
       firstName: this.registrationForm.value.firstName,
       lastName: this.registrationForm.value.lastName,
       gender: this.registrationForm.value.gender,
@@ -111,7 +111,7 @@ export class EditUserComponent implements OnInit {
         country: this.registrationForm.value.address.country
       },
       password: this.passwordForm.value.password
-    }
+    };
     this.userManagementService.usersPut(user).subscribe({
       next: (next) => {
         console.log("Succesfully updated user information");
@@ -130,7 +130,7 @@ export class EditUserComponent implements OnInit {
           this.errorMessage = error.error;
         }
       }
-    })
+    });
   }
 
   openModal() {
@@ -154,7 +154,7 @@ export class EditUserComponent implements OnInit {
   }
 
   setAction(text: string) {
-    if (text == "edit" || text == "delete") {
+    if (text === "edit" || text === "delete") {
       this.action = text;
     } else {
       this.action = "none";
