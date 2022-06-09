@@ -148,12 +148,14 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        required: true
         content:
-          image/*:
+          multipart/form-data:
             schema:
-              type: string
-              format: binary
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
       responses:
         201:
           description: Successful upload of an image.
@@ -248,13 +250,10 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /users/{id}:
     put:
       tags:
         - userManagement
-      summary: Updates information of an user with the given data.
-      parameters:
-        - $ref: "#/components/parameters/userId"
+      summary: Updates information of a user possesing the token.
       security:
         - BearerAuth: []
       requestBody:
@@ -272,6 +271,7 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
+  /users/{id}:
     get:
       tags:
         - userManagement

@@ -22,6 +22,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
@@ -62,6 +63,9 @@ class ApplicationUserServiceTest implements TestData {
     private ResetTokenService resetTokenService;
 
     @Mock
+    private AuthenticationUtil authenticationFacade;
+
+    @Mock
     private EmailService emailService;
 
     private UserService userService;
@@ -72,7 +76,7 @@ class ApplicationUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            userValidator);
+            userValidator, authenticationFacade);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
