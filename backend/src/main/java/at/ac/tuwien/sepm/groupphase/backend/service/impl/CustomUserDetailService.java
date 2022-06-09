@@ -132,7 +132,7 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public void put(UserWithPasswordDto userWithPasswordDto) {
-        ApplicationUser applicationUser = this.findApplicationUserByEmail(this.authenticationFacade.getEmail());
+        ApplicationUser applicationUser = findByCurrentUser();
         int userId = Math.toIntExact(applicationUser.getUserId());
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
         if (applicationUser.getUserId() != userId) {
