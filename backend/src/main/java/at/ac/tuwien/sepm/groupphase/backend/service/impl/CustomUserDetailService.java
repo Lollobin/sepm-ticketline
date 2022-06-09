@@ -132,15 +132,10 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public void put(UserWithPasswordDto userWithPasswordDto) {
-        ApplicationUser applicationUser = this.userRepository.findUserByEmail(
-            this.authenticationFacade.getEmail());
-        if (applicationUser == null) {
-            throw new ValidationException("User with email from authentication token does not exist");
-        }
+        ApplicationUser applicationUser = this.findApplicationUserByEmail(this.authenticationFacade.getEmail());
         int userId = Math.toIntExact(applicationUser.getUserId());
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
-        if (Boolean.TRUE.equals(this.userRepository.existsByEmail(userWithPasswordDto.getEmail()))
-            && this.userRepository.findUserByEmail(userWithPasswordDto.getEmail()).getUserId() != userId) {
+        if (applicationUser.getUserId() != userId) {
             throw new ConflictException("User with given email already exists, use another email");
         }
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
