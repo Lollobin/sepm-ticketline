@@ -15,7 +15,8 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Find a user in the context of Spring Security based on the email address <br> For more
-     * information have a look at this tutorial: https://www.baeldung.com/spring-security-authentication-with-a-database
+     * information have a look at this tutorial:
+     * https://www.baeldung.com/spring-security-authentication-with-a-database
      *
      * @param email the email address
      * @return a Spring Security user
@@ -40,7 +41,8 @@ public interface UserService extends UserDetailsService {
      *                                                                            fails because of
      *                                                                            Duplicate Email,
      *                                                                            invalid field
-     *                                                                            values, or whitespace-only
+     *                                                                            values, or
+     *                                                                            whitespace-only
      *                                                                            values.
      */
     void save(UserWithPasswordDto user);
@@ -77,7 +79,8 @@ public interface UserService extends UserDetailsService {
     /**
      * Request a password reset mail. this will be called if a user requests the reset himself
      *
-     * @param passwordResetDto contains email and clientURI of the user that requested the password reset
+     * @param passwordResetDto contains email and clientURI of the user that requested the password
+     *                         reset
      */
     void requestPasswordReset(PasswordResetDto passwordResetDto);
 
@@ -90,4 +93,12 @@ public interface UserService extends UserDetailsService {
      *                                                                            valid.
      */
     void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto);
+
+    /**
+     * Update the list of read articles of a user.
+     *
+     * @param email     updates the list of the user with the corresponding email
+     * @param articleId add article with corresponding articleId to user
+     */
+    void updateArticleRead(String email, Long articleId);
 }
