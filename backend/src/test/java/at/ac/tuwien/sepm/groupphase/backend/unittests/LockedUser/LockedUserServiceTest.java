@@ -69,9 +69,8 @@ class LockedUserServiceTest implements TestData {
     @BeforeEach
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
-            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService, articleRepository,
+            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService, articleRepository
             ,
-            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
             userValidator, authenticationFacade);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 

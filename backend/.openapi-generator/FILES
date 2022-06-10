@@ -13,7 +13,6 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventSearchResul
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/EventWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/FullTicketWithStatusDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/GenderDto.java
-src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ImageDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/InvoiceItemDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/LocationSearchDto.java
