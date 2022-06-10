@@ -41,7 +41,6 @@ public interface ReadArticleStatusApi {
      * PUT /readArticleStatus/{id} : Sets the status to read or unread for an article for the current user
      *
      * @param id ID of the user that is retreived (required)
-     * @param body  (required)
      * @return Successful set the \&quot;read\&quot;-status of an article for an user (status code 200)
      *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
@@ -61,12 +60,10 @@ public interface ReadArticleStatusApi {
     )
     @RequestMapping(
         method = RequestMethod.PUT,
-        value = "/readArticleStatus/{id}",
-        consumes = { "application/json" }
+        value = "/readArticleStatus/{id}"
     )
     default ResponseEntity<Void> readArticleStatusIdPut(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id,
-        @Parameter(name = "body", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody Boolean body
+        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
