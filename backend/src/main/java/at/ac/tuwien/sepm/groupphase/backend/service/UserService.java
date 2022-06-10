@@ -61,6 +61,13 @@ public interface UserService extends UserDetailsService {
     Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable);
 
     /**
+     * Returns the information of the current user.
+     *
+     * @return user entity of the current user
+     */
+    ApplicationUser findByCurrentUser();
+
+    /**
      * Increase the Number of failed login attempts by one.
      *
      * @param user whose login attempt number will be increased

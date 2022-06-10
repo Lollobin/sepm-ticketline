@@ -63,7 +63,7 @@ paths:
         200:
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         401:
@@ -276,8 +276,10 @@ paths:
     delete:
       tags:
         - userManagement
-      summary: Deletes the user possesing the token.
-      description: Only the user itself can delete a user account.
+      summary: Deletes the user with the given ID.
+      description: Only an administrator or the user itself can delete a given user account.
+      parameters:
+        - $ref: "#/components/parameters/userId"
       security:
         - BearerAuth: []
       responses:
@@ -287,6 +289,28 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         403:
           $ref: "#/components/responses/403-forbidden"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /userInfo:
+    get:
+      tags:
+        - userManagement
+      summary: Gets user info of user possesing the token.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
   /users/{id}:
