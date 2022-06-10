@@ -40,6 +40,7 @@ import { PasswordResetComponent } from "./components/password-reset/password-res
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import { NewsOverviewComponent } from './components/news-overview/news-overview.component';
 import { ArticleDetailedViewComponent } from './components/article-detailed-view/article-detailed-view.component';
+import {LazyLoadImageModule} from "ng-lazyload-image";
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { ArticleDetailedViewComponent } from './components/article-detailed-view
     NgbModule,
     FormsModule,
     FontAwesomeModule,
+      LazyLoadImageModule
   ],
   providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent]
