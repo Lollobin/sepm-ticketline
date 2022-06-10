@@ -45,7 +45,6 @@ public class CustomUserDetailService implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
-    private final AddressRepository addressRepository;
     private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
@@ -74,7 +73,6 @@ public class CustomUserDetailService implements UserService {
         this.mailBuilderService = mailBuilderService;
         this.userValidator = userValidator;
         this.authenticationFacade = authenticationFacade;
-        this.addressRepository = addressRepository;
         this.ticketRepository = ticketRepository;
     }
 
@@ -171,10 +169,10 @@ public class CustomUserDetailService implements UserService {
 
         final Address oldAddress = applicationUser.getAddress();
         invalidateUser(applicationUser);
+        applicationUser.getAddress().setAddressId(oldAddress.getAddressId());
 
         LOGGER.debug("Attempting to update {} to invalid user (delete)", applicationUser);
         userRepository.save(applicationUser);
-        addressRepository.delete(oldAddress);
     }
 
     @Override
