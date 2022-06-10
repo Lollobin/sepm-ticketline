@@ -7,6 +7,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,6 +24,7 @@ public class ImagesEndpoint implements ImagesApi {
     }
 
 
+    @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<Void> imagesPost(MultipartFile fileName) {
         LOGGER.info("POST /images with body {}", fileName);
