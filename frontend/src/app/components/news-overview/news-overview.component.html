@@ -3,15 +3,16 @@
   <div class="card mb-3" style="max-width: 1000px; margin: 0 auto" *ngFor="let article of articles">
     <div class="row g-0">
       <div class="col-md-4" >
-        <img  *ngIf="!articleImages[article.articleId]" src="https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp" class="img-fluid rounded-start mx-auto" alt="...">
-<!--        <img *ngIf="article?.images.length > 0" src="http://localhost:8080/images/{{article.images[0]}}" class="img-fluid rounded-start" alt="...">-->
-        <img style="max-height: 15rem" *ngIf="articleImages[article.articleId]" [src]="articleImages[article.articleId]" class="img-fluid rounded-start mx-auto d-block" alt="...">
+        <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
+             class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
+
+
       </div>
       <div class="col-md-8">
         <div class="card-body">
           <h3 class="card-title">{{article.title}}</h3>
           <p class="card-text">{{article?.summary}}</p>
-          <p class="card-text"><small class="text-muted">Created on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
+          <p class="bottom-0" ><small class="text-muted" style="bottom: 1rem; position: absolute">Created on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
         </div>
         <a style="position: absolute; bottom: 4%; right: 4%" [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read article</a>
 

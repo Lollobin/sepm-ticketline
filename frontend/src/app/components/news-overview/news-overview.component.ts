@@ -14,6 +14,9 @@ export class NewsOverviewComponent implements OnInit {
   empty = false;
   filterRead = null;
   articleImages = {};
+  defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
+  errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
+
 
 
   constructor(public articleService: ArticlesService, private router: Router) {
@@ -33,6 +36,10 @@ export class NewsOverviewComponent implements OnInit {
         for (const article of this.articles) {
 
           this.getImage(article.images[0], article.articleId);
+
+          if (article.images?.length === 0) {
+            this.articleImages[article.articleId] = this.errorImage;
+          }
 
 
         }
