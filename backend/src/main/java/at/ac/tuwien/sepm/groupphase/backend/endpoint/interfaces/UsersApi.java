@@ -47,7 +47,6 @@ public interface UsersApi {
      *
      * @return Successful deletion of a user. (status code 204)
      *         or The user is not logged in (status code 401)
-     *         or The user needs administrative rights (status code 403)
      *         or The user with the given ID was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
@@ -58,7 +57,6 @@ public interface UsersApi {
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful deletion of a user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
@@ -205,7 +203,6 @@ public interface UsersApi {
      * @param userWithPasswordDto  (required)
      * @return Successful update of an user. (status code 204)
      *         or The user is not logged in (status code 401)
-     *         or The user needs administrative rights (status code 403)
      *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
      */
@@ -216,7 +213,6 @@ public interface UsersApi {
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful update of an user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },

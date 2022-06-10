@@ -267,8 +267,6 @@ paths:
           description: Successful update of an user.
         401:
           $ref: "#/components/responses/401-not-authenticated"
-        403:
-          $ref: "#/components/responses/403-forbidden"
         422:
           description: Validation failed for an input
         500:
@@ -285,8 +283,6 @@ paths:
           description: Successful deletion of a user.
         401:
           $ref: "#/components/responses/401-not-authenticated"
-        403:
-          $ref: "#/components/responses/403-forbidden"
         404:
           description: The user with the given ID was not found
         500:
