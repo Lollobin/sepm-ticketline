@@ -36,7 +36,7 @@ public class ReadArticlesEndpoint implements ReadArticleStatusApi {
 
         userService.updateArticleRead(userWhoReadArticle, id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
 }
