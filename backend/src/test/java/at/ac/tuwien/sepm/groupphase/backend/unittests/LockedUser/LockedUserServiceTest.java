@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -59,13 +60,17 @@ class LockedUserServiceTest implements TestData {
     @Mock
     private LockedStatusValidator lockedStatusValidator;
 
+    @Mock
+    private ArticleRepository articleRepository;
+
     private UserService userService;
     private LockedServiceImpl lockedService;
 
     @BeforeEach
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
-            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
+            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService, articleRepository
+            ,
             userValidator, authenticationFacade);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 
