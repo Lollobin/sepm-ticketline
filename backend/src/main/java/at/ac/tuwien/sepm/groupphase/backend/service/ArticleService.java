@@ -5,10 +5,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
 public interface ArticleService {
 
     /**
-     * Saves a new article.
+     * Saves an article.
      *
      * @param articleWithoutIdDto article which will be saved
+     * @return ID of article
      */
-    void createNewsArticle(ArticleWithoutIdDto articleWithoutIdDto);
+    long createNewsArticle(ArticleWithoutIdDto articleWithoutIdDto);
 
 }
