@@ -74,7 +74,7 @@ class LockedUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            articleRepository, userValidator, authenticationFacade, ticketRepository);
+            userValidator, authenticationFacade, ticketRepository, articleRepository);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 
 
