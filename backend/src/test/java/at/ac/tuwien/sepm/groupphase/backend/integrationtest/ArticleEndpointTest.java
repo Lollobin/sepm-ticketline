@@ -84,7 +84,7 @@ class ArticleEndpointTest {
             .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-//        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
 
         List<Article> persistedArticles = articleRepository.findAll();
 
