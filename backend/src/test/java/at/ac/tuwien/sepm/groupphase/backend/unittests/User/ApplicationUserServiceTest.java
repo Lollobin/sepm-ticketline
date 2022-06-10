@@ -21,6 +21,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMa
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -50,6 +52,10 @@ class ApplicationUserServiceTest implements TestData {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private AddressRepository addressRepository;
+    @Mock
+    private TicketRepository ticketRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserEncodePasswordMapper userEncodePasswordMapper;
@@ -76,7 +82,7 @@ class ApplicationUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            userValidator, authenticationFacade);
+            userValidator, authenticationFacade, addressRepository, ticketRepository);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);

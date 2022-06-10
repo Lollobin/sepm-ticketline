@@ -42,22 +42,24 @@ public interface UsersApi {
     }
 
     /**
-     * DELETE /users : Deletes the user possesing the token.
-     * Only the user itself can delete a user account.
+     * DELETE /users : Deletes the user posessing the token.
+     * Only the user itself can delete a given user account.
      *
-     * @return Successful deletion of an user. (status code 204)
+     * @return Successful deletion of a user. (status code 204)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
+     *         or The user with the given ID was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
         operationId = "usersDelete",
-        summary = "Deletes the user possesing the token.",
+        summary = "Deletes the user posessing the token.",
         tags = { "userManagement" },
         responses = {
-            @ApiResponse(responseCode = "204", description = "Successful deletion of an user."),
+            @ApiResponse(responseCode = "204", description = "Successful deletion of a user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
         security = {

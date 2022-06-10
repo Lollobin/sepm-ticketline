@@ -276,15 +276,13 @@ paths:
     delete:
       tags:
         - userManagement
-      summary: Deletes the user with the given ID.
-      description: Only an administrator or the user itself can delete a given user account.
-      parameters:
-        - $ref: "#/components/parameters/userId"
+      summary: Deletes the user posessing the token.
+      description: Only the user itself can delete a given user account.
       security:
         - BearerAuth: []
       responses:
         204:
-          description: Successful deletion of an user.
+          description: Successful deletion of a user.
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
