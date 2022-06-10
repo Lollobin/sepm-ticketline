@@ -41,7 +41,7 @@ public interface TopEventsApi {
 
     /**
      * GET /topEvents : Searches for events that have the highest amount of tickets sold per category for a given month
-     * Searches for data depending on the query parameters. When no query parameters are given, an error is returned.
+     * Searches for data depending on the query parameters. When no query parameters are given, all events are compared.
      *
      * @param search  (optional)
      * @return Successful retreival of events (status code 200)
