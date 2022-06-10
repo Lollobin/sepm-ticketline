@@ -96,7 +96,7 @@ public interface PasswordResetApi {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/passwordReset",
-        produces = { "application/json" },
+        produces = { "text/plain" },
         consumes = { "application/json" }
     )
     default ResponseEntity<String> passwordResetPost(

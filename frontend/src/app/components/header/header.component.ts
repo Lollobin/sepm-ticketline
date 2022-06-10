@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomAuthService} from '../../services/custom-auth.service';
-import {faEye, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faCircleInfo,faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-header',
@@ -10,6 +10,7 @@ import {faEye, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
 export class HeaderComponent implements OnInit {
   eye = faEye;
   info= faCircleInfo;
+  user = faUser;
   adminView=false;
 
   constructor(public authService: CustomAuthService) { }
