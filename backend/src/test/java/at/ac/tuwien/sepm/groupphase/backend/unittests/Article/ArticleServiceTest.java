@@ -13,10 +13,10 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ArticleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ImageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArticleService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ImageService;
+import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.ArticleServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ArticleValidator;
 import java.util.ArrayList;
@@ -42,8 +42,6 @@ class ArticleServiceTest {
     @Mock
     private ImageRepository imageRepository;
 
-    @Mock
-    private FileSystemRepository fileSystemRepository;
 
     @Mock
     private ImageService imageService;
@@ -51,13 +49,17 @@ class ArticleServiceTest {
     @Mock
     private ArticleValidator articleValidator;
 
+    @Mock
+    private UserService userService;
+
     private ArticleService articleService;
+
 
     @BeforeEach
     void setUp() {
 
         articleService = new ArticleServiceImpl(articleRepository, imageService, imageRepository,
-            articleMapper, articleValidator);
+            articleMapper, articleValidator, userService);
     }
 
     @Test
@@ -69,6 +71,7 @@ class ArticleServiceTest {
         articleWithoutIdDto.setText(ARTICLE_TEXT);
 
         Article fakedPersisted = new Article();
+        fakedPersisted.setArticleId(1L);
         fakedPersisted.setTitle(ARTICLE_TITLE);
         fakedPersisted.setSummary(ARTICLE_SUMMARY);
         fakedPersisted.setText(ARTICLE_TEXT);

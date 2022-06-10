@@ -47,7 +47,7 @@ class ArticleValidatorTest {
 
         ValidationException exception = Assertions.assertThrows(ValidationException.class, ()-> articleValidator.checkIfArticleIsValid(articleWithoutIdDto, imageRepository));
 
-        String expectedMessage = "Title of article can not be empty & Image with id 1 does not exist";
+        String expectedMessage = "Title of article can not be empty & Summary of article can not be empty & Text of article can not be empty & Image with id 1 does not exist";
 
         assertEquals(exception.getMessage(), expectedMessage);
 
