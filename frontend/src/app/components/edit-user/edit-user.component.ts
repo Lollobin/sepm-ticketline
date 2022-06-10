@@ -153,7 +153,7 @@ export class EditUserComponent implements OnInit {
         }
         this.passwordForm.reset();
       }
-    })
+    });
   }
 
   openModal() {
