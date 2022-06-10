@@ -52,8 +52,6 @@ class ApplicationUserServiceTest implements TestData {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private AddressRepository addressRepository;
-    @Mock
     private TicketRepository ticketRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -82,7 +80,7 @@ class ApplicationUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            userValidator, authenticationFacade, addressRepository, ticketRepository);
+            userValidator, authenticationFacade, ticketRepository);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
