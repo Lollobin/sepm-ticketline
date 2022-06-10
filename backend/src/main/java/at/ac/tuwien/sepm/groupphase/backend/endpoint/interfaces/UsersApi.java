@@ -58,7 +58,6 @@ public interface UsersApi {
         responses = {
             @ApiResponse(responseCode = "204", description = "Successful deletion of a user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
             @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
