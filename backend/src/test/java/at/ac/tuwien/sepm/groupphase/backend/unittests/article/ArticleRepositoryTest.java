@@ -37,11 +37,9 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser1.get(1).getArticleId(), -1)
         );
 
-
         List<Article> articlesReadByUser2 = articleRepository.findByUsersUserIdEquals(-2);
         assertThat(articlesReadByUser2).hasSize(1);
         assertEquals(articlesReadByUser2.get(0).getArticleId(), -1);
-
 
         List<Article> articlesReadByUser3 = articleRepository.findByUsersUserIdEquals(-3);
         assertThat(articlesReadByUser3).hasSize(3);
@@ -51,11 +49,9 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser3.get(2).getArticleId(), -1)
         );
 
-
         List<Article> articlesReadByUser4 = articleRepository.findByUsersUserIdEquals(-4);
         assertThat(articlesReadByUser4).hasSize(1);
         assertEquals(articlesReadByUser4.get(0).getArticleId(), -1);
-
 
         List<Article> articlesReadByUser5 = articleRepository.findByUsersUserIdEquals(-5);
         assertThat(articlesReadByUser5).isEmpty();
@@ -75,7 +71,6 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser1.get(1).getArticleId(), -2)
         );
 
-
         List<Article> articlesReadByUser2 = articleRepository.findDistinctByUsersUserIdNot(-2);
         assertThat(articlesReadByUser2).hasSize(3);
         assertAll(
@@ -84,11 +79,9 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser2.get(2).getArticleId(), -2)
         );
 
-
         List<Article> articlesReadByUser3 = articleRepository.findDistinctByUsersUserIdNot(-3);
         assertThat(articlesReadByUser3).hasSize(1);
         assertEquals(articlesReadByUser3.get(0).getArticleId(), -4);
-
 
         List<Article> articlesReadByUser4 = articleRepository.findDistinctByUsersUserIdNot(-4);
         assertThat(articlesReadByUser4).hasSize(3);
@@ -97,7 +90,6 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser4.get(1).getArticleId(), -3),
             () -> assertEquals(articlesReadByUser4.get(2).getArticleId(), -2)
         );
-
 
         List<Article> articlesReadByUser5 = articleRepository.findDistinctByUsersUserIdNot(-5);
         assertThat(articlesReadByUser5).hasSize(4);

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -95,6 +96,36 @@ class ArticleEndpointTest {
             () -> assertEquals(articleList.get(0).getArticleId(), -3),
             () -> assertEquals(articleList.get(1).getArticleId(), -1)
         );
+    }
+
+    @Test
+    void imagesIdGetWithInvalidId_shouldReturn404() throws Exception {
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/articles/" + 100)
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        assertEquals(servletResponse.getStatus(), HttpStatus.NOT_FOUND.value());
+
+    }
+
+    @Test
+    void imagesIdGetWithInvalidIdAndInvalidRole_shouldReturn403() throws Exception {
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/articles/" + 100)
+
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        assertEquals(servletResponse.getStatus(), HttpStatus.FORBIDDEN.value());
+
     }
 
 }
