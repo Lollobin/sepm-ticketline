@@ -63,8 +63,8 @@ public class ArticleWithoutIdDto   {
    * Get summary
    * @return summary
   */
-  
-  @Schema(name = "summary", required = false)
+  @NotNull 
+  @Schema(name = "summary", required = true)
   public String getSummary() {
     return summary;
   }
@@ -82,8 +82,8 @@ public class ArticleWithoutIdDto   {
    * Get text
    * @return text
   */
-  
-  @Schema(name = "text", required = false)
+  @NotNull 
+  @Schema(name = "text", required = true)
   public String getText() {
     return text;
   }

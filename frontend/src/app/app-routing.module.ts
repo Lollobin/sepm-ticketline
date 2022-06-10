@@ -19,6 +19,10 @@ import {
 import { CreateLocationComponent } from "./components/create-location/create-location.component";
 import { LocationSeatingPlansComponent } from "./components/location-seating-plans/location-seating-plans.component";
 import { LocationAdminOverviewComponent } from "./components/location-admin-overview/location-admin-overview.component";
+import { EditUserComponent } from "./components/edit-user/edit-user.component";
+import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
+import {CreateArticleComponent} from "./components/create-article/create-article.component";
 import {NewsOverviewComponent} from "./components/news-overview/news-overview.component";
 import {
   ArticleDetailedViewComponent
@@ -41,10 +45,15 @@ const routes: Routes = [
   {path: 'events/:id/shows', component: ShowSearchResultComponent},
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
   {path: "orders", component: OrderOverviewComponent},
+  {path:'passwordReset', component: PasswordResetComponent},
+  {path:'passwordUpdate', component: PasswordUpdateComponent},
   {path: "news/overview", component: NewsOverviewComponent},
   {path: "news/overview/:id", component: ArticleDetailedViewComponent},
-  {path: "news/read", component: NewsOverviewComponent}
+  {path: "news/read", component: NewsOverviewComponent},
+  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
 ];
 
 @NgModule({

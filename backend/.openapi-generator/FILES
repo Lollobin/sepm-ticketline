@@ -72,4 +72,5 @@ src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketInf
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketPrintsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TicketsApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/TopShowsApi.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/UserInfoApi.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/interfaces/UsersApi.java
