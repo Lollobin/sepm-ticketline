@@ -35,6 +35,7 @@ import { CreateLocationComponent } from './components/create-location/create-loc
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
 import { LocationAdminOverviewComponent } from './components/location-admin-overview/location-admin-overview.component';
 import { NewsOverviewComponent } from './components/news-overview/news-overview.component';
+import { ArticleDetailedViewComponent } from './components/article-detailed-view/article-detailed-view.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { NewsOverviewComponent } from './components/news-overview/news-overview.
     CreateLocationComponent,
     LocationSeatingPlansComponent,
     LocationAdminOverviewComponent,
-    NewsOverviewComponent
+    NewsOverviewComponent,
+    ArticleDetailedViewComponent,
   ],
   imports: [
     BrowserModule,
