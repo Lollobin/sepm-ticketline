@@ -38,6 +38,14 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     Page<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount, Pageable pageable);
 
     /**
+     * checks if there exists a user with the given email.
+     *
+     * @param email to be searched for
+     * @return boolean if the given user exists
+     */
+    Boolean existsByEmail(String email);
+
+    /**
      * Unlocks a user and resets number of failed attempts.
      *
      * @param lockedAccount if false user will be unlocked and loginTries will be reset to 0
@@ -79,4 +87,13 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update ApplicationUser a set a.loginTries = 0 where a.email = :email")
     void resetNumberOfFailedLoginAttempts(@Param("email") String email);
+
+
+    /**
+     * Fetches a user with the given reset token.
+     *
+     * @param token unique token of user to be fetched
+     * @return unique user if it exists
+     */
+    ApplicationUser findByResetPasswordToken(String token);
 }

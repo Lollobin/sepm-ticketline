@@ -24,6 +24,7 @@ model/artistsSearchResult.ts
 model/authRequest.ts
 model/bookingType.ts
 model/category.ts
+model/elementLocation.ts
 model/event.ts
 model/eventSearch.ts
 model/eventSearchResult.ts
@@ -38,10 +39,17 @@ model/locationWithoutId.ts
 model/models.ts
 model/order.ts
 model/ordersPage.ts
+model/passwordReset.ts
+model/passwordUpdate.ts
 model/provisionalSector.ts
 model/seat.ts
 model/seatWithBookingStatus.ts
 model/seatingPlan.ts
+model/seatingPlanLayout.ts
+model/seatingPlanLayoutGeneral.ts
+model/seatingPlanSeat.ts
+model/seatingPlanSector.ts
+model/seatingPlanStaticElement.ts
 model/seatingPlanWithoutId.ts
 model/sector.ts
 model/sectorPrice.ts

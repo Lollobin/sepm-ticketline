@@ -13,8 +13,8 @@
 
 export interface ArticleWithoutId { 
     title: string;
-    summary?: string;
-    text?: string;
+    summary: string;
+    text: string;
     images: Array<number>;
 }
 

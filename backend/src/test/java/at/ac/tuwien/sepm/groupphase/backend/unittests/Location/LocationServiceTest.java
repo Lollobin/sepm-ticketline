@@ -35,6 +35,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.LocationServiceImpl;
+import at.ac.tuwien.sepm.groupphase.backend.service.validation.LocationValidator;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.SearchValidator;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -68,11 +70,13 @@ class LocationServiceTest {
     @Mock
     private SearchValidator searchValidator;
     private LocationService locationService;
+    @Autowired
+    private LocationValidator locationValidator;
 
     @BeforeEach
     void setUp() {
         locationService = new LocationServiceImpl(locationRepository, locationMapper,
-            searchValidator, seatingPlanRepository, seatingPlanMapper);
+            searchValidator, seatingPlanRepository, seatingPlanMapper, locationValidator);
         locationRepository.deleteAll();
     }
 

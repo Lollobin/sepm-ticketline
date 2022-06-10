@@ -1,5 +1,6 @@
 import { countBy } from "lodash";
 import { Container, Graphics, Text } from "pixi.js";
+import { SeatingPlanLayout, SeatingPlanSector } from "../generated-sources/openapi";
 
 interface Location {
   x: number;
@@ -12,42 +13,6 @@ interface Color {
   strokeColor: number;
 }
 
-interface Sector {
-  id: number;
-  noSeats: boolean;
-  color: number;
-  description?: string;
-}
-
-interface SectorWithLocation extends Sector {
-  noSeats: true;
-  location: Location;
-}
-
-interface StaticElement {
-  id: number;
-  color: number;
-  description?: string;
-  location: Location;
-}
-
-interface Seat {
-  id: number;
-  sectorId: number;
-  location?: Location;
-}
-
-interface SeatingPlan {
-  general: {
-    [key: string]: string | number;
-    width: number;
-    height: number;
-  };
-  seats: Array<Seat>;
-  sectors: Array<Sector | SectorWithLocation>;
-  staticElements: Array<StaticElement>;
-}
-
 interface SectorBuilder {
   color: string;
   standingSector: boolean;
@@ -58,13 +23,13 @@ interface SectorBuilder {
 const generateSeatId = (id: number) => `seat${id}`;
 const generateStandingAreaId = (id: number) => `standingArea${id}`;
 const generateStaticAreaId = (id: number) => `staticArea${id}`;
-const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlan) => {
+const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlanLayout) => {
   drawSeats(stage, seatingPlan);
   drawStandingAreas(stage, seatingPlan);
   drawStaticAreas(stage, seatingPlan);
 };
-const drawSeats = (stage: Container, seatingPlan: SeatingPlan) => {
-  const sectorMap: { [id: number]: Sector | SectorWithLocation } = {};
+const drawSeats = (stage: Container, seatingPlan: SeatingPlanLayout) => {
+  const sectorMap: { [id: number]: SeatingPlanSector } = {};
   for (const sector of seatingPlan.sectors) {
     sectorMap[sector.id] = sector;
   }
@@ -89,10 +54,10 @@ const drawSeats = (stage: Container, seatingPlan: SeatingPlan) => {
     }
   }
 };
-const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlan) => {
+const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlanLayout) => {
   const standingAreas = seatingPlan.sectors.filter(
     (sector) => sector.noSeats
-  ) as Array<SectorWithLocation>;
+  ) as Array<SeatingPlanSector>;
   const seatCounts = countBy(seatingPlan.seats, "sectorId");
   for (const standingArea of standingAreas) {
     const numberOfAvailableSeats = seatCounts[standingArea.id];
@@ -107,7 +72,7 @@ const drawStandingAreas = (stage: Container, seatingPlan: SeatingPlan) => {
     stage.addChild(standingAreaGraphics);
   }
 };
-const drawStaticAreas = (stage: Container, seatingPlan: SeatingPlan) => {
+const drawStaticAreas = (stage: Container, seatingPlan: SeatingPlanLayout) => {
   for (const staticArea of seatingPlan.staticElements) {
     const staticGraphics = drawNoSeatArea(
       staticArea.location,
@@ -241,11 +206,6 @@ export {
   generateStandingAreaId,
   generateSeatId,
   generateStaticAreaId,
-  SeatingPlan,
-  Sector,
-  SectorWithLocation,
   SectorBuilder,
-  Seat,
-  StaticElement,
   Location,
 };

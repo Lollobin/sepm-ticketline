@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Location, LocationsService } from "src/app/generated-sources/openapi";
+import { Location, LocationsService, SeatingPlan } from "src/app/generated-sources/openapi";
 
 @Component({
   selector: "app-location-seating-plans",
@@ -9,18 +9,9 @@ import { Location, LocationsService } from "src/app/generated-sources/openapi";
 })
 export class LocationSeatingPlansComponent implements OnInit {
   locationId = 1;
-  location: Location = {
-    //TODO: DElete test data when location get interface works
-    locationId: 1,
-    name: "Capital Arena",
-    address: {
-      houseNumber: "12",
-      street: "Imaginary street",
-      city: "City Capital",
-      country: "Imaginarium",
-      zipCode: "1212",
-    },
-  };
+  location: Location;
+  seatingPlans: SeatingPlan[];
+  error: Error;
   constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
 
   ngOnInit(): void {
@@ -28,10 +19,19 @@ export class LocationSeatingPlansComponent implements OnInit {
       this.locationId = params["id"];
       this.locationsService.locationsIdGet(this.locationId).subscribe({
         next: (location) => {
-          //TODO: Add location get interface
-          console.log(location);
+          this.location = location;
+          this.locationsService.locationsIdSeatingPlansGet(this.locationId).subscribe({
+            next: (seatingPlans) => {
+              this.seatingPlans = seatingPlans;
+            },
+            error: (error) => {
+              this.error = error;
+            },
+          });
         },
-        error: () => {},
+        error: (error) => {
+          this.error = error;
+        },
       });
     });
   }

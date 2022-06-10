@@ -16,13 +16,15 @@ export class AuthInterceptor implements HttpInterceptor {
     //auth and registration
     const authUri = this.globals.backendCustomUri + '/login';
     const signUpUri = this.globals.backendCustomUri + '/users';
-
+    const passwordResetUri = this.globals.backendCustomUri + '/passwordReset';
+    const passwordUpdateUri = this.globals.backendCustomUri + '/passwordUpdate';
     const listOfGetPublics = [
       this.globals.backendCustomUri + '/events',
       this.globals.backendCustomUri + '/artists',
       this.globals.backendCustomUri + '/locations',
       this.globals.backendCustomUri + '/shows',
-      this.globals.backendCustomUri + '/seatingPlan'];
+      this.globals.backendCustomUri + '/seatingPlan'
+    ];
     console.log(req.url);
 
     const isget = req.method === "GET";
@@ -35,7 +37,9 @@ export class AuthInterceptor implements HttpInterceptor {
     const dontInterceptPublic = isget && publicResource;
 
     // Do not intercept authentication / registration requests
-    if ((req.url === authUri || req.url === signUpUri || dontInterceptPublic) && !isLoggedIn) {
+    if ((req.url === authUri || req.url === signUpUri || dontInterceptPublic
+        || req.url === passwordResetUri || req.url === passwordUpdateUri)
+        && !isLoggedIn) {
 
       return next.handle(req);
     }

@@ -80,6 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //for login and registration
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
+            .antMatchers(HttpMethod.POST, "/passwordReset").permitAll()
+            .antMatchers(HttpMethod.POST, "/passwordUpdate").permitAll()
 
 
             .anyRequest().authenticated();

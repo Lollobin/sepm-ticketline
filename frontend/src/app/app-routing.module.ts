@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {MessageComponent} from "./components/message/message.component";
@@ -18,6 +17,11 @@ import {
 } from "./components/show-search-result/show-search-result.component";
 import { CreateLocationComponent } from "./components/create-location/create-location.component";
 import { LocationSeatingPlansComponent } from "./components/location-seating-plans/location-seating-plans.component";
+import { LocationAdminOverviewComponent } from "./components/location-admin-overview/location-admin-overview.component";
+import { EditUserComponent } from "./components/edit-user/edit-user.component";
+import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
+import {CreateArticleComponent} from "./components/create-article/create-article.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -29,12 +33,17 @@ const routes: Routes = [
   {path: 'locations/create', component: CreateLocationComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id/seatingPlans/create', component: CreateSeatingPlanComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id', component: LocationSeatingPlansComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
+  {path: 'locations', component: LocationAdminOverviewComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/create', component: CreateEventComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'events/:id/shows', component: ShowSearchResultComponent},
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path: "orders", component: OrderOverviewComponent}
+  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
+  {path: "orders", component: OrderOverviewComponent},
+  {path:'passwordReset', component: PasswordResetComponent},
+  {path:'passwordUpdate', component: PasswordUpdateComponent}
 ];
 
 @NgModule({

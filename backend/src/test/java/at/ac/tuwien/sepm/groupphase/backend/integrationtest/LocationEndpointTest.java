@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_CITY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_STREET;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ALBERTINA_ZIP_CODE;
@@ -21,12 +23,16 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.LOCATION_TO
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AddressDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LocationRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,15 +42,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class LocationEndpointTest {
@@ -57,12 +67,14 @@ class LocationEndpointTest {
     private LocationRepository locationRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    private JwtTokenizer jwtTokenizer;
+
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @BeforeEach
     public void beforeEach() {
         locationRepository.deleteAll();
-        addressRepository.deleteAll();
     }
 
     @Test
@@ -214,6 +226,34 @@ class LocationEndpointTest {
 
         locationRepository.save(location5);
 
+    }
+
+    @Test
+    void postLocation_shouldCreateLocation() throws Exception {
+        AddressDto address = new AddressDto();
+        address.setCountry("Test");
+        address.setCity("Test");
+        address.setHouseNumber("Test");
+        address.setStreet("Test");
+        address.setZipCode("Test");
+
+        LocationWithoutIdDto locationToSave = new LocationWithoutIdDto();
+        locationToSave.setAddress(address);
+        locationToSave.setName("TestLocation");
+        String json = objectMapper.writeValueAsString(locationToSave);
+        assertThat(locationRepository.findAll()).isEmpty();
+
+        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders
+            .post("/locations")
+            .header(
+                securityProperties.getAuthHeader(),
+                jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+            .content(json)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+
+        assertThat(locationRepository.findAll()).hasSize(1);
     }
 
 }

@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
@@ -27,4 +28,19 @@ public interface LocationService {
 
     List<SeatingPlanDto> findSeatingPlans(Long id);
 
+    /**
+     * Saves a location.
+     *
+     * @param location to be saved
+     * @return location object that was saved
+     */
+    Location saveLocation(Location location);
+
+    /**
+     * Finds a location by its id.
+     *
+     * @param id The id that will be searched for
+     * @return The found location with the given ID
+     */
+    Location findOne(Long id);
 }
