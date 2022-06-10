@@ -1,29 +1,48 @@
 <div class="container">
-  <h1 class="display-4">Welcome to the SEPM group phase!</h1>
+  <h1 style="margin-top: 4%; color: #4d61ff; font-weight: bold; font-family: 'Roboto', sans-serif" class="display-4">Welcome to the SEPM group phase!</h1>
 
-  <div class="row row-cols-1 row-cols-md-5 g-4" style="margin-top: 4%">
-    <div class="col" *ngFor="let article of articles">
-      <div class="card h-100">
-        <img *ngIf="article?.images.length > 0" src="https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp"
 
-             class="card-img-top" alt="...">
-        <div *ngIf="article?.images.length === 0" class="card h-75 " style="border: none; padding: 1rem 1rem">
-          <h5  *ngIf="article?.images.length === 0">{{article.title}}</h5>
-          <p *ngIf="article?.images.length === 0" class="card-text">{{article?.summary}}</p>
+  <div id="cards_landscape_wrap-2">
+    <div class="container-md">
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-3 col-3" *ngFor="let article of articles">
+          <a [routerLink]="['/news/overview', article.articleId]">
+            <div class="card-flyer">
+              <div class="text-box">
+                <div class="image-box">
+                  <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
+                       class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
+
+
+                </div>
+                <div class="text-container">
+                  <h6 > {{article.title}}</h6>
+                  <p  class="card-text with-overflow" >{{article?.summary}}</p>
+                </div>
+                <div class="card-footer">
+                  <small class="text-muted">Created
+                    on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
-        <div class="card-body">
-          <h5 *ngIf="article?.images.length > 0" class="card-title">{{article.title}}</h5>
-          <p *ngIf="article?.images.length > 0" class="card-text">{{article?.summary}}</p>
-          <a  [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read
-            Article</a>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Created
-            on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small>
-        </div>
+
 
       </div>
+    </div>
+  </div>
+
+  <div class="container mt-3" *ngIf="empty">
+    <div class="alert alert-warning" role="alert">
+      <h4 *ngIf="!filterRead">There aren't any new news!</h4>
+      <h4 *ngIf="filterRead">You have not read any news yet!</h4>
+      <button type="button" class="btn-close stretched-link" (click)="vanishEmpty()"
+              data-bs-dismiss="alert"
+              aria-label="Close"></button>
     </div>
 
   </div>
 </div>
+
+

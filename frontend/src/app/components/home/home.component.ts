@@ -12,24 +12,38 @@ export class HomeComponent implements OnInit {
   articles: Article[];
   error: Error;
   articleImages = {};
+  empty = false;
+  filterRead = null;
+  defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
+  errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
+  result: boolean[] = [].fill(false);
+  one: boolean;
 
-  constructor(public authService: CustomAuthService, private articleService: ArticlesService) { }
+  constructor(public authService: CustomAuthService, private articleService: ArticlesService) {
+  }
 
   ngOnInit() {
     this.getArticles();
   }
 
-  getArticles(){
+  getArticles() {
     this.articleService.articlesGet(false).subscribe({
       next: articles => {
 
-        this.articles = articles.slice(0,5);
+        this.articles = articles.slice(0, 4);
+        this.empty = articles.length === 0;
         for (const article of this.articles) {
 
+
           this.getImage(article.images[0], article.articleId);
+          if (article.images?.length === 0) {
+            this.articleImages[article.articleId] = this.errorImage;
+          }
 
 
         }
+
+
       },
       error: err => {
         this.error = err;
@@ -41,6 +55,7 @@ export class HomeComponent implements OnInit {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       this.articleImages[id] = reader.result;
+
     }, false);
 
     if (image) {
@@ -60,6 +75,10 @@ export class HomeComponent implements OnInit {
         this.createImageFromBlob(image, articleId);
       },
     });
+  }
+
+  public vanishEmpty(): void {
+    this.empty = null;
   }
 
 }
