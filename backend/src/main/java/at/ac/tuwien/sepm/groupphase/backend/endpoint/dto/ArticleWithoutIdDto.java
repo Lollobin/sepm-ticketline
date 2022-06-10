@@ -33,7 +33,7 @@ public class ArticleWithoutIdDto   {
 
   @JsonProperty("images")
   @Valid
-  private List<Integer> images = new ArrayList<>();
+  private List<Long> images = new ArrayList<>();
 
   public ArticleWithoutIdDto title(String title) {
     this.title = title;
@@ -63,8 +63,8 @@ public class ArticleWithoutIdDto   {
    * Get summary
    * @return summary
   */
-  
-  @Schema(name = "summary", required = false)
+  @NotNull 
+  @Schema(name = "summary", required = true)
   public String getSummary() {
     return summary;
   }
@@ -82,8 +82,8 @@ public class ArticleWithoutIdDto   {
    * Get text
    * @return text
   */
-  
-  @Schema(name = "text", required = false)
+  @NotNull 
+  @Schema(name = "text", required = true)
   public String getText() {
     return text;
   }
@@ -92,12 +92,12 @@ public class ArticleWithoutIdDto   {
     this.text = text;
   }
 
-  public ArticleWithoutIdDto images(List<Integer> images) {
+  public ArticleWithoutIdDto images(List<Long> images) {
     this.images = images;
     return this;
   }
 
-  public ArticleWithoutIdDto addImagesItem(Integer imagesItem) {
+  public ArticleWithoutIdDto addImagesItem(Long imagesItem) {
     if (this.images == null) {
       this.images = new ArrayList<>();
     }
@@ -111,11 +111,11 @@ public class ArticleWithoutIdDto   {
   */
   @NotNull 
   @Schema(name = "images", required = true)
-  public List<Integer> getImages() {
+  public List<Long> getImages() {
     return images;
   }
 
-  public void setImages(List<Integer> images) {
+  public void setImages(List<Long> images) {
     this.images = images;
   }
 
