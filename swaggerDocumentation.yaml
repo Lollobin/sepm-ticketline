@@ -1472,6 +1472,8 @@ components:
       required:
         - title
         - images
+        - summary
+        - text
     Location:
       type: object
       properties:

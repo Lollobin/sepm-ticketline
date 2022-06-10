@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {MessageComponent} from "./components/message/message.component";
@@ -22,6 +21,7 @@ import { LocationAdminOverviewComponent } from "./components/location-admin-over
 import { EditUserComponent } from "./components/edit-user/edit-user.component";
 import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
+import {CreateArticleComponent} from "./components/create-article/create-article.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -39,7 +39,7 @@ const routes: Routes = [
   {path: 'events/:id/shows', component: ShowSearchResultComponent},
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path: "orders", component: OrderOverviewComponent},
+  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
   {path: "orders", component: OrderOverviewComponent},
   {path:'passwordReset', component: PasswordResetComponent},
