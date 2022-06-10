@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
@@ -21,8 +22,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import org.apache.catalina.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +66,7 @@ class UserEndpointTest implements TestData {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private UserWithPasswordDto user =
+    private final UserWithPasswordDto user =
         new UserWithPasswordDto()
             .firstName(USER_FNAME)
             .lastName(USER_LNAME)
@@ -151,7 +150,6 @@ class UserEndpointTest implements TestData {
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        List<ApplicationUser> users = userRepository.findAll();
         assertTrue(userRepository.existsByEmail(del + applicationUser.getUserId()));
 
         ApplicationUser updatedUser = userRepository.findUserByEmail(del + applicationUser.getUserId());
@@ -172,7 +170,7 @@ class UserEndpointTest implements TestData {
             () -> assertEquals(inv, updatedUser.getAddress().getZipCode()),
             () -> assertEquals(6, addressRepository.count()),
             () -> assertEquals(1, userRepository.count()),
-            () -> assertEquals(null, ticketRepository.getByTicketId(-1L).getReservedBy()),
+            () -> assertNull(ticketRepository.getByTicketId(-1L).getReservedBy()),
             () -> assertEquals(updatedUser.getUserId(), ticketRepository.getByTicketId(-2L).getPurchasedBy().getUserId())
         );
     }
