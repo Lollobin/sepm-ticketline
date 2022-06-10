@@ -31,10 +31,10 @@ public class Article {
     @Column(nullable = false)
     private OffsetDateTime creationDate;
 
-    @Column(columnDefinition = "CLOB")
+    @Column(columnDefinition = "CLOB", nullable = false)
     private String summary;
 
-    @Column(columnDefinition = "CLOB")
+    @Column(columnDefinition = "CLOB", nullable = false)
     private String text;
 
     @OneToMany(mappedBy = "article")

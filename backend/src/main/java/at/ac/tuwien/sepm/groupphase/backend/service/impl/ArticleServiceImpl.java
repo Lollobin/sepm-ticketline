@@ -44,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void createNewsArticle(ArticleWithoutIdDto articleWithoutIdDto) {
+    public long createNewsArticle(ArticleWithoutIdDto articleWithoutIdDto) {
 
         LOGGER.trace("creating new article");
 
@@ -59,6 +59,8 @@ public class ArticleServiceImpl implements ArticleService {
         for (long i : articleWithoutIdDto.getImages()) {
             imageService.updateArticle(i, articleToUpdateImage);
         }
+
+        return articleToUpdateImage.getArticleId();
 
 
     }

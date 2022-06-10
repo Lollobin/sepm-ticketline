@@ -7,11 +7,13 @@ import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArticleService;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class ArticlesEndpoint implements ArticlesApi {
@@ -35,9 +37,15 @@ public class ArticlesEndpoint implements ArticlesApi {
 
         LOGGER.info("POST /articles with body: {}", articleWithoutIdDto);
 
-        articleService.createNewsArticle(articleWithoutIdDto);
+        long id = articleService.createNewsArticle(articleWithoutIdDto);
 
-        return ResponseEntity.noContent().build();
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(id)
+            .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @Secured("ROLE_USER")
