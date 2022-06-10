@@ -31,11 +31,9 @@ export class NewsOverviewComponent implements OnInit {
         this.articles = response;
         this.empty = response.length === 0;
         for (const article of this.articles) {
-          try {
-            this.getImage(article.images[0], article.articleId);
-          } catch (error) {
 
-          }
+          this.getImage(article.images[0], article.articleId);
+
 
         }
 
@@ -50,7 +48,9 @@ export class NewsOverviewComponent implements OnInit {
   createImageFromBlob(image: Blob, id: number) {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
+
       this.articleImages[id] = reader.result;
+
     }, false);
 
     if (image) {
