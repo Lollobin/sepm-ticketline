@@ -75,7 +75,7 @@ class ApplicationUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            userValidator, authenticationFacade, articleRepository);
+            articleRepository, userValidator, authenticationFacade);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
