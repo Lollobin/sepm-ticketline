@@ -137,12 +137,15 @@ public class CustomUserDetailService implements UserService {
 
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
 
-        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        ApplicationUser emailUser = this.userRepository.findUserByEmail(userWithPasswordDto.getEmail());
         if (emailUser != null && emailUser.getUserId() != userId) {
             throw new ConflictException("This email is not allowed, try another one");
         }
 
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+
+        appUser.getAddress().setAddressId(tokenUser.getAddress().getAddressId());
+
         appUser.setUserId(userId);
         LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
