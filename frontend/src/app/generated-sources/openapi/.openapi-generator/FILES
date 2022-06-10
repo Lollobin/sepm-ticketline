@@ -31,7 +31,6 @@ model/eventSearchResult.ts
 model/eventWithoutId.ts
 model/fullTicketWithStatus.ts
 model/gender.ts
-model/image.ts
 model/invoiceItem.ts
 model/location.ts
 model/locationSearch.ts

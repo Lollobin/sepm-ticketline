@@ -13,7 +13,6 @@ export * from './eventSearchResult';
 export * from './eventWithoutId';
 export * from './fullTicketWithStatus';
 export * from './gender';
-export * from './image';
 export * from './invoiceItem';
 export * from './location';
 export * from './locationSearch';
