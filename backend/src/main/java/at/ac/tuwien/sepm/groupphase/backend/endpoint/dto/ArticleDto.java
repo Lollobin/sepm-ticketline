@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 public class ArticleDto   {
 
   @JsonProperty("articleId")
-  private Integer articleId;
+  private Long articleId;
 
   @JsonProperty("title")
   private String title;
@@ -42,9 +42,9 @@ public class ArticleDto   {
 
   @JsonProperty("images")
   @Valid
-  private List<Integer> images = new ArrayList<>();
+  private List<Long> images = new ArrayList<>();
 
-  public ArticleDto articleId(Integer articleId) {
+  public ArticleDto articleId(Long articleId) {
     this.articleId = articleId;
     return this;
   }
@@ -55,11 +55,11 @@ public class ArticleDto   {
   */
   @NotNull 
   @Schema(name = "articleId", required = true)
-  public Integer getArticleId() {
+  public Long getArticleId() {
     return articleId;
   }
 
-  public void setArticleId(Integer articleId) {
+  public void setArticleId(Long articleId) {
     this.articleId = articleId;
   }
 
@@ -139,12 +139,12 @@ public class ArticleDto   {
     this.text = text;
   }
 
-  public ArticleDto images(List<Integer> images) {
+  public ArticleDto images(List<Long> images) {
     this.images = images;
     return this;
   }
 
-  public ArticleDto addImagesItem(Integer imagesItem) {
+  public ArticleDto addImagesItem(Long imagesItem) {
     if (this.images == null) {
       this.images = new ArrayList<>();
     }
@@ -158,11 +158,11 @@ public class ArticleDto   {
   */
   @NotNull 
   @Schema(name = "images", required = true)
-  public List<Integer> getImages() {
+  public List<Long> getImages() {
     return images;
   }
 
-  public void setImages(List<Integer> images) {
+  public void setImages(List<Long> images) {
     this.images = images;
   }
 
