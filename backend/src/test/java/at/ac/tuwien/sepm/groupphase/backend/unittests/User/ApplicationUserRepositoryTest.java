@@ -74,6 +74,18 @@ class ApplicationUserRepositoryTest implements TestData {
 
     }
 
+    @Test
+    void shouldNotUnlockUser_whenUserIsDeleted() {
+        ApplicationUser testUserBefore = generateAppUserWithGenericDetails();
+        testUserBefore.setDeleted(true);
+        testUserBefore.setLockedAccount(true);
+        saveGenericUser(testUserBefore);
+        userRepository.unlockApplicationUser(false, testUserBefore.getUserId());
+        ApplicationUser testUserAfter = userRepository.findUserByEmail(testUserBefore.getEmail());
+        assertThat(testUserAfter.isLockedAccount()).isTrue();
+
+    }
+
     private ApplicationUser generateAppUserWithGenericDetails() {
         ADDRESS_ENTITY.setAddressId(null);
 
