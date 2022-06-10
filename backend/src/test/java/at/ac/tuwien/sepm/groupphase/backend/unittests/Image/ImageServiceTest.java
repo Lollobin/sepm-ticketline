@@ -24,7 +24,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class ImageServiceTest {
+class ImageServiceTest {
 
     @Mock
     private FileSystemRepository fileSystemRepository;
@@ -52,8 +52,6 @@ public class ImageServiceTest {
         Image returnedImage = new Image();
         returnedImage.setImageId(1L);
         returnedImage.setFilePath("testFilePath");
-
-
 
 
         when(fileSystemRepository.save(file.getBytes(), file.getOriginalFilename())).thenReturn(

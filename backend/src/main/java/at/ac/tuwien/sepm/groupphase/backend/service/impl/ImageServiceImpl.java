@@ -46,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
 
             toSave.setFilePath(fileSystemRepository.save(body.getBytes(),
                 body.getOriginalFilename()));
-            imageRepository.save(toSave);
+            toSave = imageRepository.save(toSave);
             return toSave.getImageId();
 
         } catch (IOException e) {
