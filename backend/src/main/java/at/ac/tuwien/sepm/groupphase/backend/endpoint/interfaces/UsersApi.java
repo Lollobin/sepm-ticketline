@@ -170,44 +170,6 @@ public interface UsersApi {
 
 
     /**
-     * PUT /users/{id} : Updates information of an user with the given data.
-     *
-     * @param id ID of the user that is retreived (required)
-     * @param userWithPasswordDto  (required)
-     * @return Successful update of an user. (status code 204)
-     *         or The user is not logged in (status code 401)
-     *         or Validation failed for an input (status code 422)
-     *         or Internal Server Error (status code 500)
-     */
-    @Operation(
-        operationId = "usersIdPut",
-        summary = "Updates information of an user with the given data.",
-        tags = { "userManagement" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Successful update of an user."),
-            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
-            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/users/{id}",
-        consumes = { "application/json" }
-    )
-    default ResponseEntity<Void> usersIdPut(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id,
-        @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    /**
      * POST /users : Registers an user with the given data.
      *
      * @param userWithPasswordDto  (required)
@@ -231,6 +193,42 @@ public interface UsersApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<Void> usersPost(
+        @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * PUT /users : Updates information of a user possesing the token.
+     *
+     * @param userWithPasswordDto  (required)
+     * @return Successful update of an user. (status code 204)
+     *         or The user is not logged in (status code 401)
+     *         or Validation failed for an input (status code 422)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "usersPut",
+        summary = "Updates information of a user possesing the token.",
+        tags = { "userManagement" },
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Successful update of an user."),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PUT,
+        value = "/users",
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<Void> usersPut(
         @Parameter(name = "UserWithPasswordDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody UserWithPasswordDto userWithPasswordDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

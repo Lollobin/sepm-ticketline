@@ -5,9 +5,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
@@ -43,6 +45,7 @@ public class CustomUserDetailService implements UserService {
     private final EmailService emailService;
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
+    private final AuthenticationUtil authenticationFacade;
 
     private final UserValidator userValidator;
 
@@ -52,7 +55,8 @@ public class CustomUserDetailService implements UserService {
         EmailService emailService,
         ResetTokenService resetTokenService,
         MailBuilderService mailBuilderService,
-        UserValidator userValidator) {
+        UserValidator userValidator,
+        AuthenticationUtil authenticationFacade) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
@@ -60,7 +64,7 @@ public class CustomUserDetailService implements UserService {
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
         this.userValidator = userValidator;
-
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -127,12 +131,38 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public void put(UserWithPasswordDto userWithPasswordDto) {
+        ApplicationUser tokenUser = findByCurrentUser();
+        int userId = Math.toIntExact(tokenUser.getUserId());
+
+        userValidator.validateUserWithPasswordDto(userWithPasswordDto);
+
+        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        if (emailUser != null && emailUser.getUserId() != userId) {
+            throw new ConflictException("This email is not allowed, try another one");
+        }
+
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        appUser.setUserId(userId);
+        LOGGER.debug("Attempting to update {}", appUser);
+        userRepository.save(appUser);
+    }
+
+    @Override
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
         boolean isLocked = filterLocked != null && filterLocked;
 
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
+    }
+
+    @Override
+    public ApplicationUser findByCurrentUser() {
+        String email = authenticationFacade.getEmail();
+        LOGGER.debug("Looking for user with email {}", email);
+
+        return this.findApplicationUserByEmail(email);
     }
 
 

@@ -35,6 +35,9 @@ import { CreateLocationComponent } from './components/create-location/create-loc
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
 import { LocationAdminOverviewComponent } from './components/location-admin-overview/location-admin-overview.component';
 import { CreateArticleComponent } from './components/create-article/create-article.component';
+import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 
 @NgModule({
   declarations: [
@@ -65,6 +68,10 @@ import { CreateArticleComponent } from './components/create-article/create-artic
     ShowSearchResultComponent,
     CreateLocationComponent,
     LocationSeatingPlansComponent,
+    LocationAdminOverviewComponent,
+    EditUserComponent,
+    PasswordResetComponent,
+    PasswordUpdateComponent
     LocationAdminOverviewComponent,
     CreateArticleComponent
   ],
