@@ -20,9 +20,13 @@ import { CreateLocationComponent } from "./components/create-location/create-loc
 import { LocationSeatingPlansComponent } from "./components/location-seating-plans/location-seating-plans.component";
 import { LocationAdminOverviewComponent } from "./components/location-admin-overview/location-admin-overview.component";
 import {NewsOverviewComponent} from "./components/news-overview/news-overview.component";
+import {
+  ArticleDetailedViewComponent
+} from "./components/article-detailed-view/article-detailed-view.component";
+
 
 const routes: Routes = [
-  {path: '', component: EventsComponent},
+  {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]} },
   {path: 'buyTickets/:showId', component: SeatingPlanComponent, data: {role: "USER"}},
@@ -38,7 +42,9 @@ const routes: Routes = [
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "orders", component: OrderOverviewComponent},
-  {path: "news/overview", component: NewsOverviewComponent}
+  {path: "news/overview", component: NewsOverviewComponent},
+  {path: "news/overview/:id", component: ArticleDetailedViewComponent},
+  {path: "news/read", component: NewsOverviewComponent}
 ];
 
 @NgModule({
