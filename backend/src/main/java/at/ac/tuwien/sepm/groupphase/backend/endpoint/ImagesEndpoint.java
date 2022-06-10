@@ -34,7 +34,7 @@ public class ImagesEndpoint implements ImagesApi {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(imageId).toUri();
 
-        return ResponseEntity.noContent().location(location).build();
+        return ResponseEntity.created(location).build();
     }
 
     @Override
