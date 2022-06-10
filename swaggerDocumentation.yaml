@@ -1228,6 +1228,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
@@ -1469,6 +1470,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - title
         - images

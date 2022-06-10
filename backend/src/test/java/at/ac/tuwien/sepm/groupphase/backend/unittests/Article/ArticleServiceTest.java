@@ -31,7 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class ArticleServiceTest {
+class ArticleServiceTest {
 
     @Mock
     private ArticleRepository articleRepository;
@@ -90,9 +90,9 @@ public class ArticleServiceTest {
     void createNewsArticleWithImage_shouldCallCorrectMethods() {
         ArticleWithoutIdDto articleWithoutIdDto = new ArticleWithoutIdDto();
 
-        List<Integer> imageIds = new ArrayList<>();
-        imageIds.add(1);
-        imageIds.add(2);
+        List<Long> imageIds = new ArrayList<>();
+        imageIds.add(1L);
+        imageIds.add(2L);
 
         articleWithoutIdDto.setTitle(ARTICLE_TITLE);
         articleWithoutIdDto.setSummary(ARTICLE_SUMMARY);

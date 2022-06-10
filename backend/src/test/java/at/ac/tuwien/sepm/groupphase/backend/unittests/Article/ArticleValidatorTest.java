@@ -38,8 +38,8 @@ class ArticleValidatorTest {
         articleWithoutIdDto.setTitle("   ");
         articleWithoutIdDto.setSummary("   ");
         articleWithoutIdDto.setText("   ");
-        List<Integer> images = new ArrayList<>();
-        images.add(1);
+        List<Long> images = new ArrayList<>();
+        images.add(1L);
 
         articleWithoutIdDto.setImages(images);
 
