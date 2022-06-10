@@ -66,6 +66,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             + "WHERE ((:category IS NULL) OR upper(e.category) = upper(:category)) "
             + "AND ((:fromDate IS NULL) OR s.date >= :fromDate) "
             + "AND ((:toDate IS NULL) OR s.date <= :toDate) "
+            + "AND t.purchased_by IS NOT NULL "
             + "GROUP BY e.event_id, e.name, e.category, e.content, e.duration "
             + "ORDER BY ticketsSold DESC LIMIT 10",
         nativeQuery = true)

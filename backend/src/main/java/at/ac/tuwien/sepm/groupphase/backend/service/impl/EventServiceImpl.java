@@ -110,7 +110,6 @@ public class EventServiceImpl implements EventService {
         if (topEventSearchDto.getMonth() != null) {
             int year = topEventSearchDto.getMonth().getYear();
             int month = topEventSearchDto.getMonth().getMonthValue();
-
             if (month == 12) {
                 year++;
                 month = 1;
