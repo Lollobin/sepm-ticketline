@@ -1223,6 +1223,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
