@@ -1,38 +1,46 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomAuthService} from '../../services/custom-auth.service';
 import {Article, ArticlesService} from "../../generated-sources/openapi";
+import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'app-news-overview',
+  templateUrl: './news-overview.component.html',
+  styleUrls: ['./news-overview.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class NewsOverviewComponent implements OnInit {
 
-  articles: Article[];
+  articles: Article[] = [];
   error: Error;
+  empty = false;
+  filterRead = null;
   articleImages = {};
 
-  constructor(public authService: CustomAuthService, private articleService: ArticlesService) { }
 
-  ngOnInit() {
-    this.getArticles();
+  constructor(public articleService: ArticlesService, private router: Router) {
   }
 
-  getArticles(){
-    this.articleService.articlesGet(false).subscribe({
-      next: articles => {
 
-        this.articles = articles.slice(0,5);
+  ngOnInit(): void {
+
+    this.filterRead = this.router.url.includes("read");
+
+    console.log(this.filterRead + " ist filterread");
+
+    this.articleService.articlesGet(this.filterRead).subscribe({
+      next: async response => {
+        this.articles = response;
+        this.empty = response.length === 0;
         for (const article of this.articles) {
 
           this.getImage(article.images[0], article.articleId);
 
 
         }
+
+        console.log(response);
       },
-      error: err => {
-        this.error = err;
+      error: error => {
+        this.error = error;
       }
     });
   }
@@ -40,7 +48,9 @@ export class HomeComponent implements OnInit {
   createImageFromBlob(image: Blob, id: number) {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
+
       this.articleImages[id] = reader.result;
+
     }, false);
 
     if (image) {
@@ -60,6 +70,11 @@ export class HomeComponent implements OnInit {
         this.createImageFromBlob(image, articleId);
       },
     });
+  }
+
+
+  public vanishEmpty(): void {
+    this.empty = null;
   }
 
 }

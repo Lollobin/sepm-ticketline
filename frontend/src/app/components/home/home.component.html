@@ -1,11 +1,29 @@
-<div class="jumbotron mt-5">
+<div class="container">
   <h1 class="display-4">Welcome to the SEPM group phase!</h1>
-  <hr class="my-4">
-  <a *ngIf="!authService.isLoggedIn()" class="btn btn-primary btn-lg" routerLink="/login" role="button">Login</a>
-  <div *ngIf="authService.isLoggedIn()">
-    <p>Check out the latest message from the SEPM group phase.</p>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" routerLink="/message" role="button">Message</a>
-    </p>
+
+  <div class="row row-cols-1 row-cols-md-5 g-4" style="margin-top: 4%">
+    <div class="col" *ngFor="let article of articles">
+      <div class="card h-100">
+        <img *ngIf="article?.images.length > 0" src="https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp"
+
+             class="card-img-top" alt="...">
+        <div *ngIf="article?.images.length === 0" class="card h-75 " style="border: none; padding: 1rem 1rem">
+          <h5  *ngIf="article?.images.length === 0">{{article.title}}</h5>
+          <p *ngIf="article?.images.length === 0" class="card-text">{{article?.summary}}</p>
+        </div>
+        <div class="card-body">
+          <h5 *ngIf="article?.images.length > 0" class="card-title">{{article.title}}</h5>
+          <p *ngIf="article?.images.length > 0" class="card-text">{{article?.summary}}</p>
+          <a  [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read
+            Article</a>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Created
+            on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>

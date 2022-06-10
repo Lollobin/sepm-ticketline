@@ -42,6 +42,12 @@
         >Create new Article</a
         >
       </li>
+      <li class="nav-item">
+        <a *ngIf="!adminView" class="nav-link" routerLink="/news/overview" routerLinkActive="active"
+        ><fa-icon style="padding-left: 0; padding-right: 2.5px" [icon]="info"></fa-icon>News</a
+        >
+      </li>
+
       <li>
         <a
             class="nav-link"
@@ -68,6 +74,15 @@
             routerLink="/locations"
             routerLinkActive="active"
         >Manage Locations</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+            class="nav-link"
+            *ngIf="!adminView"
+            routerLink="/news/read"
+            routerLinkActive="active"
+        >Show Already Read</a
         >
       </li>
     </ul>
