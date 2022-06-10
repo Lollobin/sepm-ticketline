@@ -72,6 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/seatingPlan/**").permitAll()
             .antMatchers(HttpMethod.GET, "/topShows").permitAll()
             .antMatchers(HttpMethod.GET, "/seatingPlanLayouts").permitAll()
+            .antMatchers(HttpMethod.GET, "/articles").permitAll()
+            .antMatchers(HttpMethod.GET, "/images/**").permitAll()
 
 
             //for login and registration

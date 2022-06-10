@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,6 +72,21 @@ public class ImageServiceImpl implements ImageService {
         } else {
             throw new NotFoundException("Image with ID " + imageId + " not found");
         }
+
+    }
+
+    @Override
+    public Resource getImageById(Long imageId) {
+
+        LOGGER.trace("Getting image");
+
+        Optional<Image> optionalImage = imageRepository.findById(imageId);
+
+        if (optionalImage.isEmpty()) {
+            throw new NotFoundException("Image with id " + imageId + " not found");
+        }
+
+        return fileSystemRepository.findInFileSystem(optionalImage.get().getFilePath());
 
     }
 

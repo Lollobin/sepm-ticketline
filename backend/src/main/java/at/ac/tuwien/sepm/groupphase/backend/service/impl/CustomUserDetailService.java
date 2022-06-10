@@ -5,9 +5,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -17,7 +19,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,8 @@ public class CustomUserDetailService implements UserService {
     private final MailBuilderService mailBuilderService;
     private final AuthenticationUtil authenticationFacade;
 
+    private final ArticleRepository articleRepository;
+
     private final UserValidator userValidator;
 
     @Autowired
@@ -55,7 +62,7 @@ public class CustomUserDetailService implements UserService {
         EmailService emailService,
         ResetTokenService resetTokenService,
         MailBuilderService mailBuilderService,
-        UserValidator userValidator,
+        ArticleRepository articleRepository, UserValidator userValidator,
         AuthenticationUtil authenticationFacade) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -63,6 +70,7 @@ public class CustomUserDetailService implements UserService {
         this.emailService = emailService;
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
+        this.articleRepository = articleRepository;
         this.userValidator = userValidator;
         this.authenticationFacade = authenticationFacade;
     }
@@ -242,6 +250,30 @@ public class CustomUserDetailService implements UserService {
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
             .build()
             .toUri();
+
+    }
+
+    public void updateArticleRead(String email, Long articleId) {
+
+        ApplicationUser applicationUser = findApplicationUserByEmail(email);
+
+        LOGGER.debug("Adding article with ID {} to user with email {} and ID {}", articleId, email,
+            applicationUser.getUserId());
+
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
+
+        if (optionalArticle.isEmpty()) {
+
+            throw new NotFoundException("Article with ID " + articleId + " is not present");
+        }
+        Article article = optionalArticle.get();
+
+        Set<Article> articleSet = new HashSet<>(applicationUser.getArticles());
+        articleSet.add(article);
+
+        applicationUser.setArticles(articleSet);
+
+        userRepository.save(applicationUser);
 
     }
 
