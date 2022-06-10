@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {MessageComponent} from "./components/message/message.component";
@@ -41,8 +40,6 @@ const routes: Routes = [
   {path: 'events', component: EventsComponent},
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path: "orders", component: OrderOverviewComponent}
-  {path: "orders", component: OrderOverviewComponent},
   {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
   {path: "orders", component: OrderOverviewComponent},
   {path:'passwordReset', component: PasswordResetComponent},

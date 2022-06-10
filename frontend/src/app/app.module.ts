@@ -68,10 +68,9 @@ import {PasswordUpdateComponent} from "./components/password-update/password-upd
     ShowSearchResultComponent,
     CreateLocationComponent,
     LocationSeatingPlansComponent,
-    LocationAdminOverviewComponent,
     EditUserComponent,
     PasswordResetComponent,
-    PasswordUpdateComponent
+    PasswordUpdateComponent,
     LocationAdminOverviewComponent,
     CreateArticleComponent
   ],
