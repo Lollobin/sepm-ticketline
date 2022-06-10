@@ -72,4 +72,12 @@ public class UsersEndpoint implements UsersApi {
         userService.put(userWithPasswordDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Secured("ROLE_USER")
+    @Override
+    public ResponseEntity<Void> usersDelete() {
+        LOGGER.info("DELETE /users");
+        userService.delete();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -45,6 +45,9 @@ public class ApplicationUser {
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
 
+    @Column(nullable = false)
+    private Boolean deleted = false;
+
     public ApplicationUser() {
     }
 
@@ -257,5 +260,13 @@ public class ApplicationUser {
 
     public void setResetPasswordToken(String resetPasswordToken) {
         this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

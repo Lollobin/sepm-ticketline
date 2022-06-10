@@ -53,6 +53,11 @@ public interface UserService extends UserDetailsService {
     void put(UserWithPasswordDto userWithPasswordDto);
 
     /**
+     * Deletes the User possesing the token.
+     */
+    void delete();
+
+    /**
      * * Return a page of users whose locked status is according to the parameter.
      *
      * @param filterLocked true searches for locked users, false searches for all users.
