@@ -58,7 +58,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
-        
+
       responses:
         200:
           description: OK
@@ -469,12 +469,6 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/articleId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
       responses:
         200:
           description: Successful set the "read"-status of an article for an user
@@ -1153,6 +1147,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     artistId:
       name: id
       in: path
@@ -1434,6 +1429,7 @@ components:
       properties:
         articleId:
           type: integer
+          format: int64
         title:
           type: string
         creationDate:
@@ -1447,6 +1443,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - articleId
         - title
@@ -1465,6 +1462,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - title
         - images
@@ -1678,7 +1676,7 @@ components:
       type: object
       properties:
         name:
-          type: string        
+          type: string
         content:
           type: string
         category:
@@ -2069,7 +2067,7 @@ components:
         email:
           type: string
         clientURI:
-          type: string          
+          type: string
       required:
         - email
         - clientURI
