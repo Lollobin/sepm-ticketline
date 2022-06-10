@@ -473,12 +473,6 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/articleId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
       responses:
         200:
           description: Successful set the "read"-status of an article for an user
