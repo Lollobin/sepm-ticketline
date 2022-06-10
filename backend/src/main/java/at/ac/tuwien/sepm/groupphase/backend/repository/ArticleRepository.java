@@ -2,25 +2,13 @@ package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-
-    /**
-     * Find an article based on the ID.
-     *
-     * @param articleId searches for article with this ID
-     * @return Optional of Article
-     */
-    @Transactional
-    @Query("select a from Article a where a.articleId = :articleId")
-    Optional<Article> getArticleById(@Param("articleId") Long articleId);
 
     /**
      * Get all articles that have been read by a specific user.

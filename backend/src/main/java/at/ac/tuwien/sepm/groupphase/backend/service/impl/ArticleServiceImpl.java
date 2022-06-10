@@ -69,28 +69,24 @@ public class ArticleServiceImpl implements ArticleService {
 
         LOGGER.trace("Getting article with id {}", id);
 
-        if (articleRepository.existsById(id)) {
+        Optional<Article> optionalArticle = articleRepository.findById(id);
 
-            Optional<Article> optionalArticle = articleRepository.getArticleById(id);
-
-            if (optionalArticle.isEmpty()) {
-                throw new NotFoundException("Article with id " + id + " not found");
-            }
-            return articleMapper.articleToArticleDto(optionalArticle.get());
-        } else {
+        if (optionalArticle.isEmpty()) {
             throw new NotFoundException("Article with id " + id + " not found");
         }
+        return articleMapper.articleToArticleDto(optionalArticle.get());
+
     }
 
     @Override
     public List<ArticleDto> getArticles(Boolean filterRead, String email) {
         LOGGER.trace("Getting articles");
 
-
         long id = userService.findApplicationUserByEmail(email).getUserId();
 
         if (Boolean.FALSE.equals(filterRead)) {
-            return articleRepository.findDistinctByUsersUserIdNot(id).stream().map(articleMapper::articleToArticleDto)
+            return articleRepository.findDistinctByUsersUserIdNot(id).stream()
+                .map(articleMapper::articleToArticleDto)
                 .toList();
         } else {
             return articleRepository.findByUsersUserIdEquals(id).stream()

@@ -230,7 +230,7 @@ public class CustomUserDetailService implements UserService {
         LOGGER.debug("Adding article with ID {} to user with email {} and ID {}", articleId, email,
             applicationUser.getUserId());
 
-        Optional<Article> optionalArticle = articleRepository.getArticleById(articleId);
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
 
         if (optionalArticle.isEmpty()) {
 
