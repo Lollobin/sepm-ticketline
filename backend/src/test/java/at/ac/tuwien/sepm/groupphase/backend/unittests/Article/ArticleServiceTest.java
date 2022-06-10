@@ -100,6 +100,7 @@ public class ArticleServiceTest {
         articleWithoutIdDto.setImages(imageIds);
 
         Article fakedPersisted = new Article();
+        fakedPersisted.setArticleId(1L);
         fakedPersisted.setTitle(ARTICLE_TITLE);
         fakedPersisted.setSummary(ARTICLE_SUMMARY);
         fakedPersisted.setText(ARTICLE_TEXT);

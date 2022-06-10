@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.Image;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.ignoreStubs;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Image;
@@ -46,8 +49,24 @@ public class ImageServiceTest {
 
         Image fakePersistedImage = new Image();
 
+        Image returnedImage = new Image();
+        returnedImage.setImageId(1L);
+        returnedImage.setFilePath("testFilePath");
 
-        when(fileSystemRepository.save(file.getBytes(), file.getOriginalFilename())).thenReturn(null);
+
+
+
+        when(fileSystemRepository.save(file.getBytes(), file.getOriginalFilename())).thenReturn(
+            "testFilePath");
+        fakePersistedImage.setFilePath("testFilePath");
+        when(imageRepository.save(fakePersistedImage)).thenReturn(returnedImage);
+
+
+        imageService.save(file);
+
+        verify(imageValidator).checkIfImageMimeTypeIsCorrect(file);
+        verify(fileSystemRepository).save(file.getBytes(), file.getOriginalFilename());
+        verify(imageRepository).save(fakePersistedImage);
 
     }
 
