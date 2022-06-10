@@ -110,6 +110,11 @@ public class EventServiceImpl implements EventService {
         if (topEventSearchDto.getMonth() != null) {
             int year = topEventSearchDto.getMonth().getYear();
             int month = topEventSearchDto.getMonth().getMonthValue();
+
+            if (month == 12) {
+                year++;
+                month = 1;
+            }
             fromDate = OffsetDateTime.of(year, month, 1, 0, 0, 0, 0, ZoneOffset.UTC);
             toDate = OffsetDateTime.of(year, month + 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         }
