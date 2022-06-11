@@ -16,7 +16,8 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Find a user in the context of Spring Security based on the email address <br> For more
-     * information have a look at this tutorial: https://www.baeldung.com/spring-security-authentication-with-a-database
+     * information have a look at this tutorial:
+     * https://www.baeldung.com/spring-security-authentication-with-a-database
      *
      * @param email the email address
      * @return a Spring Security user
@@ -41,10 +42,18 @@ public interface UserService extends UserDetailsService {
      *                                                                            fails because of
      *                                                                            Duplicate Email,
      *                                                                            invalid field
-     *                                                                            values, or whitespace-only
+     *                                                                            values, or
+     *                                                                            whitespace-only
      *                                                                            values.
      */
     void save(UserWithPasswordDto user);
+
+    /**
+     * Updates a User with the given id from token in the database.
+     *
+     * @param userWithPasswordDto with new user data to be updated to
+     */
+    void put(UserWithPasswordDto userWithPasswordDto);
 
     /**
      * * Return a page of users whose locked status is according to the parameter.
@@ -53,6 +62,13 @@ public interface UserService extends UserDetailsService {
      * @return page of users
      */
     Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable);
+
+    /**
+     * Returns the information of the current user.
+     *
+     * @return user entity of the current user
+     */
+    ApplicationUser findByCurrentUser();
 
     /**
      * Increase the Number of failed login attempts by one.
@@ -102,4 +118,13 @@ public interface UserService extends UserDetailsService {
      * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException when user not found
      */
     void forcePasswordReset(Long id, AdminPasswordResetDto dto);
+
+    /**   
+     * Update the list of read articles of a user.
+     *
+     * @param email     updates the list of the user with the corresponding email
+     * @param articleId add article with corresponding articleId to user
+     */
+    void updateArticleRead(String email, Long articleId);
+
 }

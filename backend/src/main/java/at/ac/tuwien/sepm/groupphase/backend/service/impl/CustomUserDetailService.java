@@ -7,8 +7,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -18,9 +21,15 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+<<<<<<< backend/src/main/java/at/ac/tuwien/sepm/groupphase/backend/service/impl/CustomUserDetailService.java
 import java.util.Objects;
 import java.util.Optional;
+=======
+import java.util.Optional;
+import java.util.Set;
+>>>>>>> backend/src/main/java/at/ac/tuwien/sepm/groupphase/backend/service/impl/CustomUserDetailService.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +58,7 @@ public class CustomUserDetailService implements UserService {
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
     private final AuthenticationUtil authenticationFacade;
-
+    private final ArticleRepository articleRepository;
     private final UserValidator userValidator;
 
     @Autowired
@@ -59,16 +68,19 @@ public class CustomUserDetailService implements UserService {
         ResetTokenService resetTokenService,
         MailBuilderService mailBuilderService,
         AuthenticationUtil authenticationFacade,
-        UserValidator userValidator) {
+        UserValidator userValidator,
+        ArticleRepository articleRepository,
+        ) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
         this.emailService = emailService;
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
-        this.authenticationFacade = authenticationFacade;
+        this.articleRepository = articleRepository;
         this.userValidator = userValidator;
-
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -136,12 +148,38 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public void put(UserWithPasswordDto userWithPasswordDto) {
+        ApplicationUser tokenUser = findByCurrentUser();
+        int userId = Math.toIntExact(tokenUser.getUserId());
+
+        userValidator.validateUserWithPasswordDto(userWithPasswordDto);
+
+        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        if (emailUser != null && emailUser.getUserId() != userId) {
+            throw new ConflictException("This email is not allowed, try another one");
+        }
+
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        appUser.setUserId(userId);
+        LOGGER.debug("Attempting to update {}", appUser);
+        userRepository.save(appUser);
+    }
+
+    @Override
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
         boolean isLocked = filterLocked != null && filterLocked;
 
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
+    }
+
+    @Override
+    public ApplicationUser findByCurrentUser() {
+        String email = authenticationFacade.getEmail();
+        LOGGER.debug("Looking for user with email {}", email);
+
+        return this.findApplicationUserByEmail(email);
     }
 
 
@@ -245,6 +283,30 @@ public class CustomUserDetailService implements UserService {
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
             .build()
             .toUri();
+
+    }
+
+    public void updateArticleRead(String email, Long articleId) {
+
+        ApplicationUser applicationUser = findApplicationUserByEmail(email);
+
+        LOGGER.debug("Adding article with ID {} to user with email {} and ID {}", articleId, email,
+            applicationUser.getUserId());
+
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
+
+        if (optionalArticle.isEmpty()) {
+
+            throw new NotFoundException("Article with ID " + articleId + " is not present");
+        }
+        Article article = optionalArticle.get();
+
+        Set<Article> articleSet = new HashSet<>(applicationUser.getArticles());
+        articleSet.add(article);
+
+        applicationUser.setArticles(articleSet);
+
+        userRepository.save(applicationUser);
 
     }
 

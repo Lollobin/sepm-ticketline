@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -30,28 +31,29 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "readArticleStatus", description = "the readArticleStatus API")
-public interface ReadArticleStatusApi {
+@Tag(name = "userInfo", description = "the userInfo API")
+public interface UserInfoApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * PUT /readArticleStatus/{id} : Sets the status to read or unread for an article for the current user
+     * GET /userInfo : Gets user info of user possesing the token.
      *
-     * @param id ID of the user that is retreived (required)
-     * @return Successful set the \&quot;read\&quot;-status of an article for an user (status code 200)
+     * @return Successful retreival of user (status code 200)
      *         or The user is not logged in (status code 401)
+     *         or The user with the given ID was not found (status code 404)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "readArticleStatusIdPut",
-        summary = "Sets the status to read or unread for an article for the current user",
-        tags = { "articles" },
+        operationId = "userInfoGet",
+        summary = "Gets user info of user possesing the token.",
+        tags = { "userManagement" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful set the \"read\"-status of an article for an user"),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of user", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  UserDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
         security = {
@@ -59,12 +61,22 @@ public interface ReadArticleStatusApi {
         }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/readArticleStatus/{id}"
+        method = RequestMethod.GET,
+        value = "/userInfo",
+        produces = { "application/json" }
     )
-    default ResponseEntity<Void> readArticleStatusIdPut(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
+    default ResponseEntity<UserDto> userInfoGet(
+        
     ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"lockedAccount\" : true, \"address\" : { \"country\" : \"country\", \"zipCode\" : \"zipCode\", \"city\" : \"city\", \"street\" : \"street\", \"houseNumber\" : \"houseNumber\" }, \"userId\" : 0, \"email\" : \"email\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

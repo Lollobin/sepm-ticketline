@@ -64,12 +64,12 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
-        
+
       responses:
         200:
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         401:
@@ -256,13 +256,10 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /users/{id}:
     put:
       tags:
         - userManagement
-      summary: Updates information of an user with the given data.
-      parameters:
-        - $ref: "#/components/parameters/userId"
+      summary: Updates information of a user possesing the token.
       security:
         - BearerAuth: []
       requestBody:
@@ -280,6 +277,27 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
+  /userInfo:
+    get:
+      tags:
+        - userManagement
+      summary: Gets user info of user possesing the token.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /users/{id}:
     get:
       tags:
         - userManagement
@@ -461,12 +479,6 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/articleId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
       responses:
         200:
           description: Successful set the "read"-status of an article for an user
@@ -1146,6 +1158,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     artistId:
       name: id
       in: path
@@ -1427,6 +1440,7 @@ components:
       properties:
         articleId:
           type: integer
+          format: int64
         title:
           type: string
         creationDate:
@@ -1440,6 +1454,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - articleId
         - title
@@ -1458,9 +1473,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - title
         - images
+        - summary
+        - text
     Location:
       type: object
       properties:
@@ -1669,7 +1687,7 @@ components:
       type: object
       properties:
         name:
-          type: string        
+          type: string
         content:
           type: string
         category:
@@ -2060,7 +2078,7 @@ components:
         email:
           type: string
         clientURI:
-          type: string          
+          type: string
       required:
         - email
         - clientURI

@@ -35,7 +35,7 @@ public class PasswordResetEndpoint implements PasswordResetApi {
         PasswordResetDto passwordResetDto) {
         LOGGER.info("POST /passwordReset");
         userService.requestPasswordReset(passwordResetDto);
-        return ResponseEntity.ok(
+        return ResponseEntity.ok().body(
             "If there is an account under that Email, you will receive a password reset mail soon");
     }
 }

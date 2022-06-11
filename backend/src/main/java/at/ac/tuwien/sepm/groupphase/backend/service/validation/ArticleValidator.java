@@ -29,6 +29,22 @@ public class ArticleValidator {
             first = false;
         }
 
+        if (article.getSummary().isBlank()) {
+            if (!first) {
+                exceptionString += "& ";
+            }
+            exceptionString += "Summary of article can not be empty ";
+            first = false;
+        }
+
+        if (article.getText().isBlank()) {
+            if (!first) {
+                exceptionString += "& ";
+            }
+            exceptionString += "Text of article can not be empty ";
+            first = false;
+        }
+
         if (isStringLengthInvalid(article.getTitle())) {
             if (!first) {
                 exceptionString += "& ";
