@@ -51,6 +51,7 @@
       </button>
       <a class="btn btn-success m-lg-2" *ngIf="!authService.isLoggedIn()" routerLink="/login"
         routerLinkActive="active">Login</a>
+      <button (click)="sendPdf()">TEST</button>
       <div class="dropdown" *ngIf="authService.isLoggedIn()">
         <a class="btn btn-light dropdown-toggle m-lg-2" href="#" role="button" id="dropdownMenuLink"
           data-bs-toggle="dropdown" aria-expanded="false">
