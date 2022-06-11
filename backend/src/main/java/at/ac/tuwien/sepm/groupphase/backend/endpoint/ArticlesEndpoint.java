@@ -48,6 +48,7 @@ public class ArticlesEndpoint implements ArticlesApi {
         return ResponseEntity.created(location).build();
     }
 
+    @Secured("ROLE_USER")
     @Override
     public ResponseEntity<List<ArticleDto>> articlesGet(Boolean filterRead) {
         LOGGER.info("GET /articles with filterRead: {}", filterRead);
