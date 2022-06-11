@@ -59,13 +59,13 @@ class ArticleServiceTest {
         user.setUserId(1L);
 
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
-        when(articleRepository.findByUsersUserIdEquals(1L)).thenReturn(articleList);
+        when(articleRepository.findArticlesReadByUser(1L)).thenReturn(articleList);
 
         articleService.getArticles(true, email);
 
-        verify(articleRepository).findByUsersUserIdEquals(1L);
+        verify(articleRepository).findArticlesReadByUser(1L);
         verify(userService).findApplicationUserByEmail(email);
-        verify(articleRepository, never()).findDistinctByUsersUserIdNot(1L);
+        verify(articleRepository, never()).findArticlesNotReadByUser(1L);
 
     }
 
@@ -79,13 +79,13 @@ class ArticleServiceTest {
         user.setUserId(1L);
 
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
-        when(articleRepository.findDistinctByUsersUserIdNot(1L)).thenReturn(articleList);
+        when(articleRepository.findArticlesNotReadByUser(1L)).thenReturn(articleList);
 
         articleService.getArticles(false, email);
 
-        verify(articleRepository).findDistinctByUsersUserIdNot(1L);
+        verify(articleRepository).findArticlesNotReadByUser(1L);
         verify(userService).findApplicationUserByEmail(email);
-        verify(articleRepository, never()).findByUsersUserIdEquals(1L);
+        verify(articleRepository, never()).findArticlesReadByUser(1L);
 
     }
 

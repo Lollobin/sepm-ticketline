@@ -28,20 +28,20 @@ class ArticleRepositoryTest {
         @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
         @Sql("classpath:/sql/insert_article.sql"),
         @Sql("classpath:/sql/insert_read_articles.sql")})
-    void findByUsersUserIdEquals_shouldGetAllReadArticles() {
+    void findArticlesReadByUser_shouldGetAllReadArticles() {
 
-        List<Article> articlesReadByUser1 = articleRepository.findByUsersUserIdEquals(-1);
+        List<Article> articlesReadByUser1 = articleRepository.findArticlesReadByUser(-1);
         assertThat(articlesReadByUser1).hasSize(2);
         assertAll(
             () -> assertEquals(articlesReadByUser1.get(0).getArticleId(), -3),
             () -> assertEquals(articlesReadByUser1.get(1).getArticleId(), -1)
         );
 
-        List<Article> articlesReadByUser2 = articleRepository.findByUsersUserIdEquals(-2);
+        List<Article> articlesReadByUser2 = articleRepository.findArticlesReadByUser(-2);
         assertThat(articlesReadByUser2).hasSize(1);
         assertEquals(articlesReadByUser2.get(0).getArticleId(), -1);
 
-        List<Article> articlesReadByUser3 = articleRepository.findByUsersUserIdEquals(-3);
+        List<Article> articlesReadByUser3 = articleRepository.findArticlesReadByUser(-3);
         assertThat(articlesReadByUser3).hasSize(3);
         assertAll(
             () -> assertEquals(articlesReadByUser3.get(0).getArticleId(), -3),
@@ -49,11 +49,11 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser3.get(2).getArticleId(), -1)
         );
 
-        List<Article> articlesReadByUser4 = articleRepository.findByUsersUserIdEquals(-4);
+        List<Article> articlesReadByUser4 = articleRepository.findArticlesReadByUser(-4);
         assertThat(articlesReadByUser4).hasSize(1);
         assertEquals(articlesReadByUser4.get(0).getArticleId(), -1);
 
-        List<Article> articlesReadByUser5 = articleRepository.findByUsersUserIdEquals(-5);
+        List<Article> articlesReadByUser5 = articleRepository.findArticlesReadByUser(-5);
         assertThat(articlesReadByUser5).isEmpty();
     }
 
@@ -62,16 +62,16 @@ class ArticleRepositoryTest {
         @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
         @Sql("classpath:/sql/insert_article.sql"),
         @Sql("classpath:/sql/insert_read_articles.sql")})
-    void findDistinctByUsersUserIdNot_shouldGetAlNotReadArticles() {
+    void findArticlesNotReadByUser_shouldGetAllNotReadArticles() {
 
-        List<Article> articlesReadByUser1 = articleRepository.findDistinctByUsersUserIdNot(-1);
+        List<Article> articlesReadByUser1 = articleRepository.findArticlesNotReadByUser(-1);
         assertThat(articlesReadByUser1).hasSize(2);
         assertAll(
             () -> assertEquals(articlesReadByUser1.get(0).getArticleId(), -4),
             () -> assertEquals(articlesReadByUser1.get(1).getArticleId(), -2)
         );
 
-        List<Article> articlesReadByUser2 = articleRepository.findDistinctByUsersUserIdNot(-2);
+        List<Article> articlesReadByUser2 = articleRepository.findArticlesNotReadByUser(-2);
         assertThat(articlesReadByUser2).hasSize(3);
         assertAll(
             () -> assertEquals(articlesReadByUser2.get(0).getArticleId(), -4),
@@ -79,11 +79,11 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser2.get(2).getArticleId(), -2)
         );
 
-        List<Article> articlesReadByUser3 = articleRepository.findDistinctByUsersUserIdNot(-3);
+        List<Article> articlesReadByUser3 = articleRepository.findArticlesNotReadByUser(-3);
         assertThat(articlesReadByUser3).hasSize(1);
         assertEquals(articlesReadByUser3.get(0).getArticleId(), -4);
 
-        List<Article> articlesReadByUser4 = articleRepository.findDistinctByUsersUserIdNot(-4);
+        List<Article> articlesReadByUser4 = articleRepository.findArticlesNotReadByUser(-4);
         assertThat(articlesReadByUser4).hasSize(3);
         assertAll(
             () -> assertEquals(articlesReadByUser4.get(0).getArticleId(), -4),
@@ -91,7 +91,7 @@ class ArticleRepositoryTest {
             () -> assertEquals(articlesReadByUser4.get(2).getArticleId(), -2)
         );
 
-        List<Article> articlesReadByUser5 = articleRepository.findDistinctByUsersUserIdNot(-5);
+        List<Article> articlesReadByUser5 = articleRepository.findArticlesNotReadByUser(-5);
         assertThat(articlesReadByUser5).hasSize(4);
         assertAll(
             () -> assertEquals(articlesReadByUser5.get(0).getArticleId(), -4),
