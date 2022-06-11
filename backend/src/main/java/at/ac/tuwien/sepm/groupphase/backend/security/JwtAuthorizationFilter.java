@@ -53,7 +53,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthToken(HttpServletRequest request)
         throws JwtException, IllegalArgumentException {
         String token = request.getHeader(securityProperties.getAuthHeader());
-        if (token == null || token.isEmpty() || "Bearer null".equals(token)) {
+        if (token == null || token.isEmpty()) {
             return null;
         }
 

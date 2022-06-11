@@ -74,7 +74,6 @@ public class ArticlesEndpoint implements ArticlesApi {
         return ResponseEntity.ok().body(articleDtos);
     }
 
-    @Secured("ROLE_USER")
     @Override
     public ResponseEntity<ArticleDto> articlesIdGet(Long id) {
 

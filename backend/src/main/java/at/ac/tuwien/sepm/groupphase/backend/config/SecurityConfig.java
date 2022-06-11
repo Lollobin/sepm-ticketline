@@ -73,15 +73,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/topShows").permitAll()
             .antMatchers(HttpMethod.GET, "/seatingPlanLayouts").permitAll()
             .antMatchers(HttpMethod.GET, "/articles").permitAll()
+            .antMatchers(HttpMethod.GET, "/articles/**").permitAll()
             .antMatchers(HttpMethod.GET, "/images/**").permitAll()
-
 
             //for login and registration
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .antMatchers(HttpMethod.POST, "/users").permitAll()
             .antMatchers(HttpMethod.POST, "/passwordReset").permitAll()
             .antMatchers(HttpMethod.POST, "/passwordUpdate").permitAll()
-
 
             .anyRequest().authenticated();
 
