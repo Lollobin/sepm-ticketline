@@ -16,6 +16,7 @@ public class Constants {
     public static final String COMPANY_UID = "AT999999";
     public static final String COMPANY_WEB = "http://localhost:4200";
 
+    public static final float TAX_RATE_CULTURE = 13;
 
     public static final String COMPANY_BANK_NAME = "Meine Bank";
     public static final String COMPANY_BANK_BIC = "ATXYZABCCCC";
