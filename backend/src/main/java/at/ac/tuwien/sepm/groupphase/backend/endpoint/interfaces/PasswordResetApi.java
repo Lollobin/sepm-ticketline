@@ -69,7 +69,7 @@ public interface PasswordResetApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<Void> passwordResetIdPost(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id,
+        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id,
         @Parameter(name = "AdminPasswordResetDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody AdminPasswordResetDto adminPasswordResetDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

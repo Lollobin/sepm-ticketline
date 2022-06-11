@@ -162,11 +162,11 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public void forcePasswordReset(Integer id, AdminPasswordResetDto dto) {
+    public void forcePasswordReset(Long id, AdminPasswordResetDto dto) {
         String email = authenticationFacade.getEmail();
 
         ApplicationUser loggedOnUser = userRepository.findUserByEmail(email);
-        Optional<ApplicationUser> userToReset = userRepository.findById((long) id);
+        Optional<ApplicationUser> userToReset = userRepository.findById(id);
         if (userToReset.isEmpty()) {
             throw new NotFoundException("User with id " + id + " does not exist in the database!");
         } else if ((Objects.equals(loggedOnUser.getEmail(), userToReset.get().getEmail()))

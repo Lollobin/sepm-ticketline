@@ -24,7 +24,7 @@ public class PasswordResetEndpoint implements PasswordResetApi {
 
     @Override
     @Secured("ROLE_USER")
-    public ResponseEntity<Void> passwordResetIdPost(Integer id, AdminPasswordResetDto dto) {
+    public ResponseEntity<Void> passwordResetIdPost(Long id, AdminPasswordResetDto dto) {
         LOGGER.info("POST /passwordReset/{}", id);
         userService.forcePasswordReset(id, dto);
         return ResponseEntity.ok().build();

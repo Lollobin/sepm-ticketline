@@ -101,5 +101,5 @@ public interface UserService extends UserDetailsService {
      *
      * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException when user not found
      */
-    void forcePasswordReset(Integer id, AdminPasswordResetDto dto);
+    void forcePasswordReset(Long id, AdminPasswordResetDto dto);
 }
