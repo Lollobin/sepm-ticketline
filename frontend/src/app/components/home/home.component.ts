@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     this.articleService.articlesGet(false).subscribe({
       next: articles => {
 
-        this.articles = articles.slice(0, 4);
+        this.articles = articles.slice(0, 6);
         this.empty = articles.length === 0;
         for (const article of this.articles) {
 
@@ -35,11 +35,7 @@ export class HomeComponent implements OnInit {
           if (article.images?.length === 0) {
             this.articleImages[article.articleId] = this.errorImage;
           }
-
-
         }
-
-
       },
       error: err => {
         this.error = err;
