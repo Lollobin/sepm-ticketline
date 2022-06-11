@@ -6,9 +6,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
-import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
@@ -23,13 +23,9 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-<<<<<<< backend/src/main/java/at/ac/tuwien/sepm/groupphase/backend/service/impl/CustomUserDetailService.java
 import java.util.Objects;
 import java.util.Optional;
-=======
-import java.util.Optional;
 import java.util.Set;
->>>>>>> backend/src/main/java/at/ac/tuwien/sepm/groupphase/backend/service/impl/CustomUserDetailService.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +65,8 @@ public class CustomUserDetailService implements UserService {
         MailBuilderService mailBuilderService,
         AuthenticationUtil authenticationFacade,
         UserValidator userValidator,
-        ArticleRepository articleRepository,
-        ) {
+        ArticleRepository articleRepository
+    ) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -159,7 +155,8 @@ public class CustomUserDetailService implements UserService {
             throw new ConflictException("This email is not allowed, try another one");
         }
 
-        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(
+            userWithPasswordDto);
         appUser.setUserId(userId);
         LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
