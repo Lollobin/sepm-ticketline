@@ -32,7 +32,7 @@ public interface ArticleService {
      *                   with the associated email has read
      * @return List of ArticleDtos
      */
-    List<ArticleDto> getArticles(Boolean filterRead, String email);
+    List<ArticleDto> getArticles(Boolean filterRead, String email, boolean isAnonym);
 
 
 }

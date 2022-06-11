@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomAuthService} from '../../services/custom-auth.service';
 import {Article, ArticlesService} from "../../generated-sources/openapi";
 
 @Component({
@@ -16,10 +15,8 @@ export class HomeComponent implements OnInit {
   filterRead = null;
   defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
-  result: boolean[] = [].fill(false);
-  one: boolean;
 
-  constructor(public authService: CustomAuthService, private articleService: ArticlesService) {
+  constructor(private articleService: ArticlesService) {
   }
 
   ngOnInit() {
@@ -33,7 +30,6 @@ export class HomeComponent implements OnInit {
         this.articles = articles.slice(0, 4);
         this.empty = articles.length === 0;
         for (const article of this.articles) {
-
 
           this.getImage(article.images[0], article.articleId);
           if (article.images?.length === 0) {

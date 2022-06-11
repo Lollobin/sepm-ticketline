@@ -45,7 +45,7 @@
       <li class="nav-item">
         <a
             class="nav-link"
-            *ngIf="!adminView"
+            *ngIf="!adminView && authService.isLoggedIn()"
             routerLink="/news/read"
             routerLinkActive="active"
         >Show read News</a
