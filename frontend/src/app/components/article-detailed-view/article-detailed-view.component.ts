@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Article, ArticlesService} from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
+import {CustomAuthService} from "../../services/custom-auth.service";
 
 @Component({
   selector: 'app-article-detailed-view',
@@ -13,7 +14,8 @@ export class ArticleDetailedViewComponent implements OnInit {
   id: number;
   error: Error;
 
-  constructor(private articleService: ArticlesService, private activatedRoute: ActivatedRoute) {
+  constructor(private articleService: ArticlesService, private activatedRoute: ActivatedRoute,
+              private customAuthService: CustomAuthService) {
   }
 
   ngOnInit(): void {
@@ -28,8 +30,10 @@ export class ArticleDetailedViewComponent implements OnInit {
     this.articleService.articlesIdGet(id).subscribe({
       next: article => {
         this.article = article;
-        console.log("hier");
-        this.setArticleToRead(id);
+
+        if (this.customAuthService.isLoggedIn()) {
+          this.setArticleToRead(id);
+        }
 
         console.log(article);
       },
@@ -41,9 +45,7 @@ export class ArticleDetailedViewComponent implements OnInit {
 
   setArticleToRead(id: number) {
     this.articleService.readArticleStatusIdPut(id).subscribe({
-      next: () => {
-        console.log("worked");
-      },
+
       error: err => {
         this.error = err;
       }
