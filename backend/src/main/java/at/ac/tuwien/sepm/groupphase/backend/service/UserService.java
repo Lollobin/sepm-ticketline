@@ -128,7 +128,7 @@ public interface UserService extends UserDetailsService {
     void updateArticleRead(String email, Long articleId);
 
     /**
-     * Fetches user by id
+     * Fetches user by id.
      *
      * @param id userid
      * @return Application user with this id

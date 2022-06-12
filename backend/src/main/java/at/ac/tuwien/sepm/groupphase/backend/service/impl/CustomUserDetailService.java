@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
@@ -20,7 +19,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
-import com.github.javafaker.App;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.HashSet;
@@ -167,7 +165,7 @@ public class CustomUserDetailService implements UserService {
         if (filterLocked == null) {
             return userRepository.findAll(pageable);
         }
-        boolean isLocked =  filterLocked;
+        boolean isLocked = filterLocked;
 
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
     }
@@ -308,10 +306,11 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public ApplicationUser findById(Long id) {
-        Optional<ApplicationUser> user= userRepository.findById(id);
-        if (user.isPresent()){
+        Optional<ApplicationUser> user = userRepository.findById(id);
+        if (user.isPresent()) {
             return user.get();
+        } else {
+            throw new NotFoundException("User does not exist.");
         }
-        else throw new NotFoundException("User does not exist.");
     }
 }
