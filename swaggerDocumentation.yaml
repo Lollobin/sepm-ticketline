@@ -34,6 +34,12 @@ paths:
       tags:
         - userManagement
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPasswordReset"
       security:
         - BearerAuth: []
       parameters:
@@ -77,7 +83,7 @@ paths:
     post:
       tags:
         - userManagement
-      summary: Updates account with unique token, sets the password 
+      summary: Updates account with unique token, sets the password
       requestBody:
         required: true
         content:
@@ -657,28 +663,26 @@ paths:
           description: The show with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /topShows:
+  /topEvents:
     get:
       tags:
-        - shows
-      summary: Searches for shows that have the highest amount of tickets sold per category for a given month
-      description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
-      security:
-        - BearerAuth: []
+        - events
+      summary: Searches for events that have the highest amount of tickets sold per category for a given month
+      description: Searches for data depending on the query parameters. When no query parameters are given, all events are compared.
       parameters:
         - name: search
           in: query
           schema:
-            $ref: "#/components/schemas/TopShowSearch"
+            $ref: "#/components/schemas/TopEventSearch"
       responses:
         200:
-          description: Successful retreival of locations
+          description: Successful retreival of events
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ShowWithTicketsSold"
+                  $ref: "#/components/schemas/EventWithTicketsSold"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         500:
@@ -1144,6 +1148,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     articleId:
       name: id
       in: path
@@ -1223,6 +1228,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
@@ -1406,28 +1412,25 @@ components:
         - artists
         - seatingPlan
         - sectorPrices
-    ShowWithTicketsSold:
+    EventWithTicketsSold:
       type: object
       properties:
-        showId:
+        eventId:
           type: integer
-        date:
+          format: int-64
+        name:
           type: string
-          format: date-time
-        event:
+        duration:
           type: integer
+        category:
+          $ref: "#/components/schemas/Category"
         ticketsSold:
           type: integer
-        artists:
-          type: array
-          items:
-            type: number
       required:
         - showId
         - date
         - event
         - ticketsSold
-        - artists
     Article:
       type: object
       properties:
@@ -1692,7 +1695,7 @@ components:
         artist:
           type: integer
 
-    TopShowSearch:
+    TopEventSearch:
       type: object
       properties:
         category:
@@ -1700,9 +1703,6 @@ components:
         month:
           type: string
           format: date
-      required:
-        - category
-        - month
     ShowSearch:
       type: object
       properties:
@@ -2085,4 +2085,12 @@ components:
       required:
         - newPassword
         - token
+    AdminPasswordReset:
+      type: object
+      properties:
+        clientURI:
+          type: string
+      required:
+        - clientURI
+
 
