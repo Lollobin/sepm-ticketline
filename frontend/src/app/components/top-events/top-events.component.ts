@@ -17,11 +17,14 @@ export class TopEventsComponent implements OnInit {
   topEvents: EventWithTicketsSold[];
   month: Date = null;
   category: Category = null;
+  categories = [];
+  categoriesType = Category;
 
   constructor(private eventsService: EventsService) {
   }
 
   ngOnInit(): void {
+    this.categories = Object.keys(this.categoriesType);
     this.month = new Date(Date.now());
     this.reloadEvents();
   }
