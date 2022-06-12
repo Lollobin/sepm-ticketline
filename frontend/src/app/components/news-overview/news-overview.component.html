@@ -2,13 +2,13 @@
 
   <div class="card mb-3" style="max-width: 1000px; margin: 0 auto" *ngFor="let article of articles">
     <div class="row g-0">
-      <div class="col-md-4 img_div" >
+      <div class="col-sm-12 col-md-4 col-xl-4" >
         <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
              class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
 
 
       </div>
-      <div class="col-md-8">
+      <div class="col-sm-5 col-md-8">
         <div class="card-body">
           <h3 class="card-title">{{article.title}}</h3>
           <p class="card-text with-overflow">{{article?.summary}}</p>
