@@ -1,24 +1,27 @@
-import {Component, OnInit, TemplateRef} from "@angular/core";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import {
   OrdersPage,
+  Ticket,
   TicketsService,
   TicketStatus,
   TicketWithShowInfo,
-  TicketWithShowInfoTypeEnum
+  TicketWithShowInfoTypeEnum,
 } from "../../generated-sources/openapi";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
-import {forkJoin} from "rxjs";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
+import { forkJoin } from "rxjs";
+import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-order-overview",
   templateUrl: "./order-overview.component.html",
-  styleUrls: ["./order-overview.component.scss"]
+  styleUrls: ["./order-overview.component.scss"],
 })
 export class OrderOverviewComponent implements OnInit {
   error = undefined;
   tickets: TicketWithShowInfo[];
   today = new Date();
+  faFileArrowDown = faFileArrowDown;
 
   orders: OrdersPage;
   currentPage = 1;
@@ -27,10 +30,11 @@ export class OrderOverviewComponent implements OnInit {
   selectedTickets: TicketWithShowInfo;
   ticketSelectionForm: FormGroup;
 
-  constructor(private ticketService: TicketsService,
-              private modalService: NgbModal,
-              private formBuilder: FormBuilder) {
-  }
+  constructor(
+    private ticketService: TicketsService,
+    private modalService: NgbModal,
+    private formBuilder: FormBuilder
+  ) {}
 
   get ticketsFormArray() {
     return this.ticketSelectionForm.controls.tickets as FormArray;
@@ -38,32 +42,32 @@ export class OrderOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.ticketService.ticketInfoGet().subscribe({
-      next: data => {
+      next: (data) => {
         this.tickets = data;
       },
-      error: error => {
+      error: (error) => {
         console.error("Error getting tickets", error.message);
         this.setError(error);
       },
       complete: () => {
         console.log("Received tickets");
-      }
+      },
     });
     this.reloadOrders();
   }
 
   reloadOrders() {
     this.ticketService.ordersGet(this.pageSize, this.currentPage - 1).subscribe({
-      next: data => {
+      next: (data) => {
         this.orders = data;
       },
-      error: error => {
+      error: (error) => {
         console.error("Error getting orders", error.message);
         this.setError(error);
       },
       complete: () => {
         console.log("Received orders");
-      }
+      },
     });
   }
 
@@ -72,71 +76,73 @@ export class OrderOverviewComponent implements OnInit {
     this.reloadOrders();
   }
 
-  openTicketSelectionModal(ticketSelectionModal: TemplateRef<any>, ticketsToSelect: TicketWithShowInfo) {
+  openTicketSelectionModal(
+    ticketSelectionModal: TemplateRef<any>,
+    ticketsToSelect: TicketWithShowInfo
+  ) {
     this.selectedTickets = ticketsToSelect;
     this.ticketSelectionForm = this.formBuilder.group({
-      tickets: new FormArray([], minSelectedCheckboxes(1))
+      tickets: new FormArray([], minSelectedCheckboxes(1)),
     });
     this.addCheckboxes();
-    this.modalService.open(ticketSelectionModal, {ariaLabelledBy: "modal-basic-title"});
+    this.modalService.open(ticketSelectionModal, { ariaLabelledBy: "modal-basic-title" });
   }
 
   purchaseTickets() {
     const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-    .map((checked, i) => checked ? this.selectedTickets.ticket[i].ticketId : null)
-    .filter(v => v !== null);
+      .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
+      .filter((v) => v !== null);
 
     const unSelectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-    .map((checked, i) => checked ? null : this.selectedTickets.ticket[i].ticketId)
-    .filter(v => v !== null);
+      .map((checked, i) => (checked ? null : this.selectedTickets.ticket[i].ticketId))
+      .filter((v) => v !== null);
 
     console.log("Buying tickets:" + selectedTicketIds);
     console.log("Cancelling reservations:" + selectedTicketIds);
 
     if (unSelectedTicketIds.length > 0) {
       forkJoin([
-            this.ticketService.ticketsPost({
-              reserved: [],
-              purchased: selectedTicketIds
-            }),
-            this.ticketService
-            .ticketCancellationsPost({
-              reserved: unSelectedTicketIds,
-              purchased: [],
-            })
-          ]
-      ).subscribe({
-        next: response => console.log(response),
-        error: error => this.setError(error),
+        this.ticketService.ticketsPost({
+          reserved: [],
+          purchased: selectedTicketIds,
+        }),
+        this.ticketService.ticketCancellationsPost({
+          reserved: unSelectedTicketIds,
+          purchased: [],
+        }),
+      ]).subscribe({
+        next: (response) => console.log(response),
+        error: (error) => this.setError(error),
         complete: () => {
           this.modalService.dismissAll();
           this.ngOnInit();
-        }
+        },
       });
     } else {
       this.ticketService
-      .ticketsPost({
-        reserved: [],
-        purchased: selectedTicketIds,
-      })
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          this.setError(error);
-        }, complete: () => {
-          this.modalService.dismissAll();
-          this.ngOnInit();
-        }
-      });
+        .ticketsPost({
+          reserved: [],
+          purchased: selectedTicketIds,
+        })
+        .subscribe({
+          next: (response) => {
+            console.log(response);
+          },
+          error: (error) => {
+            this.setError(error);
+          },
+          complete: () => {
+            this.modalService.dismissAll();
+            this.ngOnInit();
+          },
+        });
     }
   }
 
   cancelTickets() {
     const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-    .map((checked, i) => checked ? this.selectedTickets.ticket[i].ticketId : null)
-    .filter(v => v !== null);
+      .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
+      .filter((v) => v !== null);
 
     console.log("Cancelling tickets/reservations:" + selectedTicketIds);
 
@@ -145,28 +151,28 @@ export class OrderOverviewComponent implements OnInit {
     if (this.selectedTickets.type === TicketWithShowInfoTypeEnum.Purchased) {
       ticketStatus = {
         reserved: [],
-        purchased: selectedTicketIds
+        purchased: selectedTicketIds,
       };
     }
 
     if (this.selectedTickets.type === TicketWithShowInfoTypeEnum.Reserved) {
       ticketStatus = {
         reserved: selectedTicketIds,
-        purchased: []
+        purchased: [],
       };
     }
 
-    this.ticketService.ticketCancellationsPost(ticketStatus)
-    .subscribe({
+    this.ticketService.ticketCancellationsPost(ticketStatus).subscribe({
       next: (response) => {
         console.log(response);
       },
       error: (error) => {
         this.setError(error);
-      }, complete: () => {
+      },
+      complete: () => {
         this.modalService.dismissAll();
         this.ngOnInit();
-      }
+      },
     });
   }
 
@@ -189,21 +195,34 @@ export class OrderOverviewComponent implements OnInit {
   private addCheckboxes() {
     this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
   }
+  openTicketPdf(tickets: Ticket[]) {
+    let fileErrorCount = 0;
+    for (let ticket of tickets) {
+      this.ticketService.ticketPrintsIdGet(ticket.ticketId).subscribe({
+        next: (blob) => {
+          window.open(URL.createObjectURL(blob));
+        },
+        error: () => {
+          fileErrorCount++;
+          this.error = new Error("Failed download of " + fileErrorCount + " files");
+        },
+      });
+    }
+  }
 }
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 function minSelectedCheckboxes(min = 1) {
   const validator: ValidatorFn = (formArray: FormArray) => {
     const totalSelected = formArray.controls
-    // get a list of checkbox values (boolean)
-    .map(control => control.value)
-    // total up the number of checked checkboxes
-    .reduce((prev, next) => next ? prev + next : prev, 0);
+      // get a list of checkbox values (boolean)
+      .map((control) => control.value)
+      // total up the number of checked checkboxes
+      .reduce((prev, next) => (next ? prev + next : prev), 0);
 
     // if the total is not greater than the minimum, return the error message
-    return totalSelected >= min ? null : {required: true};
+    return totalSelected >= min ? null : { required: true };
   };
 
   return validator;
 }
-

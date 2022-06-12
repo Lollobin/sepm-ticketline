@@ -66,7 +66,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
             authenticationFacade.getAuthentication().getPrincipal().toString());
         if (user.getUserId() != ticket.getPurchasedBy().getUserId()) {
             //TODO: ADD CORRECT error
-            throw new NotFoundException(
+            throw new CustomAuthenticationException(
                 String.format("Could not find ticket with id %s", ticketId));
         }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
