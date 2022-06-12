@@ -34,7 +34,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   reloadUser() {
-    this.userManagementService.usersGet(false, this.pageSize, this.page - 1).subscribe({
+    this.userManagementService.usersGet(null, this.pageSize, this.page - 1).subscribe({
       next: data => {
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
@@ -52,20 +52,6 @@ export class UserManagementComponent implements OnInit {
     this.reloadUser();
   }
 
-  unlockUser(id: number, email: string) {
-    console.log("hier" + id);
-    this.userManagementService.lockStatusIdPut(id, false).subscribe({
-      next: () => {
-        this.userEmail = email;
-        this.success = "Successfully unlocked user with email " + email + "!";
-        this.reloadUser();
-      },
-      error: err => {
-        console.log("Error unlocking user: ", err);
-        this.showError(err.error);
-      }
-    });
-  }
 
 
   getDetail(user: User) {

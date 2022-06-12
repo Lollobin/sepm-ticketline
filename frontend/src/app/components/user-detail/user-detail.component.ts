@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {faLock, faLockOpen, faRotateLeft, faTrashCan} from '@fortawesome/free-solid-svg-icons';
-import {UserManagementService} from "../../generated-sources/openapi";
+import {AdminPasswordReset, UserManagementService} from "../../generated-sources/openapi";
 import {UnlockUserComponent} from "../unlock-user/unlock-user.component";
 import {Location} from '@angular/common';
 
@@ -12,6 +12,7 @@ import {Location} from '@angular/common';
 })
 export class UserDetailComponent implements OnInit {
   @Input() user;
+
   error;
   success;
   faLockOpen = faLockOpen;
@@ -22,7 +23,7 @@ export class UserDetailComponent implements OnInit {
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
-              private route: ActivatedRoute, private usermanagementService: UserManagementService) {
+              private route: ActivatedRoute, private userManagementService: UserManagementService) {
   }
 
   ngOnInit(): void {
@@ -30,34 +31,41 @@ export class UserDetailComponent implements OnInit {
   }
 
   refreshPage() {
-    this.usermanagementService.usersIdGet(this.user.userId).subscribe(
-        {next: user => this.user = user, error: err => this.error = err}
+    this.userManagementService.usersIdGet(this.user.userId).subscribe(
+        {
+          next: user => this.user = user, error: err => {
+            this.error = err;
+            console.log(err + "  das ist das problem");
+          }
+        }
     );
   }
 
   unlockUser(id, mail) {
-    this.unlockComponent.unlockUser(id, mail);
-    if (this.unlockComponent.success) {
-      this.success = "Successfully unlocked user with email " + mail + "!";
-      this.unlockComponent.success = null;
-    } else if (this.unlockComponent.error) {
-      this.error = this.unlockComponent.error;
-      this.unlockComponent.error = null;
-    }
-    this.refreshPage();
+    this.userManagementService.lockStatusIdPut(id, false).subscribe({
+      next: () => {
+        this.success = "Successfully unlocked user with email " + mail + "!";
+        this.refreshPage();
+      },
+      error: err => {
+        this.handleError(err);
+      }
+    });
+
+
   }
 
   passwordReset(id) {
-    const adminpasswordReset = {
+    const adminpasswordReset: AdminPasswordReset = {
       clientURI: this.clientURI
     };
-    console.log("reset with id " + id + "and clienturi "+ this.clientURI);
-    // this.usermanagementService.passwordResetIdPost(id, adminpasswordReset).subscribe(
-    //     {
-    //       next: () => this.success = "Successfully reset password of user " + this.user.email + "!",
-    //       error: (err) => this.handleError(err)
-    //     }
-    // );
+    console.log("reset with id " + id + "and clienturi " + this.clientURI);
+    this.userManagementService.passwordResetIdPost(id, adminpasswordReset).subscribe(
+        {
+          next: () => this.success = "Successfully reset password of user " + this.user.email + "!",
+          error: (err) => this.handleError(err)
+        }
+    );
   }
 
   handleError(error) {

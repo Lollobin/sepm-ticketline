@@ -1,4 +1,5 @@
 export * from './address';
+export * from './adminPasswordReset';
 export * from './article';
 export * from './articleWithoutId';
 export * from './artist';
