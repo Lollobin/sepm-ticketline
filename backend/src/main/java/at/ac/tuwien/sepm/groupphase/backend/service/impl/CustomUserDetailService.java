@@ -5,12 +5,16 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
@@ -48,6 +52,7 @@ public class CustomUserDetailService implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
     private final EmailService emailService;
@@ -63,9 +68,10 @@ public class CustomUserDetailService implements UserService {
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
         UserEncodePasswordMapper encodePasswordMapper, EmailService emailService,
         ResetTokenService resetTokenService, MailBuilderService mailBuilderService,
-        AuthenticationUtil authenticationFacade, UserValidator userValidator,
+        UserValidator userValidator,
+        AuthenticationUtil authenticationFacade,
+        TicketRepository ticketRepository,
         ArticleRepository articleRepository) {
-
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
@@ -75,6 +81,7 @@ public class CustomUserDetailService implements UserService {
         this.articleRepository = articleRepository;
         this.userValidator = userValidator;
         this.authenticationFacade = authenticationFacade;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -163,6 +170,24 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public void delete() {
+        ApplicationUser applicationUser = findByCurrentUser();
+
+        List<Ticket> tickets = ticketRepository.getByReservedBy(applicationUser);
+        for (Ticket ticket : tickets) {
+            ticket.setReservedBy(null);
+            ticketRepository.save(ticket);
+        }
+
+        final Address oldAddress = applicationUser.getAddress();
+        invalidateUser(applicationUser);
+        applicationUser.getAddress().setAddressId(oldAddress.getAddressId());
+
+        LOGGER.debug("Attempting to update {} to invalid user (delete)", applicationUser);
+        userRepository.save(applicationUser);
+    }
+
+    @Override
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
@@ -171,7 +196,7 @@ public class CustomUserDetailService implements UserService {
         }
         boolean isLocked = filterLocked;
 
-        return userRepository.findByLockedAccountEquals(isLocked, pageable);
+        return userRepository.findByLockedAccountEqualsAndDeletedIsFalse(isLocked, pageable);
     }
 
     @Override
@@ -282,6 +307,34 @@ public class CustomUserDetailService implements UserService {
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
             .build().toUri();
 
+    }
+
+    private void invalidateUser(ApplicationUser applicationUser) {
+        String del = "DELETED";
+
+        applicationUser.setEmail(String.format("%s%d", del, applicationUser.getUserId()));
+        applicationUser.setFirstName(del);
+        applicationUser.setLastName(del);
+        applicationUser.setGender(Gender.OTHER);
+        applicationUser.setPassword(del);
+        applicationUser.setHasAdministrativeRights(false);
+        applicationUser.setLockedAccount(true);
+        applicationUser.setDeleted(true);
+
+        applicationUser.setAddress(invalidAddress());
+    }
+
+    private Address invalidAddress() {
+        String inv = "INVALID";
+
+        Address address = new Address();
+        address.setHouseNumber(inv);
+        address.setStreet(inv);
+        address.setCity(inv);
+        address.setCountry(inv);
+        address.setZipCode(inv);
+
+        return address;
     }
 
     public void updateArticleRead(String email, Long articleId) {

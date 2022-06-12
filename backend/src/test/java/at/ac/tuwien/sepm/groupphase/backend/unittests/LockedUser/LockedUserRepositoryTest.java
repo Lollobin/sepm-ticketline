@@ -35,7 +35,7 @@ class LockedUserRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<ApplicationUser> lockedUser = userRepository.findByLockedAccountEquals(true,
+        List<ApplicationUser> lockedUser = userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true,
             Pageable.unpaged()).stream().toList();
 
         assertThat(lockedUser).hasSize(3);
