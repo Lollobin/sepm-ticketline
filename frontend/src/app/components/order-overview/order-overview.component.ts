@@ -176,14 +176,13 @@ export class OrderOverviewComponent implements OnInit {
     });
   }
 
-
-  getTransactionPdf(id){
+  getTransactionPdf(id) {
     this.ticketService.billsIdGet(id).subscribe({
       next: (blob) => {
         const fileURL = URL.createObjectURL(blob);
-        window.open(fileURL, '_blank');
+        window.open(fileURL, "_blank");
       },
-      error: (err) => this.setError(err)
+      error: (err) => this.setError(err),
     });
   }
 
@@ -202,13 +201,9 @@ export class OrderOverviewComponent implements OnInit {
       this.ticketsFormArray.at(i).setValue(false);
     }
   }
-
-  private addCheckboxes() {
-    this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
-  }
   openTicketPdf(tickets: Ticket[]) {
     let fileErrorCount = 0;
-    for (let ticket of tickets) {
+    for (const ticket of tickets) {
       this.ticketService.ticketPrintsIdGet(ticket.ticketId).subscribe({
         next: (blob) => {
           window.open(URL.createObjectURL(blob));
@@ -219,6 +214,9 @@ export class OrderOverviewComponent implements OnInit {
         },
       });
     }
+  }
+  private addCheckboxes() {
+    this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
   }
 }
 
