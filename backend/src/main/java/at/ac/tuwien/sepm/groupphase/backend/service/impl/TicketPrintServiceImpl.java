@@ -39,8 +39,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketPrintServiceImpl implements TicketPrintService {
 
-    String title = "Ticketline";
-    String subtitle = "Ticket";
     PDFont plain = PDType1Font.HELVETICA;
     PDFont italic = PDType1Font.HELVETICA_OBLIQUE;
     PDFont bold = PDType1Font.HELVETICA_BOLD;
@@ -93,57 +91,56 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         float xend = rectangle.getWidth() - marginBody;
         float xcompanydata = xend - 150;
 
-        cs.beginText();
-        cs.setFont(plain, 24);
-        cs.setNonStrokingColor(Color.DARK_GRAY);
-        cs.newLineAtOffset(xoffset, yoffset);
-        cs.showText(title);
-        cs.endText();
+        drawTitle(cs, xoffset, yoffset);
+        cs.setNonStrokingColor(Color.black);
+        drawCompanyAddress(cs, xcompanydata, yoffset);
 
-        cs.beginText();
-        cs.setFont(italic, 12);
-        cs.setLeading(15f);
-        cs.newLineAtOffset(xcompanydata, yoffset);
-        cs.showText(COMPANY_NAME);
-        cs.newLine();
-        cs.showText(COMPANY_ADDRESS_LINE1);
-        cs.newLine();
-        cs.showText(COMPANY_ADDRESS_LINE2);
-        cs.newLine();
-        cs.showText(COMPANY_PHONE);
-        cs.newLine();
-        cs.showText(COMPANY_MAIL);
-        cs.newLine();
-        cs.showText(COMPANY_WEB);
-        cs.endText();
+        yoffset -= 60;
 
-        yoffset -= 20;
+        drawSubtitle(cs, xoffset + 2, yoffset);
 
-        cs.beginText();
-        cs.setFont(plain, 20);
-        cs.setStrokingColor(Color.BLACK);
-        cs.newLineAtOffset(xoffset + 2, yoffset);
-        cs.showText(subtitle);
-        cs.endText();
+        yoffset -= 40;
 
-        yoffset -= 80;
-        cs.moveTo(xoffset, yoffset);
-        cs.lineTo(xend, yoffset);
-        cs.setStrokingColor(Color.BLACK);
-        cs.stroke();
+        drawSeparatorLine(cs, xoffset, yoffset, xend);
 
         yoffset -= 30;
+        Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
+        drawEventInformation(ticket, cs, xoffset, yoffset, location);
+
+        drawLocationAddress(cs, yoffset, xcompanydata, location);
+
+        yoffset -= 60;
+
+        drawSeparatorLine(cs, xoffset, yoffset, xend);
+
+        yoffset -= 30;
+        drawDateAndSeatInfo(ticket, cs, xoffset, yoffset);
+
+        yoffset -= 30;
+
+        drawSeparatorLine(cs, xoffset, yoffset, xend);
+
+        yoffset -= 30;
+
+        drawTicketBody(user, cs, xoffset, yoffset);
+
+        drawTicketId(ticket, marginBody, cs, xoffset);
+        cs.close();
+        return invoice;
+    }
+
+    private void drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,
+        float yoffset, Location location) throws IOException {
         cs.beginText();
         cs.setLeading(20f);
         cs.newLineAtOffset(xoffset, yoffset);
         cs.setFont(plain, 14);
         String seatingPlanName = ticket.getSeat().getSector().getSeatingPlan().getName();
-        Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
         cs.showText(location.getName() + " - " + seatingPlanName);
         cs.newLine();
         cs.setFont(plain, 20);
         Event event = ticket.getShow().getEvent();
-        cs.showText(event.getName() + " (" + event.getCategory() + ")");
+        cs.showText(event.getName());
         cs.newLine();
         cs.setFont(plain, 12);
         cs.showText("| ");
@@ -161,7 +158,10 @@ public class TicketPrintServiceImpl implements TicketPrintService {
             cs.showText(" | ");
         }
         cs.endText();
+    }
 
+    private void drawLocationAddress(PDPageContentStream cs, float yoffset, float xcompanydata,
+        Location location) throws IOException {
         cs.beginText();
         cs.newLineAtOffset(xcompanydata, yoffset);
         cs.setFont(plain, 10);
@@ -172,14 +172,10 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.newLine();
 
         cs.endText();
+    }
 
-        yoffset -= 60;
-        cs.moveTo(xoffset, yoffset);
-        cs.lineTo(xend, yoffset);
-        cs.setStrokingColor(Color.BLACK);
-        cs.stroke();
-
-        yoffset -= 30;
+    private void drawDateAndSeatInfo(Ticket ticket, PDPageContentStream cs, float xoffset,
+        float yoffset) throws IOException {
         cs.beginText();
         cs.setFont(bold, 14);
         cs.setLeading(20f);
@@ -200,15 +196,10 @@ public class TicketPrintServiceImpl implements TicketPrintService {
             cs.showText("Seat " + seat.getSeatNumber());
         }
         cs.endText();
+    }
 
-        yoffset -= 30;
-
-        cs.moveTo(xoffset, yoffset);
-        cs.lineTo(xend, yoffset);
-        cs.setStrokingColor(Color.BLACK);
-        cs.stroke();
-        yoffset -= 30;
-
+    private void drawTicketBody(ApplicationUser user, PDPageContentStream cs, float xoffset,
+        float yoffset) throws IOException {
         cs.beginText();
         cs.setFont(bold, 14);
         cs.setLeading(20f);
@@ -242,14 +233,66 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.newLine();
         cs.showText("Only in this form the ticket is valid.");
         cs.endText();
+    }
 
+    private void drawTicketId(Ticket ticket, float marginBody, PDPageContentStream cs,
+        float xoffset) throws IOException {
         cs.beginText();
         cs.setFont(italic, 14);
         cs.setLeading(20f);
         cs.newLineAtOffset(xoffset, -marginBody + 100);
         cs.showText("Ticket ID: " + ticket.getTicketId());
         cs.endText();
-        cs.close();
-        return invoice;
+    }
+
+    private void drawTitle(PDPageContentStream cs, float xoffset, float yoffset)
+        throws IOException {
+        cs.beginText();
+        cs.setFont(plain, 24);
+        cs.setNonStrokingColor(Color.BLUE);
+        cs.newLineAtOffset(xoffset, yoffset);
+        String title = "Ticketline";
+        cs.showText(title);
+        cs.endText();
+    }
+
+    private void drawCompanyAddress(PDPageContentStream cs, float xposition, float yposition)
+        throws IOException {
+        cs.beginText();
+        cs.setFont(italic, 12);
+        cs.setLeading(15f);
+        cs.newLineAtOffset(xposition, yposition);
+        cs.showText(COMPANY_NAME);
+        cs.newLine();
+        cs.showText(COMPANY_ADDRESS_LINE1);
+        cs.newLine();
+        cs.showText(COMPANY_ADDRESS_LINE2);
+        cs.newLine();
+        cs.showText(COMPANY_PHONE);
+        cs.newLine();
+        cs.showText(COMPANY_MAIL);
+        cs.newLine();
+        cs.showText(COMPANY_WEB);
+        cs.endText();
+    }
+
+    private void drawSubtitle(PDPageContentStream cs, float xposition, float yposition)
+
+        throws IOException {
+        String subtitle = "Ticket";
+
+        cs.beginText();
+        cs.setFont(plain, 20);
+        cs.newLineAtOffset(xposition, yposition);
+        cs.showText(subtitle);
+        cs.endText();
+    }
+
+    private void drawSeparatorLine(PDPageContentStream cs, float xoffset, float yoffset, float xend)
+        throws IOException {
+        cs.moveTo(xoffset, yoffset);
+        cs.lineTo(xend, yoffset);
+        cs.setStrokingColor(Color.BLACK);
+        cs.stroke();
     }
 }
