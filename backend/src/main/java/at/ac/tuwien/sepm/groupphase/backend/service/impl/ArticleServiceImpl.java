@@ -87,11 +87,11 @@ public class ArticleServiceImpl implements ArticleService {
         long id = userService.findApplicationUserByEmail(email).getUserId();
 
         if (Boolean.FALSE.equals(filterRead)) {
-            return articleRepository.findDistinctByUsersUserIdNot(id).stream()
+            return articleRepository.findArticlesNotReadByUser(id).stream()
                 .map(articleMapper::articleToArticleDto)
                 .toList();
         } else {
-            return articleRepository.findByUsersUserIdEquals(id).stream()
+            return articleRepository.findArticlesReadByUser(id).stream()
                 .map(articleMapper::articleToArticleDto).toList();
         }
     }

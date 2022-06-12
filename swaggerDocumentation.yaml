@@ -34,6 +34,12 @@ paths:
       tags:
         - userManagement
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPasswordReset"
       security:
         - BearerAuth: []
       parameters:
@@ -1144,6 +1150,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     articleId:
       name: id
       in: path
@@ -1223,6 +1230,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
@@ -2085,4 +2093,12 @@ components:
       required:
         - newPassword
         - token
+    AdminPasswordReset:
+      type: object
+      properties:
+        clientURI:
+          type: string
+      required:
+        - clientURI
+
 

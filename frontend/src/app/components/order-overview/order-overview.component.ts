@@ -176,6 +176,17 @@ export class OrderOverviewComponent implements OnInit {
     });
   }
 
+
+  getTransactionPdf(id){
+    this.ticketService.billsIdGet(id).subscribe({
+      next: (blob) => {
+        const fileURL = URL.createObjectURL(blob);
+        window.open(fileURL, '_blank');
+      },
+      error: (err) => this.setError(err)
+    });
+  }
+
   setError(error: any) {
     this.error = error;
   }

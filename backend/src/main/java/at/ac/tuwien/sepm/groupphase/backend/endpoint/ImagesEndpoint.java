@@ -38,9 +38,9 @@ public class ImagesEndpoint implements ImagesApi {
     }
 
     @Override
-    public ResponseEntity<Resource> imagesIdGet(Integer id) {
+    public ResponseEntity<Resource> imagesIdGet(Long id) {
         LOGGER.info("GET /images/{}", id);
-        Resource resource = imageService.getImageById(Long.valueOf(id));
+        Resource resource = imageService.getImageById(id);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(resource);
     }
 }
