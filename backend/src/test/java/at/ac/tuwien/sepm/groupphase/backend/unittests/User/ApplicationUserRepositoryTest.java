@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
@@ -72,6 +73,37 @@ class ApplicationUserRepositoryTest implements TestData {
         ApplicationUser testUserAfter = userRepository.findUserByEmail(testUserBefore.getEmail());
         assertThat(testUserAfter.isLockedAccount()).isTrue();
 
+    }
+
+    @Test
+    void shouldOverwriteExistingUser() {
+        ApplicationUser testUser = generateAppUserWithGenericDetails();
+        saveGenericUser(testUser);
+        String firstName = "Filipo", lastName = "Markovski";
+        testUser.setFirstName(firstName);
+        testUser.setLastName(lastName);
+        testUser.setAddress(ADDRESS2_ENTITY);
+        userRepository.save(testUser);
+        ApplicationUser retrievedUser = userRepository.findUserByEmail(USER_EMAIL);
+
+        assertEquals(USER_EMAIL, retrievedUser.getEmail());
+        assertEquals(firstName, retrievedUser.getFirstName());
+        assertEquals(lastName, retrievedUser.getLastName());
+        assertEquals(Gender.MALE, retrievedUser.getGender());
+        assertNotEquals(ADDRESS_ENTITY, retrievedUser.getAddress());
+        assertEquals(ENCODED_USER_PASSWORD_EXAMPLE, retrievedUser.getPassword());
+        assertEquals(testUser.getUserId(), retrievedUser.getUserId());
+
+        testUser.setAddress(ADDRESS_ENTITY);
+        userRepository.save(testUser);
+
+        assertEquals(USER_EMAIL, retrievedUser.getEmail());
+        assertEquals(firstName, retrievedUser.getFirstName());
+        assertEquals(lastName, retrievedUser.getLastName());
+        assertEquals(Gender.MALE, retrievedUser.getGender());
+        assertEquals(ADDRESS_ENTITY, retrievedUser.getAddress());
+        assertEquals(ENCODED_USER_PASSWORD_EXAMPLE, retrievedUser.getPassword());
+        assertEquals(testUser.getUserId(), retrievedUser.getUserId());
     }
 
     private ApplicationUser generateAppUserWithGenericDetails() {

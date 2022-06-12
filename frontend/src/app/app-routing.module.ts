@@ -22,6 +22,7 @@ import { EditUserComponent } from "./components/edit-user/edit-user.component";
 import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import {CreateArticleComponent} from "./components/create-article/create-article.component";
+import {UserManagementComponent} from "./components/user-management/user-management.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -43,7 +44,8 @@ const routes: Routes = [
   {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
   {path: "orders", component: OrderOverviewComponent},
   {path:'passwordReset', component: PasswordResetComponent},
-  {path:'passwordUpdate', component: PasswordUpdateComponent}
+  {path:'passwordUpdate', component: PasswordUpdateComponent},
+  {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
 ];
 
 @NgModule({

@@ -19,6 +19,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { AdminPasswordReset } from '../model/adminPasswordReset';
+// @ts-ignore
 import { PasswordReset } from '../model/passwordReset';
 // @ts-ignore
 import { PasswordUpdate } from '../model/passwordUpdate';
@@ -247,15 +249,19 @@ export class UserManagementService {
     /**
      * Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
      * @param id ID of the user that is retreived
+     * @param adminPasswordReset 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public passwordResetIdPost(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public passwordResetIdPost(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public passwordResetIdPost(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public passwordResetIdPost(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public passwordResetIdPost(id: number, adminPasswordReset: AdminPasswordReset, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public passwordResetIdPost(id: number, adminPasswordReset: AdminPasswordReset, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public passwordResetIdPost(id: number, adminPasswordReset: AdminPasswordReset, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public passwordResetIdPost(id: number, adminPasswordReset: AdminPasswordReset, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling passwordResetIdPost.');
+        }
+        if (adminPasswordReset === null || adminPasswordReset === undefined) {
+            throw new Error('Required parameter adminPasswordReset was null or undefined when calling passwordResetIdPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -284,6 +290,15 @@ export class UserManagementService {
         }
 
 
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
             if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
@@ -296,7 +311,7 @@ export class UserManagementService {
         }
 
         return this.httpClient.post<any>(`${this.configuration.basePath}/passwordReset/${encodeURIComponent(String(id))}`,
-            null,
+            adminPasswordReset,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

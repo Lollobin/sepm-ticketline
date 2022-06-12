@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UsersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.UsersApi;
@@ -63,6 +64,13 @@ public class UsersEndpoint implements UsersApi {
 
         return ResponseEntity.ok().body(usersPageDto);
 
+    }
+
+    @Override
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<UserDto> usersIdGet(
+        Long id) {
+        return ResponseEntity.ok(userMapper.applicationUserToUserDto(userService.findById(id)));
     }
 
     @Secured("ROLE_USER")
