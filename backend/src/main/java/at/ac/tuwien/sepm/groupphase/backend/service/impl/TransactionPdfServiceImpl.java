@@ -112,7 +112,7 @@ public class TransactionPdfServiceImpl implements TransactionPdfService {
 
         BookingType type = transaction.getBookedIns().iterator().next().getBookingType();
         LOGGER.debug("Trying to build PDF for booking type {}", type);
-        ApplicationUser user = transaction.getUser();
+
         Set<BookedIn> bookedIns = transaction.getBookedIns();
 
         PDDocument invoice = new PDDocument();
@@ -147,7 +147,7 @@ public class TransactionPdfServiceImpl implements TransactionPdfService {
         float yoffsetBeforeCustData = yoffset;
         float xhalfOfPage = rectangle.getWidth() * 0.5f;
 
-        drawCustomerData(user, cs, xoffset, yoffset, xhalfOfPage);
+        drawCustomerData(transaction.getUser(), cs, xoffset, yoffset, xhalfOfPage);
 
         yoffset -= 100;
 
