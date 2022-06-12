@@ -100,7 +100,7 @@ public class TransactionPdfServiceImpl implements TransactionPdfService {
             if (!type.equals(BookingType.DERESERVATION)) {
                 return buildTransactionPdf(transaction);
             } else {
-                return null;
+                throw new NotFoundException("No PDF available for dereservations.");
             }
 
         }
