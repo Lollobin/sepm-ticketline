@@ -103,28 +103,12 @@ class ArticleEndpointTest {
 
         MvcResult result = this.mockMvc.perform(
             MockMvcRequestBuilders.get("/articles/" + 100)
-                .header(securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
 
         ).andReturn();
 
         MockHttpServletResponse servletResponse = result.getResponse();
 
         assertEquals(servletResponse.getStatus(), HttpStatus.NOT_FOUND.value());
-
-    }
-
-    @Test
-    void imagesIdGetWithInvalidIdAndInvalidRole_shouldReturn403() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(
-            MockMvcRequestBuilders.get("/articles/" + 100)
-
-        ).andReturn();
-
-        MockHttpServletResponse servletResponse = result.getResponse();
-
-        assertEquals(servletResponse.getStatus(), HttpStatus.FORBIDDEN.value());
 
     }
 
