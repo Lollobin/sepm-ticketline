@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
@@ -10,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
@@ -25,6 +27,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -56,9 +59,7 @@ public class CustomUserDetailService implements UserService {
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
     private final AuthenticationUtil authenticationFacade;
-
     private final ArticleRepository articleRepository;
-
     private final UserValidator userValidator;
 
     @Autowired
@@ -117,7 +118,8 @@ public class CustomUserDetailService implements UserService {
 
         UserBuilder retrievedUser = User.builder();
         retrievedUser.username(applicationUser.getEmail()).password(applicationUser.getPassword())
-            .authorities(grantedAuthorities).accountLocked(applicationUser.isLockedAccount());
+            .authorities(grantedAuthorities).accountLocked(
+                applicationUser.isLockedAccount() || applicationUser.isMustResetPassword());
         return retrievedUser.build();
     }
 
@@ -158,7 +160,8 @@ public class CustomUserDetailService implements UserService {
             throw new ConflictException("This email is not allowed, try another one");
         }
 
-        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(
+            userWithPasswordDto);
         appUser.setUserId(userId);
         LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
@@ -214,6 +217,30 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void resetNumberOfFailedLoginAttempts(ApplicationUser user) {
         userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
+    }
+
+    @Override
+    public void forcePasswordReset(Long id, AdminPasswordResetDto dto) {
+        String email = authenticationFacade.getEmail();
+
+        ApplicationUser loggedOnUser = userRepository.findUserByEmail(email);
+        Optional<ApplicationUser> userToReset = userRepository.findById(id);
+        if (userToReset.isEmpty()) {
+            throw new NotFoundException("User with id " + id + " does not exist in the database!");
+        } else if ((Objects.equals(loggedOnUser.getEmail(), userToReset.get().getEmail()))
+            || loggedOnUser.isHasAdministrativeRights()) {
+            ApplicationUser user = userToReset.get();
+            String token = resetTokenService.generateToken();
+            user.setResetPasswordToken(token);
+            user.setMustResetPassword(true);
+            userRepository.save(user);
+            URI resetUri = buildResetUri(dto.getClientURI(), token);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(
+                user.getEmail(), resetUri);
+            emailService.sendEmail(message);
+        } else {
+            throw new CustomAuthenticationException("You are not authorized for this action!");
+        }
     }
 
     @Override

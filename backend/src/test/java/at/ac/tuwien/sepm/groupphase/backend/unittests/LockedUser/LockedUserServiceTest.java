@@ -57,9 +57,9 @@ class LockedUserServiceTest implements TestData {
     @Mock
     private MailBuilderService mailBuilderService;
     @Mock
-    private EmailService emailService;
-    @Mock
     private AuthenticationUtil authenticationFacade;
+    @Mock
+    private EmailService emailService;
 
     @Mock
     private LockedStatusValidator lockedStatusValidator;
