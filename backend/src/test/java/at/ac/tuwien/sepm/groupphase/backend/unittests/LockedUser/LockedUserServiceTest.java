@@ -53,9 +53,9 @@ class LockedUserServiceTest implements TestData {
     @Mock
     private MailBuilderService mailBuilderService;
     @Mock
-    private EmailService emailService;
-    @Mock
     private AuthenticationUtil authenticationFacade;
+    @Mock
+    private EmailService emailService;
 
     @Mock
     private LockedStatusValidator lockedStatusValidator;
@@ -69,9 +69,9 @@ class LockedUserServiceTest implements TestData {
     @BeforeEach
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
-            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService, articleRepository
-            ,
-            userValidator, authenticationFacade);
+            userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
+            authenticationFacade, userValidator, articleRepository);
+
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 
 

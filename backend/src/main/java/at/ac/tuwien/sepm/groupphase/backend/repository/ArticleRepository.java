@@ -17,7 +17,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
      * @return List of articles
      */
     @Query("select distinct a from Article a inner join a.users users where users.userId = :userId")
-    List<Article> findByUsersUserIdEquals(@Param("userId") long userId);
+    List<Article> findArticlesReadByUser(@Param("userId") long userId);
 
     /**
      * Get all articles that have not been read by a specific user.
@@ -28,7 +28,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query(
         "select distinct a from Article a left outer join a.users users where users.userId is null or "
             + "a.articleId not in (select a.articleId from Article a join a.users tes where tes.userId = :userId )")
-    List<Article> findDistinctByUsersUserIdNot(@Param("userId") long userId);
+    List<Article> findArticlesNotReadByUser(@Param("userId") long userId);
 
 
 }
