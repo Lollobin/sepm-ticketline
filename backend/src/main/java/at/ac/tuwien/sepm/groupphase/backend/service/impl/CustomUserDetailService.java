@@ -81,6 +81,7 @@ public class CustomUserDetailService implements UserService {
         this.articleRepository = articleRepository;
         this.userValidator = userValidator;
         this.authenticationFacade = authenticationFacade;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
