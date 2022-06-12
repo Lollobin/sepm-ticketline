@@ -124,7 +124,7 @@ public interface UserService extends UserDetailsService {
      */
     void forcePasswordReset(Long id, AdminPasswordResetDto dto);
 
-    /**   
+    /**
      * Update the list of read articles of a user.
      *
      * @param email     updates the list of the user with the corresponding email
@@ -132,4 +132,11 @@ public interface UserService extends UserDetailsService {
      */
     void updateArticleRead(String email, Long articleId);
 
+    /**
+     * Fetches user by id.
+     *
+     * @param id userid
+     * @return Application user with this id
+     */
+    ApplicationUser findById(Long id);
 }
