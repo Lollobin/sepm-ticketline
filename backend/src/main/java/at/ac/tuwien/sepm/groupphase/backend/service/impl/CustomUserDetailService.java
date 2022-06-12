@@ -61,14 +61,10 @@ public class CustomUserDetailService implements UserService {
 
     @Autowired
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper,
-        EmailService emailService,
-        ResetTokenService resetTokenService,
-        MailBuilderService mailBuilderService,
-        AuthenticationUtil authenticationFacade,
-        UserValidator userValidator,
-        ArticleRepository articleRepository
-    ) {
+        UserEncodePasswordMapper encodePasswordMapper, EmailService emailService,
+        ResetTokenService resetTokenService, MailBuilderService mailBuilderService,
+        AuthenticationUtil authenticationFacade, UserValidator userValidator,
+        ArticleRepository articleRepository) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -170,7 +166,10 @@ public class CustomUserDetailService implements UserService {
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
-        boolean isLocked = filterLocked != null && filterLocked;
+        if (filterLocked == null) {
+            return userRepository.findAll(pageable);
+        }
+        boolean isLocked = filterLocked;
 
         return userRepository.findByLockedAccountEquals(isLocked, pageable);
     }
@@ -216,8 +215,8 @@ public class CustomUserDetailService implements UserService {
             user.setMustResetPassword(true);
             userRepository.save(user);
             URI resetUri = buildResetUri(dto.getClientURI(), token);
-            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(
-                user.getEmail(), resetUri);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(user.getEmail(),
+                resetUri);
             emailService.sendEmail(message);
         } else {
             throw new CustomAuthenticationException("You are not authorized for this action!");
@@ -243,8 +242,7 @@ public class CustomUserDetailService implements UserService {
 
 
     @Override
-    public void attemptPasswordUpdate(
-        PasswordUpdateDto passwordUpdateDto) {
+    public void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto) {
         LOGGER.debug("Attempting to update password of user with token {}",
             passwordUpdateDto.getToken());
         try {
@@ -282,8 +280,7 @@ public class CustomUserDetailService implements UserService {
         String fragment = parsedClientUri.getFragment();
         //we are using a singlepage application, token is part of a fragment
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
-            .build()
-            .toUri();
+            .build().toUri();
 
     }
 
@@ -311,4 +308,13 @@ public class CustomUserDetailService implements UserService {
 
     }
 
+    @Override
+    public ApplicationUser findById(Long id) {
+        Optional<ApplicationUser> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new NotFoundException("User does not exist.");
+        }
+    }
 }

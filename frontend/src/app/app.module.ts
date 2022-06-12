@@ -38,6 +38,8 @@ import { CreateArticleComponent } from './components/create-article/create-artic
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
+import { UserManagementComponent } from './components/user-management/user-management.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +74,10 @@ import {PasswordUpdateComponent} from "./components/password-update/password-upd
     PasswordResetComponent,
     PasswordUpdateComponent,
     LocationAdminOverviewComponent,
-    CreateArticleComponent
+    CreateArticleComponent,
+    LocationSeatingPlansComponent,
+    UserManagementComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +88,7 @@ import {PasswordUpdateComponent} from "./components/password-update/password-upd
     FormsModule,
     FontAwesomeModule,
   ],
-  providers: [httpInterceptorProviders, AuthService],
+  providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
