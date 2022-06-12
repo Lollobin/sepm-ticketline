@@ -66,10 +66,8 @@ public class CustomUserDetailService implements UserService {
 
     @Autowired
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper,
-        EmailService emailService,
-        ResetTokenService resetTokenService,
-        MailBuilderService mailBuilderService,
+        UserEncodePasswordMapper encodePasswordMapper, EmailService emailService,
+        ResetTokenService resetTokenService, MailBuilderService mailBuilderService,
         UserValidator userValidator,
         AuthenticationUtil authenticationFacade,
         TicketRepository ticketRepository,
