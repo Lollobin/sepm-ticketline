@@ -30,6 +30,6 @@ public class BillsEndpoint implements BillsApi {
         } catch (IOException e) {
             LOGGER.error("Error building PDF", e);
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.internalServerError().build();
     }
 }

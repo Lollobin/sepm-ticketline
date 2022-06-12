@@ -20,6 +20,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Transaction;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TransactionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -92,7 +93,7 @@ public class TransactionPdfServiceImpl implements TransactionPdfService {
             ApplicationUser user = userRepository.findUserByEmail(email);
 
             if (user == null || user.getUserId() != transaction.getUser().getUserId()) {
-                throw new RuntimeException("Not authorized");
+                throw new CustomAuthenticationException("Not authorized to get this resource.");
             }
 
             BookingType type = transaction.getBookedIns().iterator().next().getBookingType();
