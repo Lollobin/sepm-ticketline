@@ -129,6 +129,7 @@
       <th scope="col">Event</th>
       <th scope="col">Date</th>
       <th scope="col">Ticket Information</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -159,6 +160,7 @@
           <br>(cancelled)
         </ng-template>
       </td>
+      <td><button *ngIf="order.type!== 'dereservation'" (click)="getTransactionPdf(order.transactionId)" class="btn btn-secondary">Print Info</button></td>
     </tr>
     </tbody>
   </table>

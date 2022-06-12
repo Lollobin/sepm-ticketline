@@ -7,8 +7,10 @@ import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepm.groupphase.backend.security.LoginFailureHandler;
 import at.ac.tuwien.sepm.groupphase.backend.security.LoginSuccessHandler;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+
 import java.util.Collections;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -72,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/seatingPlan/**").permitAll()
             .antMatchers(HttpMethod.GET, "/topShows").permitAll()
             .antMatchers(HttpMethod.GET, "/seatingPlanLayouts").permitAll()
+            .antMatchers(HttpMethod.GET, "/topEvents").permitAll()
             .antMatchers(HttpMethod.GET, "/articles").permitAll()
             .antMatchers(HttpMethod.GET, "/articles/**").permitAll()
             .antMatchers(HttpMethod.GET, "/images/**").permitAll()
