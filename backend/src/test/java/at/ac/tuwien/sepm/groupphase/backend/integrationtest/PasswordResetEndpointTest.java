@@ -8,9 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,14 +35,18 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 class PasswordResetEndpointTest implements TestData {
-    static final String RESET_TEST_EMAIL ="ticketline.2022@gmail.com";
-    static final String PASSWORD_RESET_URI="/passwordReset";
+
+    static final String RESET_TEST_EMAIL = "ticketline.2022@gmail.com";
+    static final String PASSWORD_RESET_URI = "/passwordReset";
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    SecurityProperties securityProperties;
+    @Autowired
+    JwtTokenizer jwtTokenizer;
     @Autowired
     private ObjectMapper objectMapper;
     private PasswordResetDto passwordResetDto;
@@ -48,7 +54,7 @@ class PasswordResetEndpointTest implements TestData {
 
     @BeforeEach
     void setUp() {
-         passwordResetDto =
+        passwordResetDto =
             new PasswordResetDto().clientURI("http://localhost:4200/passwordReset");
         userRepository.deleteAll();
         ApplicationUser user = new ApplicationUser();
@@ -71,7 +77,8 @@ class PasswordResetEndpointTest implements TestData {
 
         MvcResult mvcResult1 =
             this.mockMvc
-                .perform(post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .perform(
+                    post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse responseMailexists = mvcResult1.getResponse();
@@ -80,7 +87,8 @@ class PasswordResetEndpointTest implements TestData {
         passwordResetDto.email("thisaccount@doesnotexist.com");
         MvcResult mvcResult2 =
             this.mockMvc
-                .perform(post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .perform(
+                    post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse responseDoesntExist = mvcResult2.getResponse();
@@ -94,14 +102,17 @@ class PasswordResetEndpointTest implements TestData {
 
         MvcResult mvcResult =
             this.mockMvc
-                .perform(post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .perform(
+                    post(PASSWORD_RESET_URI).contentType(MediaType.APPLICATION_JSON).content(body))
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
         assertAll(
             () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-            () -> assertNotNull(userRepository.findUserByEmail(RESET_TEST_EMAIL).getResetPasswordToken())
-            );
+            () -> assertNotNull(
+                userRepository.findUserByEmail(RESET_TEST_EMAIL).getResetPasswordToken())
+        );
     }
+
 }
