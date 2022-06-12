@@ -22,9 +22,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.TicketPrintService;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -94,10 +92,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         float xoffset = marginBody;
         float yoffset = rectangle.getHeight() - marginBody;
         float xend = rectangle.getWidth() - marginBody;
-        float yend = marginBody;
         float xcompanydata = xend - 150;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
 
         cs.beginText();
         cs.setFont(plain, 24);
@@ -244,18 +239,18 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.showText(
             "Please keep the secret in good condition, it has to be readable at the entrance.");
         cs.newLine();
-        cs.showText(
-            "Print this ticket on a A4 page (do not cut or manipulate it in any way).");
+        cs.showText("Print this ticket on a A4 page (do not cut or manipulate it in any way).");
         cs.newLine();
-        cs.showText(
-            "Only in this form the ticket is valid.");
+        cs.showText("Only in this form the ticket is valid.");
         cs.endText();
 
-
-        yoffset -= 20;
-
+        cs.beginText();
+        cs.setFont(italic, 14);
+        cs.setLeading(20f);
+        cs.newLineAtOffset(xoffset, -marginBody + 100);
+        cs.showText("Ticket ID: " + ticket.getTicketId());
+        cs.endText();
         cs.close();
-
         return invoice;
     }
 }
