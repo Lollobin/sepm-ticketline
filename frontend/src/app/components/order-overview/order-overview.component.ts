@@ -1,5 +1,11 @@
 import {Component, OnInit, TemplateRef} from "@angular/core";
-import {OrdersPage, TicketsService, TicketWithShowInfo} from "../../generated-sources/openapi";
+import {
+  OrdersPage,
+  TicketsService,
+  TicketStatus,
+  TicketWithShowInfo,
+  TicketWithShowInfoTypeEnum
+} from "../../generated-sources/openapi";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
 import {forkJoin} from "rxjs";
@@ -18,8 +24,8 @@ export class OrderOverviewComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
 
-  selectedReservation: TicketWithShowInfo;
-  purchaseForm: FormGroup;
+  selectedTickets: TicketWithShowInfo;
+  ticketSelectionForm: FormGroup;
 
   constructor(private ticketService: TicketsService,
               private modalService: NgbModal,
@@ -27,7 +33,7 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   get ticketsFormArray() {
-    return this.purchaseForm.controls.tickets as FormArray;
+    return this.ticketSelectionForm.controls.tickets as FormArray;
   }
 
   ngOnInit(): void {
@@ -66,22 +72,22 @@ export class OrderOverviewComponent implements OnInit {
     this.reloadOrders();
   }
 
-  openPurchaseModal(messageAddModal: TemplateRef<any>, reservation: TicketWithShowInfo) {
-    this.selectedReservation = reservation;
-    this.purchaseForm = this.formBuilder.group({
+  openTicketSelectionModal(ticketSelectionModal: TemplateRef<any>, ticketsToSelect: TicketWithShowInfo) {
+    this.selectedTickets = ticketsToSelect;
+    this.ticketSelectionForm = this.formBuilder.group({
       tickets: new FormArray([], minSelectedCheckboxes(1))
     });
     this.addCheckboxes();
-    this.modalService.open(messageAddModal, {ariaLabelledBy: "modal-basic-title"});
+    this.modalService.open(ticketSelectionModal, {ariaLabelledBy: "modal-basic-title"});
   }
 
   purchaseTickets() {
-    const selectedTicketIds: Array<number> = this.purchaseForm.value.tickets
-    .map((checked, i) => checked ? this.selectedReservation.ticket[i].ticketId : null)
+    const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
+    .map((checked, i) => checked ? this.selectedTickets.ticket[i].ticketId : null)
     .filter(v => v !== null);
 
-    const unSelectedTicketIds: Array<number> = this.purchaseForm.value.tickets
-    .map((checked, i) => checked ? null : this.selectedReservation.ticket[i].ticketId)
+    const unSelectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
+    .map((checked, i) => checked ? null : this.selectedTickets.ticket[i].ticketId)
     .filter(v => v !== null);
 
     console.log("Buying tickets:" + selectedTicketIds);
@@ -127,12 +133,61 @@ export class OrderOverviewComponent implements OnInit {
     }
   }
 
+  cancelTickets() {
+    const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
+    .map((checked, i) => checked ? this.selectedTickets.ticket[i].ticketId : null)
+    .filter(v => v !== null);
+
+    console.log("Cancelling tickets/reservations:" + selectedTicketIds);
+
+    let ticketStatus: TicketStatus;
+
+    if (this.selectedTickets.type === TicketWithShowInfoTypeEnum.Purchased) {
+      ticketStatus = {
+        reserved: [],
+        purchased: selectedTicketIds
+      };
+    }
+
+    if (this.selectedTickets.type === TicketWithShowInfoTypeEnum.Reserved) {
+      ticketStatus = {
+        reserved: selectedTicketIds,
+        purchased: []
+      };
+    }
+
+    this.ticketService.ticketCancellationsPost(ticketStatus)
+    .subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        this.setError(error);
+      }, complete: () => {
+        this.modalService.dismissAll();
+        this.ngOnInit();
+      }
+    });
+  }
+
   setError(error: any) {
     this.error = error;
   }
 
+  selectAll() {
+    for (let i = 0; i < this.ticketsFormArray.length; i++) {
+      this.ticketsFormArray.at(i).setValue(true);
+    }
+  }
+
+  clearAll() {
+    for (let i = 0; i < this.ticketsFormArray.length; i++) {
+      this.ticketsFormArray.at(i).setValue(false);
+    }
+  }
+
   private addCheckboxes() {
-    this.selectedReservation.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
+    this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
   }
 }
 

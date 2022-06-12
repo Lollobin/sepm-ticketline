@@ -34,6 +34,12 @@ paths:
       tags:
         - userManagement
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPasswordReset"
       security:
         - BearerAuth: []
       parameters:
@@ -41,6 +47,52 @@ paths:
       responses:
         200:
           description: Successful reset of the password. An email will be sent soon.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /passwordReset:
+    post:
+      tags:
+        - userManagement
+      summary: Resets a password for a user with the email in the body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordReset"
+
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        403:
+          $ref: "#/components/responses/403-forbidden"
+        500:
+          $ref: "#/components/responses/500-internal-error"
+
+  /passwordUpdate:
+    post:
+      tags:
+        - userManagement
+      summary: Updates account with unique token, sets the password 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordUpdate"
+      responses:
+        204:
+          description: Successful update of password
         401:
           $ref: "#/components/responses/401-not-authenticated"
         403:
@@ -91,8 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
+                $ref: "#/components/schemas/SeatingPlanLayout"
         404:
           description: The seating plan layout with the given ID was not found
   /images:
@@ -103,12 +154,14 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        required: true
         content:
-          image/*:
+          multipart/form-data:
             schema:
-              type: string
-              format: binary
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
       responses:
         201:
           description: Successful upload of an image.
@@ -203,13 +256,10 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /users/{id}:
     put:
       tags:
         - userManagement
-      summary: Updates information of an user with the given data.
-      parameters:
-        - $ref: "#/components/parameters/userId"
+      summary: Updates information of a user possesing the token.
       security:
         - BearerAuth: []
       requestBody:
@@ -227,6 +277,27 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
+  /userInfo:
+    get:
+      tags:
+        - userManagement
+      summary: Gets user info of user possesing the token.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /users/{id}:
     get:
       tags:
         - userManagement
@@ -408,12 +479,6 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/articleId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
       responses:
         200:
           description: Successful set the "read"-status of an article for an user
@@ -1085,6 +1150,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     articleId:
       name: id
       in: path
@@ -1092,6 +1158,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     artistId:
       name: id
       in: path
@@ -1163,6 +1230,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
@@ -1373,6 +1441,7 @@ components:
       properties:
         articleId:
           type: integer
+          format: int64
         title:
           type: string
         creationDate:
@@ -1386,6 +1455,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - articleId
         - title
@@ -1404,9 +1474,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - title
         - images
+        - summary
+        - text
     Location:
       type: object
       properties:
@@ -1451,9 +1524,8 @@ components:
       properties:
         name:
           type: string
-        seatingPlanLayoutId:
-          type: integer
-          format: int64
+        seatingPlanLayout:
+          $ref: "#/components/schemas/SeatingPlanLayout"
         locationId:
           type: integer
           format: int64
@@ -1467,7 +1539,7 @@ components:
             $ref: "#/components/schemas/Seat"
       required:
         - name
-        - seatingPlanLayoutId
+        - seatingPlanLayout
         - locationId
         - sectors
         - seats
@@ -1616,7 +1688,7 @@ components:
       type: object
       properties:
         name:
-          type: string        
+          type: string
         content:
           type: string
         category:
@@ -1890,6 +1962,104 @@ components:
           type: integer
         pagesTotal:
           type: integer
+    ElementLocation:
+      type: object
+      properties:
+        w:
+          type: number
+        h:
+          type: number
+        x:
+          type: number
+        y:
+          type: number
+      required:
+        - x
+        - y
+        - w
+        - h
+    SeatingPlanSeat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sectorId:
+          type: integer
+          format: int64
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+    SeatingPlanSector:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        color:
+          type: integer
+          format: int64
+        description:
+          type: string
+        noSeats:
+          type: boolean
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+        - color
+        - noSeats
+    SeatingPlanStaticElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        color:
+          type: integer
+          format: int64
+        description:
+          type: string
+        location:
+          $ref: "#/components/schemas/ElementLocation"
+      required:
+        - id
+        - sectorId
+        - color
+        - location
+    SeatingPlanLayout:
+      type: object
+      properties:
+        general:
+          type: object
+          properties:
+            width:
+              type: number
+            height:
+              type: number
+          required:
+            - width
+            - height
+        seats:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanSeat"
+        sectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanSector"
+        staticElements:
+          type: array
+          items:
+            $ref: "#/components/schemas/SeatingPlanStaticElement"
+      required:
+        - general
+        - seats
+        - sectors
+        - staticElements
     OrdersPage:
       type: object
       properties:
@@ -1903,5 +2073,32 @@ components:
           type: integer
         pagesTotal:
           type: integer
+    PasswordReset:
+      type: object
+      properties:
+        email:
+          type: string
+        clientURI:
+          type: string
+      required:
+        - email
+        - clientURI
+    PasswordUpdate:
+      type: object
+      properties:
+        newPassword:
+          type: string
+        token:
+          type: string
+      required:
+        - newPassword
+        - token
+    AdminPasswordReset:
+      type: object
+      properties:
+        clientURI:
+          type: string
+      required:
+        - clientURI
 
 

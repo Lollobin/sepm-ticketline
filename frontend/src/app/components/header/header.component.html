@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand ml-lg-5" href="" style="margin-left: 2%">Ticketline</a>
   <button class="navbar-toggler ml-5" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -6,41 +6,65 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/message"
+        <a class="nav-link" *ngIf="authService.isLoggedIn() && !adminView" routerLink="/message"
           routerLinkActive="active">Message</a>
-        <a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/events/create"
+        <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/events/create"
           routerLinkActive="active">Create New Event</a>
       </li>
-      <li><a *ngIf="!adminView" class="nav-link" routerLink="/events" routerLinkActive="active">Find Events</a></li>
-      <li><a class="nav-link" *ngIf="authService.isLoggedIn() &&adminView" routerLink="/lockedUsers"
+      <li>
+        <a *ngIf="!adminView" class="nav-link" routerLink="/events" routerLinkActive="active">Find Events</a>
+        <a
+            class="nav-link"
+            *ngIf="authService.isLoggedIn() && adminView"
+            routerLink="/article/create"
+            routerLinkActive="active"
+        >Create new Article</a
+        >
+      </li>
+      <li>
+        <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/lockedUsers"
           routerLinkActive="active">Show Locked Users</a>
+      </li>
 
       <li class="nav-item">
-        <a class="nav-link" *ngIf="authService.isLoggedIn() &&!adminView" routerLink="/orders"
+        <a class="nav-link" *ngIf="authService.isLoggedIn() && !adminView" routerLink="/orders"
           routerLinkActive="active">Your Orders</a>
       <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/users"
          routerLinkActive="active">User Management</a>
       </li>
-
+      <li class="nav-item">
+        <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/locations"
+          routerLinkActive="active">Manage Locations</a>
+      </li>
     </ul>
 
-    <ul class="nav navbar-nav ms-auto "
-      style="margin-right: 2%">
-      <button *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()" routerLink="/admin">Switch
-        to Admin View
+    <ul class="nav navbar-nav ms-auto" style="margin-right: 2%">
+      <button *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !adminView"
+        class="btn btn-primary m-lg-2" (click)="toggleAdminView()" routerLink="/admin">
+        Switch to Admin View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
       </button>
-      <button *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && adminView" class="btn btn-primary m-lg-2 " (click)="toggleAdminView()" routerLink="/">Switch
-        to Customer View
+      <button *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && adminView"
+        class="btn btn-primary m-lg-2" (click)="toggleAdminView()" routerLink="/">
+        Switch to Customer View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
       </button>
-      <a class="btn btn-success m-lg-2 " *ngIf="!authService.isLoggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
-      <a class="btn btn-secondary m-lg-2 " *ngIf="authService.isLoggedIn()" routerLink="/"
-        (click)="authService.logoutUser(); adminView=false">Logout</a>
+      <a class="btn btn-success m-lg-2" *ngIf="!authService.isLoggedIn()" routerLink="/login"
+        routerLinkActive="active">Login</a>
+      <div class="dropdown" *ngIf="authService.isLoggedIn()">
+        <a class="btn btn-light dropdown-toggle m-lg-2" href="#" role="button" id="dropdownMenuLink"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <fa-icon class="m-2" [icon]="user"></fa-icon> Account
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/profile">Edit Account</a></li>
+          <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/"
+              (click)="authService.logoutUser(); adminView = false">Logout</a></li>
+        </ul>
+      </div>
     </ul>
-    <span class="bi bi-eye "></span>
+    <span class="bi bi-eye"></span>
   </div>
 </nav>

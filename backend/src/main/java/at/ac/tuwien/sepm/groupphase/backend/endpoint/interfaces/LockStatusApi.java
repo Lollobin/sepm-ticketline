@@ -67,7 +67,7 @@ public interface LockStatusApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<Void> lockStatusIdPut(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id,
+        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id,
         @Parameter(name = "body", description = "Send boolean value for locking/unlocking", required = true, schema = @Schema(description = "")) @Valid @RequestBody Boolean body
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import org.springframework.data.domain.Page;
@@ -46,12 +49,26 @@ public interface UserService extends UserDetailsService {
     void save(UserWithPasswordDto user);
 
     /**
+     * Updates a User with the given id from token in the database.
+     *
+     * @param userWithPasswordDto with new user data to be updated to
+     */
+    void put(UserWithPasswordDto userWithPasswordDto);
+
+    /**
      * * Return a page of users whose locked status is according to the parameter.
      *
      * @param filterLocked true searches for locked users, false searches for all users.
      * @return page of users
      */
     Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable);
+
+    /**
+     * Returns the information of the current user.
+     *
+     * @return user entity of the current user
+     */
+    ApplicationUser findByCurrentUser();
 
     /**
      * Increase the Number of failed login attempts by one.
@@ -73,4 +90,41 @@ public interface UserService extends UserDetailsService {
      * @param user whose login attempts will be reset
      */
     void resetNumberOfFailedLoginAttempts(ApplicationUser user);
+
+    /**
+     * Request a password reset mail. this will be called if a user requests the reset himself
+     *
+     * @param passwordResetDto contains email and clientURI of the user that requested the password
+     *                         reset
+     */
+    void requestPasswordReset(PasswordResetDto passwordResetDto);
+
+    /**
+     * Attempt to change the password of the user with unique resettoken.
+     *
+     * @param passwordUpdateDto contains the new password and the unique token
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException when password not
+     *                                                                            valid or token not
+     *                                                                            valid.
+     */
+    void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto);
+
+    /**
+     * Reset the password of a user with given id and force the password reset.
+     *
+     * @param id of the user who has to reste password.
+     * @param dto Passwordreset dto containing clienturi for reseturl building and useremail
+     *
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException when user not found
+     */
+    void forcePasswordReset(Long id, AdminPasswordResetDto dto);
+
+    /**   
+     * Update the list of read articles of a user.
+     *
+     * @param email     updates the list of the user with the corresponding email
+     * @param articleId add article with corresponding articleId to user
+     */
+    void updateArticleRead(String email, Long articleId);
+
 }

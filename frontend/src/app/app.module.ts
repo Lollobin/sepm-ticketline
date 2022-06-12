@@ -33,6 +33,11 @@ import { LocationSearchComponent } from './components/location-search/location-s
 import { ShowSearchResultComponent } from './components/show-search-result/show-search-result.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { LocationSeatingPlansComponent } from './components/location-seating-plans/location-seating-plans.component';
+import { LocationAdminOverviewComponent } from './components/location-admin-overview/location-admin-overview.component';
+import { CreateArticleComponent } from './components/create-article/create-article.component';
+import { EditUserComponent } from './components/edit-user/edit-user.component';
+import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
+import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 
@@ -64,6 +69,12 @@ import { UserDetailComponent } from './components/user-detail/user-detail.compon
     LocationSearchComponent,
     ShowSearchResultComponent,
     CreateLocationComponent,
+    LocationSeatingPlansComponent,
+    EditUserComponent,
+    PasswordResetComponent,
+    PasswordUpdateComponent,
+    LocationAdminOverviewComponent,
+    CreateArticleComponent,
     LocationSeatingPlansComponent,
     UserManagementComponent,
     UserDetailComponent

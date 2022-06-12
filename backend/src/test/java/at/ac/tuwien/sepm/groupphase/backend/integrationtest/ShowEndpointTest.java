@@ -71,6 +71,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,11 +90,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Transactional
 class ShowEndpointTest {
 
     @Autowired
@@ -423,8 +426,8 @@ class ShowEndpointTest {
         assertThat(showRepository.findAll().get(0).getDate()).isEqualTo(SHOW_DATE);
 
         assertThat(sectorPriceRepository.findAll()).hasSize(2);
-        assertThat(sectorPriceRepository.findAll().get(0).getPrice()).isEqualTo("100.00");
-        assertThat(sectorPriceRepository.findAll().get(1).getPrice()).isEqualTo("200.00");
+        assertThat(sectorPriceRepository.findAll().get(0).getPrice()).isEqualTo("100.0");
+        assertThat(sectorPriceRepository.findAll().get(1).getPrice()).isEqualTo("200.0");
 
         assertThat(ticketRepository.findAll()).hasSize(3);
         assertThat(ticketRepository.findAll().get(0).getSeat().getSeatId()).isEqualTo(
@@ -446,7 +449,6 @@ class ShowEndpointTest {
         seatingPlanRepository.deleteAll();
         seatingPlanLayoutRepository.deleteAll();
         locationRepository.deleteAll();
-        addressRepository.deleteAll();
     }
 
     private void saveThreeShowsAndEvents() {
@@ -478,24 +480,26 @@ class ShowEndpointTest {
         Show show1 = new Show();
 
         show1.setEvent(event1);
-        show1.setArtists(null);
+        show1.setArtists(new HashSet<>());
         show1.setDate(SHOW_DATE);
+        show1.setSectorPrices(new HashSet<>());
 
         showRepository.save(show1);
 
         Show show2 = new Show();
 
         show2.setEvent(event2);
-        show2.setArtists(null);
+        show2.setArtists(new HashSet<>());
         show2.setDate(SHOW2_DATE);
-
+        show2.setSectorPrices(new HashSet<>());
         showRepository.save(show2);
 
         Show show3 = new Show();
 
         show3.setEvent(event3);
-        show3.setArtists(null);
+        show3.setArtists(new HashSet<>());
         show3.setDate(SHOW3_DATE);
+        show3.setSectorPrices(new HashSet<>());
 
         showRepository.save(show3);
     }

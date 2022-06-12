@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -15,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -44,8 +47,35 @@ public class ApplicationUser {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = false)
     private Address address;
+    @Column(nullable = false)
+    private boolean hasAdministrativeRights;
+    @Column(nullable = false)
+    private long loginTries;
+    @Column(nullable = false)
+    private boolean mustResetPassword;
+    @Column(nullable = false)
+    private boolean lockedAccount;
+    @Column(length = 100)
+    private String resetPasswordToken;
+    @ManyToMany
+    @Fetch(FetchMode.JOIN)
+    @Cascade({
+        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
+    @JsonIgnore
+    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
+    private Set<Article> articles = new HashSet<>();
 
     public ApplicationUser() {
+    }
+
+    public ApplicationUser(String email, String firstName, String lastName,
+        Gender gender, Address address, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.password = password;
     }
 
     @Override
@@ -79,6 +109,8 @@ public class ApplicationUser {
             + lockedAccount
             + ", articles="
             + articles
+            + ", resetPasswordToken="
+            + resetPasswordToken
             + '}';
     }
 
@@ -101,7 +133,8 @@ public class ApplicationUser {
             && Objects.equals(lastName, user.lastName)
             && gender == user.gender
             && Objects.equals(address, user.address) && Objects.equals(password, user.password)
-            && Objects.equals(articles, user.articles);
+            && Objects.equals(articles, user.articles)
+            && Objects.equals(resetPasswordToken, user.resetPasswordToken);
     }
 
     @Override
@@ -118,34 +151,8 @@ public class ApplicationUser {
             mustResetPassword,
             lockedAccount,
             articles,
-            password);
-    }
-
-    @Column(nullable = false)
-    private boolean hasAdministrativeRights;
-
-    @Column(nullable = false)
-    private long loginTries;
-
-    @Column(nullable = false)
-    private boolean mustResetPassword;
-
-    @Column(nullable = false)
-    private boolean lockedAccount;
-
-    @ManyToMany
-    @Fetch(FetchMode.JOIN)
-    @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
-    private Set<Article> articles;
-
-    public ApplicationUser(String email, String firstName, String lastName,
-        Gender gender, Address address, String password) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.address = address;
-        this.password = password;
+            password,
+            resetPasswordToken);
     }
 
     public long getUserId() {
@@ -242,5 +249,13 @@ public class ApplicationUser {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 }

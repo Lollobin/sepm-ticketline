@@ -5,6 +5,8 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -41,6 +43,7 @@ public interface PasswordResetApi {
      * POST /passwordReset/{id} : Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
      *
      * @param id ID of the user that is retreived (required)
+     * @param adminPasswordResetDto  (required)
      * @return Successful reset of the password. An email will be sent soon. (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
@@ -62,10 +65,46 @@ public interface PasswordResetApi {
     )
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/passwordReset/{id}"
+        value = "/passwordReset/{id}",
+        consumes = { "application/json" }
     )
     default ResponseEntity<Void> passwordResetIdPost(
-        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Integer id
+        @Parameter(name = "id", description = "ID of the user that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id,
+        @Parameter(name = "AdminPasswordResetDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody AdminPasswordResetDto adminPasswordResetDto
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * POST /passwordReset : Resets a password for a user with the email in the body.
+     *
+     * @param passwordResetDto  (required)
+     * @return OK (status code 200)
+     *         or The user is not logged in (status code 401)
+     *         or The user needs administrative rights (status code 403)
+     *         or Internal Server Error (status code 500)
+     */
+    @Operation(
+        operationId = "passwordResetPost",
+        summary = "Resets a password for a user with the email in the body.",
+        tags = { "userManagement" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  String.class))),
+            @ApiResponse(responseCode = "401", description = "The user is not logged in"),
+            @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "/passwordReset",
+        produces = { "text/plain" },
+        consumes = { "application/json" }
+    )
+    default ResponseEntity<String> passwordResetPost(
+        @Parameter(name = "PasswordResetDto", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody PasswordResetDto passwordResetDto
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

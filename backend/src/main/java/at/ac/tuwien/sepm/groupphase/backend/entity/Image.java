@@ -18,7 +18,7 @@ public class Image {
     private String filePath;
 
     @ManyToOne
-    @JoinColumn(name = "articleId", referencedColumnName = "articleId", nullable = false)
+    @JoinColumn(name = "articleId", referencedColumnName = "articleId")
     private Article article;
 
     @Override
