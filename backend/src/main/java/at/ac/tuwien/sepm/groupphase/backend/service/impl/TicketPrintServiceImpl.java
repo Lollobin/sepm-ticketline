@@ -23,6 +23,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.TicketPrintService;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +33,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,8 @@ public class TicketPrintServiceImpl implements TicketPrintService {
     private final TicketRepository ticketRepository;
     private final AuthenticationUtil authenticationFacade;
     private final UserRepository userRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
 
     public TicketPrintServiceImpl(TicketRepository ticketRepository,
         AuthenticationUtil authenticationFacade, UserRepository userRepository) {
@@ -67,24 +72,25 @@ public class TicketPrintServiceImpl implements TicketPrintService {
             throw new CustomAuthenticationException("Not authorized to access this resource");
         }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PDDocument pdDocument = buildInvoicePdf(ticket, user);
+        LOGGER.debug("Trying to generate PDF for ticket {}", ticketId);
+        PDDocument pdDocument = buildTicketPdf(ticket, user);
         pdDocument.save(os);
         pdDocument.close();
         return new ByteArrayResource(os.toByteArray());
     }
 
-    public PDDocument buildInvoicePdf(Ticket ticket, ApplicationUser user) throws IOException {
+    public PDDocument buildTicketPdf(Ticket ticket, ApplicationUser user) throws IOException {
 
         float marginBody = 30;
 
-        PDDocument invoice = new PDDocument();
+        PDDocument ticketDocument = new PDDocument();
 
-        PDPage invoicePage = new PDPage(PDRectangle.A4);
+        PDPage ticketPage = new PDPage(PDRectangle.A4);
 
-        PDRectangle rectangle = invoicePage.getMediaBox();
-        invoice.addPage(invoicePage);
+        PDRectangle rectangle = ticketPage.getMediaBox();
+        ticketDocument.addPage(ticketPage);
 
-        PDPageContentStream cs = new PDPageContentStream(invoice, invoicePage);
+        PDPageContentStream cs = new PDPageContentStream(ticketDocument, ticketPage);
 
         float xoffset = marginBody;
         float yoffset = rectangle.getHeight() - marginBody;
@@ -126,7 +132,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
 
         drawTicketId(ticket, marginBody, cs, xoffset);
         cs.close();
-        return invoice;
+        return ticketDocument;
     }
 
     private void drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,

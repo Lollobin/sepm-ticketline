@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TicketPrintsEndpoint implements TicketPrintsApi {
+
     private final TicketPrintService ticketPrintService;
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
@@ -22,10 +23,12 @@ public class TicketPrintsEndpoint implements TicketPrintsApi {
 
     @Override
     public ResponseEntity<Resource> ticketPrintsIdGet(Long id) {
+        LOGGER.info("GET /ticketPrints/{}", id);
         try {
             return ResponseEntity.ok().body(ticketPrintService.getTicketPdf(id));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
