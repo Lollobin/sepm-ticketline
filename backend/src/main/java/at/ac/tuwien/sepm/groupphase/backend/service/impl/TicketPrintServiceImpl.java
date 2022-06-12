@@ -14,6 +14,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -65,9 +66,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationFacade.getAuthentication().getPrincipal().toString());
         if (user.getUserId() != ticket.getPurchasedBy().getUserId()) {
-            //TODO: ADD CORRECT error
-            throw new CustomAuthenticationException(
-                String.format("Could not find ticket with id %s", ticketId));
+            throw new CustomAuthenticationException("Not authorized to access this resource");
         }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PDDocument pdDocument = buildInvoicePdf(ticket, user);
