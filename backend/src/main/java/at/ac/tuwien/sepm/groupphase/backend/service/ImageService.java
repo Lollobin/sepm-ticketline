@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
@@ -21,5 +22,13 @@ public interface ImageService {
      * @param article sets the article to the image
      */
     void updateArticle(Long imageId, Article article);
+
+    /**
+     * Get the Resource of an image.
+     *
+     * @param imageId gets the ressource of the image with the given ID
+     * @return image resource
+     */
+    Resource getImageById(Long imageId);
 
 }

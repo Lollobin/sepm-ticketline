@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -11,6 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Article {
@@ -31,12 +37,25 @@ public class Article {
     @Column(columnDefinition = "CLOB", nullable = false)
     private String text;
 
+    @OneToMany(mappedBy = "article")
+    @Fetch(FetchMode.JOIN)
+    private List<Image> images;
     @ManyToMany
+    @Fetch(FetchMode.JOIN)
+    @JsonIgnore
     @JoinTable(
         name = "ReadArticle",
         joinColumns = @JoinColumn(name = "articleId"),
         inverseJoinColumns = @JoinColumn(name = "userId"))
-    private Set<ApplicationUser> users;
+    private Set<ApplicationUser> users = new HashSet<>();
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -51,13 +70,12 @@ public class Article {
             && Objects.equals(title, article.title)
             && Objects.equals(creationDate, article.creationDate)
             && Objects.equals(summary, article.summary)
-            && Objects.equals(text, article.text)
-            && Objects.equals(users, article.users);
+            && Objects.equals(text, article.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(articleId, title, creationDate, summary, text, users);
+        return Objects.hash(articleId, title, creationDate, summary, text);
     }
 
     @Override
@@ -76,8 +94,6 @@ public class Article {
             + ", text='"
             + text
             + '\''
-            + ", users="
-            + users
             + '}';
     }
 
