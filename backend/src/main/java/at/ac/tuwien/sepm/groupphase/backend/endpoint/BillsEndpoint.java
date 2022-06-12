@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.BillsApi;
-import at.ac.tuwien.sepm.groupphase.backend.service.impl.InvoicePdfServiceImpl;
+import at.ac.tuwien.sepm.groupphase.backend.service.TransactionPdfService;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -13,24 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BillsEndpoint implements BillsApi {
 
-    InvoicePdfServiceImpl invoicePdfService;
+    TransactionPdfService transactionPdfService;
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
 
     public BillsEndpoint(
-        InvoicePdfServiceImpl invoicePdfService) {
-        this.invoicePdfService = invoicePdfService;
+        TransactionPdfService transactionPdfService) {
+        this.transactionPdfService = transactionPdfService;
     }
 
     @Override
     public ResponseEntity<Resource> billsIdGet(
         Long id) {
         try {
-            invoicePdfService.getInvoicePdf(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(transactionPdfService.getTransactionPdf(id));
         } catch (IOException e) {
-            LOGGER.error("mimimi");
-            return ResponseEntity.internalServerError().build();
+            LOGGER.error("Error building PDF", e);
         }
+        return ResponseEntity.noContent().build();
     }
 }
