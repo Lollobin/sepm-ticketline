@@ -202,6 +202,7 @@ export class EditUserComponent implements OnInit {
       const authRequest: AuthRequest = new AuthRequest(this.user.email, this.passwordForm.controls.password.value);
       console.log(this.user.email);
       this.authenticateUser(authRequest);
+      this.onCloseHandled();
     } else {
       console.log('Invalid input');
     }
