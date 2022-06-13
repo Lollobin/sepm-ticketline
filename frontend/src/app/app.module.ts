@@ -40,6 +40,7 @@ import { PasswordResetComponent } from "./components/password-reset/password-res
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
+import { TopEventsComponent } from './components/top-events/top-events.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { UserDetailComponent } from './components/user-detail/user-detail.compon
     PasswordUpdateComponent,
     LocationAdminOverviewComponent,
     CreateArticleComponent,
+    TopEventsComponent,
     LocationSeatingPlansComponent,
     UserManagementComponent,
     UserDetailComponent

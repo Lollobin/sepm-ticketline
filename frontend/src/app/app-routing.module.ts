@@ -23,6 +23,7 @@ import {PasswordResetComponent} from "./components/password-reset/password-reset
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import {CreateArticleComponent} from "./components/create-article/create-article.component";
 import {UserManagementComponent} from "./components/user-management/user-management.component";
+import {TopEventsComponent} from "./components/top-events/top-events.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -45,7 +46,8 @@ const routes: Routes = [
   {path: "orders", component: OrderOverviewComponent},
   {path:'passwordReset', component: PasswordResetComponent},
   {path:'passwordUpdate', component: PasswordUpdateComponent},
-  {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
+  {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path:'topEvents', component: TopEventsComponent}
 ];
 
 @NgModule({
