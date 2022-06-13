@@ -338,9 +338,16 @@ class ApplicationUserServiceTest implements TestData {
         when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
         when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(null);
         when(userRepository.save(any())).thenReturn(fakePersistedUser);
-        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(
-            fakePersistedUser);
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(fakePersistedUser);
+
+        userService.put(userToSave);
+
+        verify(userRepository, times(2)).findUserByEmail(any());
+        verify(userRepository, times(1)).save(any());
+        verify(userEncodePasswordMapper, times(1)).userWithPasswordDtoToAppUser(any());
+        verify(authenticationFacade, times(1)).getEmail();
     }
+
 
     @Test
     void deleteShouldDeleteUser() {
