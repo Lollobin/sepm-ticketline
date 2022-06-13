@@ -63,9 +63,13 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         Optional<Ticket> optionalTicket = this.ticketRepository.findById(ticketId);
         if (optionalTicket.isEmpty()) {
             throw new NotFoundException(
-                String.format("Could not find ticket with id %s", ticketId));
+                String.format("Could not find purchased ticket with id %s", ticketId));
         }
         Ticket ticket = optionalTicket.get();
+        if (ticket.getPurchasedBy() == null) {
+            throw new NotFoundException(
+                String.format("Could not find purchased ticket with id %s", ticketId));
+        }
         ApplicationUser user = this.userRepository.findUserByEmail(
             authenticationFacade.getAuthentication().getPrincipal().toString());
         if (user.getUserId() != ticket.getPurchasedBy().getUserId()) {
