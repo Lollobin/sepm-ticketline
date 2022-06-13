@@ -1,24 +1,26 @@
 import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
-import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faLockOpen} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-  selector: "app-unlock-user",
-  templateUrl: "./unlock-user.component.html",
-  styleUrls: ["./unlock-user.component.scss"]
+  selector: 'app-user-management',
+  templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.scss']
 })
-export class UnlockUserComponent implements OnInit {
+export class UserManagementComponent implements OnInit {
+
+  userDetail;
 
   data: UsersPage = null;
   page = 1;
   users: User[];
   error = "";
-  empty = false;
-  success = false;
+  faLockOpen = faLockOpen;
+  faArrowRight = faArrowRight;
+  success;
   firstName = "";
   lastName = "";
   userEmail = "";
-  faLockOpen = faLockOpen;
   errorFetch = "";
   pageSize = 10;
   sort: 'ASC' | 'DESC' = 'ASC';
@@ -32,11 +34,10 @@ export class UnlockUserComponent implements OnInit {
   }
 
   reloadUser() {
-    this.userManagementService.usersGet(true, this.pageSize, this.page - 1).subscribe({
+    this.userManagementService.usersGet(null, this.pageSize, this.page - 1).subscribe({
       next: data => {
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
-        this.empty = data.users.length === 0;
       },
       error: err => {
         console.log("Error fetching users: ", err);
@@ -51,24 +52,11 @@ export class UnlockUserComponent implements OnInit {
     this.reloadUser();
   }
 
-  unlockUser(id: number, email: string) {
-    this.userManagementService.lockStatusIdPut(id, false).subscribe({
-      next: () => {
-        this.userEmail = email;
-        this.success = true;
-        this.reloadUser();
-      },
-      error: err => {
-        console.log("Error unlocking user: ", err);
-        this.showError(err.error);
-      }
-    });
-  }
 
-  public vanishEmpty(): void {
-    this.empty = null;
-  }
 
+  getDetail(user: User) {
+    this.userDetail = user;
+  }
   public vanishError(): void {
     this.error = null;
   }
@@ -88,6 +76,5 @@ export class UnlockUserComponent implements OnInit {
   private showErrorFetch(msg: string) {
     this.errorFetch = msg;
   }
-
 
 }

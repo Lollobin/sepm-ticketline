@@ -19,8 +19,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
@@ -53,6 +56,8 @@ class ApplicationUserServiceTest implements TestData {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private TicketRepository ticketRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserEncodePasswordMapper userEncodePasswordMapper;
@@ -74,8 +79,7 @@ class ApplicationUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            authenticationFacade, userValidator, articleRepository);
-
+            userValidator, authenticationFacade, ticketRepository, articleRepository);
         fakePersistedUser.setUserId(1);
         fakePersistedUser.setFirstName(USER_FNAME);
         fakePersistedUser.setLastName(USER_LNAME);
@@ -309,5 +313,50 @@ class ApplicationUserServiceTest implements TestData {
         assertFalse(fakePersistedUser.isMustResetPassword());
     }
 
+    @Test
+    void putShouldUpdateUser_whenUserDtoEmailSameAsUserEmail() {
+        when(authenticationFacade.getEmail()).thenReturn(userToSave.getEmail());
+        when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(fakePersistedUser);
+        when(userRepository.save(any())).thenReturn(fakePersistedUser);
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(fakePersistedUser);
 
+        userService.put(userToSave);
+
+        verify(userRepository, times(2)).findUserByEmail(any());
+        verify(userRepository, times(1)).save(any());
+        verify(userEncodePasswordMapper, times(1)).userWithPasswordDtoToAppUser(any());
+        verify(authenticationFacade, times(1)).getEmail();
+    }
+
+    @Test
+    void putShouldUpdateUser_whenUserDtoEmailIsNotInUse() {
+        when(authenticationFacade.getEmail()).thenReturn(USER_EMAIL);
+        userToSave.setEmail("newMail@mail.com");
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
+        when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(null);
+        when(userRepository.save(any())).thenReturn(fakePersistedUser);
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(fakePersistedUser);
+
+        userService.put(userToSave);
+
+        verify(userRepository, times(2)).findUserByEmail(any());
+        verify(userRepository, times(1)).save(any());
+        verify(userEncodePasswordMapper, times(1)).userWithPasswordDtoToAppUser(any());
+        verify(authenticationFacade, times(1)).getEmail();
+    }
+
+    @Test
+    void putShouldThrowConflictException_whenUserDtoEmailIsInUse() {
+        when(authenticationFacade.getEmail()).thenReturn(USER_EMAIL);
+        userToSave.setEmail("newMail@mail.com");
+        when(userRepository.findUserByEmail(USER_EMAIL)).thenReturn(fakePersistedUser);
+        ApplicationUser fakePersistedUser2 = new ApplicationUser();
+        fakePersistedUser2.setUserId(99);
+        when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(fakePersistedUser2);
+
+        assertThrows(ConflictException.class, () -> userService.put(userToSave));
+
+        verify(userRepository, times(2)).findUserByEmail(any());
+        verify(authenticationFacade, times(1)).getEmail();
+    }
 }
