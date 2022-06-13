@@ -8,12 +8,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
@@ -22,6 +34,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +185,40 @@ class UserEndpointTest implements TestData {
             () -> assertEquals(1, userRepository.count()),
             () -> assertNull(ticketRepository.getByTicketId(-1L).getReservedBy()),
             () -> assertEquals(updatedUser.getUserId(), ticketRepository.getByTicketId(-2L).getPurchasedBy().getUserId())
+        );
+    }
+
+    @Test
+    void putShouldUpdateUser() throws Exception {
+        ApplicationUser applicationUser = new ApplicationUser(USER_EMAIL, USER_FNAME, USER_LNAME,
+            USER_GENDER, ADDRESS2_ENTITY, USER_PASSWORD);
+        applicationUser.setUserId(1);
+        userRepository.save(applicationUser);
+
+        user.email(USER2_EMAIL).gender(USER2_GENDER_DTO).address(ADDRESS_DTO).
+            password(USER2_PASSWORD).firstName(USER2_FNAME).lastName(USER2_LNAME);
+        String body = objectMapper.writeValueAsString(user);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(put(USERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body).header(
+                    securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(USER_EMAIL, USER_ROLES)))
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        ApplicationUser updatedUser = userRepository.findUserByEmail(USER2_EMAIL);
+        ADDRESS_ENTITY.setAddressId(updatedUser.getAddress().getAddressId());
+        assertAll(
+            () -> assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus()),
+            () -> assertFalse(userRepository.existsByEmail(USER_EMAIL)),
+            () -> assertEquals(USER2_EMAIL, updatedUser.getEmail()),
+            () -> assertEquals(USER2_FNAME, updatedUser.getFirstName()),
+            () -> assertEquals(USER2_LNAME, updatedUser.getLastName()),
+            () -> assertEquals(USER2_GENDER, updatedUser.getGender()),
+            () -> assertEquals(ADDRESS_ENTITY, updatedUser.getAddress()),
+            () -> assertEquals(1, addressRepository.findAll().size())
         );
     }
 }

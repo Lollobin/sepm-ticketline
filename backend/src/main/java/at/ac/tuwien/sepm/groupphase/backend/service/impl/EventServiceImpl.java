@@ -2,13 +2,18 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.result.EventWithTicketsSold;
 import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -93,5 +98,29 @@ public class EventServiceImpl implements EventService {
         eventSearchResultDto.setPagesTotal(eventPage.getTotalPages());
 
         return eventSearchResultDto;
+    }
+
+    public List<EventWithTicketsSold> getTopEvents(TopEventSearchDto topEventSearchDto) {
+        String category = topEventSearchDto.getCategory() == null ? null
+            : topEventSearchDto.getCategory().getValue();
+
+        OffsetDateTime fromDate = null;
+        OffsetDateTime toDate = null;
+
+        if (topEventSearchDto.getMonth() != null) {
+            int fromYear = topEventSearchDto.getMonth().getYear();
+            int fromMonth = topEventSearchDto.getMonth().getMonthValue();
+            int toYear = fromYear;
+            int toMonth = fromMonth + 1;
+
+            if (toMonth == 13) {
+                toYear++;
+                toMonth = 1;
+            }
+
+            fromDate = OffsetDateTime.of(fromYear, fromMonth, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+            toDate = OffsetDateTime.of(toYear, toMonth, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        }
+        return eventRepository.getTopEvents(category, fromDate, toDate);
     }
 }

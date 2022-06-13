@@ -1,0 +1,42 @@
+
+<div class="row mt-3">
+  <div class="col">
+    <h2>Top 10 Events this Month</h2>
+  </div>
+  <div class="col-2 align-items-center">
+    <select [(ngModel)]="category" (ngModelChange)="reloadEvents()" class=" form-select float-end">
+      <option [ngValue]="null">All Categories</option>
+      <option *ngFor="let category1 of categories" [value]="category1|uppercase">{{category1}}</option>
+    </select>
+  </div>
+</div>
+
+<div>
+  <table class="table table-striped align-middle">
+    <thead>
+    <tr>
+      <th scope="col"> #</th>
+      <th scope="col"> Event Name</th>
+      <th scope="col"> Duration</th>
+      <th scope="col"> Category</th>
+      <th scope="col"> Tickets Sold</th>
+      <th scope="col"> Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let event of topEvents; let i = index">
+      <td class="text-primary"><strong> {{ i + 1 }} </strong></td>
+      <td> {{ event.name }} </td>
+      <td> {{ this.secondsToHms(event.duration) }} </td>
+      <td> {{ event.category}} </td>
+      <td> {{ event.ticketsSold }}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" routerLink="/events/{{event.eventId}}/shows"
+                id="{{'showBtn'+i}}">
+          Get Shows
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

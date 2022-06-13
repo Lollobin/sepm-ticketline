@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
@@ -10,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
@@ -25,6 +27,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -63,10 +66,8 @@ public class CustomUserDetailService implements UserService {
 
     @Autowired
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper,
-        EmailService emailService,
-        ResetTokenService resetTokenService,
-        MailBuilderService mailBuilderService,
+        UserEncodePasswordMapper encodePasswordMapper, EmailService emailService,
+        ResetTokenService resetTokenService, MailBuilderService mailBuilderService,
         UserValidator userValidator,
         AuthenticationUtil authenticationFacade,
         TicketRepository ticketRepository,
@@ -117,7 +118,8 @@ public class CustomUserDetailService implements UserService {
 
         UserBuilder retrievedUser = User.builder();
         retrievedUser.username(applicationUser.getEmail()).password(applicationUser.getPassword())
-            .authorities(grantedAuthorities).accountLocked(applicationUser.isLockedAccount());
+            .authorities(grantedAuthorities).accountLocked(
+                applicationUser.isLockedAccount() || applicationUser.isMustResetPassword());
         return retrievedUser.build();
     }
 
@@ -153,13 +155,17 @@ public class CustomUserDetailService implements UserService {
 
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
 
-        ApplicationUser emailUser = findApplicationUserByEmail(userWithPasswordDto.getEmail());
+        ApplicationUser emailUser = this.userRepository.findUserByEmail(userWithPasswordDto.getEmail());
         if (emailUser != null && emailUser.getUserId() != userId) {
             throw new ConflictException("This email is not allowed, try another one");
         }
 
-        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(userWithPasswordDto);
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(
+            userWithPasswordDto);
+
+        appUser.getAddress().setAddressId(tokenUser.getAddress().getAddressId());
         appUser.setUserId(userId);
+        appUser.setHasAdministrativeRights(tokenUser.isHasAdministrativeRights());
         LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
     }
@@ -167,6 +173,10 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void delete() {
         ApplicationUser applicationUser = findByCurrentUser();
+
+        if (applicationUser.isHasAdministrativeRights()) {
+            throw new ConflictException("Not allowed to delete admin users!");
+        }
 
         List<Ticket> tickets = ticketRepository.getByReservedBy(applicationUser);
         for (Ticket ticket : tickets) {
@@ -186,7 +196,10 @@ public class CustomUserDetailService implements UserService {
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
-        boolean isLocked = filterLocked != null && filterLocked;
+        if (filterLocked == null) {
+            return userRepository.findAll(pageable);
+        }
+        boolean isLocked = filterLocked;
 
         return userRepository.findByLockedAccountEqualsAndDeletedIsFalse(isLocked, pageable);
     }
@@ -217,6 +230,30 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public void forcePasswordReset(Long id, AdminPasswordResetDto dto) {
+        String email = authenticationFacade.getEmail();
+
+        ApplicationUser loggedOnUser = userRepository.findUserByEmail(email);
+        Optional<ApplicationUser> userToReset = userRepository.findById(id);
+        if (userToReset.isEmpty()) {
+            throw new NotFoundException("User with id " + id + " does not exist in the database!");
+        } else if ((Objects.equals(loggedOnUser.getEmail(), userToReset.get().getEmail()))
+            || loggedOnUser.isHasAdministrativeRights()) {
+            ApplicationUser user = userToReset.get();
+            String token = resetTokenService.generateToken();
+            user.setResetPasswordToken(token);
+            user.setMustResetPassword(true);
+            userRepository.save(user);
+            URI resetUri = buildResetUri(dto.getClientURI(), token);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(user.getEmail(),
+                resetUri);
+            emailService.sendEmail(message);
+        } else {
+            throw new CustomAuthenticationException("You are not authorized for this action!");
+        }
+    }
+
+    @Override
     public void requestPasswordReset(PasswordResetDto passwordResetDto) {
         LOGGER.debug("Try to find user with mail and generate resettoken and send mail {}",
             passwordResetDto);
@@ -235,8 +272,7 @@ public class CustomUserDetailService implements UserService {
 
 
     @Override
-    public void attemptPasswordUpdate(
-        PasswordUpdateDto passwordUpdateDto) {
+    public void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto) {
         LOGGER.debug("Attempting to update password of user with token {}",
             passwordUpdateDto.getToken());
         try {
@@ -274,8 +310,7 @@ public class CustomUserDetailService implements UserService {
         String fragment = parsedClientUri.getFragment();
         //we are using a singlepage application, token is part of a fragment
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
-            .build()
-            .toUri();
+            .build().toUri();
 
     }
 
@@ -331,4 +366,13 @@ public class CustomUserDetailService implements UserService {
 
     }
 
+    @Override
+    public ApplicationUser findById(Long id) {
+        Optional<ApplicationUser> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new NotFoundException("User does not exist.");
+        }
+    }
 }

@@ -57,6 +57,8 @@ public class ApplicationUser {
     private boolean lockedAccount;
     @Column(length = 100)
     private String resetPasswordToken;
+    @Column(nullable = false)
+    private Boolean deleted = false;
     @ManyToMany
     @Fetch(FetchMode.JOIN)
     @Cascade({
@@ -64,9 +66,6 @@ public class ApplicationUser {
     @JsonIgnore
     @JoinTable(name = "ReadArticle", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "articleId"))
     private Set<Article> articles = new HashSet<>();
-
-    @Column(nullable = false)
-    private Boolean deleted = false;
 
     public ApplicationUser() {
     }

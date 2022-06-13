@@ -20,4 +20,5 @@ export class HeaderComponent implements OnInit {
   toggleAdminView(){
     this.adminView= !this.adminView;
   }
+  
 }
