@@ -165,6 +165,7 @@ public class CustomUserDetailService implements UserService {
 
         appUser.getAddress().setAddressId(tokenUser.getAddress().getAddressId());
         appUser.setUserId(userId);
+        appUser.setHasAdministrativeRights(tokenUser.isHasAdministrativeRights());
         LOGGER.debug("Attempting to update {}", appUser);
         userRepository.save(appUser);
     }
@@ -172,6 +173,10 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void delete() {
         ApplicationUser applicationUser = findByCurrentUser();
+
+        if (applicationUser.isHasAdministrativeRights()) {
+            throw new ConflictException("Not allowed to delete admin users!");
+        }
 
         List<Ticket> tickets = ticketRepository.getByReservedBy(applicationUser);
         for (Ticket ticket : tickets) {
