@@ -23,7 +23,6 @@ public class Transaction {
     @Column(nullable = false)
     private OffsetDateTime date;
 
-    private String billPath;
 
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
@@ -39,8 +38,6 @@ public class Transaction {
             + transactionId
             + ", date="
             + date
-            + ", billPath='"
-            + billPath
             + '\''
             + ", user="
             + user
@@ -58,14 +55,13 @@ public class Transaction {
         Transaction that = (Transaction) o;
         return Objects.equals(transactionId, that.transactionId)
             && Objects.equals(date, that.date)
-            && Objects.equals(billPath, that.billPath)
             && Objects.equals(user, that.user)
             && Objects.equals(bookedIns, that.bookedIns);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionId, date, billPath, user, bookedIns);
+        return Objects.hash(transactionId, date, user, bookedIns);
     }
 
     public Long getTransactionId() {
@@ -82,14 +78,6 @@ public class Transaction {
 
     public void setDate(OffsetDateTime date) {
         this.date = date;
-    }
-
-    public String getBillPath() {
-        return billPath;
-    }
-
-    public void setBillPath(String billPath) {
-        this.billPath = billPath;
     }
 
     public ApplicationUser getUser() {
