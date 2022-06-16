@@ -60,8 +60,6 @@ public class OrderServiceImpl implements OrderService {
         Transaction transaction = new Transaction();
         transaction.setDate(OffsetDateTime.now());
         transaction.setUser(user);
-        // TODO: ADD GENERATION OF BILL
-        transaction.setBillPath(null);
         this.transactionRepository.save(transaction);
         Set<BookedIn> bookings = tickets.stream().map(ticket -> {
             BookedInKey key = new BookedInKey();
