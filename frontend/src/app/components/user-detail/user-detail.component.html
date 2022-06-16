@@ -19,6 +19,7 @@
 </div>
 
 <div class="container mt-5">
+
   <div class="main-body">
     <div class="row ">
 
@@ -30,7 +31,7 @@
                 <h6 class="mb-0">Full Name</h6>
               </div>
               <div class="col-sm-9 text-secondary">
-           <strong> {{user.firstName}} {{user.lastName}}</strong>
+                <strong> {{user.firstName}} {{user.lastName}}</strong>
               </div>
             </div>
             <hr>
@@ -80,13 +81,19 @@
             Password
             <fa-icon class="ms-2" [icon]="faRotateLeft"></fa-icon>
           </button>
-          <button *ngIf="user.lockedAccount; else notLocked"
-                  (click)="unlockUser(user.userId, user.email)" class="list-group-item"
-                  type="button">Unlock User
-            <fa-icon class="ms-2" [icon]="faLockOpen"></fa-icon>
-          </button>
+          <div *ngIf="user.lockedAccount;then locked else notLocked"></div>
+
+
+          <ng-template #locked>
+            <button (click)="manageLockedStatus(user.userId, user.email, false)"
+                    class="list-group-item"
+                    type="button">Unlock User
+              <fa-icon class="ms-2" [icon]="faLockOpen"></fa-icon>
+            </button>
+          </ng-template>
           <ng-template #notLocked>
-            <button class="list-group-item" type="button">Lock User (not implemented)
+            <button class="list-group-item" type="button"
+                    (click)="manageLockedStatus(user.userId, user.email, true)">Lock User
               <fa-icon class="ms-2" [icon]="faLockClose"></fa-icon>
             </button>
           </ng-template>

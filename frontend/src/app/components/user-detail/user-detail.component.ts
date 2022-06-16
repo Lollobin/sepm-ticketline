@@ -12,6 +12,8 @@ import {Location} from '@angular/common';
 })
 export class UserDetailComponent implements OnInit {
   @Input() user;
+  @Output() reload: EventEmitter<any> = new EventEmitter<any>();
+
 
   error;
   success;
@@ -33,7 +35,10 @@ export class UserDetailComponent implements OnInit {
   refreshPage() {
     this.userManagementService.usersIdGet(this.user.userId).subscribe(
         {
-          next: user => this.user = user, error: err => {
+          next: user => {
+            this.user = user;
+            console.log(user);
+          }, error: err => {
             this.error = err;
             console.log(err + "  das ist das problem");
           }
@@ -41,14 +46,26 @@ export class UserDetailComponent implements OnInit {
     );
   }
 
-  unlockUser(id, mail) {
-    this.userManagementService.lockStatusIdPut(id, false).subscribe({
+  manageLockedStatus(id, mail, body) {
+    this.userManagementService.lockStatusIdPut(id, body).subscribe({
       next: () => {
-        this.success = "Successfully unlocked user with email " + mail + "!";
+        let status: string;
+        if (body) {
+          status = "locked";
+        } else {
+          status = "unlocked";
+        }
+        this.success = "Successfully " + status + " user with email " + mail + "!";
+        // if(body === false){
+        //   body = null;
+        // }
+        this.reload.emit(null);
         this.refreshPage();
       },
       error: err => {
+
         this.handleError(err);
+
       }
     });
 
@@ -84,4 +101,5 @@ export class UserDetailComponent implements OnInit {
   vanishSuccess() {
     this.success = null;
   }
+
 }

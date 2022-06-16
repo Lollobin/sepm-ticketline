@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faArrowRight, faLockOpen} from "@fortawesome/free-solid-svg-icons";
 
@@ -11,6 +11,7 @@ export class UserManagementComponent implements OnInit {
 
   userDetail;
 
+  filterLocked = null;
   data: UsersPage = null;
   page = 1;
   users: User[];
@@ -25,19 +26,23 @@ export class UserManagementComponent implements OnInit {
   pageSize = 10;
   sort: 'ASC' | 'DESC' = 'ASC';
   numberOfElems = 0;
+  empty = false;
 
   constructor(private userManagementService: UserManagementService) {
   }
 
   ngOnInit(): void {
-    this.reloadUser();
+    this.reloadUser(null);
   }
 
-  reloadUser() {
-    this.userManagementService.usersGet(null, this.pageSize, this.page - 1).subscribe({
+  reloadUser(filterLocked: boolean) {
+    this.filterLocked = filterLocked;
+    this.userManagementService.usersGet(this.filterLocked, this.pageSize, this.page - 1).subscribe({
       next: data => {
+
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
+
       },
       error: err => {
         console.log("Error fetching users: ", err);
@@ -47,16 +52,21 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  onPageChange(ngbpage: number) {
-    this.page = ngbpage;
-    this.reloadUser();
+
+  handleUnlock($event: any) {
+    this.reloadUser($event);
   }
 
+  onPageChange(ngbpage: number) {
+    this.page = ngbpage;
+    this.reloadUser(this.filterLocked);
+  }
 
 
   getDetail(user: User) {
     this.userDetail = user;
   }
+
   public vanishError(): void {
     this.error = null;
   }
@@ -76,5 +86,7 @@ export class UserManagementComponent implements OnInit {
   private showErrorFetch(msg: string) {
     this.errorFetch = msg;
   }
+
+
 
 }

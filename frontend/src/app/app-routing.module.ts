@@ -31,7 +31,7 @@ const routes: Routes = [
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]} },
   {path: 'buyTickets/:showId', component: SeatingPlanComponent, data: {role: "USER"}},
   {path: 'registration', component: RegistrationComponent},
-  {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
+  // {path: 'lockedUsers', component: UnlockUserComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/create', component: CreateLocationComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id/seatingPlans/create', component: CreateSeatingPlanComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
   {path: 'locations/:id', component: LocationSeatingPlansComponent, canActivate: [AuthGuard],  data: {role: "ADMIN"}},
