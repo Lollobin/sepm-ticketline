@@ -7,9 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Image;
+import at.ac.tuwien.sepm.groupphase.backend.repository.FileSystemRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ImageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,15 +48,16 @@ class ImagesEndpointTest {
     private ImageRepository imageRepository;
 
     @Autowired
+    private FileSystemRepository fileSystemRepository;
+
+    @Autowired
     private SecurityProperties securityProperties;
 
-    @BeforeEach
-    void setUp() {
-        imageRepository.deleteAll();
-    }
-
     @Test
+    @Sql(value = "classpath:/sql/delete.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void postWithCorrectImage_shouldReturn201() throws Exception {
+
+        imageRepository.deleteAll();
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/images")
                 .file(new MockMultipartFile("fileName", "testfile.jpg", MediaType.IMAGE_JPEG_VALUE,
@@ -64,7 +69,10 @@ class ImagesEndpointTest {
     }
 
     @Test
+    @Sql(value = "classpath:/sql/delete.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
     void postWithWrongRole_shouldReturn403() throws Exception {
+
+        imageRepository.deleteAll();
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/images")
                 .file(new MockMultipartFile("fileName", "testfile.jpg", MediaType.IMAGE_JPEG_VALUE,
@@ -75,6 +83,8 @@ class ImagesEndpointTest {
 
     @Test
     void postWithWrongRoleMimeType_shouldReturn422() throws Exception {
+
+        imageRepository.deleteAll();
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/images")
                 .file(

@@ -21,6 +21,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
@@ -86,13 +87,9 @@ class ArticleEndpointTest {
     private ImageRepository imageRepository;
 
 
-    @BeforeEach
-    void setUp() {
-        articleRepository.deleteAll();
-        imageRepository.deleteAll();
-    }
-
     @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithoutImage_shouldSaveArticle() throws Exception {
 
         ArticleWithoutIdDto articleWithoutIdDto = new ArticleWithoutIdDto();
@@ -130,6 +127,8 @@ class ArticleEndpointTest {
     }
 
     @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithInvalidRole_shouldReturn403() throws Exception {
 
         ArticleWithoutIdDto articleWithoutIdDto = new ArticleWithoutIdDto();
@@ -157,7 +156,12 @@ class ArticleEndpointTest {
     }
 
     @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithOneImage_shouldReturn201() throws Exception {
+        articleRepository.deleteAll();
+        imageRepository.deleteAll();
+
         String fakeImage = "das ist ein Teststring";
         String filePath = fileSystemRepository.save(fakeImage.getBytes(StandardCharsets.UTF_8),
             fakeImage);
@@ -212,7 +216,13 @@ class ArticleEndpointTest {
     }
 
     @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithMultipleImages_shouldReturn201() throws Exception {
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+
         String fakeImage = "image1";
         String filePath = fileSystemRepository.save(fakeImage.getBytes(StandardCharsets.UTF_8),
             fakeImage);
@@ -291,33 +301,6 @@ class ArticleEndpointTest {
             article.getArticleId());
     }
 
-
-    @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
-        @Sql("classpath:/sql/insert_article.sql"),
-        @Sql("classpath:/sql/insert_read_articles.sql")})
-    void articlesGetWithFilterReadFalse_shouldReturnNotReadArticles() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(
-            MockMvcRequestBuilders.get("/articles").param("filterRead", String.valueOf(false))
-                .header(securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-
-        ).andReturn();
-
-        MockHttpServletResponse servletResponse = result.getResponse();
-
-        List<Article> articleList = Arrays.asList(objectMapper.readValue(
-            servletResponse.getContentAsString(), Article[].class));
-
-        assertThat(articleList).hasSize(2);
-        assertAll(
-            () -> assertEquals(articleList.get(0).getArticleId(), -4),
-            () -> assertEquals(articleList.get(1).getArticleId(), -2)
-        );
-    }
-
     @Test
     @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
         @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
@@ -373,5 +356,7 @@ class ArticleEndpointTest {
         assertEquals(servletResponse.getStatus(), HttpStatus.FORBIDDEN.value());
 
     }
+
+
 
 }
