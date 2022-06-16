@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   EventsService, Sector, ShowsService, SeatingPlansService,
   SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
-  ArtistsService, Artist, Show, ShowSearch
+  ArtistsService, Artist, ShowSearch
 } from 'src/app/generated-sources/openapi';
-import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faCircleQuestion, faUserMinus } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
 import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 
@@ -40,6 +40,7 @@ export class CreateShowComponent implements OnInit {
   errorMessage = '';
   role = '';
   faCircleQuestion = faCircleQuestion;
+  faUserMinus = faUserMinus;
   sectorString = "sector";
   gotFromSeatingPlan: number;
   locationSearchDto: LocationSearch = {};
@@ -50,6 +51,7 @@ export class CreateShowComponent implements OnInit {
   display = "none";
   shows = [];
   showSearch: ShowSearch = { event: null };
+  submitted = false;
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
@@ -124,7 +126,11 @@ export class CreateShowComponent implements OnInit {
   }
 
   openModal() {
-    this.display = "block";
+    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId) {
+      this.submitted = true;
+    } else {
+      this.display = "block";
+    }
   }
   onCloseHandled() {
     this.display = "none";
@@ -200,7 +206,7 @@ export class CreateShowComponent implements OnInit {
         this.getShowsOfEvent(this.eventId);
         this.error = false;
         this.clearForm();
-        this.artists = [];
+        this.submitted = false;
       },
       error: error => {
         console.log("Error creating event", error.message);
@@ -330,5 +336,14 @@ export class CreateShowComponent implements OnInit {
 
   goToHome() {
     this.router.navigateByUrl("/admin");
+  }
+
+  removeFromArtists(artist: Artist) {
+    for( var i = 0; i < this.artists.length; i++){           
+      if ( this.artists[i].artistId === artist.artistId) { 
+        this.artists.splice(i, 1); 
+        break;
+      }
+  }
   }
 }
