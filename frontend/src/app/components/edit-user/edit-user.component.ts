@@ -134,6 +134,28 @@ export class EditUserComponent implements OnInit {
     });
   }
 
+  deleteUser() {
+    this.userManagementService.usersDelete().subscribe({
+      next: (_next) => {
+        console.log("Succesfully deleted user");
+        this.authService.logoutUser();
+        this.router.navigateByUrl("/");
+      },
+      error: (error) => {
+        console.error("Error deleting user from authentication token");
+        this.error = true;
+        this.success = false;
+        if (error.error != null && typeof error.error === 'object') {
+          console.log(error.error);
+          this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = error.error;
+        }
+        this.passwordForm.reset();
+      }
+    });
+  }
+
   openModal() {
     this.display = "block";
   }
@@ -154,6 +176,10 @@ export class EditUserComponent implements OnInit {
     this.editForm.reset();
   }
 
+  isUser() {
+    return this.authService.getUserRole() === "USER";
+  }
+
   setAction(text: string) {
     if (text === "edit" || text === "delete") {
       this.action = text;
@@ -166,7 +192,7 @@ export class EditUserComponent implements OnInit {
     if (this.action === "edit") {
       this.putUser();
     } else if (this.action === "delete") {
-      // TODO: implement delete functionality
+      this.deleteUser();
     }
   }
 
@@ -176,6 +202,7 @@ export class EditUserComponent implements OnInit {
       const authRequest: AuthRequest = new AuthRequest(this.user.email, this.passwordForm.controls.password.value);
       console.log(this.user.email);
       this.authenticateUser(authRequest);
+      this.onCloseHandled();
     } else {
       console.log('Invalid input');
     }

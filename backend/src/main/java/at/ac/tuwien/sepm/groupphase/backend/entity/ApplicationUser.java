@@ -57,6 +57,8 @@ public class ApplicationUser {
     private boolean lockedAccount;
     @Column(length = 100)
     private String resetPasswordToken;
+    @Column(nullable = false)
+    private Boolean deleted = false;
     @ManyToMany
     @Fetch(FetchMode.JOIN)
     @Cascade({
@@ -257,5 +259,13 @@ public class ApplicationUser {
 
     public void setResetPasswordToken(String resetPasswordToken) {
         this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

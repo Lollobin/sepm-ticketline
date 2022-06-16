@@ -25,10 +25,10 @@ public class LockedEndpoint implements LockStatusApi {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public ResponseEntity<Void> lockStatusIdPut(Integer id, Boolean body) {
+    public ResponseEntity<Void> lockStatusIdPut(Long id, Boolean body) {
         LOGGER.info("PUT /lockStatus/{}", id);
 
-        lockedService.unlockApplicationUser(Long.valueOf(id), body);
+        lockedService.unlockApplicationUser(id, body);
 
         return ResponseEntity.noContent().build();
     }

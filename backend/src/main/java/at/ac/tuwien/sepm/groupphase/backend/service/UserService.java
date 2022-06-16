@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
@@ -53,6 +54,11 @@ public interface UserService extends UserDetailsService {
      * @param userWithPasswordDto with new user data to be updated to
      */
     void put(UserWithPasswordDto userWithPasswordDto);
+
+    /**
+     * Deletes the User possesing the token.
+     */
+    void delete();
 
     /**
      * * Return a page of users whose locked status is according to the parameter.
@@ -109,10 +115,28 @@ public interface UserService extends UserDetailsService {
     void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto);
 
     /**
+     * Reset the password of a user with given id and force the password reset.
+     *
+     * @param id of the user who has to reste password.
+     * @param dto Passwordreset dto containing clienturi for reseturl building and useremail
+     *
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException when user not found
+     */
+    void forcePasswordReset(Long id, AdminPasswordResetDto dto);
+
+    /**
      * Update the list of read articles of a user.
      *
      * @param email     updates the list of the user with the corresponding email
      * @param articleId add article with corresponding articleId to user
      */
     void updateArticleRead(String email, Long articleId);
+
+    /**
+     * Fetches user by id.
+     *
+     * @param id userid
+     * @return Application user with this id
+     */
+    ApplicationUser findById(Long id);
 }

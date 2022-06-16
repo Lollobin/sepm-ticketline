@@ -5,8 +5,8 @@
  */
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ShowWithTicketsSoldDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopShowSearchDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithTicketsSoldDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -32,47 +32,44 @@ import javax.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 @Validated
-@Tag(name = "topShows", description = "the topShows API")
-public interface TopShowsApi {
+@Tag(name = "topEvents", description = "the topEvents API")
+public interface TopEventsApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
     /**
-     * GET /topShows : Searches for shows that have the highest amount of tickets sold per category for a given month
-     * Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
+     * GET /topEvents : Searches for events that have the highest amount of tickets sold per category for a given month
+     * Searches for data depending on the query parameters. When no query parameters are given, all events are compared.
      *
      * @param search  (optional)
-     * @return Successful retreival of locations (status code 200)
+     * @return Successful retreival of events (status code 200)
      *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "topShowsGet",
-        summary = "Searches for shows that have the highest amount of tickets sold per category for a given month",
-        tags = { "shows" },
+        operationId = "topEventsGet",
+        summary = "Searches for events that have the highest amount of tickets sold per category for a given month",
+        tags = { "events" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of locations", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ShowWithTicketsSoldDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retreival of events", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  EventWithTicketsSoldDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/topShows",
+        value = "/topEvents",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ShowWithTicketsSoldDto>> topShowsGet(
-        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid TopShowSearchDto search
+    default ResponseEntity<List<EventWithTicketsSoldDto>> topEventsGet(
+        @Parameter(name = "search", description = "", schema = @Schema(description = "")) @Valid TopEventSearchDto search
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"2000-01-23T04:56:07.000+00:00\", \"showId\" : 0, \"ticketsSold\" : 1, \"artists\" : [ 5.962133916683182, 5.962133916683182 ], \"event\" : 6 }";
+                    String exampleString = "{ \"duration\" : 6, \"eventId\" : 0, \"ticketsSold\" : 1, \"name\" : \"name\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
