@@ -24,6 +24,7 @@ import {PasswordUpdateComponent} from "./components/password-update/password-upd
 import {CreateArticleComponent} from "./components/create-article/create-article.component";
 import {UserManagementComponent} from "./components/user-management/user-management.component";
 import {TopEventsComponent} from "./components/top-events/top-events.component";
+import { CreateUserComponent } from "./components/create-user/create-user.component";
 
 const routes: Routes = [
   {path: '', component: EventsComponent},
@@ -47,7 +48,8 @@ const routes: Routes = [
   {path:'passwordReset', component: PasswordResetComponent},
   {path:'passwordUpdate', component: PasswordUpdateComponent},
   {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path:'topEvents', component: TopEventsComponent}
+  {path:'topEvents', component: TopEventsComponent},
+  {path:'users/create', component: CreateUserComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
 ];
 
 @NgModule({

@@ -41,6 +41,7 @@ import {PasswordUpdateComponent} from "./components/password-update/password-upd
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { TopEventsComponent } from './components/top-events/top-events.component';
+import { CreateUserComponent } from './components/create-user/create-user.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { TopEventsComponent } from './components/top-events/top-events.component
     TopEventsComponent,
     LocationSeatingPlansComponent,
     UserManagementComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    CreateUserComponent
   ],
   imports: [
     BrowserModule,
