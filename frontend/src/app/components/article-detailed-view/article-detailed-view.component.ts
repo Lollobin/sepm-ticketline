@@ -13,6 +13,8 @@ export class ArticleDetailedViewComponent implements OnInit {
   article: Article;
   id: number;
   error: Error;
+  articleImages = {};
+  errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
 
   constructor(private articleService: ArticlesService, private activatedRoute: ActivatedRoute,
               private customAuthService: CustomAuthService) {
@@ -35,11 +37,46 @@ export class ArticleDetailedViewComponent implements OnInit {
           this.setArticleToRead(id);
         }
 
-        console.log(article);
+
+        for(let i = 0; i < this.article.images.length; i++){
+
+          this.getImage(article.images[i], i);
+        }
+
+        if(article.images?.length === 0){
+          this.articleImages[0] = this.errorImage;
+        }
       },
       error: err => {
         this.error = err;
       }
+    });
+  }
+
+  createImageFromBlob(image: Blob, id: number) {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+
+      this.articleImages[id] = reader.result;
+
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
+
+  getImage(id: number, position: number) {
+
+    if (!id) {
+      return;
+    }
+
+    this.articleService.imagesIdGet(id).subscribe({
+      next: image => {
+        this.createImageFromBlob(image, position);
+      },
     });
   }
 

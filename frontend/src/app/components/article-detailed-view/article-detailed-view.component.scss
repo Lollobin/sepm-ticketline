@@ -1,0 +1,91 @@
+img {
+  object-fit: fill;
+  height: 500px;
+  width: 95%;
+  display: block;
+  margin: 0 auto;
+
+}
+
+@mixin faded($offset, $blur-radius, $spread-radius)
+{
+
+  &.faded-left.faded-right:after {
+    box-shadow: inset $offset 0 $blur-radius (-$spread-radius), inset (-$offset) 0 $blur-radius (-$spread-radius);
+  }
+
+
+}
+
+
+
+
+$faded-offset: 100px !default;
+$faded-blur-radius: 60px !default;
+$faded-spread-radius: 16px !default;
+
+$faded-narrow-offset: 20px !default;
+$faded-narrow-blur-radius: 20px !default;
+$faded-narrow-spread-radius: 10px !default;
+
+$faded-wide-offset: 80px !default;
+$faded-wide-blur-radius: 80px !default;
+$faded-wide-spread-radius: 28px !default;
+
+.faded {
+  position: relative;
+  display: inline-block;
+  color: white;
+
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-collapse: separate;
+  }
+
+  @include faded($faded-offset, $faded-blur-radius, $faded-spread-radius);
+
+  &.faded-narrow {
+    @include faded($faded-narrow-offset, $faded-narrow-blur-radius, $faded-narrow-spread-radius);
+  }
+
+  &.faded-wide {
+    @include faded($faded-wide-offset, $faded-wide-blur-radius, $faded-wide-spread-radius);
+  }
+}
+
+// Colored panel
+.panel {
+  background-color: blue;
+  padding: 1em;
+  color: white;
+
+  .faded {
+    // Use a text color the same as the background colour of the panel will mean the fade effect matches the background correctly
+    color: blue;
+  }
+}
+
+// Scale images down if they're too large for available space
+img {
+  max-width: 100%;
+}
+
+#about{
+  font-family: 'Roboto Black', sans-serif;
+  font-size: 18px;
+}
+.summary{
+  font-weight: bold;
+}
+
+@media (max-width: 1100px) {
+  img{
+    height: 400px;
+  }
+}
