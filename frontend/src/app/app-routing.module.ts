@@ -23,6 +23,8 @@ import { EditUserComponent } from "./components/edit-user/edit-user.component";
 import {PasswordResetComponent} from "./components/password-reset/password-reset.component";
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
 import {CreateArticleComponent} from "./components/create-article/create-article.component";
+import {UserManagementComponent} from "./components/user-management/user-management.component";
+import {TopEventsComponent} from "./components/top-events/top-events.component";
 import {NewsOverviewComponent} from "./components/news-overview/news-overview.component";
 import {
   ArticleDetailedViewComponent
@@ -53,7 +55,9 @@ const routes: Routes = [
   {path: "news/overview", component: NewsOverviewComponent},
   {path: "news/overview/:id", component: ArticleDetailedViewComponent},
   {path: "news/read", component: NewsOverviewComponent, canActivate: [AuthGuard], data : {role: ["USER", "ADMIN"]}},
-  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
+  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
+  {path:'topEvents', component: TopEventsComponent}
 ];
 
 @NgModule({

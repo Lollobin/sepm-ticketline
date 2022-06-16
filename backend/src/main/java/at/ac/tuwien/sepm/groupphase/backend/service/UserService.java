@@ -56,6 +56,11 @@ public interface UserService extends UserDetailsService {
     void put(UserWithPasswordDto userWithPasswordDto);
 
     /**
+     * Deletes the User possesing the token.
+     */
+    void delete();
+
+    /**
      * * Return a page of users whose locked status is according to the parameter.
      *
      * @param filterLocked true searches for locked users, false searches for all users.
@@ -119,7 +124,7 @@ public interface UserService extends UserDetailsService {
      */
     void forcePasswordReset(Long id, AdminPasswordResetDto dto);
 
-    /**   
+    /**
      * Update the list of read articles of a user.
      *
      * @param email     updates the list of the user with the corresponding email
@@ -127,4 +132,11 @@ public interface UserService extends UserDetailsService {
      */
     void updateArticleRead(String email, Long articleId);
 
+    /**
+     * Fetches user by id.
+     *
+     * @param id userid
+     * @return Application user with this id
+     */
+    ApplicationUser findById(Long id);
 }

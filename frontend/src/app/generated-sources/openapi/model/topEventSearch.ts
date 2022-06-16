@@ -9,13 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Category } from './category';
 
 
-export interface ShowWithTicketsSold { 
-    showId: number;
-    date: string;
-    event: number;
-    ticketsSold: number;
-    artists: Array<number>;
+export interface TopEventSearch { 
+    category?: Category;
+    month?: string;
 }
 

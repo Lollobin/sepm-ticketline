@@ -11,6 +11,8 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
@@ -43,6 +45,8 @@ class LockedUserServiceTest implements TestData {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private TicketRepository ticketRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserEncodePasswordMapper userEncodePasswordMapper;
@@ -70,8 +74,7 @@ class LockedUserServiceTest implements TestData {
     void setUp() {
         userService = new CustomUserDetailService(userRepository, passwordEncoder,
             userEncodePasswordMapper, emailService, resetTokenService, mailBuilderService,
-            authenticationFacade, userValidator, articleRepository);
-
+            userValidator, authenticationFacade, ticketRepository, articleRepository);
         lockedService = new LockedServiceImpl(userRepository, lockedStatusValidator);
 
 
@@ -91,7 +94,7 @@ class LockedUserServiceTest implements TestData {
 
         Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEquals(true, Pageable.unpaged())).thenReturn(
+        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged())).thenReturn(
             threeLockedUsers);
 
         List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged()).stream()
@@ -113,7 +116,7 @@ class LockedUserServiceTest implements TestData {
 
         Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEquals(true, Pageable.unpaged())).thenReturn(
+        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged())).thenReturn(
             threeLockedUsers);
 
         List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged())
@@ -132,7 +135,7 @@ class LockedUserServiceTest implements TestData {
         doNothing().when(userRepository).unlockApplicationUser(false, user.getUserId());
         lockedService.unlockApplicationUser(user.getUserId(), false);
 
-        verify(userRepository, times(1)).findByLockedAccountEquals(true, Pageable.unpaged());
+        verify(userRepository, times(1)).findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged());
         verify(userRepository, times(1)).existsById(user.getUserId());
         verify(userRepository, times(1)).unlockApplicationUser(false, user.getUserId());
 
