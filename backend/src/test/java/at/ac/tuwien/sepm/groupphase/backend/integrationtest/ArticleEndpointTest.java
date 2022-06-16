@@ -302,32 +302,6 @@ class ArticleEndpointTest {
     }
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
-        @Sql("classpath:/sql/insert_article.sql"),
-        @Sql("classpath:/sql/insert_read_articles.sql")})
-    void articlesGetWithFilterReadTrue_shouldReturnReadArticles() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(
-            MockMvcRequestBuilders.get("/articles").param("filterRead", String.valueOf(true))
-                .header(securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-
-        ).andReturn();
-
-        MockHttpServletResponse servletResponse = result.getResponse();
-
-        List<Article> articleList = Arrays.asList(objectMapper.readValue(
-            servletResponse.getContentAsString(), Article[].class));
-
-        assertThat(articleList).hasSize(2);
-        assertAll(
-            () -> assertEquals(articleList.get(0).getArticleId(), -3),
-            () -> assertEquals(articleList.get(1).getArticleId(), -1)
-        );
-    }
-
-    @Test
     void imagesIdGetWithInvalidId_shouldReturn404() throws Exception {
 
         MvcResult result = this.mockMvc.perform(
