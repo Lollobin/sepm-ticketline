@@ -61,6 +61,8 @@ class ArticleServiceTest {
 
         String email = "test";
 
+
+
         List<Article> articleList = new ArrayList<>();
         ApplicationUser user = new ApplicationUser();
         user.setUserId(1L);
