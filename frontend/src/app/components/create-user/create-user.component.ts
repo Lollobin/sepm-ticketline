@@ -61,7 +61,7 @@ export class CreateUserComponent implements OnInit {
       } else {
         this.userOrAdmin = "user";
       }
-    })
+    });
   }
 
   get f() {
@@ -77,8 +77,8 @@ export class CreateUserComponent implements OnInit {
 
   signUpUser() {
     if (this.registrationForm.valid) {
-      var uuid = require("uuid");
-      var id = uuid.v4();
+      const uuid = require("uuid");
+      const id = uuid.v4();
       const userAddress: Address = {
         houseNumber: this.f['address'].value.houseNumber,
         street: this.f['address'].value.street,
@@ -177,7 +177,7 @@ export class CreateUserComponent implements OnInit {
   sendPasswordReset(email: string) {
 
     const passwordReset: PasswordReset = {
-      email: email,
+      email,
       clientURI: this.clientUrl
     };
     console.log("sending");
