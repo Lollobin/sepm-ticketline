@@ -19,6 +19,7 @@ index.ts
 model/address.ts
 model/adminPasswordReset.ts
 model/article.ts
+model/articlePage.ts
 model/articleWithoutId.ts
 model/artist.ts
 model/artistsSearchResult.ts
