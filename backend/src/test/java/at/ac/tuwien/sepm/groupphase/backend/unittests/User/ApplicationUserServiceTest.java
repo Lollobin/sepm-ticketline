@@ -138,7 +138,7 @@ class ApplicationUserServiceTest implements TestData {
 
         when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(fakePersistedUser);
 
-        assertThrows(ValidationException.class, () -> userService.save(userToSave));
+        assertThrows(ConflictException.class, () -> userService.save(userToSave));
     }
 
     @Test
@@ -149,7 +149,7 @@ class ApplicationUserServiceTest implements TestData {
         when(userRepository.findUserByEmail(userToSave.getEmail())).thenReturn(fakePersistedUser);
         try {
             userService.save(userToSave);
-        } catch (ValidationException ignored) {
+        } catch (ConflictException ignored) {
             // Do nothing, we already made sure the exception will be thrown in a test above
             // In this test we want to make sure that the repository.save() is not called after
         }
