@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Article, ArticlePage, ArticlesService, Sort} from "../../generated-sources/openapi";
 import {Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
+import {ViewportScroller} from "@angular/common";
 
 @Component({
   selector: 'app-news-overview',
@@ -23,8 +24,8 @@ export class NewsOverviewComponent implements OnInit {
   page = 1;
 
 
-
-  constructor(public articleService: ArticlesService, private router: Router, public authService: CustomAuthService) {
+  constructor(public articleService: ArticlesService, private router: Router,
+              public authService: CustomAuthService, private scroll: ViewportScroller) {
   }
 
 
@@ -34,11 +35,11 @@ export class NewsOverviewComponent implements OnInit {
     this.reloadArticles(this.filterRead);
   }
 
-  reloadArticles(filterRead: boolean){
+  reloadArticles(filterRead: boolean) {
 
     this.filterRead = filterRead;
 
-    this.articleService.articlesGet(this.filterRead, this.pageSize, this.page-1, Sort.Desc).subscribe({
+    this.articleService.articlesGet(this.filterRead, this.pageSize, this.page - 1, Sort.Desc).subscribe({
       next: async articlePage => {
         this.articleResult = articlePage;
         this.articles = articlePage.articles;
@@ -90,6 +91,8 @@ export class NewsOverviewComponent implements OnInit {
   onPageChange(ngbpage: number) {
     this.page = ngbpage;
     this.reloadArticles(this.filterRead);
+    this.scroll.scrollToPosition([0, 0]);
+
   }
 
 

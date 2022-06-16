@@ -1,10 +1,8 @@
+<div class="container" style="max-width: 1000px; margin: 0 auto">
+  <h1 *ngIf="filterRead===false" style="margin-top: 4%">All new news</h1>
+  <h1 *ngIf="filterRead===true" style="margin-top: 4%">Already read news</h1>
 
-
-  <div class="container" style="max-width: 1000px; margin: 0 auto" >
-    <h1 *ngIf="filterRead===false" style="margin-top: 4%">All new news</h1>
-    <h1 *ngIf="filterRead===true" style="margin-top: 4%">Already read news</h1>
-
-    <div class="container mt-3" *ngIf="empty" style="padding: 0">
+  <div class="container mt-3" *ngIf="empty" style="padding: 0">
     <div class="alert alert-warning" role="alert">
       <h4 *ngIf="!filterRead">There aren't any new news!</h4>
       <h4 *ngIf="filterRead">You have not read any news yet!</h4>
@@ -13,10 +11,18 @@
     </div>
   </div>
 
-  <div *ngIf="filterRead===false;then show_read else show_not_read" ></div>
-  <ng-template #show_read><button type="button" style="float: right;" [hidden]="!authService.isLoggedIn()" class="btn btn-outline-primary" (click)="reloadArticles(true)">Show read news</button></ng-template>
-  <ng-template #show_not_read><button  type="button" style="float: right;" [hidden]="!authService.isLoggedIn()" class="btn btn-outline-primary" (click)="reloadArticles(false)">Show new news</button></ng-template>
-    </div>
+  <div *ngIf="filterRead===false;then show_read else show_not_read"></div>
+  <ng-template #show_read>
+    <button type="button" style="float: right;" [hidden]="!authService.isLoggedIn()"
+            class="btn btn-secondary" (click)="reloadArticles(true)">Show read news
+    </button>
+  </ng-template>
+  <ng-template #show_not_read>
+    <button type="button" style="float: right;" [hidden]="!authService.isLoggedIn()"
+            class="btn btn-secondary" (click)="reloadArticles(false)">Show new news
+    </button>
+  </ng-template>
+</div>
 
 
 <div class="container " style="margin: 4rem auto">
@@ -24,7 +30,7 @@
 
   <div class="card mb-3" style="max-width: 1000px; margin: 0 auto" *ngFor="let article of articles">
     <div class="row g-0">
-      <div class="col-sm-12 col-md-4 col-xl-4" >
+      <div class="col-sm-12 col-md-4 col-xl-4">
         <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
              class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
 
@@ -34,10 +40,13 @@
         <div class="card-body">
           <h3 class="card-title">{{article.title}}</h3>
           <p class="card-text with-overflow">{{article?.summary}}</p>
-          <p class="bottom-0" ><small class="text-muted" style="bottom: 1rem; position: absolute">Created on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
+          <p class="bottom-0"><small class="text-muted" style="bottom: 1rem; position: absolute">Created
+            on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
         </div>
         <div style="margin-top: 4%">
-        <a style="position: absolute; bottom: 4%; right: 4%;" [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read article</a>
+          <a style="position: absolute; bottom: 4%; right: 4%;"
+             [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read
+            article</a>
         </div>
       </div>
     </div>
@@ -48,5 +57,6 @@
 <ngb-pagination [collectionSize]="this.articleResult?.numberOfResults" [(page)]="page" [maxSize]="5"
                 [boundaryLinks]="true"
                 [pageSize]="pageSize" class="d-flex justify-content-center"
-                (pageChange)="onPageChange(page)" *ngIf="this.articleResult?.numberOfResults > 0"></ngb-pagination>
+                (pageChange)="onPageChange(page)"
+                *ngIf="this.articleResult?.numberOfResults > 0"></ngb-pagination>
 
