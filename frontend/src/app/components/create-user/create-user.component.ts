@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Address, UserManagementService, UserWithPassword } from 'src/app/generated-sources/openapi';
-import { passwordMatchValidator } from '../registration/passwords-match-validator';
+import { Address, PasswordReset, UserManagementService, UserWithPassword } from 'src/app/generated-sources/openapi';
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { CustomAuthService } from 'src/app/services/custom-auth.service';
 import { AuthRequest } from 'src/app/dtos/auth-request';
@@ -31,6 +30,7 @@ export class CreateUserComponent implements OnInit {
   display = "none";
   adminMail = "";
   authenticated: boolean;
+  clientUrl = 'http://' + window.location.host + '#/passwordUpdate';
 
   constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, 
     private router: Router, private authService: CustomAuthService) {
@@ -48,11 +48,7 @@ export class CreateUserComponent implements OnInit {
         country: ['', [Validators.required]]
       }),
       gender: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
       isAdmin: []
-    }, {
-      validators: passwordMatchValidator
     });
 
     this.passwordForm = this.formBuilder.group({
@@ -80,8 +76,9 @@ export class CreateUserComponent implements OnInit {
   }
 
   signUpUser() {
-    this.submitted = true;
     if (this.registrationForm.valid) {
+      var uuid = require("uuid");
+      var id = uuid.v4();
       const userAddress: Address = {
         houseNumber: this.f['address'].value.houseNumber,
         street: this.f['address'].value.street,
@@ -95,7 +92,7 @@ export class CreateUserComponent implements OnInit {
         email: this.f.email.value,
         gender: this.f.gender.value,
         address: userAddress,
-        password: this.f.password.value
+        password: id
       };
       if (this.f['isAdmin'].value) {
         this.registerAdmin(userWithPassword);
@@ -111,6 +108,7 @@ export class CreateUserComponent implements OnInit {
         console.log("success!");
         this.success = true;
         this.successUser = this.f['email'].value;
+        this.sendPasswordReset(this.f['email'].value);
         this.error = false;
         this.clearForm();
         this.registrationForm.markAsPristine();
@@ -136,6 +134,7 @@ export class CreateUserComponent implements OnInit {
         console.log("success!");
         this.success = true;
         this.successUser = this.f['email'].value;
+        this.sendPasswordReset(this.f['email'].value);
         this.error = false;
         this.clearForm();
         this.registrationForm.markAsPristine();
@@ -173,6 +172,28 @@ export class CreateUserComponent implements OnInit {
         }
       }
     });
+  }
+
+  sendPasswordReset(email: string) {
+
+    const passwordReset: PasswordReset = {
+      email: email,
+      clientURI: this.clientUrl
+    };
+    console.log("sending");
+    this.userManagementService.passwordResetPost(passwordReset, 'body', true).subscribe(
+        {
+          next: (response) => {
+            console.log("succesfully reset password for created account");
+            this.success = true;
+          },
+          error: (err) => {
+            this.error = err;
+            console.log("failed to reset password for created account");
+            this.success = false;
+          }
+        }
+    );
   }
 
   confirmUser() {
