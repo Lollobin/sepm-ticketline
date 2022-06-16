@@ -27,7 +27,7 @@ export class NewsOverviewComponent implements OnInit {
 
     this.filterRead = this.router.url.includes("read");
 
-    console.log(this.filterRead + " ist filterread");
+
 
     this.articleService.articlesGet(this.filterRead).subscribe({
       next: async response => {
@@ -44,7 +44,6 @@ export class NewsOverviewComponent implements OnInit {
 
         }
 
-        console.log(response);
       },
       error: error => {
         this.error = error;

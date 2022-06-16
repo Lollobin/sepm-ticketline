@@ -3,9 +3,9 @@
 }
 
 .card-img-top {
-  width: 80%;
-  height: 11vw;
-  object-fit: scale-down;
+  width: 100%;
+  height: 14vw;
+  object-fit: fill;
 }
 
 
@@ -42,7 +42,7 @@
   -o-transition: all .9s ease;
   -ms-transition: all .9s ease;
   width: 100%;
-  max-height: 10rem;
+  max-height: 12rem;
 }
 
 .text-container {
@@ -124,22 +124,29 @@
 
 }
 
+@media (max-width: 1200px) {
+  #cards_landscape_wrap-2 .card-flyer .image-box img{
+    height: 250px;
+    max-height: 20rem;
+  }
+
+  .text-container{
+    min-height: 180px;
+  }
+}
+
 @media (max-width: 577px) {
 
   .card-img-top {
     width: 80%;
     height: auto;
-    object-fit: scale-down;
+
   }
 
   .text-container {
-    height: auto;
+    min-height: 150px;
   }
 
-  .row {
-    width: 70%;
-    margin: 0 auto;
-  }
 }
 
 $grid-breakpoints: (
