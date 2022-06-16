@@ -69,7 +69,7 @@ class ArticleServiceTest {
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
         when(articleRepository.findArticlesReadByUser(1L)).thenReturn(articleList);
 
-        articleService.getArticles(true, email);
+        articleService.getArticles(true, email, false);
 
         verify(articleRepository).findArticlesReadByUser(1L);
         verify(userService).findApplicationUserByEmail(email);
@@ -89,7 +89,7 @@ class ArticleServiceTest {
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
         when(articleRepository.findArticlesNotReadByUser(1L)).thenReturn(articleList);
 
-        articleService.getArticles(false, email);
+        articleService.getArticles(false, email, false);
 
         verify(articleRepository).findArticlesNotReadByUser(1L);
         verify(userService).findApplicationUserByEmail(email);

@@ -343,20 +343,4 @@ class ArticleEndpointTest {
 
     }
 
-    @Test
-    void imagesIdGetWithInvalidIdAndInvalidRole_shouldReturn403() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(
-            MockMvcRequestBuilders.get("/articles/" + 100)
-
-        ).andReturn();
-
-        MockHttpServletResponse servletResponse = result.getResponse();
-
-        assertEquals(servletResponse.getStatus(), HttpStatus.FORBIDDEN.value());
-
-    }
-
-
-
 }
