@@ -52,7 +52,6 @@ export class UnlockUserComponent implements OnInit {
   }
 
   unlockUser(id: number, email: string) {
-    console.log("hier" + id);
     this.userManagementService.lockStatusIdPut(id, false).subscribe({
       next: () => {
         this.userEmail = email;

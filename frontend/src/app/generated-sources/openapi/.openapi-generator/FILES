@@ -17,6 +17,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/address.ts
+model/adminPasswordReset.ts
 model/article.ts
 model/articleWithoutId.ts
 model/artist.ts
@@ -28,6 +29,7 @@ model/elementLocation.ts
 model/event.ts
 model/eventSearch.ts
 model/eventSearchResult.ts
+model/eventWithTicketsSold.ts
 model/eventWithoutId.ts
 model/fullTicketWithStatus.ts
 model/gender.ts
@@ -39,6 +41,8 @@ model/locationWithoutId.ts
 model/models.ts
 model/order.ts
 model/ordersPage.ts
+model/passwordReset.ts
+model/passwordUpdate.ts
 model/provisionalSector.ts
 model/seat.ts
 model/seatWithBookingStatus.ts
@@ -55,13 +59,12 @@ model/show.ts
 model/showInformation.ts
 model/showSearch.ts
 model/showSearchResult.ts
-model/showWithTicketsSold.ts
 model/showWithoutId.ts
 model/sort.ts
 model/ticket.ts
 model/ticketStatus.ts
 model/ticketWithShowInfo.ts
-model/topShowSearch.ts
+model/topEventSearch.ts
 model/transaction.ts
 model/user.ts
 model/userWithPassword.ts

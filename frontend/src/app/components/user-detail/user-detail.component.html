@@ -1,0 +1,104 @@
+<div class="container mt-3" *ngIf="success">
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Success!</h4>
+    {{success}}
+    <p></p>
+    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+  </div>
+</div>
+
+<div class="container mt-3" *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <h4>Error!</h4>{{ error }}
+
+    <p></p>
+    <button type="button" class="btn-close" (click)="vanishError()" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="main-body">
+    <div class="row ">
+
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+           <strong> {{user.firstName}} {{user.lastName}}</strong>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.email}}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Address</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.address.street}} {{user.address.houseNumber}}
+              </div>
+              <div class="col-sm-3">
+                <h6 class="mb-0"></h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.address.zipCode}} {{user.address.city}}
+              </div>
+              <div class="col-sm-3">
+                <h6 class="mb-0"></h6>
+              </div>
+              <div class="col-sm-9 mb-1 text-secondary">
+                {{user.address.country}}
+              </div>
+              <hr>
+              <div class="col-sm-3">
+                <h6 class="mb-0">Account locked?</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{user.lockedAccount === false ? "No" : "Yes"}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="list-group">
+
+          <button (click)="passwordReset(user.userId)" class="list-group-item" type="button">Reset
+            Password
+            <fa-icon class="ms-2" [icon]="faRotateLeft"></fa-icon>
+          </button>
+          <button *ngIf="user.lockedAccount; else notLocked"
+                  (click)="unlockUser(user.userId, user.email)" class="list-group-item"
+                  type="button">Unlock User
+            <fa-icon class="ms-2" [icon]="faLockOpen"></fa-icon>
+          </button>
+          <ng-template #notLocked>
+            <button class="list-group-item" type="button">Lock User (not implemented)
+              <fa-icon class="ms-2" [icon]="faLockClose"></fa-icon>
+            </button>
+          </ng-template>
+
+          <button class="text-danger list-group-item" type="button">Delete User (Not Implemented)
+            <fa-icon class="ms-2" [icon]="faTrashCan"></fa-icon>
+          </button>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>

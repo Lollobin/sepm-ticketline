@@ -33,6 +33,8 @@ public interface TestData {
     String USERS_BASE_URI = "/users";
     String ORDERS_BASE_URI = "/orders";
     String TICEKTS_BASE_URI = "/tickets";
+
+    String ARTICLES_BASE_URI = "/articles";
     String CANCELLATION_BASE_URI = "/ticketCancellations";
     String ADMIN_USER = "admin@email.com";
     List<String> ADMIN_ROLES =
@@ -251,5 +253,11 @@ public interface TestData {
 
     String LOCATION5_NAME = "Albertina";
 
+
+    String ARTICLE_TITLE = "Die Welt der 1000 Träume";
+
+    String ARTICLE_SUMMARY = "Das ist eine kleine Zusammenfassung";
+
+    String ARTICLE_TEXT = "Nun kommt der große Text";
 
 }

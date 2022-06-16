@@ -34,6 +34,12 @@ paths:
       tags:
         - userManagement
       summary: Resets a password for a user with the given ID. Only allowed for the own user or if you are an administrator.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPasswordReset"
       security:
         - BearerAuth: []
       parameters:
@@ -58,12 +64,12 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
-        
+      
       responses:
         200:
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         401:
@@ -77,7 +83,7 @@ paths:
     post:
       tags:
         - userManagement
-      summary: Updates account with unique token, sets the password 
+      summary: Updates account with unique token, sets the password
       requestBody:
         required: true
         content:
@@ -250,13 +256,10 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /users/{id}:
     put:
       tags:
         - userManagement
-      summary: Updates information of an user with the given data.
-      parameters:
-        - $ref: "#/components/parameters/userId"
+      summary: Updates information of a user possesing the token.
       security:
         - BearerAuth: []
       requestBody:
@@ -274,6 +277,43 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
+    delete:
+      tags:
+        - userManagement
+      summary: Deletes the user posessing the token.
+      description: Only the user itself can delete a given user account.
+      security:
+        - BearerAuth: []
+      responses:
+        204:
+          description: Successful deletion of a user.
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /userInfo:
+    get:
+      tags:
+        - userManagement
+      summary: Gets user info of user possesing the token.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Successful retreival of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          $ref: "#/components/responses/401-not-authenticated"
+        404:
+          description: The user with the given ID was not found
+        500:
+          $ref: "#/components/responses/500-internal-error"
+  /users/{id}:
     get:
       tags:
         - userManagement
@@ -291,26 +331,6 @@ paths:
                 $ref: "#/components/schemas/User"
         401:
           $ref: "#/components/responses/401-not-authenticated"
-        404:
-          description: The user with the given ID was not found
-        500:
-          $ref: "#/components/responses/500-internal-error"
-    delete:
-      tags:
-        - userManagement
-      summary: Deletes the user with the given ID.
-      description: Only an administrator or the user itself can delete a given user account.
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      security:
-        - BearerAuth: []
-      responses:
-        204:
-          description: Successful deletion of an user.
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
-        403:
-          $ref: "#/components/responses/403-forbidden"
         404:
           description: The user with the given ID was not found
         500:
@@ -413,7 +433,7 @@ paths:
         - $ref: "#/components/parameters/filterRead"
       responses:
         200:
-          description: Successful retreival of articles
+          description: Successful retrieval of articles
           content:
             application/json:
               schema:
@@ -455,12 +475,6 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/articleId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: boolean
       responses:
         200:
           description: Successful set the "read"-status of an article for an user
@@ -645,28 +659,26 @@ paths:
           description: The show with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
-  /topShows:
+  /topEvents:
     get:
       tags:
-        - shows
-      summary: Searches for shows that have the highest amount of tickets sold per category for a given month
-      description: Searches for data depending on the query parameters. When no query parameters are given, all locations are returned
-      security:
-        - BearerAuth: []
+        - events
+      summary: Searches for events that have the highest amount of tickets sold per category for a given month
+      description: Searches for data depending on the query parameters. When no query parameters are given, all events are compared.
       parameters:
         - name: search
           in: query
           schema:
-            $ref: "#/components/schemas/TopShowSearch"
+            $ref: "#/components/schemas/TopEventSearch"
       responses:
         200:
-          description: Successful retreival of locations
+          description: Successful retreival of events
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ShowWithTicketsSold"
+                  $ref: "#/components/schemas/EventWithTicketsSold"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         500:
@@ -1132,6 +1144,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     articleId:
       name: id
       in: path
@@ -1139,6 +1152,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     artistId:
       name: id
       in: path
@@ -1210,6 +1224,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     filterLocked:
       name: filterLocked
       in: query
@@ -1393,33 +1408,31 @@ components:
         - artists
         - seatingPlan
         - sectorPrices
-    ShowWithTicketsSold:
+    EventWithTicketsSold:
       type: object
       properties:
-        showId:
+        eventId:
           type: integer
-        date:
+          format: int-64
+        name:
           type: string
-          format: date-time
-        event:
+        duration:
           type: integer
+        category:
+          $ref: "#/components/schemas/Category"
         ticketsSold:
           type: integer
-        artists:
-          type: array
-          items:
-            type: number
       required:
         - showId
         - date
         - event
         - ticketsSold
-        - artists
     Article:
       type: object
       properties:
         articleId:
           type: integer
+          format: int64
         title:
           type: string
         creationDate:
@@ -1433,6 +1446,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - articleId
         - title
@@ -1451,9 +1465,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
       required:
         - title
         - images
+        - summary
+        - text
     Location:
       type: object
       properties:
@@ -1662,7 +1679,7 @@ components:
       type: object
       properties:
         name:
-          type: string        
+          type: string
         content:
           type: string
         category:
@@ -1674,7 +1691,7 @@ components:
         artist:
           type: integer
 
-    TopShowSearch:
+    TopEventSearch:
       type: object
       properties:
         category:
@@ -1682,9 +1699,6 @@ components:
         month:
           type: string
           format: date
-      required:
-        - category
-        - month
     ShowSearch:
       type: object
       properties:
@@ -2053,7 +2067,7 @@ components:
         email:
           type: string
         clientURI:
-          type: string          
+          type: string
       required:
         - email
         - clientURI
@@ -2067,4 +2081,11 @@ components:
       required:
         - newPassword
         - token
+    AdminPasswordReset:
+      type: object
+      properties:
+        clientURI:
+          type: string
+      required:
+        - clientURI
 

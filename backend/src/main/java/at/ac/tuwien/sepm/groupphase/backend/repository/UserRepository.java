@@ -35,7 +35,15 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
      * @param lockedAccount if true then only locked users will be returned and vice versa
      * @return Page of ApplicationsUsers based on lockedAccount
      */
-    Page<ApplicationUser> findByLockedAccountEquals(boolean lockedAccount, Pageable pageable);
+    Page<ApplicationUser> findByLockedAccountEqualsAndDeletedIsFalse(boolean lockedAccount, Pageable pageable);
+
+    /**
+     * checks if there exists a user with the given email.
+     *
+     * @param email to be searched for
+     * @return boolean if the given user exists
+     */
+    Boolean existsByEmail(String email);
 
     /**
      * Unlocks a user and resets number of failed attempts.
@@ -46,7 +54,7 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
      */
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("update ApplicationUser a set a.lockedAccount = ?1, a.loginTries=0 where a.userId = ?2")
+    @Query("update ApplicationUser a set a.lockedAccount = ?1, a.loginTries=0 where a.userId = ?2 and a.deleted = false")
     void unlockApplicationUser(boolean lockedAccount, long userId);
 
 

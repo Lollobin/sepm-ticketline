@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UsersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.UsersApi;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,5 +64,28 @@ public class UsersEndpoint implements UsersApi {
 
         return ResponseEntity.ok().body(usersPageDto);
 
+    }
+
+    @Override
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<UserDto> usersIdGet(
+        Long id) {
+        return ResponseEntity.ok(userMapper.applicationUserToUserDto(userService.findById(id)));
+    }
+
+    @Secured("ROLE_USER")
+    @Override
+    public ResponseEntity<Void> usersPut(UserWithPasswordDto userWithPasswordDto) {
+        LOGGER.info("PUT /users");
+        userService.put(userWithPasswordDto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Secured("ROLE_USER")
+    @Override
+    public ResponseEntity<Void> usersDelete() {
+        LOGGER.info("DELETE /users");
+        userService.delete();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

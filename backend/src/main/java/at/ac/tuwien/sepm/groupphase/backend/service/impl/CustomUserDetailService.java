@@ -1,13 +1,23 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.AdminPasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordResetDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordUpdateDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailBuilderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ResetTokenService;
@@ -15,7 +25,11 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,29 +52,36 @@ public class CustomUserDetailService implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEncodePasswordMapper encodePasswordMapper;
     private final EmailService emailService;
     private final ResetTokenService resetTokenService;
     private final MailBuilderService mailBuilderService;
+    private final AuthenticationUtil authenticationFacade;
+
+    private final ArticleRepository articleRepository;
 
     private final UserValidator userValidator;
 
     @Autowired
     public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-        UserEncodePasswordMapper encodePasswordMapper,
-        EmailService emailService,
-        ResetTokenService resetTokenService,
-        MailBuilderService mailBuilderService,
-        UserValidator userValidator) {
+        UserEncodePasswordMapper encodePasswordMapper, EmailService emailService,
+        ResetTokenService resetTokenService, MailBuilderService mailBuilderService,
+        UserValidator userValidator,
+        AuthenticationUtil authenticationFacade,
+        TicketRepository ticketRepository,
+        ArticleRepository articleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.encodePasswordMapper = encodePasswordMapper;
         this.emailService = emailService;
         this.resetTokenService = resetTokenService;
         this.mailBuilderService = mailBuilderService;
+        this.articleRepository = articleRepository;
         this.userValidator = userValidator;
-
+        this.authenticationFacade = authenticationFacade;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -97,7 +118,8 @@ public class CustomUserDetailService implements UserService {
 
         UserBuilder retrievedUser = User.builder();
         retrievedUser.username(applicationUser.getEmail()).password(applicationUser.getPassword())
-            .authorities(grantedAuthorities).accountLocked(applicationUser.isLockedAccount());
+            .authorities(grantedAuthorities).accountLocked(
+                applicationUser.isLockedAccount() || applicationUser.isMustResetPassword());
         return retrievedUser.build();
     }
 
@@ -127,12 +149,67 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public void put(UserWithPasswordDto userWithPasswordDto) {
+        ApplicationUser tokenUser = findByCurrentUser();
+        int userId = Math.toIntExact(tokenUser.getUserId());
+
+        userValidator.validateUserWithPasswordDto(userWithPasswordDto);
+
+        ApplicationUser emailUser = this.userRepository.findUserByEmail(userWithPasswordDto.getEmail());
+        if (emailUser != null && emailUser.getUserId() != userId) {
+            throw new ConflictException("This email is not allowed, try another one");
+        }
+
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(
+            userWithPasswordDto);
+
+        appUser.getAddress().setAddressId(tokenUser.getAddress().getAddressId());
+        appUser.setUserId(userId);
+        appUser.setHasAdministrativeRights(tokenUser.isHasAdministrativeRights());
+        LOGGER.debug("Attempting to update {}", appUser);
+        userRepository.save(appUser);
+    }
+
+    @Override
+    public void delete() {
+        ApplicationUser applicationUser = findByCurrentUser();
+
+        if (applicationUser.isHasAdministrativeRights()) {
+            throw new ConflictException("Not allowed to delete admin users!");
+        }
+
+        List<Ticket> tickets = ticketRepository.getByReservedBy(applicationUser);
+        for (Ticket ticket : tickets) {
+            ticket.setReservedBy(null);
+            ticketRepository.save(ticket);
+        }
+
+        final Long oldAddressId = applicationUser.getAddress().getAddressId();
+        invalidateUser(applicationUser);
+        applicationUser.getAddress().setAddressId(oldAddressId);
+
+        LOGGER.debug("Attempting to update {} to invalid user (delete)", applicationUser);
+        userRepository.save(applicationUser);
+    }
+
+    @Override
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
 
-        boolean isLocked = filterLocked != null && filterLocked;
+        if (filterLocked == null) {
+            return userRepository.findAll(pageable);
+        }
+        boolean isLocked = filterLocked;
 
-        return userRepository.findByLockedAccountEquals(isLocked, pageable);
+        return userRepository.findByLockedAccountEqualsAndDeletedIsFalse(isLocked, pageable);
+    }
+
+    @Override
+    public ApplicationUser findByCurrentUser() {
+        String email = authenticationFacade.getEmail();
+        LOGGER.debug("Looking for user with email {}", email);
+
+        return this.findApplicationUserByEmail(email);
     }
 
 
@@ -150,6 +227,30 @@ public class CustomUserDetailService implements UserService {
     @Override
     public void resetNumberOfFailedLoginAttempts(ApplicationUser user) {
         userRepository.resetNumberOfFailedLoginAttempts(user.getEmail());
+    }
+
+    @Override
+    public void forcePasswordReset(Long id, AdminPasswordResetDto dto) {
+        String email = authenticationFacade.getEmail();
+
+        ApplicationUser loggedOnUser = userRepository.findUserByEmail(email);
+        Optional<ApplicationUser> userToReset = userRepository.findById(id);
+        if (userToReset.isEmpty()) {
+            throw new NotFoundException("User with id " + id + " does not exist in the database!");
+        } else if ((Objects.equals(loggedOnUser.getEmail(), userToReset.get().getEmail()))
+            || loggedOnUser.isHasAdministrativeRights()) {
+            ApplicationUser user = userToReset.get();
+            String token = resetTokenService.generateToken();
+            user.setResetPasswordToken(token);
+            user.setMustResetPassword(true);
+            userRepository.save(user);
+            URI resetUri = buildResetUri(dto.getClientURI(), token);
+            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(user.getEmail(),
+                resetUri);
+            emailService.sendEmail(message);
+        } else {
+            throw new CustomAuthenticationException("You are not authorized for this action!");
+        }
     }
 
     @Override
@@ -171,8 +272,7 @@ public class CustomUserDetailService implements UserService {
 
 
     @Override
-    public void attemptPasswordUpdate(
-        PasswordUpdateDto passwordUpdateDto) {
+    public void attemptPasswordUpdate(PasswordUpdateDto passwordUpdateDto) {
         LOGGER.debug("Attempting to update password of user with token {}",
             passwordUpdateDto.getToken());
         try {
@@ -210,9 +310,69 @@ public class CustomUserDetailService implements UserService {
         String fragment = parsedClientUri.getFragment();
         //we are using a singlepage application, token is part of a fragment
         return UriComponentsBuilder.fromUri(parsedClientUri).fragment(fragment + "?token=" + token)
-            .build()
-            .toUri();
+            .build().toUri();
 
     }
 
+    private void invalidateUser(ApplicationUser applicationUser) {
+        String del = "DELETED";
+
+        applicationUser.setEmail(String.format("%s%d", del, applicationUser.getUserId()));
+        applicationUser.setFirstName(del);
+        applicationUser.setLastName(del);
+        applicationUser.setGender(Gender.OTHER);
+        applicationUser.setPassword(del);
+        applicationUser.setHasAdministrativeRights(false);
+        applicationUser.setLockedAccount(true);
+        applicationUser.setDeleted(true);
+
+        applicationUser.setAddress(invalidAddress());
+    }
+
+    private Address invalidAddress() {
+        String inv = "INVALID";
+
+        Address address = new Address();
+        address.setHouseNumber(inv);
+        address.setStreet(inv);
+        address.setCity(inv);
+        address.setCountry(inv);
+        address.setZipCode(inv);
+
+        return address;
+    }
+
+    public void updateArticleRead(String email, Long articleId) {
+
+        ApplicationUser applicationUser = findApplicationUserByEmail(email);
+
+        LOGGER.debug("Adding article with ID {} to user with email {} and ID {}", articleId, email,
+            applicationUser.getUserId());
+
+        Optional<Article> optionalArticle = articleRepository.findById(articleId);
+
+        if (optionalArticle.isEmpty()) {
+
+            throw new NotFoundException("Article with ID " + articleId + " is not present");
+        }
+        Article article = optionalArticle.get();
+
+        Set<Article> articleSet = new HashSet<>(applicationUser.getArticles());
+        articleSet.add(article);
+
+        applicationUser.setArticles(articleSet);
+
+        userRepository.save(applicationUser);
+
+    }
+
+    @Override
+    public ApplicationUser findById(Long id) {
+        Optional<ApplicationUser> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new NotFoundException("User does not exist.");
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -20,6 +21,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     public List<Ticket> findByShowId(@Param("showId") Long showId);
 
     Ticket getByTicketId(Long ticketId);
+
+    List<Ticket> getByReservedBy(ApplicationUser reservedBy);
 
     List<Ticket> getByShowShowIdAndPurchasedByIsNullAndReservedByIsNull(Long showId);
 
