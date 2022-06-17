@@ -25,7 +25,7 @@
     <div class="form-group col-md-4">
 
         <small for="inputDuration" class="form-label text-muted"> Duration</small>
-        <input type="range" class="form-range" min="0" max="360" step="10" value="0" id="inputDuration" formControlName="duration"
+        <input type="range" class="form-range" min="0" max="360" step="5" value="0" id="inputDuration" formControlName="duration"
                oninput=" this.nextElementSibling.value = this.value">
       <span *ngIf = "duration.value!==0">{{this.secondsToHms(this.duration.value)}}</span>
       <span *ngIf = "duration.value===0">Any</span>

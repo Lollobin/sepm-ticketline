@@ -145,29 +145,43 @@
 
           </div>
           <hr>
-          <button type="button" class="btn btn-outline-primary" routerLink="/" (click)="clearForm()"> Cancel
-          </button>
-          <button type="submit" class="btn btn-primary form-group" style="margin-left: 5px;"
-            (click)="openModal(); setAction('edit')" [disabled]="!this.editForm.valid">Submit</button>
-          <button type="delete" class="btn btn-danger form-group float-end" style="margin-left: 5px;"
-            (click)="openModal(); setAction('delete')" *ngIf="this.isUser()">Delete
-            Profile</button>
+
+          <div>
+            <button type="button" class="btn btn-outline-primary" routerLink="/" (click)="clearForm()"> Cancel
+            </button>
+            <button type="submit" class="btn btn-primary form-group" style="margin-left: 5px;"
+              (click)="openModal(); setAction('edit')" [disabled]="!this.editForm.valid">Submit</button>
+            <button type="delete" class="btn btn-link form-group" style="margin-left: 5px;"
+              (click)="openModal(); setAction('changePassword')">Change
+              Password</button>
+            <button type="delete" class="btn btn-danger form-group float-end" style="margin-left: 5px;"
+              (click)="openModal(); setAction('delete')" *ngIf="this.isUser()">Delete
+              Profile</button>
+          </div>
           <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
             style="background: rgba(0,0,0, .5); padding-top: 12%">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5>Are you sure you want to {{this.action}} your account?</h5>
+                  <h5 *ngIf="this.action !== 'changePassword'">Are you sure you want to {{this.action}} your account?
+                  </h5>
+                  <h5 *ngIf="this.action === 'changePassword'">Are you sure you want to change your password?</h5>
                 </div>
                 <div class="form-group alert alert-danger" *ngIf="this.action==='delete'">
                   <h5><strong>WARNING:</strong></h5>
-                  <div>Because all your personal data gets deleted from our system and your purchased tickets still stay valid,
+                  <div>Because all your personal data gets deleted from our system and your purchased tickets still stay
+                    valid,
                     please make sure to download all your tickets before deleting your account.</div>
                   <div>
                     <strong>There is no way to retrieve tickets after deletion.</strong>
                   </div>
                 </div>
-                <form class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm" (ngSubmit)="confirmUser()">
+                <div class="form-group alert alert-danger" *ngIf="this.action==='changePassword'">
+                  <div>You will be logged out and sent an email to change your password. Your old password will still be
+                    valid until you change it.</div>
+                </div>
+                <form class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm"
+                  (ngSubmit)="confirmUser()">
                   <label for="password">Please enter your current password to confirm</label>
                   <input [maxlength]="64" type="password" name="password" formControlName="password"
                     class="form-control" id="password">
