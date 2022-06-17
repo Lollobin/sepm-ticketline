@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EventsService, Sector, ShowsService, SeatingPlansService,
   SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
-  ArtistsService, Artist, ShowSearch
+  ArtistsService, Artist, ShowSearch, SeatingPlanLayout, SeatingPlanSector
 } from 'src/app/generated-sources/openapi';
 import { faCircleQuestion, faUserMinus } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
 import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
+import { Application } from 'pixi.js';
+import { drawSeatingPlanPreview } from 'src/app/shared_modules/seatingPlanGraphics';
+import { dateTimeValidator } from './date-time-validator';
 
 @Component({
   selector: 'app-create-show',
@@ -16,6 +19,8 @@ import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from '
   styleUrls: ['./create-show.component.scss']
 })
 export class CreateShowComponent implements OnInit {
+  @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
+  @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
 
   eventId: number;
   eventName: string;
@@ -29,7 +34,7 @@ export class CreateShowComponent implements OnInit {
     seatingPlan: 0,
     sectorPrices: []
   };
-  sectors: Sector[];
+  sectors: SeatingPlanSector[];
   showForm: any;
   sectorForm = this.formBuilder.group({
     ignore: ["", [Validators.required]]
@@ -52,10 +57,23 @@ export class CreateShowComponent implements OnInit {
   shows = [];
   showSearch: ShowSearch = { event: null };
   submitted = false;
+  seatingPlanLayout: SeatingPlanLayout;
+  pixiApplication: Application;
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
-    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router) { }
+    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router) {
+      this.showForm = this.formBuilder.group({
+        date: ['', [Validators.required]],
+        time: ['', [Validators.required]],
+        event: [],
+        location: ['', [Validators.required]],
+        seatingPlan: ['', [Validators.required]],
+        sectorPrices: []
+      }, {
+        validators: dateTimeValidator
+      });
+     }
 
   get date() {
     return this.showForm.get("date");
@@ -94,14 +112,6 @@ export class CreateShowComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.showForm = this.formBuilder.group({
-      date: ['', [Validators.required]],
-      time: ['', [Validators.required]],
-      event: [],
-      location: ['', [Validators.required]],
-      seatingPlan: ['', [Validators.required]],
-      sectorPrices: []
-    });
     this.artistForm = this.formBuilder.group({
       artist: []
     });
@@ -120,13 +130,20 @@ export class CreateShowComponent implements OnInit {
     });
     this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
       if (val && val.seatingPlanId) {
-        this.getSectorsOfSeatingPlan(val.seatingPlanId);
+        this.getSeatingPlanLayout(val.seatingPlanId);
       }
     });
   }
 
+  ngAfterViewInit() {
+    this.pixiApplication = new Application({
+      antialias: true,
+      backgroundAlpha: 0,
+    });
+  }
+
   openModal() {
-    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan!==this.showForm.value.seatingPlan.seatingPlanId) {
+    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan !== this.showForm.value.seatingPlan.seatingPlanId) {
       this.submitted = true;
     } else {
       this.display = "block";
@@ -189,8 +206,8 @@ export class CreateShowComponent implements OnInit {
     this.showWithoutId.event = this.eventId;
     for (let i = 0; i < this.sectors.length; i++) {
       this.showWithoutId.sectorPrices[i] = { price: 0, sectorId: 0 };
-      this.showWithoutId.sectorPrices[i].price = this.sectorForm.get("sector" + this.sectors[i].sectorId).value;
-      this.showWithoutId.sectorPrices[i].sectorId = this.sectors[i].sectorId;
+      this.showWithoutId.sectorPrices[i].price = this.sectorForm.get("sector" + i).value;
+      this.showWithoutId.sectorPrices[i].sectorId = this.sectors[i].id;
     }
     this.showWithoutId.artists = this.showForm.value.artists;
     this.showWithoutId.seatingPlan = this.showForm.value.seatingPlan.seatingPlanId;
@@ -242,33 +259,34 @@ export class CreateShowComponent implements OnInit {
 
   createGroup() {
     const group = this.formBuilder.group({});
-    this.sectors.forEach(control => group.addControl("sector" + control.sectorId, this.formBuilder.control('', Validators.required)));
+    let i = 0;
+    this.sectors.forEach(control => group.addControl("sector" + i++, this.formBuilder.control('', Validators.required)));
     return group;
   }
 
-  getSectorsOfSeatingPlan(id: number) {
-    if (id === null) {
-      return;
-    }
-    this.seatingPlansService.seatingPlansIdSectorsGet(id).subscribe({
-      next: data => {
-        console.log("Succesfully got sectors of seatingPlan with id", id);
-        this.sectors = data;
-        this.sectorForm = this.createGroup();
-        this.error = false;
-        this.gotFromSeatingPlan = id;
-        this.showWithoutId.sectorPrices = [];
-      },
-      error: error => {
-        console.log("Error getting sectors of seatingPlan with id", id);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
+  getSeatingPlanLayout(id: number) {
+    this.seatingPlansService
+      .seatingPlanLayoutsIdGet(id)
+      .subscribe({
+        next: async (seatingPlanLayout) => {
+          this.seatingPlanLayout = seatingPlanLayout;
+          this.sectors = seatingPlanLayout.sectors;
+          this.sectorForm = this.createGroup();
+          this.error = false;
+          this.gotFromSeatingPlan = id;
+          this.showWithoutId.sectorPrices = [];
+          this.initializeSeatingPlan();
+        },
+        error: error => {
+          console.log("Error getting sectors of seatingPlanLayout with id", id);
+          this.error = true;
+          if (typeof error.error === 'object') {
+            this.errorMessage = error.error.error;
+          } else {
+            this.errorMessage = error.error;
+          }
         }
-      }
-    });
+      });
   }
 
   getSeatingPlansOfLocation(id: number) {
@@ -316,7 +334,7 @@ export class CreateShowComponent implements OnInit {
     distinctUntilChanged(),
     switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
       map(artistResult => artistResult.artists)
-    )
+      )
     )
   );
 
@@ -339,11 +357,30 @@ export class CreateShowComponent implements OnInit {
   }
 
   removeFromArtists(artist: Artist) {
-    for( var i = 0; i < this.artists.length; i++){           
-      if ( this.artists[i].artistId === artist.artistId) { 
-        this.artists.splice(i, 1); 
+    for (var i = 0; i < this.artists.length; i++) {
+      if (this.artists[i].artistId === artist.artistId) {
+        this.artists.splice(i, 1);
         break;
       }
+    }
   }
+
+  initializeSeatingPlan() {
+    this.pixiApplication.stage.removeChildren();
+    this.pixiApplication.view.width = this.seatingPlanLayout.general.width;
+    this.pixiApplication.view.height = this.seatingPlanLayout.general.height;
+    document.addEventListener("mousemove", (event) => {
+      return event;
+    });
+    this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
+    drawSeatingPlanPreview(this.pixiApplication.stage, this.seatingPlanLayout);
+  }
+
+  numberToCssColorString(color: number) {
+    return `#${color.toString(16).padStart(6, "0")}`;
+  }
+
+  convertToCurrency(value: number) {
+    return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
 }

@@ -21,7 +21,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Location</th>
-                        <th scope="col">Show Date & Time</th>
+                        <th scope="col">Date & Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,10 +29,6 @@
                     <td>{{show.location.name}}</td>
                     <td>{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
                 </tr>
-                    <!-- <tr>
-                        <td>test</td>
-                        <td>test2</td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -77,8 +73,10 @@
                         <div *ngIf="!this.date.valid" class="invalid-feedback" style="display: block">
                             <div *ngIf="this.date.errors.required && (this.date.touched || this.submitted)">Date is
                                 required!</div>
-                            <div *ngIf="!this.date.errors.required && (this.date.touched || this.submitted)">Date is
+                            <div *ngIf="this.date.errors.invalid && (this.date.touched || this.submitted)">Date is
                                 invalid!</div>
+                            <div *ngIf="showForm.errors?.['dateInPast'] && (this.date.touched || this.submitted)">Date has to be in the future!</div>
+                            <div *ngIf="this.showForm.errors?.['dateTimeInPast'] && (this.date.touched || this.submitted)">Date & Time has to be in the future!</div>
                         </div>
                     </div>
                     <div class="form-group col-md-6">
@@ -87,8 +85,9 @@
                         <div *ngIf="!this.time.valid" class="invalid-feedback" style="display: block">
                             <div *ngIf="this.time.errors.required && (this.time.touched || this.submitted)">Time is
                                 required!</div>
-                            <div *ngIf="!this.time.errors.required && (this.time.touched || this.submitted)">Time is
+                            <div *ngIf="this.time.errors.invalid && (this.time.touched || this.submitted)">Time is
                                 invalid!</div>
+                            <div *ngIf="this.showForm.errors?.['dateTimeInPast'] && (this.date.touched || this.submitted)">Date & Time has to be in the future!</div>
                         </div>
                     </div>
                 </div>
@@ -141,7 +140,7 @@
                                 *Sector {{i + 1}}
                                 <div class="input-group">
                                     <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
-                                    <input [formControlName]="'sector'+field.sectorId" class="form-control currency"
+                                    <input [formControlName]="'sector'+i" class="form-control currency"
                                         style="text-align: right" name="currency" type="number" min="0.01" />
                                 </div>
                             </small>
@@ -221,6 +220,43 @@
                 <button *ngIf="shows.length>0" type="button" class="btn btn-outline-primary form-group"
                     style="margin-left: 5px;" (click)="goToHome()">Finish</button>
             </form>
+        </div>
+        
+        <div class="col col-3" style="margin-top: 5%;" *ngIf="this.seatingPlan.valid">
+            <h5>Seating Plan of <strong style="color: #4d61ff">{{this.seatingPlan.value.name}}</strong></h5>
+            <div #pixiContainer style="margin-top: 15%"></div>
+            <div class="container m-3">
+                <div class="row border-bottom border-secondary border-3">
+                  <div class="col text-center py-1"></div>
+                  <div
+                    class="col border-start border-secondary border-3 text-center py-1 text-truncate"
+                  >
+                    Sector Price
+                  </div>
+                </div>
+                <div class="row" *ngFor="let sector of sectors; let i = index">
+                  <div class="col py-1 text-truncate">
+                    <span
+                      *ngIf="sector.noSeats"
+                      [style.color]="numberToCssColorString(sector.color)"
+                    >
+                      &#9632;
+                    </span>
+                    <span
+                      *ngIf="!sector.noSeats"
+                      [style.color]="numberToCssColorString(sector.color)"
+                    >
+                      &#9673;
+                    </span>
+                    <span> Sector {{ i + 1 }} </span>
+                  </div>
+                  <div
+                    class="col border-start border-secondary border-3 text-center py-1 text-truncate"
+                  >
+                  <div *ngIf="this.sectorForm.get('sector'+i).valid">{{this.convertToCurrency(this.sectorForm.get('sector'+i).value)}}</div>
+                  <div *ngIf="!this.sectorForm.get('sector'+i).valid">-</div></div>
+                </div>
+              </div>
         </div>
     </div>
 </div>
