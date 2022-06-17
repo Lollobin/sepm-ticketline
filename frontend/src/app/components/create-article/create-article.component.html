@@ -124,7 +124,7 @@
           <div style="margin-bottom:  0">
         <button
                 [disabled]="!articleForm.valid && (articleForm.get('title').touched && articleForm.get('text').touched && articleForm.get('summary').touched) || (submitted && (articleForm.get('title').value === '' || articleForm.get('text').value === ''  || articleForm.get('summary').value === '' ))  "
-                class="btn btn-primary" (click)="this.cropImgPreview !== null && !this.uploadSuccess ? openModal() : createArticle()">Create Article
+                class="btn btn-primary" (click)="this.fileToReturn !== null && !this.uploadSuccess ? openModal() : createArticle()">Create Article
         </button>
           </div>
         <small style="margin-top: 0; padding: 0" class="form-text text-black"

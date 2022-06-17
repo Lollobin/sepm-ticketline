@@ -27,7 +27,7 @@ export class CreateArticleComponent implements OnInit {
   previews: string[] = [];
   imgChangeEvt: any = '';
   cropImgPreview: any = '';
-  fileToReturn: File;
+  fileToReturn: File = null;
   uploaded = false;
   uploadSuccess = false;
   pressed = false;
