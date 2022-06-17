@@ -11,9 +11,8 @@ import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -26,6 +25,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.validation.LockedStatusValid
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,9 +84,9 @@ class LockedUserServiceTest implements TestData {
     @Test
     void shouldThrowNotFoundExceptionBecauseUserNotPresent() {
 
-        NotFoundException exception = Assertions.assertThrows(NotFoundException.class,
-            () -> lockedService.unlockApplicationUser(-100L, false));
-        Assertions.assertEquals("User with id -100 is not present", exception.getMessage());
+        Assertions.assertThrows(NotFoundException.class,
+            () -> lockedService.manageLockedStatus(-100L, false));
+
 
     }
 
@@ -94,7 +95,8 @@ class LockedUserServiceTest implements TestData {
 
         Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged())).thenReturn(
+        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true,
+            Pageable.unpaged())).thenReturn(
             threeLockedUsers);
 
         List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged()).stream()
@@ -112,11 +114,39 @@ class LockedUserServiceTest implements TestData {
     }
 
     @Test
+    void manageLockedStatusWithBodyTrue_shouldCallCorrectMethods(){
+        ApplicationUser user1 = new ApplicationUser();
+        user1.setUserId(1);
+        user1.setLockedAccount(true);
+        user1.setFirstName(USER_FNAME);
+        user1.setLastName(USER_LNAME);
+        user1.setGender(USER_GENDER);
+        user1.setEmail(USER_EMAIL);
+        user1.setAddress(ADDRESS_ENTITY);
+        user1.setPassword(USER_PASSWORD);
+        user1.setHasAdministrativeRights(false);
+        user1.setLoginTries(0);
+        user1.setMustResetPassword(false);
+        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.of(user1));
+        doNothing().when(userRepository).lockApplicationUser(USER_EMAIL);
+
+        lockedService.manageLockedStatus(user1.getUserId(), true);
+
+
+        verify(lockedStatusValidator).isBodyNull(true);
+        verify(lockedStatusValidator).isUserAdmin(user1);
+        verify(userRepository).lockApplicationUser(user1.getEmail());
+        verify(userRepository, times(0)).unlockApplicationUser(true, user1.getUserId());
+
+    }
+
+    @Test
     void checkNumberOfCalledTimesToUnlock() {
 
         Page<ApplicationUser> threeLockedUsers = getThreeLockedUsers();
 
-        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged())).thenReturn(
+        when(userRepository.findByLockedAccountEqualsAndDeletedIsFalse(true,
+            Pageable.unpaged())).thenReturn(
             threeLockedUsers);
 
         List<ApplicationUser> lockedUsers = userService.findAll(true, Pageable.unpaged())
@@ -131,12 +161,12 @@ class LockedUserServiceTest implements TestData {
             threeLockedUsers.toList().get(0));
         ApplicationUser user = userService.findApplicationUserByEmail(USER_EMAIL);
 
-        when(userRepository.existsById(user.getUserId())).thenReturn(true);
+        when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
         doNothing().when(userRepository).unlockApplicationUser(false, user.getUserId());
-        lockedService.unlockApplicationUser(user.getUserId(), false);
+        lockedService.manageLockedStatus(user.getUserId(), false);
 
-        verify(userRepository, times(1)).findByLockedAccountEqualsAndDeletedIsFalse(true, Pageable.unpaged());
-        verify(userRepository, times(1)).existsById(user.getUserId());
+        verify(userRepository, times(1)).findByLockedAccountEqualsAndDeletedIsFalse(true,
+            Pageable.unpaged());
         verify(userRepository, times(1)).unlockApplicationUser(false, user.getUserId());
 
 

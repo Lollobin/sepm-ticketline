@@ -184,9 +184,9 @@ public class CustomUserDetailService implements UserService {
             ticketRepository.save(ticket);
         }
 
-        final Address oldAddress = applicationUser.getAddress();
+        final Long oldAddressId = applicationUser.getAddress().getAddressId();
         invalidateUser(applicationUser);
-        applicationUser.getAddress().setAddressId(oldAddress.getAddressId());
+        applicationUser.getAddress().setAddressId(oldAddressId);
 
         LOGGER.debug("Attempting to update {} to invalid user (delete)", applicationUser);
         userRepository.save(applicationUser);

@@ -81,12 +81,19 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDto> getArticles(Boolean filterRead, String email) {
+    public List<ArticleDto> getArticles(Boolean filterRead, String email, boolean isAnonym) {
         LOGGER.trace("Getting articles");
 
-        long id = userService.findApplicationUserByEmail(email).getUserId();
+        Long id = null;
 
-        if (Boolean.FALSE.equals(filterRead)) {
+        if (!isAnonym) {
+            id = userService.findApplicationUserByEmail(email).getUserId();
+        }
+
+        if (isAnonym) {
+            return articleRepository.findAll().stream().map(articleMapper::articleToArticleDto)
+                .toList();
+        } else if (Boolean.FALSE.equals(filterRead)) {
             return articleRepository.findArticlesNotReadByUser(id).stream()
                 .map(articleMapper::articleToArticleDto)
                 .toList();

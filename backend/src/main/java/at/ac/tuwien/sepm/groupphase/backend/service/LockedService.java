@@ -3,10 +3,10 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 public interface LockedService {
 
     /**
-     * Set lockedStatus of a user to false.
+     * Locks or unlocks a user based on the value of the body param.
      *
-     * @param id     id of the user whose status is being changed
-     * @param unlock set to false to unlock
+     * @param id   user with corresponding ID gets locked/unlocked
+     * @param body if true user gets locked, if false user gets unlocked
      */
-    void unlockApplicationUser(Long id, boolean unlock);
+    void manageLockedStatus(Long id, Boolean body);
 }
