@@ -22,6 +22,8 @@ export class UserDetailComponent implements OnInit {
   faTrashCan = faTrashCan;
   faRotateLeft = faRotateLeft;
   clientURI = "http://" + window.location.host + "/#/passwordUpdate";
+  mail = "";
+  lockStatus = "";
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
@@ -37,10 +39,8 @@ export class UserDetailComponent implements OnInit {
         {
           next: user => {
             this.user = user;
-            console.log(user);
           }, error: err => {
             this.error = err;
-            console.log(err + "  das ist das problem");
           }
         }
     );
@@ -55,15 +55,16 @@ export class UserDetailComponent implements OnInit {
         } else {
           status = "unlocked";
         }
-        this.success = "Successfully " + status + " user with email " + mail + "!";
-        // if(body === false){
-        //   body = null;
-        // }
-        this.reload.emit(null);
+        this.lockStatus = status;
+        this.mail = mail;
+        this.success = true;
+        this.error = null;
+
+        this.reload.emit( null);
         this.refreshPage();
       },
       error: err => {
-
+        this.success = false;
         this.handleError(err);
 
       }
@@ -76,7 +77,6 @@ export class UserDetailComponent implements OnInit {
     const adminpasswordReset: AdminPasswordReset = {
       clientURI: this.clientURI
     };
-    console.log("reset with id " + id + "and clienturi " + this.clientURI);
     this.userManagementService.passwordResetIdPost(id, adminpasswordReset).subscribe(
         {
           next: () => this.success = "Successfully reset password of user " + this.user.email + "!",
@@ -86,7 +86,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   handleError(error) {
-    this.error = error.message ? error.message : "Unknown Error";
+    this.error = error.message && !error.error ? error.message : error.error;
   }
 
   back(): void {

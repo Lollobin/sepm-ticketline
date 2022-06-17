@@ -33,8 +33,8 @@
 <div class ="col w-50" id="around">
   <h1 class="mainHeader">Users Overview</h1>
   <div *ngIf="filterLocked===null;then only_locked else all_users"></div>
-  <ng-template #only_locked><button style="float: right;" type="button" class="btn btn-outline-primary" (click)="reloadUser(true)">Show locked Users</button></ng-template>
-  <ng-template #all_users><button style="float: right;" type="button" class="btn btn-outline-primary" (click)="reloadUser(null)">Show all users</button></ng-template>
+  <ng-template #only_locked><button style="float: right;" type="button" class="btn btn-secondary" (click)="reloadUser(true)">Show locked Users</button></ng-template>
+  <ng-template #all_users><button style="float: right;" type="button" class="btn btn-secondary" (click)="reloadUser(null)">Show all users</button></ng-template>
   <table class="table table-striped table-hover" style="text-align:center">
     <thead>
     <tr>
