@@ -1,10 +1,11 @@
+<div class="container mt-3">
 <h1 *ngIf="location">{{ location.name }}</h1>
-<h4 *ngIf="location">
+<p *ngIf="location">
   in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
   {{ location.address.houseNumber }}
-</h4>
+</p>
 <div *ngIf="seatingPlans && seatingPlans.length > 0">
-  <h3>Seating plans</h3>
+  <h2>Seating plans</h2>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -21,11 +22,10 @@
 <div *ngIf="seatingPlans && seatingPlans.length === 0">No seating plan found</div>
 <button
   class="btn btn-primary"
-  style="width: 100%"
   routerLink="/locations/{{ locationId }}/seatingPlans/create"
 >
   Add seating plan
 </button>
 
 <app-error-alert [(error)]="error"></app-error-alert>
-
+</div>
