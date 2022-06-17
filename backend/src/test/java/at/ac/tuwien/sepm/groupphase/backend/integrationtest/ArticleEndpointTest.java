@@ -332,10 +332,11 @@ class ArticleEndpointTest {
 
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD),
-        @Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),}
-    )
+
     void articlesIdGetWithValidID_shouldReturnCorrectArticle() throws Exception {
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
 
         String name = "das ist ein Teststring";
         String filePath = fileSystemRepository.save(name.getBytes(StandardCharsets.UTF_8), name);
@@ -383,6 +384,9 @@ class ArticleEndpointTest {
             () -> assertEquals(articleDto.getImages().get(0), images.get(0).getImageId()),
             () -> assertEquals(articleDto.getImages().get(1), images.get(1).getImageId())
         );
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
     }
 
 }
