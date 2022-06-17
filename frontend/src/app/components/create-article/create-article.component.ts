@@ -189,6 +189,7 @@ export class CreateArticleComponent implements OnInit {
             this.uploadSuccess = false;
             this.previews = [];
             this.reset();
+            this.display = "none";
             this.articleForm.reset();
             this.scroll.scrollToPosition([0, 0]);
 
