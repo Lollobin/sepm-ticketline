@@ -15,7 +15,7 @@ export class TopEventsComponent implements OnInit {
 
   error = undefined;
   topEvents: EventWithTicketsSold[];
-  month: Date = null;
+  month: string = null;
   category: Category = null;
   categories = [];
   categoriesType = Category;
@@ -25,13 +25,14 @@ export class TopEventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.categories = Object.keys(this.categoriesType);
-    this.month = new Date(Date.now());
+    this.month = new Date(Date.now()).toISOString().slice(0, 7);
+    console.log(this.month);
     this.reloadEvents();
   }
 
   reloadEvents() {
     const search: TopEventSearch = {
-      month: this.month.toISOString().split("T")[0],
+      month: this.month + "-01",
       category: this.category
     };
 
