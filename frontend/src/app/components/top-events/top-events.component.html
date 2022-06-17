@@ -23,7 +23,7 @@
       <th scope="col"> Event Name</th>
       <th scope="col"> Duration</th>
       <th scope="col"> Category</th>
-      <th scope="col"> Tickets Sold</th>
+      <th scope="col" class="text-center"> Tickets Sold</th>
       <th scope="col"> Actions</th>
     </tr>
     </thead>
@@ -33,7 +33,7 @@
       <td> {{ event.name }} </td>
       <td> {{ this.secondsToHms(event.duration) }} </td>
       <td> {{ event.category}} </td>
-      <td> {{ event.ticketsSold }}</td>
+      <td class="text-center"> {{ event.ticketsSold }}</td>
       <td>
         <button class="btn btn-sm btn-primary" routerLink="/events/{{event.eventId}}/shows"
                 id="{{'showBtn'+i}}">
