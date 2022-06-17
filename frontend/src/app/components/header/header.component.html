@@ -28,12 +28,6 @@
         ><fa-icon style="padding-left: 0; padding-right: 2.5px" [icon]="info"></fa-icon>News</a
         >
       </li>
-
-      <li>
-        <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/lockedUsers"
-          routerLinkActive="active">Show Locked Users</a>
-      </li>
-
       <li class="nav-item">
         <a class="nav-link" *ngIf="authService.isLoggedIn() && !adminView" routerLink="/orders"
           routerLinkActive="active">Your Orders</a>
