@@ -57,6 +57,8 @@ class LockedValidatorTest {
         user1.setLoginTries(0);
         user1.setMustResetPassword(false);
 
+        lockedStatusValidator.isUserAdmin(user1);
+
 
     }
 
