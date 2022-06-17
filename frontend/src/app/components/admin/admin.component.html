@@ -1,7 +1,12 @@
-<div class="jumbotron mt-5">
-  <h1 class="display-4">Admin View</h1>
-  <hr class="my-4">
-  <div *ngIf="authService.isLoggedIn()&&authService.getUserRole() === 'ADMIN' ">
-    <p>Usermanagement, Eventcreation and Newscreation takes place here. </p>
+<div class="container mt-3">
+  <h1 class="mb-3">Admin Dashboard</h1>
+  <div>
+    <p> Usermanagement, Eventcreation and Newscreation takes place here. </p>
+  </div>
+  <div class="d-grid gap-2 d-flex justify-content-evenly">
+    <button class="btn btn-primary"> Create Event</button>
+    <button class="btn btn-primary">Create Article</button>
+    <button class="btn btn-primary">Manage Locations</button>
+    <button class="btn btn-primary">Manage Users</button>
   </div>
 </div>
