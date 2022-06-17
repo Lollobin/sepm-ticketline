@@ -20,6 +20,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.AddressRepository;
@@ -34,6 +36,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.CustomUserDetailService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.UserValidator;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -343,6 +346,51 @@ class ApplicationUserServiceTest implements TestData {
         verify(userRepository, times(1)).save(any());
         verify(userEncodePasswordMapper, times(1)).userWithPasswordDtoToAppUser(any());
         verify(authenticationFacade, times(1)).getEmail();
+    }
+
+
+    @Test
+    void deleteShouldDeleteUser() {
+        String del = "DELETED";
+        String inv = "INVALID";
+
+        when(authenticationFacade.getEmail()).thenReturn(fakePersistedUser.getEmail());
+        when(userRepository.findUserByEmail(fakePersistedUser.getEmail())).thenReturn(fakePersistedUser);
+
+        List<Ticket> tickets = new ArrayList<>();
+        Ticket ticket1 = new Ticket();
+        ticket1.setTicketId(1L);
+        ticket1.setReservedBy(fakePersistedUser);
+        Ticket ticket2 = new Ticket();
+        ticket2.setTicketId(2L);
+        ticket2.setPurchasedBy(fakePersistedUser);
+        tickets.add(ticket1);
+        tickets.add(ticket2);
+
+        when(ticketRepository.getByReservedBy(fakePersistedUser)).thenReturn(tickets);
+        when(ticketRepository.save(any())).thenReturn(null);
+
+        when(userRepository.save(fakePersistedUser)).thenReturn(null);
+
+        userService.delete();
+
+        assertAll(
+            () -> assertEquals(null, ticket1.getReservedBy()),
+            () -> assertEquals(fakePersistedUser, ticket2.getPurchasedBy()),
+            () -> assertEquals(del + fakePersistedUser.getUserId(), fakePersistedUser.getEmail()),
+            () -> assertEquals(del, fakePersistedUser.getFirstName()),
+            () -> assertEquals(del, fakePersistedUser.getLastName()),
+            () -> assertEquals(Gender.OTHER, fakePersistedUser.getGender()),
+            () -> assertEquals(del, fakePersistedUser.getPassword()),
+            () -> assertEquals(false, fakePersistedUser.isHasAdministrativeRights()),
+            () -> assertEquals(true, fakePersistedUser.isLockedAccount()),
+            () -> assertEquals(true, fakePersistedUser.getDeleted()),
+            () -> assertEquals(inv, fakePersistedUser.getAddress().getHouseNumber()),
+            () -> assertEquals(inv, fakePersistedUser.getAddress().getStreet()),
+            () -> assertEquals(inv, fakePersistedUser.getAddress().getCity()),
+            () -> assertEquals(inv, fakePersistedUser.getAddress().getCountry()),
+            () -> assertEquals(inv, fakePersistedUser.getAddress().getZipCode())
+        );
     }
 
     @Test

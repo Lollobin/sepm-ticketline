@@ -2,6 +2,10 @@ delete
 from SECTOR_PRICE
 where SECTOR_ID < 0
   and SHOW_ID < 0;
+delete
+from TICKET
+where TICKET_ID < 0
+  and SHOW_ID < 0;
 Delete
 from SHOW
 where SHOW_ID < 0;
