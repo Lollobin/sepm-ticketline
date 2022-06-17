@@ -389,6 +389,8 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         403:
           $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
   /articles:
