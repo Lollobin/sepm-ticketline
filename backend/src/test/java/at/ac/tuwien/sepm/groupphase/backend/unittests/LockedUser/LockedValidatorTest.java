@@ -59,7 +59,7 @@ class LockedValidatorTest {
 
         lockedStatusValidator.isUserAdmin(user1);
 
-
+lockedStatusValidator.isUserAdmin(user1)
     }
 
 
