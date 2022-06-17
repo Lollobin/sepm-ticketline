@@ -1,7 +1,10 @@
 <div class="container mt-3" *ngIf="success">
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Success!</h4>
-    Successfully <strong>{{lockStatus}}</strong> user with email <strong>{{mail}}</strong>!
+    <div [hidden]="passW && !lock">
+    Successfully <strong *ngIf="lockStatus.length > 0">{{lockStatus}}</strong> user with email <strong>{{mail}}</strong>!</div>
+    <div [hidden]="!passW && lock">
+      Successfully <strong>reset password of</strong> user <strong>{{mail}}</strong></div>
     <p></p>
     <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
             aria-label="Close"></button>

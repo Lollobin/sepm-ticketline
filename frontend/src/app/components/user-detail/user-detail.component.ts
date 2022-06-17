@@ -22,8 +22,10 @@ export class UserDetailComponent implements OnInit {
   faTrashCan = faTrashCan;
   faRotateLeft = faRotateLeft;
   clientURI = "http://" + window.location.host + "/#/passwordUpdate";
-  mail = "";
-  lockStatus = "";
+  mail;
+  lockStatus;
+  lock = false;
+  passW = false;
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
@@ -49,6 +51,8 @@ export class UserDetailComponent implements OnInit {
   manageLockedStatus(id, mail, body) {
     this.userManagementService.lockStatusIdPut(id, body).subscribe({
       next: () => {
+        this.lock = true;
+        this.passW = false;
         let status: string;
         if (body) {
           status = "locked";
@@ -79,7 +83,13 @@ export class UserDetailComponent implements OnInit {
     };
     this.userManagementService.passwordResetIdPost(id, adminpasswordReset).subscribe(
         {
-          next: () => this.success = "Successfully reset password of user " + this.user.email + "!",
+          next: () => {
+            this.mail = this.user.email;
+            this.lock = false;
+            this.passW = true;
+
+            this.success = "Successfully reset password of user " + this.user.email + "!";
+          },
           error: (err) => this.handleError(err)
         }
     );
