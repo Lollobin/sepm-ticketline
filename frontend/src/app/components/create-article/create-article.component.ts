@@ -1,8 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ArticlesService, ArticleWithoutId} from "../../generated-sources/openapi";
-import {map} from "lodash";
-import {firstValueFrom} from "rxjs";
 import {ViewportScroller} from "@angular/common";
 import {ImageCroppedEvent} from "ngx-image-cropper";
 
@@ -32,6 +30,7 @@ export class CreateArticleComponent implements OnInit {
   uploadSuccess = false;
   pressed = false;
   display = "none";
+  errorImage = "";
 
 
   constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller) {
@@ -54,18 +53,16 @@ export class CreateArticleComponent implements OnInit {
     this.pressed = false;
     this.imgChangeEvt = event;
     this.uploadSuccess = false;
-    // console.log("img change event", this.imgChangeEvt);
   }
 
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
     this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target?.files[0].name);
-    // console.log("crop img preview", this.cropImgPreview);
-    // console.log(this.fileToReturn);
+
   }
 
   imgLoad() {
-    // display cropper tool
+    this.errorImage = null;
   }
 
   initCropper() {
@@ -73,7 +70,7 @@ export class CreateArticleComponent implements OnInit {
   }
 
   imgFailed() {
-    // error msg
+    this.errorImage = "Wrong format selected";
   }
 
   reset() {
@@ -133,28 +130,28 @@ export class CreateArticleComponent implements OnInit {
 
   }
 
-  async uploadImage() {
-
-
-    this.previews = [];
-
-    this.submitted = false;
-
-    const promises = map(this.fileToUpload, file =>
-        firstValueFrom(this.articleService.imagesPost(file, "response")));
-
-
-    const results = await Promise.all(promises);
-
-    results.forEach(res => {
-      const location = res.headers.get("location");
-      const id = location.split("/").pop();
-      this.imageIds.push(id);
-
-    });
-
-
-  }
+  // async uploadImage() {
+  //
+  //
+  //   this.previews = [];
+  //
+  //   this.submitted = false;
+  //
+  //   const promises = map(this.fileToUpload, file =>
+  //       firstValueFrom(this.articleService.imagesPost(file, "response")));
+  //
+  //
+  //   const results = await Promise.all(promises);
+  //
+  //   results.forEach(res => {
+  //     const location = res.headers.get("location");
+  //     const id = location.split("/").pop();
+  //     this.imageIds.push(id);
+  //
+  //   });
+  //
+  //
+  // }
 
   async createArticle() {
 
@@ -164,10 +161,10 @@ export class CreateArticleComponent implements OnInit {
 
     try {
 
-      if (this.fileToUpload?.length > 0) {
-
-        await this.uploadImage();
-      }
+      // if (this.fileToUpload?.length > 0) {
+      //
+      //   await this.uploadImage();
+      // }
       this.submitted = true;
 
       if (this.articleForm.valid && (this.fileToUpload === null || this.fileToUpload.length > 0)) {
@@ -235,5 +232,9 @@ export class CreateArticleComponent implements OnInit {
 
   openModal() {
     this.display = "block";
+  }
+
+  public vanishError(): void {
+    this.errorImage = null;
   }
 }

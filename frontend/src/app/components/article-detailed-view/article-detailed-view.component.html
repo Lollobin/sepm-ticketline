@@ -1,16 +1,22 @@
 <div class="container-md" style="margin: 4% auto; max-width: 1100px">
 
   <div class="w3-content">
-    <ngb-carousel *ngIf="articleImages" [showNavigationArrows]="false" data-[interval]="2900">
+    <ngb-carousel *ngIf="articleImages && article?.images.length > 1" [showNavigationArrows]="false"
+                  data-[interval]="2900">
       <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
         <div class="carousel-inner faded faded-left faded-right">
           <img [src]="articleImages[i]" alt="slide">
         </div>
       </ng-template>
     </ngb-carousel>
-    <div *ngIf="article?.images.length === 0">
-      <div class="carousel-inner faded faded-left faded-right" style="margin: 0 auto">
+    <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
+      <div [hidden]="article?.images.length === 1"
+           class="carousel-inner faded faded-left faded-right" style="margin: 0 auto">
         <img [src]="errorImage" alt="slide">
+      </div>
+      <div [hidden]="article?.images.length === 0"
+           class="carousel-inner faded faded-left faded-right" style="margin: 0 auto">
+        <img [src]="articleImages[0]" alt="slide">
       </div>
     </div>
 

@@ -8,6 +8,16 @@
   </div>
 </div>
 
+<div class="container mt-3" *ngIf="errorImage">
+  <div class="alert alert-danger" role="alert">
+    <h4>Error!</h4>{{ errorImage }}
+
+    <p></p>
+    <button type="button" class="btn-close" (click)="vanishError()" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+  </div>
+</div>
+
 <app-error-alert [error]="error"></app-error-alert>
 
 <div class="container-md" style="max-width: 1000px">
@@ -106,8 +116,8 @@
               <image-cropper
                   [imageChangedEvent]="imgChangeEvt"
                   [maintainAspectRatio]="true"
-                  [aspectRatio]="16 / 9"
-                  [resizeToWidth]="500"
+                  [aspectRatio]="3 / 2"
+                  [resizeToWidth]="400"
                   format="png"
                   (imageCropped)="cropImg($event)"
                   (imageLoaded)="imgLoad()"
@@ -159,7 +169,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5>You selected an image but did not upload it</h5>
+        <h5 style="text-align: justify;">You have not uploaded your selected images. Do you still want to continue?</h5>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" (click)="createArticle()">Create article without images</button>
