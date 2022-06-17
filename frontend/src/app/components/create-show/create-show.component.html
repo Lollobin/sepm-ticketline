@@ -13,9 +13,9 @@
 <div class="container-fluid">
 <div *ngIf="role === 'ADMIN' && !this.notFound">
     <div class="row">
-        <div class="col col-3" style="margin-top: 5%; margin-bottom: 15px" *ngIf="this.shows.length > 0">
+        <div class="col col-3" style="margin-top: 5%; margin-bottom: 15px">
         <!-- <div class="form-group col col-3" style="margin-top: 5%; margin-bottom: 15px;"> -->
-            <h5 *ngIf="shows">Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5>
+            <h5>Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5>
             <!-- <h5>Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5> -->
             <table class="table table-hover">
                 <thead>
