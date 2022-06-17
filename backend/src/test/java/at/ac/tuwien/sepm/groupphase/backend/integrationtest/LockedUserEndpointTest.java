@@ -6,6 +6,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADDRESS4_EN
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADDRESS_ENTITY;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_ROLES;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ADMIN_USER;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTICLES_BASE_URI;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.DEFAULT_USER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER2_EMAIL;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER2_FNAME;
@@ -17,6 +18,7 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER3_FNAME
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER3_GENDER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER3_LNAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER3_PASSWORD;
+import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER4_EMAIL;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_EMAIL;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_FNAME;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_GENDER;
@@ -25,6 +27,8 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_PASSWO
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.USER_ROLES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
@@ -132,7 +136,7 @@ class LockedUserEndpointTest {
 
         String json = objectMapper.writeValueAsString(false);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/{id}", beforeChange.getUserId())
+        mockMvc.perform(put("/lockStatus/{id}", beforeChange.getUserId())
                 .header(securityProperties.getAuthHeader(),
                     jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -158,7 +162,7 @@ class LockedUserEndpointTest {
 
         String json = objectMapper.writeValueAsString(false);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/{id}", beforeChange.getUserId())
+        mockMvc.perform(put("/lockStatus/{id}", beforeChange.getUserId())
                 .header(securityProperties.getAuthHeader(),
                     jwtTokenizer.getAuthToken(DEFAULT_USER, USER_ROLES)).content(json)
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -174,12 +178,83 @@ class LockedUserEndpointTest {
         userRepository.deleteAll();
     }
 
+    @Test
+    void put_shouldLockUser() throws Exception {
+
+        ApplicationUser user1 = new ApplicationUser();
+        user1.setLockedAccount(false);
+        user1.setFirstName(USER_FNAME);
+        user1.setLastName(USER_LNAME);
+        user1.setGender(USER_GENDER);
+        user1.setEmail(USER_EMAIL);
+
+        ADDRESS_ENTITY.setAddressId(null);
+        user1.setAddress(ADDRESS_ENTITY);
+        user1.setPassword(USER_PASSWORD);
+        user1.setHasAdministrativeRights(false);
+        user1.setLoginTries(0);
+        user1.setMustResetPassword(false);
+
+        userRepository.save(user1);
+
+        ApplicationUser beforeChange = userRepository.findUserByEmail(USER_EMAIL);
+
+        assertThat(beforeChange.isLockedAccount()).isFalse();
+
+        String json = objectMapper.writeValueAsString(true);
+
+        mockMvc.perform(put("/lockStatus/{id}", beforeChange.getUserId())
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
+
+        ApplicationUser afterChange = userRepository.findUserByEmail(USER_EMAIL);
+
+        assertThat(afterChange.getEmail()).isEqualTo(beforeChange.getEmail());
+        assertThat(afterChange.getUserId()).isEqualTo(beforeChange.getUserId());
+
+        assertThat(afterChange.isLockedAccount()).isTrue();
+
+        userRepository.deleteAll();
+
+    }
+
+    @Test
+    void put_shouldNotLockAdmin() throws Exception {
+
+        saveFourUsers();
+
+        ApplicationUser beforeChange = userRepository.findUserByEmail(USER4_EMAIL);
+
+        assertThat(beforeChange.isLockedAccount()).isFalse();
+
+        String json = objectMapper.writeValueAsString(true);
+        MvcResult mvcResult = this.mockMvc
+            .perform(
+                put("/lockStatus/{id}", beforeChange.getUserId())
+
+                    .header(
+                        securityProperties.getAuthHeader(),
+                        jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
+            .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+
+            .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+
+
+
+    }
+
 
     @Test
     void shouldSet404WhenUserNotPresent() throws Exception {
 
         String json = objectMapper.writeValueAsString(false);
-        ResultActions resultAction = mockMvc.perform(MockMvcRequestBuilders.put("/lockStatus/-100")
+        ResultActions resultAction = mockMvc.perform(put("/lockStatus/-100")
             .header(securityProperties.getAuthHeader(),
                 jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)).content(json)
             .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
