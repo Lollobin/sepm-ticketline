@@ -1,20 +1,17 @@
 <div class="container">
-  <h1 style="margin-top: 4%; color: #4d61ff; font-weight: bold; font-family: 'Roboto', sans-serif"
-      class="display-4">Welcome to the SEPM group phase!</h1>
-
+  <div class="mt-5 mb-3">
+    <h2>News:</h2>
+  </div>
 
   <div id="cards_landscape_wrap-2">
-    <div class="container-md">
       <div class="row">
         <div class="col-xs-10 col-s col-sm-6 col-md-6 col-xl-2" *ngFor="let article of articles">
           <a [routerLink]="['/news/overview', article.articleId]">
-            <div class="card-flyer">
+            <div class="card-flyer mt-0">
               <div class="text-box">
                 <div class="image-box">
                   <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
                        class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
-
-
                 </div>
                 <div class="text-container">
                   <h6 class="text-break"> {{article.title}}</h6>
@@ -29,10 +26,7 @@
             </div>
           </a>
         </div>
-
-
       </div>
-    </div>
   </div>
 
   <div class="container mt-3" *ngIf="empty">
@@ -43,7 +37,10 @@
               data-bs-dismiss="alert"
               aria-label="Close"></button>
     </div>
+  </div>
 
+  <div class="mt-5">
+    <app-top-events></app-top-events>
   </div>
 </div>
 
