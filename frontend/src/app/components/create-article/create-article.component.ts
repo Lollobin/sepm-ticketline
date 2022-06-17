@@ -198,12 +198,9 @@ export class CreateArticleComponent implements OnInit {
           error: err1 => {
             this.success = false;
             this.imageIds = [];
-            if (err1 instanceof Object) {
-              this.error = err1.error;
-            } else {
 
-              this.error = err1;
-            }
+            this.error = err1;
+
           }
         });
 
