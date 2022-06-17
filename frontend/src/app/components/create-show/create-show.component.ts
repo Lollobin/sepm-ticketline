@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -18,7 +18,7 @@ import { dateTimeValidator } from './date-time-validator';
   templateUrl: './create-show.component.html',
   styleUrls: ['./create-show.component.scss']
 })
-export class CreateShowComponent implements OnInit {
+export class CreateShowComponent implements OnInit, AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
 
@@ -143,7 +143,8 @@ export class CreateShowComponent implements OnInit {
   }
 
   openModal() {
-    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan !== this.showForm.value.seatingPlan.seatingPlanId) {
+    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan 
+      !== this.showForm.value.seatingPlan.seatingPlanId) {
       this.submitted = true;
     } else {
       this.display = "block";
@@ -357,7 +358,7 @@ export class CreateShowComponent implements OnInit {
   }
 
   removeFromArtists(artist: Artist) {
-    for (var i = 0; i < this.artists.length; i++) {
+    for (let i = 0; i < this.artists.length; i++) {
       if (this.artists[i].artistId === artist.artistId) {
         this.artists.splice(i, 1);
         break;
@@ -369,9 +370,7 @@ export class CreateShowComponent implements OnInit {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlanLayout.general.width;
     this.pixiApplication.view.height = this.seatingPlanLayout.general.height;
-    document.addEventListener("mousemove", (event) => {
-      return event;
-    });
+    document.addEventListener("mousemove", (event) => event);
     this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
     drawSeatingPlanPreview(this.pixiApplication.stage, this.seatingPlanLayout);
   }
