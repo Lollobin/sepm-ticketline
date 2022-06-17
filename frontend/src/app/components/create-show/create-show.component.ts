@@ -63,17 +63,18 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
     private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router) {
-      this.showForm = this.formBuilder.group({
-        date: ['', [Validators.required]],
-        time: ['', [Validators.required]],
-        event: [],
-        location: ['', [Validators.required]],
-        seatingPlan: ['', [Validators.required]],
-        sectorPrices: []
-      }, {
-        validators: dateTimeValidator
-      });
-     }
+    this.showForm = this.formBuilder.group({
+      date: ['', [Validators.required]],
+      time: ['', [Validators.required]],
+      event: [],
+      location: ['', [Validators.required]],
+      seatingPlan: ['', [Validators.required]],
+      sectorPrices: []
+    }, {
+      validators: dateTimeValidator
+    }
+    );
+  }
 
   get date() {
     return this.showForm.get("date");
@@ -143,7 +144,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   }
 
   openModal() {
-    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan 
+    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan
       !== this.showForm.value.seatingPlan.seatingPlanId) {
       this.submitted = true;
     } else {
@@ -335,7 +336,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     distinctUntilChanged(),
     switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
       map(artistResult => artistResult.artists)
-      )
+    )
     )
   );
 
