@@ -373,8 +373,6 @@ class ArticleEndpointTest {
 
         MockHttpServletResponse servletResponse = result.getResponse();
 
-        List<Article> articleList = articleRepository.findAll();
-
         ArticleDto articleDto = objectMapper.readValue(
             servletResponse.getContentAsString(), ArticleDto.class);
 
