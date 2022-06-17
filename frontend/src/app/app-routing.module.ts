@@ -54,7 +54,6 @@ const routes: Routes = [
   {path:'passwordUpdate', component: PasswordUpdateComponent},
   {path: "news/overview", component: NewsOverviewComponent},
   {path: "news/overview/:id", component: ArticleDetailedViewComponent},
-  {path: "news/read", component: NewsOverviewComponent, canActivate: [AuthGuard], data : {role: ["USER", "ADMIN"]}},
   {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path:'topEvents', component: TopEventsComponent}
