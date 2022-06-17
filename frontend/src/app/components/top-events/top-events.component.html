@@ -1,12 +1,16 @@
-
 <div class="row mt-3">
   <div class="col">
-    <h2>Top 10 Events this Month</h2>
+    <h2>Top 10 Events</h2>
   </div>
-  <div class="col-2 align-items-center">
+  <div class="col-3 align-items-center">
+    <input type="month" class="form-control" [ngModel]="month | date:'yyyy-MM'"
+           (ngModelChange)="month = $event; reloadEvents()">
+  </div>
+  <div class="col-3 align-items-center">
     <select [(ngModel)]="category" (ngModelChange)="reloadEvents()" class=" form-select float-end">
       <option [ngValue]="null">All Categories</option>
-      <option *ngFor="let category1 of categories" [value]="category1|uppercase">{{category1}}</option>
+      <option *ngFor="let category1 of categories"
+              [value]="category1|uppercase">{{category1}}</option>
     </select>
   </div>
 </div>
