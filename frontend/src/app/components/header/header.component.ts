@@ -1,25 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {CustomAuthService} from '../../services/custom-auth.service';
-import {faEye, faCircleInfo,faUser} from "@fortawesome/free-solid-svg-icons";
+import {Component} from "@angular/core";
+import {CustomAuthService} from "../../services/custom-auth.service";
+import {faEye, faCircleInfo, faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   eye = faEye;
-  info= faCircleInfo;
+  info = faCircleInfo;
   user = faUser;
-  adminView=false;
+  adminView = false;
 
-  constructor(public authService: CustomAuthService) { }
-
-  ngOnInit() {
+  constructor(public authService: CustomAuthService) {
   }
 
-  toggleAdminView(){
-    this.adminView= !this.adminView;
+  toggleAdminView() {
+    this.adminView = !this.adminView;
   }
-  
+
 }
