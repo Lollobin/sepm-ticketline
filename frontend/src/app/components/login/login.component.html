@@ -20,10 +20,10 @@
           <form class="form" [formGroup]="loginForm" (ngSubmit)="loginUser()">
 
             <div class="form-group mb-3">
-              <label for="inputUsername" class="form-label">Username</label>
+              <label for="inputUsername" class="form-label">Email address</label>
               <input type="text" name="username" formControlName="username" class="form-control"
                      id="inputUsername"
-                     aria-describedby="usernameHelp" placeholder="Enter username">
+                     aria-describedby="usernameHelp" placeholder="Enter email address">
               <div *ngIf="submitted && loginForm.controls.username.errors" class="error">
                 <small class="form-text text-danger"
                        *ngIf="loginForm.controls.username.errors.required">Your username is
@@ -37,7 +37,11 @@
               <input (keydown.enter)="loginUser()" type="password" name="password"
                      formControlName="password" class="form-control"
                      id="password"
-                     placeholder="Password">
+                     placeholder="Password"
+                     aria-describedby="password-help">
+              <div class="form-text" id="password-help">
+                <a routerLink="/passwordReset">Forgot your password?</a>
+              </div>
               <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
                 <small class="form-text text-danger"
                        *ngIf="loginForm.controls.password.errors.required">Your password
@@ -50,22 +54,16 @@
                 </small>
               </div>
             </div>
-
-            <div>
-              <button type="button" (click)="loginUser()" class="btn btn-success float-right">Login
-              </button>
-            </div>
-
-            <hr>
-            <div><strong class="mb-0">Don't have an account yet? <a routerLink="/registration">Sign
-              up here.</a></strong></div>
-            <div><strong class="mb-0">Forgot your password? <a routerLink="/passwordReset">Request
-              password reset.</a></strong></div>
           </form>
+          <div class="float-end">
+            <button type="button" routerLink="/registration" class="btn btn-outline-primary me-1">
+              Sign Up
+            </button>
+            <button type="button" (click)="loginUser()" class="btn btn-primary">Login
+            </button>
+          </div>
         </div>
-
       </div>
-
     </div>
   </div>
 </div>

@@ -66,7 +66,7 @@
         Switch to Customer View
         <fa-icon class="m-2" [icon]="eye"></fa-icon>
       </button>
-      <a class="btn btn-success m-lg-2" *ngIf="!authService.isLoggedIn()" routerLink="/login"
+      <a class="btn btn-primary m-lg-2" *ngIf="!authService.isLoggedIn()" routerLink="/login"
         routerLinkActive="active">Login</a>
       <div class="dropdown" *ngIf="authService.isLoggedIn()">
         <a class="btn btn-light dropdown-toggle m-lg-2" href="#" role="button" id="dropdownMenuLink"
