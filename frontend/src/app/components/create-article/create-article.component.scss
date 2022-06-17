@@ -4,5 +4,10 @@
 }
 
 .preview{
-  max-width: 170px;
+  max-width: 200px;
+  height: auto;
+}
+
+.btn:disabled{
+  pointer-events: none;
 }

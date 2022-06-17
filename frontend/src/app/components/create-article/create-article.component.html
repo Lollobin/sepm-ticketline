@@ -1,4 +1,4 @@
-<div class="container mt-3" *ngIf="success">
+<div class="container" *ngIf="success">
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Success!</h4>
     <strong>Successfully</strong> created article "<strong>{{title}}</strong>"
@@ -18,7 +18,7 @@
     <div class="row">
 
       <div class="form-group">
-        <small for="validationDefault01" class="form-label text-muted"> Title </small>
+        <small for="validationDefault01" class="form-label text-muted"> Title* </small>
         <input type="text" class="form-control" id="validationDefault01" formControlName="title">
       </div>
       <div *ngIf="articleForm.get('title').touched || submitted" class="error">
@@ -29,7 +29,7 @@
         </small>
       </div>
       <div class="form-group">
-        <small for="validationDefault02" class="form-label text-muted"> Summary</small>
+        <small for="validationDefault02" class="form-label text-muted"> Summary*</small>
         <textarea type="text" class="form-control" id="validationDefault02"
                   formControlName="summary"></textarea>
       </div>
@@ -41,7 +41,7 @@
         </small>
       </div>
       <div class="form-group">
-        <small for="validationDefault03" class="form-label text-muted"> Text </small>
+        <small for="validationDefault03" class="form-label text-muted"> Text* </small>
         <textarea type="text" class="form-control" id="validationDefault03"
                   formControlName="text"></textarea>
       </div>
@@ -55,35 +55,124 @@
 
 
       <div>
-        <div class="form-group" style="margin: 4% auto 0 auto; position: relative">
-          <input type="file" multiple accept="image/png, image/jpeg" class="form-control"
-                 id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"
-                 aria-label="Upload"
+        <!--        <div class="form-group" style="margin: 4% auto 0 auto; position: relative">-->
+        <!--          <input type="file" multiple accept="image/png, image/jpeg" class="form-control"-->
+        <!--                 id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"-->
+        <!--                 aria-label="Upload"-->
+        <!--                 (change)="onFileChange($event)"/>-->
+
+
+        <!--        </div>-->
+        <!--        <div>-->
+        <!--          <small style="position: relative"-->
+        <!--                 class="form-text text-black" for="inputGroupFile04"-->
+        <!--          >Accepted Formats: jpg, jpeg, png-->
+        <!--          </small>-->
+        <!--        </div>-->
+
+        <!--        <div class="form-group" style="margin-top: 3%">-->
+        <!--          <img *ngFor='let preview of previews' [src]="preview" class="preview" alt="preview">-->
+        <!--        </div>-->
+        <div class="form-group" style="margin: 3% auto 0 auto; position: relative">
+          <input type="file" #myInput multiple accept="image/png, image/jpeg" class="form-control"
                  (change)="onFileChange($event)"/>
+          <div class="row">
+            <div class="col">
+              <small style="margin-top: 0; padding: 0" class="form-text text-black"
+                     for="inputGroupFile04">Accepted Formats: jpg, jpeg, png</small>
+            </div>
+            <div class="col">
+              <button [hidden]="!this.imgChangeEvt" class="btn btn-secondary"
+                      style="float: right; margin-top: 3%" (click)="helpUpload(); reset()" [disabled]="fileToReturn === null">Add image
+              </button>
+            </div>
 
+          </div>
+          <div class="container mt-3" *ngIf="uploadSuccess"
+               style="width: 50%; float: right; margin-right: 0; padding-right: 0">
+            <div class="alert alert-success fade show" role="alert" style="margin-right: 0">
+              <h4 class="alert-heading">Success!</h4>
+              Successfully uploaded image!
+              <p></p>
+              <button type="button" class="btn-close" (click)="vanishUploadSuccess()"
+                      data-bs-dismiss="alert"
+                      aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="col-md-4">
+          </div>
+          <div [hidden]="pressed">
+            <div class="col-md-8">
+              <image-cropper
+                  [imageChangedEvent]="imgChangeEvt"
+                  [maintainAspectRatio]="true"
+                  [aspectRatio]="16 / 9"
+                  [resizeToWidth]="500"
+                  format="png"
+                  (imageCropped)="cropImg($event)"
+                  (imageLoaded)="imgLoad()"
+                  (cropperReady)="initCropper()"
+                  (loadImageFailed)="imgFailed()">
+              </image-cropper>
+            </div>
 
+            <h6 *ngIf="this.cropImgPreview">Image Preview</h6>
+            <img [src]="cropImgPreview"/>
+          </div>
         </div>
         <div>
-          <small style="position: relative"
-                 class="form-text text-black" for="inputGroupFile04"
-          >Accepted Formats: jpg, jpeg, png
-          </small>
-        </div>
-
-        <div class="form-group" style="margin-top: 3%">
-          <img *ngFor='let preview of previews' [src]="preview" class="preview" alt="preview">
+          <div style="margin-bottom:  0">
+        <button
+                [disabled]="!articleForm.valid && (articleForm.get('title').touched && articleForm.get('text').touched && articleForm.get('summary').touched) || (submitted && (articleForm.get('title').value === '' || articleForm.get('text').value === ''  || articleForm.get('summary').value === '' ))  "
+                class="btn btn-primary" (click)="this.cropImgPreview !== null && !this.uploadSuccess ? openModal() : createArticle()">Create Article
+        </button>
+          </div>
+        <small style="margin-top: 0; padding: 0" class="form-text text-black"
+               for="inputGroupFile04">Fields with * are mandatory</small>
         </div>
 
 
       </div>
+
     </div>
-    <button style="margin-bottom: 2%; margin-top: 4%"
-            [disabled]="!articleForm.valid && (articleForm.get('title').touched || articleForm.get('text').touched || articleForm.get('summary').touched) || (submitted && (articleForm.get('title').value === '' || articleForm.get('text').value === ''  || articleForm.get('summary').value === '' ))  "
-            class="btn btn-primary" (click)="createArticle()">Create Article
-    </button>
+
   </form>
 
+  <h4 [hidden]="this.previews.length === 0">Added images</h4>
+  <div class="form-group" style="margin: 3% 0">
+    <div class="row">
+      <div class="col-3" [hidden]="this.previews.length === 0"
+           *ngFor='let preview of previews; index as i'>
+        <button type="button" class="btn-close" (click)="removeImage(i)" aria-label="Close" style="top: 0" ></button>
+        <img [src]="preview" class="preview imgStyle" alt="preview">
+
+
+      </div>
+    </div>
+  </div>
+
 </div>
+
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+     style="background: rgba(0,0,0, .5); padding-top: 12%">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>You selected an image but did not upload it</h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" (click)="createArticle()">Create article without images</button>
+        <button type="button" class="btn btn-secondary"
+                (click)="onCloseHandled();">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
 
 

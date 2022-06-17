@@ -58,6 +58,7 @@ import {UserManagementComponent} from './components/user-management/user-managem
 import {UserDetailComponent} from './components/user-detail/user-detail.component';
 import {TopEventsComponent} from './components/top-events/top-events.component';
 import {LazyLoadImageModule} from "ng-lazyload-image";
+import {ImageCropperModule} from "ngx-image-cropper";
 
 
 @NgModule({
@@ -108,7 +109,8 @@ import {LazyLoadImageModule} from "ng-lazyload-image";
     NgbModule,
     FormsModule,
     FontAwesomeModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    ImageCropperModule
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]
