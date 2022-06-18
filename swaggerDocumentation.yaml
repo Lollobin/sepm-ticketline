@@ -64,7 +64,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
-
+      
       responses:
         200:
           description: OK
@@ -433,7 +433,7 @@ paths:
         - $ref: "#/components/parameters/filterRead"
       responses:
         200:
-          description: Successful retreival of articles
+          description: Successful retrieval of articles
           content:
             application/json:
               schema:

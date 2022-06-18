@@ -44,7 +44,7 @@ public interface ArticlesApi {
      * GET /articles : Gets news articles
      *
      * @param filterRead Only return read articles if this is set to true (optional)
-     * @return Successful retreival of articles (status code 200)
+     * @return Successful retrieval of articles (status code 200)
      *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
@@ -53,7 +53,7 @@ public interface ArticlesApi {
         summary = "Gets news articles",
         tags = { "articles" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },

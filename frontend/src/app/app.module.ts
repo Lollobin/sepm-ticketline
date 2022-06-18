@@ -38,9 +38,14 @@ import { CreateArticleComponent } from './components/create-article/create-artic
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
 import {PasswordUpdateComponent} from "./components/password-update/password-update.component";
-import { UserManagementComponent } from './components/user-management/user-management.component';
-import { UserDetailComponent } from './components/user-detail/user-detail.component';
-import { TopEventsComponent } from './components/top-events/top-events.component';
+import {NewsOverviewComponent} from './components/news-overview/news-overview.component';
+import {
+  ArticleDetailedViewComponent
+} from './components/article-detailed-view/article-detailed-view.component';
+import {UserManagementComponent} from './components/user-management/user-management.component';
+import {UserDetailComponent} from './components/user-detail/user-detail.component';
+import {TopEventsComponent} from './components/top-events/top-events.component';
+import {LazyLoadImageModule} from "ng-lazyload-image";
 import { CreateUserComponent } from './components/create-user/create-user.component';
 
 @NgModule({
@@ -76,6 +81,8 @@ import { CreateUserComponent } from './components/create-user/create-user.compon
     PasswordResetComponent,
     PasswordUpdateComponent,
     LocationAdminOverviewComponent,
+    NewsOverviewComponent,
+    ArticleDetailedViewComponent,
     CreateArticleComponent,
     TopEventsComponent,
     LocationSeatingPlansComponent,
@@ -91,8 +98,10 @@ import { CreateUserComponent } from './components/create-user/create-user.compon
     NgbModule,
     FormsModule,
     FontAwesomeModule,
+    LazyLoadImageModule
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

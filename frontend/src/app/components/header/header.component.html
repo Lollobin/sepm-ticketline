@@ -23,6 +23,12 @@
         >Create new Article</a
         >
       </li>
+      <li class="nav-item">
+        <a *ngIf="!adminView" class="nav-link" routerLink="/news/overview" routerLinkActive="active"
+        ><fa-icon style="padding-left: 0; padding-right: 2.5px" [icon]="info"></fa-icon>News</a
+        >
+      </li>
+
       <li>
         <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/lockedUsers"
           routerLinkActive="active">Show Locked Users</a>
@@ -37,6 +43,15 @@
       <li class="nav-item">
         <a class="nav-link" *ngIf="authService.isLoggedIn() && adminView" routerLink="/locations"
           routerLinkActive="active">Manage Locations</a>
+      </li>
+      <li class="nav-item">
+        <a
+            class="nav-link"
+            *ngIf="!adminView && authService.isLoggedIn()"
+            routerLink="/news/read"
+            routerLinkActive="active"
+        >Show read News</a
+        >
       </li>
     </ul>
 
