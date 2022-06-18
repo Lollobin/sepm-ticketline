@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   }
 
   getArticles() {
-    this.articleService.articlesGet(false, 6, 0, Sort.Desc).subscribe({
+    this.articleService.articlesGet(false, 4, 0, Sort.Desc).subscribe({
       next: articlePage => {
 
         this.articles = articlePage.articles;
