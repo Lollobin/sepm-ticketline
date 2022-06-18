@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Article, ArticlesService} from "../../generated-sources/openapi";
+import {Article, ArticlesService, Sort} from "../../generated-sources/openapi";
 
 @Component({
   selector: 'app-home',
@@ -24,11 +24,11 @@ export class HomeComponent implements OnInit {
   }
 
   getArticles() {
-    this.articleService.articlesGet(false).subscribe({
-      next: articles => {
+    this.articleService.articlesGet(false, 6, 0, Sort.Desc).subscribe({
+      next: articlePage => {
 
-        this.articles = articles.slice(0, 6);
-        this.empty = articles.length === 0;
+        this.articles = articlePage.articles;
+        this.empty = articlePage.articles.length === 0;
         for (const article of this.articles) {
 
           this.getImage(article.images[0], article.articleId);

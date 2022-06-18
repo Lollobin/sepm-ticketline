@@ -1,6 +1,7 @@
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AddressDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/AdminPasswordResetDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArticleDto.java
+src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArticlePageDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArticleWithoutIdDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistDto.java
 src/main/java/at/ac/tuwien/sepm/groupphase/backend/endpoint/dto/ArtistsSearchResultDto.java
