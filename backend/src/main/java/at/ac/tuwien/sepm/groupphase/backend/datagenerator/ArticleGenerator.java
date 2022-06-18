@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Image;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ImageRepository;
 import com.github.javafaker.Faker;
+import com.github.javafaker.Lorem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -73,9 +74,10 @@ public class ArticleGenerator {
         cal.set(Calendar.MONTH, Calendar.AUGUST);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         article.setCreationDate(faker.date().between(cal.getTime(), new Date()).toInstant().atOffset(zoneOffSet));
-        article.setTitle(faker.book().title());
-        article.setSummary(faker.starTrek().villain());
-        article.setText(faker.dune().saying());
+        article.setTitle(faker.lorem().sentence());
+        article.setSummary(faker.lorem().paragraph(3));
+        article.setText(String.valueOf(faker.lorem().paragraphs(14)));
+
 
         int numOfImages = numGenerator.nextInt(4);
 
