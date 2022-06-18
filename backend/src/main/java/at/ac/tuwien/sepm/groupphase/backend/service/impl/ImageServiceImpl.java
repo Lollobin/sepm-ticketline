@@ -44,7 +44,6 @@ public class ImageServiceImpl implements ImageService {
         try {
 
             imageValidator.checkIfImageMimeTypeIsCorrect(body);
-
             toSave.setFilePath(fileSystemRepository.save(body.getBytes(),
                 body.getOriginalFilename()));
             toSave = imageRepository.save(toSave);
