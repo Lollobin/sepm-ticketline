@@ -21,7 +21,11 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { Article } from '../model/article';
 // @ts-ignore
+import { ArticlePage } from '../model/articlePage';
+// @ts-ignore
 import { ArticleWithoutId } from '../model/articleWithoutId';
+// @ts-ignore
+import { Sort } from '../model/sort';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -104,18 +108,33 @@ export class ArticlesService {
     /**
      * Gets news articles
      * @param filterRead Only return read articles if this is set to true
+     * @param pageSize Number of items on requested page
+     * @param requestedPage Index of requested page (starts with 0)
+     * @param sort 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public articlesGet(filterRead?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Article>>;
-    public articlesGet(filterRead?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Article>>>;
-    public articlesGet(filterRead?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Article>>>;
-    public articlesGet(filterRead?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public articlesGet(filterRead?: boolean, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ArticlePage>;
+    public articlesGet(filterRead?: boolean, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ArticlePage>>;
+    public articlesGet(filterRead?: boolean, pageSize?: number, requestedPage?: number, sort?: Sort, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ArticlePage>>;
+    public articlesGet(filterRead?: boolean, pageSize?: number, requestedPage?: number, sort?: Sort, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (filterRead !== undefined && filterRead !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>filterRead, 'filterRead');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
+        if (requestedPage !== undefined && requestedPage !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>requestedPage, 'requestedPage');
+        }
+        if (sort !== undefined && sort !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>sort, 'sort');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -156,7 +175,7 @@ export class ArticlesService {
             }
         }
 
-        return this.httpClient.get<Array<Article>>(`${this.configuration.basePath}/articles`,
+        return this.httpClient.get<ArticlePage>(`${this.configuration.basePath}/articles`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

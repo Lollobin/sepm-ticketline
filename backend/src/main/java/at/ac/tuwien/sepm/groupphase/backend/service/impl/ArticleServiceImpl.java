@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ArticleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
@@ -12,10 +13,11 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ImageService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.ArticleValidator;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -81,7 +83,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDto> getArticles(Boolean filterRead, String email, boolean isAnonym) {
+    public ArticlePageDto getArticles(Boolean filterRead, String email, boolean isAnonym,
+        Pageable pageable) {
         LOGGER.trace("Getting articles");
 
         Long id = null;
@@ -90,17 +93,34 @@ public class ArticleServiceImpl implements ArticleService {
             id = userService.findApplicationUserByEmail(email).getUserId();
         }
 
+
+
         if (isAnonym) {
-            return articleRepository.findAll().stream().map(articleMapper::articleToArticleDto)
-                .toList();
+            Page<Article> articlePage = articleRepository.findAll(pageable);
+            return setArticlePageDto(articlePage);
+
+
         } else if (Boolean.FALSE.equals(filterRead)) {
-            return articleRepository.findArticlesNotReadByUser(id).stream()
-                .map(articleMapper::articleToArticleDto)
-                .toList();
+            Page<Article> articlePage = articleRepository.findArticlesNotReadByUser(id, pageable);
+            return setArticlePageDto(articlePage);
         } else {
-            return articleRepository.findArticlesReadByUser(id).stream()
-                .map(articleMapper::articleToArticleDto).toList();
+            Page<Article> articlePage = articleRepository.findArticlesReadByUser(id, pageable);
+            return setArticlePageDto(articlePage);
+
         }
+    }
+
+    private ArticlePageDto setArticlePageDto(Page<Article> articlePage) {
+        LOGGER.trace("Setting ArticlePageDto values");
+        ArticlePageDto searchResultDto = new ArticlePageDto();
+
+        searchResultDto.setArticles(
+            articlePage.getContent().stream().map(articleMapper::articleToArticleDto).toList());
+        searchResultDto.setNumberOfResults((int) articlePage.getTotalElements());
+        searchResultDto.setCurrentPage(articlePage.getNumber());
+        searchResultDto.setPagesTotal(articlePage.getTotalPages());
+
+        return searchResultDto;
     }
 
 

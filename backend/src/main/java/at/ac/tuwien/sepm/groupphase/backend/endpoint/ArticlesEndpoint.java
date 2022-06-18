@@ -1,15 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ArticlesApi;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArticleService;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -52,7 +56,8 @@ public class ArticlesEndpoint implements ArticlesApi {
     }
 
     @Override
-    public ResponseEntity<List<ArticleDto>> articlesGet(Boolean filterRead) {
+    public ResponseEntity<ArticlePageDto> articlesGet(Boolean filterRead, Integer pageSize,
+        Integer requestedPage, SortDto sort) {
         LOGGER.info("GET /articles with filterRead: {}", filterRead);
 
         boolean isAnonym = false;
@@ -69,9 +74,14 @@ public class ArticlesEndpoint implements ArticlesApi {
 
         String userEmail = authenticationUtil.getEmail();
 
-        List<ArticleDto> articleDtos = articleService.getArticles(filterRead, userEmail, isAnonym);
+        Pageable pageable = PageRequest.of(requestedPage, pageSize,
+            Direction.fromString(sort.getValue()),
+            "creationDate");
 
-        return ResponseEntity.ok().body(articleDtos);
+        ArticlePageDto articlePageDto = articleService.getArticles(filterRead, userEmail, isAnonym,
+            pageable);
+
+        return ResponseEntity.ok(articlePageDto);
     }
 
     @Override

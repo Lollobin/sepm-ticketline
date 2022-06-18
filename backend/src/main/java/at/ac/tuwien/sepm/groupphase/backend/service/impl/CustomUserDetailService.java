@@ -51,6 +51,8 @@ public class CustomUserDetailService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
         MethodHandles.lookup().lookupClass());
+    private static final String EMAIL_INVALID = "This email is not allowed, try another one";
+
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
@@ -139,11 +141,23 @@ public class CustomUserDetailService implements UserService {
     public void save(UserWithPasswordDto user) {
         ApplicationUser applicationUser = userRepository.findUserByEmail(user.getEmail());
         if (applicationUser != null) {
-            throw new ValidationException(
-                "User with email " + user.getEmail() + " already exists!");
+            throw new ConflictException(EMAIL_INVALID);
         }
         userValidator.validateUserWithPasswordDto(user);
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(user);
+        LOGGER.debug("Attempting to save {}", appUser);
+        userRepository.save(appUser);
+    }
+
+    @Override
+    public void saveAdmin(UserWithPasswordDto user) {
+        ApplicationUser applicationUser = userRepository.findUserByEmail(user.getEmail());
+        if (applicationUser != null) {
+            throw new ConflictException(EMAIL_INVALID);
+        }
+        userValidator.validateUserWithPasswordDto(user);
+        ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(user);
+        appUser.setHasAdministrativeRights(true);
         LOGGER.debug("Attempting to save {}", appUser);
         userRepository.save(appUser);
     }
@@ -157,7 +171,7 @@ public class CustomUserDetailService implements UserService {
 
         ApplicationUser emailUser = this.userRepository.findUserByEmail(userWithPasswordDto.getEmail());
         if (emailUser != null && emailUser.getUserId() != userId) {
-            throw new ConflictException("This email is not allowed, try another one");
+            throw new ConflictException(EMAIL_INVALID);
         }
 
         ApplicationUser appUser = encodePasswordMapper.userWithPasswordDtoToAppUser(
