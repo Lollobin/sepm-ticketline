@@ -1,18 +1,25 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.ArticlesApi;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.ArticleService;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
@@ -48,19 +55,35 @@ public class ArticlesEndpoint implements ArticlesApi {
         return ResponseEntity.created(location).build();
     }
 
-    @Secured("ROLE_USER")
     @Override
-    public ResponseEntity<List<ArticleDto>> articlesGet(Boolean filterRead) {
+    public ResponseEntity<ArticlePageDto> articlesGet(Boolean filterRead, Integer pageSize,
+        Integer requestedPage, SortDto sort) {
         LOGGER.info("GET /articles with filterRead: {}", filterRead);
+
+        boolean isAnonym = false;
+
+        if (authenticationUtil.getAuthentication() instanceof AnonymousAuthenticationToken) {
+            isAnonym = true;
+            LOGGER.trace("Not logged in user");
+            if (Boolean.TRUE.equals(filterRead)) {
+                LOGGER.info("can not get read articles as not logged in user");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "You need to be logged in to access this route");
+            }
+        }
 
         String userEmail = authenticationUtil.getEmail();
 
-        List<ArticleDto> articleDtos = articleService.getArticles(filterRead, userEmail);
+        Pageable pageable = PageRequest.of(requestedPage, pageSize,
+            Direction.fromString(sort.getValue()),
+            "creationDate");
 
-        return ResponseEntity.ok().body(articleDtos);
+        ArticlePageDto articlePageDto = articleService.getArticles(filterRead, userEmail, isAnonym,
+            pageable);
+
+        return ResponseEntity.ok(articlePageDto);
     }
 
-    @Secured("ROLE_USER")
     @Override
     public ResponseEntity<ArticleDto> articlesIdGet(Long id) {
 

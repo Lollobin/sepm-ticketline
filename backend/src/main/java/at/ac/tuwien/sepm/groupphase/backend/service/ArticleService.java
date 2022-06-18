@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
 
@@ -32,7 +34,7 @@ public interface ArticleService {
      *                   with the associated email has read
      * @return List of ArticleDtos
      */
-    List<ArticleDto> getArticles(Boolean filterRead, String email);
+    ArticlePageDto getArticles(Boolean filterRead, String email, boolean isAnonym, Pageable pageable);
 
 
 }

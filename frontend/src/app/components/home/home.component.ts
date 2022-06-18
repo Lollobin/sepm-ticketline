@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomAuthService} from '../../services/custom-auth.service';
+import {Article, ArticlesService, Sort} from "../../generated-sources/openapi";
 
 @Component({
   selector: 'app-home',
@@ -8,9 +8,69 @@ import {CustomAuthService} from '../../services/custom-auth.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(public authService: CustomAuthService) { }
+  articles: Article[];
+  error: Error;
+  articleImages = {};
+  empty = false;
+  filterRead = null;
+  defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
+  errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
+
+  constructor(private articleService: ArticlesService) {
+  }
 
   ngOnInit() {
+    this.getArticles();
+  }
+
+  getArticles() {
+    this.articleService.articlesGet(false, 6, 0, Sort.Desc).subscribe({
+      next: articlePage => {
+
+        this.articles = articlePage.articles;
+        this.empty = articlePage.articles.length === 0;
+        for (const article of this.articles) {
+
+          this.getImage(article.images[0], article.articleId);
+          if (article.images?.length === 0) {
+            this.articleImages[article.articleId] = this.errorImage;
+          }
+        }
+      },
+      error: err => {
+        this.error = err;
+      }
+    });
+  }
+
+  createImageFromBlob(image: Blob, id: number) {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.articleImages[id] = reader.result;
+
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
+
+  getImage(id: number, articleId: number) {
+
+    if (!id) {
+      return;
+    }
+
+    this.articleService.imagesIdGet(id).subscribe({
+      next: image => {
+        this.createImageFromBlob(image, articleId);
+      },
+    });
+  }
+
+  public vanishEmpty(): void {
+    this.empty = null;
   }
 
 }

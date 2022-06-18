@@ -6,7 +6,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleWithoutIdDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SortDto;
 import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,7 +46,10 @@ public interface ArticlesApi {
      * GET /articles : Gets news articles
      *
      * @param filterRead Only return read articles if this is set to true (optional)
-     * @return Successful retreival of articles (status code 200)
+     * @param pageSize Number of items on requested page (optional, default to 10)
+     * @param requestedPage Index of requested page (starts with 0) (optional, default to 0)
+     * @param sort  (optional, default to ASC)
+     * @return Successful retrieval of articles (status code 200)
      *         or The user is not logged in (status code 401)
      *         or Internal Server Error (status code 500)
      */
@@ -53,7 +58,7 @@ public interface ArticlesApi {
         summary = "Gets news articles",
         tags = { "articles" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful retreival of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticleDto.class))),
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of articles", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ArticlePageDto.class))),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
@@ -66,13 +71,16 @@ public interface ArticlesApi {
         value = "/articles",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ArticleDto>> articlesGet(
-        @Parameter(name = "filterRead", description = "Only return read articles if this is set to true", schema = @Schema(description = "")) @Valid @RequestParam(value = "filterRead", required = false) Boolean filterRead
+    default ResponseEntity<ArticlePageDto> articlesGet(
+        @Parameter(name = "filterRead", description = "Only return read articles if this is set to true", schema = @Schema(description = "")) @Valid @RequestParam(value = "filterRead", required = false) Boolean filterRead,
+        @Parameter(name = "pageSize", description = "Number of items on requested page", schema = @Schema(description = "", defaultValue = "10")) @Valid @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @Parameter(name = "requestedPage", description = "Index of requested page (starts with 0)", schema = @Schema(description = "", defaultValue = "0")) @Valid @RequestParam(value = "requestedPage", required = false, defaultValue = "0") Integer requestedPage,
+        @Parameter(name = "sort", description = "", schema = @Schema(description = "", allowableValues = { "ASC", "DESC" }, defaultValue = "ASC")) @Valid @RequestParam(value = "sort", required = false, defaultValue = "ASC") SortDto sort
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"summary\" : \"summary\", \"images\" : [ 6, 6 ], \"articleId\" : 0, \"text\" : \"text\", \"title\" : \"title\", \"creationDate\" : \"2000-01-23T04:56:07.000+00:00\" }";
+                    String exampleString = "{ \"currentPage\" : 1, \"articles\" : [ { \"summary\" : \"summary\", \"images\" : [ 6, 6 ], \"articleId\" : 0, \"text\" : \"text\", \"title\" : \"title\", \"creationDate\" : \"2000-01-23T04:56:07.000+00:00\" }, { \"summary\" : \"summary\", \"images\" : [ 6, 6 ], \"articleId\" : 0, \"text\" : \"text\", \"title\" : \"title\", \"creationDate\" : \"2000-01-23T04:56:07.000+00:00\" } ], \"numberOfResults\" : 5, \"pagesTotal\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
