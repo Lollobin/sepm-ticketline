@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Image;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ImageRepository;
 import com.github.javafaker.Faker;
-import com.github.javafaker.Lorem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -27,19 +26,13 @@ public class ArticleGenerator {
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    private final ArticleRepository articleRepository;
-
-
-    private final Faker faker = new Faker();
-
-    private final ImageGenerator imageGenerator;
-    private final Random numGenerator = new Random();
-
-    private final ImageRepository imageRepository;
-
     private static final ZoneId zone = ZoneId.of("Europe/Berlin");
     private static final ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+    private final ArticleRepository articleRepository;
+    private final Faker faker = new Faker();
+    private final ImageGenerator imageGenerator;
+    private final Random numGenerator = new Random();
+    private final ImageRepository imageRepository;
 
 
     public ArticleGenerator(
@@ -51,7 +44,7 @@ public class ArticleGenerator {
 
 
     public void generateData(int numberOfArticles) throws IOException {
-        if(!articleRepository.findAll().isEmpty()){
+        if (!articleRepository.findAll().isEmpty()) {
             LOGGER.debug("articles already generated");
             return;
         }
@@ -68,11 +61,12 @@ public class ArticleGenerator {
 
     private Article generateArticle() throws IOException {
 
-        Article article = new Article();
+
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2021);
         cal.set(Calendar.MONTH, Calendar.AUGUST);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        Article article = new Article();
         article.setCreationDate(faker.date().between(cal.getTime(), new Date()).toInstant().atOffset(zoneOffSet));
         article.setTitle(faker.lorem().sentence());
         article.setSummary(faker.lorem().paragraph(3));
@@ -95,7 +89,6 @@ public class ArticleGenerator {
             imageRepository.save(image);
 
         }
-
 
 
         return article;
