@@ -4,13 +4,19 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+<div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Success: </strong> Succesfully created account for user <strong>{{this.successUser}}</strong>!
+  <button type="button" (click)="vanishSuccess()" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 
 
 <div class="row justify-content-center">
   <div class="col-md-6">
     <div class="card">
       <header class="card-header">
-        <h4 class="card-title mt-2">Sign up for Ticketline 4.0</h4>
+        <h4 class="card-title mt-2">Create a new user for Ticketline 4.0</h4>
       </header>
       <article class="card-body">
         <form [formGroup]="registrationForm" (ngSubmit)="signUpUser()">
@@ -21,7 +27,7 @@
               <input [maxlength]="100" type="text" class="form-control" formControlName="firstName" placeholder="">
 
               <div *ngIf="(f.firstName.touched || submitted) && f.firstName.errors" class="error">
-                <small class="form-text text-warning" *ngIf="f.firstName.errors.required">Your first name is required!
+                <small class="form-text text-warning" *ngIf="f.firstName.errors.required">A first name is required!
                 </small>
               </div>
             </div>
@@ -30,7 +36,7 @@
               <label>Last name</label>
               <input [maxlength]="100" type="text" class="form-control" formControlName="lastName" placeholder=" ">
               <div *ngIf="(f.lastName.touched|| submitted)  && f.lastName.errors" class="error">
-                <small class="form-text text-warning" *ngIf="f.lastName.errors.required">Your last name is required!
+                <small class="form-text text-warning" *ngIf="f.lastName.errors.required">A last name is required!
                 </small>
               </div>
             </div>
@@ -46,7 +52,7 @@
               </label>
             </div>
             <div *ngIf="submitted && f.gender?.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.gender.errors.required">Your gender is required!
+              <small class="form-text text-warning" *ngIf="f.gender.errors.required">A gender is required!
               </small>
             </div>
           </div>
@@ -55,7 +61,7 @@
             <label>Email address</label>
             <input [maxlength]="100" type="email" class="form-control" formControlName="email" placeholder="">
             <div *ngIf="(f.email.touched || submitted)  && f.email.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.email.errors.required">Your email is required!
+              <small class="form-text text-warning" *ngIf="f.email.errors.required">An email is required!
               </small>
               <small class="form-text text-warning" *ngIf="f.email.errors.email">Not a valid mail address!
               </small>
@@ -67,11 +73,11 @@
             <input [maxlength]="64" type="password" name="password" formControlName="password" class="form-control"
               id="password">
             <div *ngIf="(f.password.touched|| submitted) && f.password.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.password.errors.required">Your password
+              <small class="form-text text-warning" *ngIf="f.password.errors.required">A password
                 is
                 required!
               </small>
-              <small class="form-text text-warning" *ngIf="f.password.errors.minlength">Your password must be at least 8
+              <small class="form-text text-warning" *ngIf="f.password.errors.minlength">The password must be at least 8
                 characters long!
               </small>
             </div>
@@ -162,10 +168,10 @@
           </div>
 
           <hr>
-          <button type="button" class="btn btn-outline-primary" routerLink="/login" (click)="clearForm()"> Go back to
-            login
+          <button type="button" class="btn btn-outline-primary" routerLink="/users" (click)="clearForm()"> Go back to
+            User Management
           </button>
-          <button type="submit" class="btn btn-primary btn-block"> Create new account</button>
+          <button type="submit" class="btn btn-primary btn-block">Create new account</button>
 
         </form>
 
