@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
-import {faArrowRight, faLockOpen} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-user-management',
@@ -17,6 +17,7 @@ export class UserManagementComponent implements OnInit {
   error = "";
   faLockOpen = faLockOpen;
   faArrowRight = faArrowRight;
+  faUserPlus = faUserPlus;
   success;
   firstName = "";
   lastName = "";

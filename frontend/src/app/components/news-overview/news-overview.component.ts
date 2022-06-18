@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Article, ArticlesService} from "../../generated-sources/openapi";
+import {Article, ArticlePage, ArticlesService, Sort} from "../../generated-sources/openapi";
 import {Router} from "@angular/router";
+import {CustomAuthService} from "../../services/custom-auth.service";
+import {ViewportScroller} from "@angular/common";
 
 @Component({
   selector: 'app-news-overview',
@@ -10,29 +12,39 @@ import {Router} from "@angular/router";
 export class NewsOverviewComponent implements OnInit {
 
   articles: Article[] = [];
+  articleResult: ArticlePage;
   error: Error;
   empty = false;
   filterRead = null;
   articleImages = {};
   defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
+  pageSize = 8;
+  sort: 'ASC' | 'DESC' = 'ASC';
+  page = 1;
 
 
-
-  constructor(public articleService: ArticlesService, private router: Router) {
+  constructor(public articleService: ArticlesService, private router: Router,
+              public authService: CustomAuthService, private scroll: ViewportScroller) {
   }
 
 
   ngOnInit(): void {
 
     this.filterRead = this.router.url.includes("read");
+    this.reloadArticles(this.filterRead);
+  }
 
 
+  reloadArticles(filterRead: boolean) {
 
-    this.articleService.articlesGet(this.filterRead).subscribe({
-      next: async response => {
-        this.articles = response;
-        this.empty = response.length === 0;
+    this.filterRead = filterRead;
+
+    this.articleService.articlesGet(this.filterRead, this.pageSize, this.page - 1, Sort.Desc).subscribe({
+      next: async articlePage => {
+        this.articleResult = articlePage;
+        this.articles = articlePage.articles;
+        this.empty = articlePage.articles.length === 0;
         for (const article of this.articles) {
 
           this.getImage(article.images[0], article.articleId);
@@ -76,6 +88,13 @@ export class NewsOverviewComponent implements OnInit {
         this.createImageFromBlob(image, articleId);
       },
     });
+  }
+
+  onPageChange(ngbpage: number) {
+    this.page = ngbpage;
+    this.reloadArticles(this.filterRead);
+    this.scroll.scrollToPosition([0, 0]);
+
   }
 
 

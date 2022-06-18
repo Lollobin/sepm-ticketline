@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
@@ -81,6 +83,9 @@ class ArticleEndpointTest {
     private SecurityProperties securityProperties;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private FileSystemRepository fileSystemRepository;
 
     @Autowired
@@ -88,8 +93,6 @@ class ArticleEndpointTest {
 
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithoutImage_shouldSaveArticle() throws Exception {
 
         ArticleWithoutIdDto articleWithoutIdDto = new ArticleWithoutIdDto();
@@ -124,11 +127,13 @@ class ArticleEndpointTest {
             () -> assertEquals(ARTICLE_TITLE, article.getTitle()),
             () -> assertEquals(ARTICLE_TEXT, article.getText())
         );
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithInvalidRole_shouldReturn403() throws Exception {
 
         ArticleWithoutIdDto articleWithoutIdDto = new ArticleWithoutIdDto();
@@ -156,8 +161,6 @@ class ArticleEndpointTest {
     }
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithOneImage_shouldReturn201() throws Exception {
         articleRepository.deleteAll();
         imageRepository.deleteAll();
@@ -213,11 +216,13 @@ class ArticleEndpointTest {
 
         assertThat(persistedImages.get(0).getArticle().getArticleId()).isEqualTo(
             article.getArticleId());
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD)})
     void postWithMultipleImages_shouldReturn201() throws Exception {
 
         imageRepository.deleteAll();
@@ -299,32 +304,10 @@ class ArticleEndpointTest {
             article.getArticleId());
         assertThat(persistedImages.get(2).getArticle().getArticleId()).isEqualTo(
             article.getArticleId());
-    }
 
-    @Test
-    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
-        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
-        @Sql("classpath:/sql/insert_article.sql"),
-        @Sql("classpath:/sql/insert_read_articles.sql")})
-    void articlesGetWithFilterReadTrue_shouldReturnReadArticles() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(
-            MockMvcRequestBuilders.get("/articles").param("filterRead", String.valueOf(true))
-                .header(securityProperties.getAuthHeader(),
-                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
-
-        ).andReturn();
-
-        MockHttpServletResponse servletResponse = result.getResponse();
-
-        List<Article> articleList = Arrays.asList(objectMapper.readValue(
-            servletResponse.getContentAsString(), Article[].class));
-
-        assertThat(articleList).hasSize(2);
-        assertAll(
-            () -> assertEquals(articleList.get(0).getArticleId(), -3),
-            () -> assertEquals(articleList.get(1).getArticleId(), -1)
-        );
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -341,6 +324,62 @@ class ArticleEndpointTest {
 
         assertEquals(servletResponse.getStatus(), HttpStatus.NOT_FOUND.value());
 
+    }
+
+
+    @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
+        @Sql("classpath:/sql/insert_article.sql"),
+        @Sql("classpath:/sql/insert_read_articles.sql")})
+    void articlesGetWithFilterReadTrue_shouldReturnReadArticles() throws Exception {
+
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/articles").param("filterRead", String.valueOf(true))
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        ArticlePageDto articleList = objectMapper.readValue(
+            servletResponse.getContentAsString(), ArticlePageDto.class);
+
+        assertThat(articleList.getArticles()).hasSize(2);
+        assertAll(
+            () -> assertEquals(articleList.getArticles().get(0).getArticleId(), -3),
+            () -> assertEquals(articleList.getArticles().get(1).getArticleId(), -1)
+        );
+    }
+
+    @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql(value = "classpath:/sql/delete.sql", executionPhase = BEFORE_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"), @Sql("classpath:/sql/insert_user.sql"),
+        @Sql("classpath:/sql/insert_article.sql"),
+        @Sql("classpath:/sql/insert_read_articles.sql")})
+    void articlesGetWithFilterReadFalse_shouldReturnNotReadArticles() throws Exception {
+
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/articles").param("filterRead", String.valueOf(false))
+                .header(securityProperties.getAuthHeader(),
+                    jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        ArticlePageDto articleList = objectMapper.readValue(
+            servletResponse.getContentAsString(), ArticlePageDto.class);
+
+        assertThat(articleList.getArticles()).hasSize(2);
+        assertAll(
+            () -> assertEquals(articleList.getArticles().get(0).getArticleId(), -4),
+            () -> assertEquals(articleList.getArticles().get(1).getArticleId(), -2)
+        );
     }
 
 }

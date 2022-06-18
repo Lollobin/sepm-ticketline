@@ -9,11 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Category } from './category';
+import { Article } from './article';
 
 
-export interface TopShowSearch { 
-    category: Category;
-    month: string;
+export interface ArticlePage { 
+    articles?: Array<Article>;
+    currentPage?: number;
+    numberOfResults?: number;
+    pagesTotal?: number;
 }
 

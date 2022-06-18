@@ -1,6 +1,7 @@
 export * from './address';
 export * from './adminPasswordReset';
 export * from './article';
+export * from './articlePage';
 export * from './articleWithoutId';
 export * from './artist';
 export * from './artistsSearchResult';
