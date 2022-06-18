@@ -47,6 +47,8 @@ import {UserDetailComponent} from './components/user-detail/user-detail.componen
 import {TopEventsComponent} from './components/top-events/top-events.component';
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import { CreateUserComponent } from './components/create-user/create-user.component';
+import {ImageCropperModule} from "ngx-image-cropper";
+
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { CreateUserComponent } from './components/create-user/create-user.compon
     NgbModule,
     FormsModule,
     FontAwesomeModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    ImageCropperModule
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]

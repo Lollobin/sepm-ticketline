@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ArticlesService, ArticleWithoutId} from "../../generated-sources/openapi";
-import {map} from "lodash";
-import {firstValueFrom} from "rxjs";
 import {ViewportScroller} from "@angular/common";
+import {ImageCroppedEvent} from "ngx-image-cropper";
 
 @Component({
   selector: 'app-create-article',
@@ -12,7 +11,8 @@ import {ViewportScroller} from "@angular/common";
 })
 export class CreateArticleComponent implements OnInit {
 
-
+  @ViewChild("myInput")
+  myInputVariable: ElementRef;
   fileToUpload: FileList | null = null;
   articleForm: FormGroup;
 
@@ -23,6 +23,15 @@ export class CreateArticleComponent implements OnInit {
 
   imageIds = [];
   previews: string[] = [];
+  imgChangeEvt: any = '';
+  cropImgPreview: any = '';
+  fileToReturn: File = null;
+  uploaded = false;
+  uploadSuccess = false;
+  pressed = false;
+  display = "none";
+  errorImage = "";
+
 
   constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller) {
     this.articleForm = this._formBuilder.group({
@@ -36,56 +45,76 @@ export class CreateArticleComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onFileChange(event) {
-    this.fileToUpload = event.target.files;
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const numberOfFiles = event.target.files.length;
-
-      for (let i = 0; i < numberOfFiles; i++) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-
-          this.previews.push(e.target.result);
-        };
-
-        reader.readAsDataURL(this.fileToUpload[i]);
-      }
-
-
-    }
+  onCloseHandled() {
+    this.display = "none";
   }
 
-  async uploadImage() {
+  onFileChange(event: any): void {
+    this.pressed = false;
+    this.imgChangeEvt = event;
+    this.uploadSuccess = false;
+  }
 
-    this.imageIds = [];
+  cropImg(e: ImageCroppedEvent) {
+    this.cropImgPreview = e.base64;
+    this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target?.files[0].name);
 
-    this.submitted = false;
+  }
 
-    const promises = map(this.fileToUpload, file =>
-        firstValueFrom(this.articleService.imagesPost(file, "response")));
+  imgLoad() {
+    this.errorImage = null;
+  }
+
+  initCropper() {
+    // init cropper
+  }
+
+  imgFailed() {
+    this.errorImage = "Wrong format selected";
+  }
+
+  reset() {
+    this.myInputVariable.nativeElement.value = null;
+  }
+
+  base64ToFile(data, filename) {
+
+    const arr = data.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, {type: mime});
+  }
 
 
-    const results = await Promise.all(promises);
+  helpUpload() {
 
-    results.forEach(res => {
-      const location = res.headers.get("location");
-      const id = location.split("/").pop();
-      this.imageIds.push(id);
-
+    this.articleService.imagesPost(this.fileToReturn, "response").subscribe({
+      next: res => {
+        const location = res.headers.get("location");
+        const id = location.split("/").pop();
+        this.imageIds.push(id);
+        this.previews.push(this.cropImgPreview);
+        this.uploaded = true;
+        this.uploadSuccess = true;
+        this.pressed = true;
+        this.fileToReturn = null;
+      }
     });
 
-
   }
+
 
   async createArticle() {
 
     try {
 
-      if (this.fileToUpload?.length > 0) {
-
-        await this.uploadImage();
-      }
       this.submitted = true;
 
       if (this.articleForm.valid && (this.fileToUpload === null || this.fileToUpload.length > 0)) {
@@ -104,21 +133,24 @@ export class CreateArticleComponent implements OnInit {
 
         this.articleService.articlesPost(article).subscribe({
           next: () => {
-
+            this.imageIds = [];
             this.submitted = false;
             this.success = true;
+            this.uploadSuccess = false;
+            this.previews = [];
+            this.reset();
+            this.display = "none";
+            this.articleForm.reset();
             this.scroll.scrollToPosition([0, 0]);
 
 
           },
           error: err1 => {
             this.success = false;
-            if (err1 instanceof Object) {
-              this.error = err1.error;
-            } else {
+            this.imageIds = [];
 
-              this.error = err1;
-            }
+            this.error = err1;
+
           }
         });
 
@@ -129,9 +161,28 @@ export class CreateArticleComponent implements OnInit {
     }
   }
 
+
   public vanishSuccess(): void {
     this.success = null;
   }
 
+  public vanishUploadSuccess(): void {
+    this.uploadSuccess = null;
+  }
 
+
+  removeImage(id: number) {
+    console.log(this.imageIds);
+
+    this.imageIds.splice(id, 1);
+    this.previews.splice(id, 1);
+  }
+
+  openModal() {
+    this.display = "block";
+  }
+
+  public vanishError(): void {
+    this.errorImage = null;
+  }
 }
