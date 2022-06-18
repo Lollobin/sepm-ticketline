@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {CustomAuthService} from "../../services/custom-auth.service";
-import {faEye, faCircleInfo, faUser, faNewspaper, faSearch, faBasketShopping, faUsers, faMapLocation, faCompactDisc , faFileLines} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faCircleInfo, faUser, faNewspaper, faSearch, faBasketShopping, 
+  faUsers, faMapLocation, faCompactDisc , faFileLines} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-header",

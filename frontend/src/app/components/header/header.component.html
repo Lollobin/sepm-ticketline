@@ -13,7 +13,7 @@
       <ul class="navbar-nav me-auto">
         <!-- Public Menu -->
         <li class="nav-item " *ngIf="!adminView">
-          <a class="nav-link" routerLink="/events" routerLinkActive="active"><fa-icon [icon]="search"></fa-icon> Events/Shows </a>
+          <a class="nav-link" routerLink="/events" routerLinkActive="active"><fa-icon [icon]="search"></fa-icon> Events & Shows </a>
         </li>
         <li class="nav-item" *ngIf="!adminView">
           <a class="nav-link" routerLink="/news/overview" routerLinkActive="active"><fa-icon [icon]="newspaper"></fa-icon> News </a>
@@ -37,7 +37,7 @@
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
           <a class="nav-link" routerLink="/article/create" routerLinkActive="active"><fa-icon [icon]="article"></fa-icon> Create
-            Article </a>
+            Articles </a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
           <a class="nav-link" routerLink="/lockedUsers" routerLinkActive="active">Show Locked
