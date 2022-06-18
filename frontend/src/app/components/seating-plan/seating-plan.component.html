@@ -5,12 +5,13 @@
       with
       <span *ngFor="let artist of artists; index as i">
         <span class="font-family-bold text-primary"
-          >{{ artist.bandName }} {{ artist.firstName }} {{ artist.lastName }}</span
+          >{{ artist.firstName }} '{{ artist.knownAs }}' {{ artist.lastName }}</span
         >
-        <span *ngIf="artists.length - 1 !== i">and</span>
+        <span *ngIf="artists.length - 2 !== i && artists.length - 1 !== i"> , </span>
+        <span *ngIf="artists.length - 2 === i"> and </span>
       </span>
     </div>
-    <div class="flex-end">starting at {{ show.date }}</div>
+    <div class="flex-end">starting at {{show.date | date: 'EEEE, d LLLL YYYY HH:mm'}}</div>
   </div>
   <div class="d-flex">
     <div class="screenBounded border border-dark border-2">
