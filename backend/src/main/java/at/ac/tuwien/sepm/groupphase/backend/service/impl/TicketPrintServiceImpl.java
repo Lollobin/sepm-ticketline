@@ -155,7 +155,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         } else {
             drawReservationBody(user, cs, xoffset, yoffset, ticket);
         }
-        addQRCode(ticketDocument, cs, ticket, xoffset, 30);
+        addQrCode(ticketDocument, cs, ticket, xoffset, 30);
         // drawTicketId(ticket, marginBody, cs, xoffset);
         cs.close();
         return ticketDocument;
@@ -365,7 +365,7 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.endText();
     }
 
-    private void addQRCode(PDDocument document, PDPageContentStream cs, Ticket ticket,
+    private void addQrCode(PDDocument document, PDPageContentStream cs, Ticket ticket,
         float xposition, float yposition) {
         try {
             String ticketMetadata =
@@ -376,8 +376,8 @@ public class TicketPrintServiceImpl implements TicketPrintService {
                 BarcodeFormat.QR_CODE, 200, 200);
 
             MatrixToImageConfig config = new MatrixToImageConfig(0xFF000001, 0xFFFFFFFF);
-            BufferedImage bImage = MatrixToImageWriter.toBufferedImage(matrix, config);
-            PDImageXObject image = JPEGFactory.createFromImage(document, bImage);
+            BufferedImage bimage = MatrixToImageWriter.toBufferedImage(matrix, config);
+            PDImageXObject image = JPEGFactory.createFromImage(document, bimage);
 
             cs.drawImage(image, xposition, yposition, 120, 120);
         } catch (IOException e) {
