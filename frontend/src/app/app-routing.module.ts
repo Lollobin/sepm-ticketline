@@ -3,7 +3,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthGuard} from "./guards/auth.guard";
-import {MessageComponent} from "./components/message/message.component";
+// import {MessageComponent} from "./components/message/message.component";
 import {SeatingPlanComponent} from "./components/seating-plan/seating-plan.component";
 import {OrderOverviewComponent} from "./components/order-overview/order-overview.component";
 import {RegistrationComponent} from "./components/registration/registration.component";

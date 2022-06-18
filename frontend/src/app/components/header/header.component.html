@@ -13,10 +13,10 @@
       <ul class="navbar-nav me-auto">
         <!-- Public Menu -->
         <li class="nav-item " *ngIf="!adminView">
-          <a class="nav-link" routerLink="/events" routerLinkActive="active"> Events/Shows </a>
+          <a class="nav-link" routerLink="/events" routerLinkActive="active"><fa-icon [icon]="search"></fa-icon> Events/Shows </a>
         </li>
         <li class="nav-item" *ngIf="!adminView">
-          <a class="nav-link" routerLink="/news/overview" routerLinkActive="active"> News </a>
+          <a class="nav-link" routerLink="/news/overview" routerLinkActive="active"><fa-icon [icon]="newspaper"></fa-icon> News </a>
         </li>
 
         <!-- Basic User Menu -->
@@ -24,7 +24,7 @@
           <a class="nav-link" routerLink="/message" routerLinkActive="active"> Message </a>
         </li> -->
         <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/orders" routerLinkActive="active"> Your Orders </a>
+          <a class="nav-link" routerLink="/orders" routerLinkActive="active"><fa-icon [icon]="basket"></fa-icon> Your Orders </a>
         </li>
         <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
           <a class="nav-link" routerLink="/news/read" routerLinkActive="active"> Show read News </a>
@@ -32,11 +32,11 @@
 
         <!-- Admin User Menu -->
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/events/create" routerLinkActive="active"> Create
-            Event </a>
+          <a class="nav-link" routerLink="/events/create" routerLinkActive="active"><fa-icon [icon]="event"></fa-icon> Create
+            Events & Shows </a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/article/create" routerLinkActive="active"> Create
+          <a class="nav-link" routerLink="/article/create" routerLinkActive="active"><fa-icon [icon]="article"></fa-icon> Create
             Article </a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
@@ -44,10 +44,10 @@
             Users</a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/users" routerLinkActive="active">User Management</a>
+          <a class="nav-link" routerLink="/users" routerLinkActive="active"><fa-icon [icon]="users"></fa-icon> User Management</a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/locations" routerLinkActive="active">Manage Locations</a>
+          <a class="nav-link" routerLink="/locations" routerLinkActive="active"><fa-icon [icon]="location"></fa-icon> Manage Locations</a>
         </li>
       </ul>
 
