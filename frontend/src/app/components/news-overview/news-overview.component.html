@@ -24,36 +24,44 @@
   </ng-template>
 </div>
 
-
-<div class="container " style="margin: 4rem auto">
+<div class="container" id="cards_landscape_wrap-2" style="margin: 4% auto">
 
 
   <div class="card mb-3" style="max-width: 1000px; margin: 0 auto" *ngFor="let article of articles">
-    <div class="row g-0">
+    <div class="row g-0 card-flyer">
       <div class="col-sm-12 col-md-4 col-xl-4">
-        <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
-             class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
-
+        <div class="image-box">
+          <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
+               class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
+        </div>
 
       </div>
       <div class="col-sm-5 col-md-8">
-        <div class="card-body">
-          <h3 class="card-title">{{article.title}}</h3>
-          <p class="card-text with-overflow">{{article?.summary}}</p>
-          <p class="bottom-0"><small class="text-muted" style="bottom: 1rem; position: absolute">Created
-            on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
-        </div>
-        <div style="margin-top: 4%">
-          <a style="position: absolute; bottom: 4%; right: 4%;"
-             [routerLink]="['/news/overview', article.articleId]" class="btn btn-primary">Read
-            article</a>
+        <div class="text-container">
+          <div class="card-body">
+            <h3 class="card-title">{{article.title}}</h3>
+            <p class="card-text with-overflow">{{article?.summary}}</p>
+            <p><small class="text-muted" style="bottom: 1rem; position: absolute; right: 1rem">Created
+              on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
+          </div>
+          <div style="margin-top: 4%">
+            <a
+                [routerLink]="['/news/overview', article.articleId]" class="stretched-link"></a>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
-
+  <div class="container mt-3" *ngIf="empty">
+    <div class="alert alert-warning" role="alert">
+      <h4 *ngIf="!filterRead">There aren't any new news!</h4>
+      <h4 *ngIf="filterRead">You have not read any news yet!</h4>
+      <button type="button" class="btn-close" (click)="vanishEmpty()" data-bs-dismiss="alert"
+              aria-label="Close"></button>
+    </div>
+  </div>
 </div>
+
 <ngb-pagination [collectionSize]="this.articleResult?.numberOfResults" [(page)]="page" [maxSize]="5"
                 [boundaryLinks]="true"
                 [pageSize]="pageSize" class="d-flex justify-content-center"

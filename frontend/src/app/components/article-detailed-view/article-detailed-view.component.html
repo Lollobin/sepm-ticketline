@@ -1,29 +1,41 @@
-<div class="container" style="margin-top: 17%">
-  <div class="row">
+<div class="container-fluid" style="margin: 4% auto;">
 
-    <div class="col">
-      <div class="bg-image">
-        <img
-            src="https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp"
-            class="img-fluid"
-            alt="Sample"
-        />
-        <div *ngIf="article?.images.length === 0" class="mask"
-             style="background-color: rgba(0, 0, 0, 0.6);">
-          <div class="d-flex justify-content-center align-items-center h-100">
-            <p class="text-white mb-0">{{article?.summary}}</p>
+  <div class="clearfix" id="slideShow">
+    <h1 class="w3-center">{{article?.title}}</h1><br>
+    <div id="slideShowLeft">
+      <ngb-carousel *ngIf="articleImages && article?.images.length > 1"
+                    [showNavigationArrows]="true"
+                    data-[interval]="2900">
+        <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
+          <div class="carousel-inner ">
+            <img [src]="articleImages[i]" alt="slide">
           </div>
+        </ng-template>
+      </ngb-carousel>
+      <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
+        <div [hidden]="article?.images.length === 1"
+             class="carousel-inner " style="margin: 0 auto">
+          <img [src]="errorImage" alt="slide">
+        </div>
+        <div [hidden]="article?.images.length === 0"
+             class="carousel-inner " style="margin: 0 auto">
+          <img [src]="articleImages[0]" alt="slide">
         </div>
       </div>
-
     </div>
-    <div class="col">
-      <h3>{{article?.title}}</h3>
-      <h5 *ngIf="article?.images.length === 0">{{article?.summary}}</h5>
-      <p>{{article?.text}}</p>
-      <p class="card-text"><small class="text-muted">Created
-        on {{article?.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small></p>
+
+
+    <!-- About Section -->
+    <div id="slideShowRight">
+
+      <div class="w3-col m6 w3-padding-large">
+
+        <h5 class="w3-center summary" style="text-align: justify">{{article?.summary}}</h5>
+        <p class="w3-large" style="text-align: justify">{{article?.text}}</p>
+      </div>
+
+
     </div>
   </div>
 </div>
-<app-error-alert style="margin-top: 3%" [error]="error"></app-error-alert>
+

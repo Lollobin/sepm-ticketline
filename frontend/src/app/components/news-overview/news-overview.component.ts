@@ -35,6 +35,7 @@ export class NewsOverviewComponent implements OnInit {
     this.reloadArticles(this.filterRead);
   }
 
+
   reloadArticles(filterRead: boolean) {
 
     this.filterRead = filterRead;
@@ -54,6 +55,7 @@ export class NewsOverviewComponent implements OnInit {
 
 
         }
+
       },
       error: error => {
         this.error = error;
