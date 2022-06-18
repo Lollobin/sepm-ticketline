@@ -354,16 +354,21 @@ export class TicketsService {
 
     /**
      * Retreives a ticket in PDF-format or the given Ticket ID.
-     * @param id ID of the ticket that is retreived
+     * @param tickets 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public ticketPrintsIdGet(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<Blob>;
-    public ticketPrintsIdGet(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<HttpResponse<Blob>>;
-    public ticketPrintsIdGet(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<HttpEvent<Blob>>;
-    public ticketPrintsIdGet(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling ticketPrintsIdGet.');
+    public ticketPrintsGet(tickets?: Array<number>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<Blob>;
+    public ticketPrintsGet(tickets?: Array<number>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<HttpResponse<Blob>>;
+    public ticketPrintsGet(tickets?: Array<number>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<HttpEvent<Blob>>;
+    public ticketPrintsGet(tickets?: Array<number>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/pdf', context?: HttpContext}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tickets) {
+            tickets.forEach((element) => {
+                localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+                  <any>element, 'tickets');
+            })
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -393,9 +398,10 @@ export class TicketsService {
         }
 
 
-        return this.httpClient.get(`${this.configuration.basePath}/ticketPrints/${encodeURIComponent(String(id))}`,
+        return this.httpClient.get(`${this.configuration.basePath}/ticketPrints`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: "blob",
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
