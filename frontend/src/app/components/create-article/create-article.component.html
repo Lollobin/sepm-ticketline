@@ -116,8 +116,7 @@
               <image-cropper
                   [imageChangedEvent]="imgChangeEvt"
                   [maintainAspectRatio]="true"
-                  [aspectRatio]="3 / 2"
-                  [resizeToWidth]="400"
+                  [aspectRatio]="7 / 5"
                   format="png"
                   (imageCropped)="cropImg($event)"
                   (imageLoaded)="imgLoad()"
@@ -127,7 +126,7 @@
             </div>
 
             <h6 *ngIf="this.cropImgPreview">Image Preview</h6>
-            <img [src]="cropImgPreview"/>
+            <img [src]="cropImgPreview" class="crop-preview"/>
           </div>
         </div>
         <div>
@@ -169,10 +168,10 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 style="text-align: justify;">You have not uploaded your selected images. Do you still want to continue?</h5>
+        <h5 style="text-align: justify;">You did not upload the last selected image. Do you still want to continue?</h5>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning" (click)="createArticle()">Create article without images</button>
+        <button type="button" class="btn btn-warning" (click)="createArticle()">Continue anyway</button>
         <button type="button" class="btn btn-secondary"
                 (click)="onCloseHandled();">Cancel</button>
       </div>

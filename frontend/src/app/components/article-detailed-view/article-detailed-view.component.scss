@@ -1,11 +1,11 @@
-img {
-  object-fit: fill;
-  height: 500px;
-  width: 95%;
-  display: block;
-  margin: 0 auto;
-
-}
+//img {
+//  object-fit: fill;
+//  max-width: 700px;
+//  max-height: 500px;
+//  display: block;
+//  margin: 0 auto;
+//
+//}
 
 @mixin faded($offset, $blur-radius, $spread-radius)
 {
@@ -14,6 +14,26 @@ img {
     box-shadow: inset $offset 0 $blur-radius (-$spread-radius), inset (-$offset) 0 $blur-radius (-$spread-radius);
   }
 
+
+}
+
+img {
+  width: 100%;
+}
+
+#slideShowLeft {
+  float: left;
+  width: 60%;
+  padding: 0 1rem 1rem 0;
+
+  height: auto;
+
+
+
+}
+#slideShowRight {
+  //width: 50%;
+  //float: right;
 
 }
 
@@ -84,8 +104,8 @@ img {
   font-weight: bold;
 }
 
-@media (max-width: 1100px) {
-  img{
-    height: 400px;
-  }
-}
+//@media (max-width: 1100px) {
+//  img{
+//    height: 400px;
+//  }
+//}

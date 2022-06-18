@@ -1,38 +1,41 @@
-<div class="container-md" style="margin: 4% auto; max-width: 1100px">
+<div class="container-fluid" style="margin: 4% auto;">
 
-  <div class="w3-content">
-    <ngb-carousel *ngIf="articleImages && article?.images.length > 1" [showNavigationArrows]="false"
-                  data-[interval]="2900">
-      <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
-        <div class="carousel-inner faded faded-left faded-right">
-          <img [src]="articleImages[i]" alt="slide">
+  <div class="clearfix" id="slideShow">
+    <h1 class="w3-center">{{article?.title}}</h1><br>
+    <div id="slideShowLeft">
+      <ngb-carousel *ngIf="articleImages && article?.images.length > 1"
+                    [showNavigationArrows]="true"
+                    data-[interval]="2900">
+        <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
+          <div class="carousel-inner ">
+            <img [src]="articleImages[i]" alt="slide">
+          </div>
+        </ng-template>
+      </ngb-carousel>
+      <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
+        <div [hidden]="article?.images.length === 1"
+             class="carousel-inner " style="margin: 0 auto">
+          <img [src]="errorImage" alt="slide">
         </div>
-      </ng-template>
-    </ngb-carousel>
-    <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
-      <div [hidden]="article?.images.length === 1"
-           class="carousel-inner faded faded-left faded-right" style="margin: 0 auto">
-        <img [src]="errorImage" alt="slide">
-      </div>
-      <div [hidden]="article?.images.length === 0"
-           class="carousel-inner faded faded-left faded-right" style="margin: 0 auto">
-        <img [src]="articleImages[0]" alt="slide">
+        <div [hidden]="article?.images.length === 0"
+             class="carousel-inner " style="margin: 0 auto">
+          <img [src]="articleImages[0]" alt="slide">
+        </div>
       </div>
     </div>
 
-    <hr>
-    <!-- About Section -->
-    <div class="w3-row w3-padding-64" id="about">
 
+    <!-- About Section -->
+    <div id="slideShowRight">
 
       <div class="w3-col m6 w3-padding-large">
-        <h1 class="w3-center">{{article?.title}}</h1><br>
+
         <h5 class="w3-center summary">{{article?.summary}}</h5>
-        <p class="w3-large">{{article?.text}}</p>
+        <p class="w3-large" style="text-align: justify">{{article?.text}}</p>
       </div>
+
+
     </div>
-
-
   </div>
-
 </div>
+
