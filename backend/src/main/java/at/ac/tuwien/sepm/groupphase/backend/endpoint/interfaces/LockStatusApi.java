@@ -45,6 +45,7 @@ public interface LockStatusApi {
      * @return Successful update of the lock status of an user. (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
+     *         or Validation failed for an input (status code 422)
      *         or Internal Server Error (status code 500)
      */
     @Operation(
@@ -55,6 +56,7 @@ public interface LockStatusApi {
             @ApiResponse(responseCode = "200", description = "Successful update of the lock status of an user."),
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "403", description = "The user needs administrative rights"),
+            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
         },
         security = {

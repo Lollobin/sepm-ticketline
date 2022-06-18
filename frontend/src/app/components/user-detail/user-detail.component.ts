@@ -12,6 +12,8 @@ import {Location} from '@angular/common';
 })
 export class UserDetailComponent implements OnInit {
   @Input() user;
+  @Output() reload: EventEmitter<any> = new EventEmitter<any>();
+
 
   error;
   success;
@@ -20,6 +22,10 @@ export class UserDetailComponent implements OnInit {
   faTrashCan = faTrashCan;
   faRotateLeft = faRotateLeft;
   clientURI = "http://" + window.location.host + "/#/passwordUpdate";
+  mail;
+  lockStatus;
+  lock = false;
+  passW = false;
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
@@ -33,22 +39,38 @@ export class UserDetailComponent implements OnInit {
   refreshPage() {
     this.userManagementService.usersIdGet(this.user.userId).subscribe(
         {
-          next: user => this.user = user, error: err => {
+          next: user => {
+            this.user = user;
+          }, error: err => {
             this.error = err;
-            console.log(err + "  das ist das problem");
           }
         }
     );
   }
 
-  unlockUser(id, mail) {
-    this.userManagementService.lockStatusIdPut(id, false).subscribe({
+  manageLockedStatus(id, mail, body) {
+    this.userManagementService.lockStatusIdPut(id, body).subscribe({
       next: () => {
-        this.success = "Successfully unlocked user with email " + mail + "!";
+        this.lock = true;
+        this.passW = false;
+        let status: string;
+        if (body) {
+          status = "locked";
+        } else {
+          status = "unlocked";
+        }
+        this.lockStatus = status;
+        this.mail = mail;
+        this.success = true;
+        this.error = null;
+
+        this.reload.emit( null);
         this.refreshPage();
       },
       error: err => {
+        this.success = false;
         this.handleError(err);
+
       }
     });
 
@@ -59,17 +81,22 @@ export class UserDetailComponent implements OnInit {
     const adminpasswordReset: AdminPasswordReset = {
       clientURI: this.clientURI
     };
-    console.log("reset with id " + id + "and clienturi " + this.clientURI);
     this.userManagementService.passwordResetIdPost(id, adminpasswordReset).subscribe(
         {
-          next: () => this.success = "Successfully reset password of user " + this.user.email + "!",
+          next: () => {
+            this.mail = this.user.email;
+            this.lock = false;
+            this.passW = true;
+
+            this.success = "Successfully reset password of user " + this.user.email + "!";
+          },
           error: (err) => this.handleError(err)
         }
     );
   }
 
   handleError(error) {
-    this.error = error.message ? error.message : "Unknown Error";
+    this.error = error.message && !error.error ? error.message : error.error;
   }
 
   back(): void {
@@ -84,4 +111,5 @@ export class UserDetailComponent implements OnInit {
   vanishSuccess() {
     this.success = null;
   }
+
 }
