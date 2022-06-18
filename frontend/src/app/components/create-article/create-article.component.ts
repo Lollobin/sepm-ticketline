@@ -92,26 +92,6 @@ export class CreateArticleComponent implements OnInit {
     return new File([u8arr], filename, {type: mime});
   }
 
-  // onFileChange(event) {
-  //   this.fileToUpload = event.target.files;
-  //   if (event.target.files && event.target.files[0]) {
-  //     const file = event.target.files[0];
-  //     const numberOfFiles = event.target.files.length;
-  //
-  //     for (let i = 0; i < numberOfFiles; i++) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e: any) => {
-  //
-  //         this.previews.push(e.target.result);
-  //       };
-  //
-  //       reader.readAsDataURL(this.fileToUpload[i]);
-  //     }
-  //
-  //
-  //   }
-  // }
-
 
   helpUpload() {
 
@@ -130,41 +110,11 @@ export class CreateArticleComponent implements OnInit {
 
   }
 
-  // async uploadImage() {
-  //
-  //
-  //   this.previews = [];
-  //
-  //   this.submitted = false;
-  //
-  //   const promises = map(this.fileToUpload, file =>
-  //       firstValueFrom(this.articleService.imagesPost(file, "response")));
-  //
-  //
-  //   const results = await Promise.all(promises);
-  //
-  //   results.forEach(res => {
-  //     const location = res.headers.get("location");
-  //     const id = location.split("/").pop();
-  //     this.imageIds.push(id);
-  //
-  //   });
-  //
-  //
-  // }
 
   async createArticle() {
 
-    if (this.cropImgPreview) {
-
-    }
-
     try {
 
-      // if (this.fileToUpload?.length > 0) {
-      //
-      //   await this.uploadImage();
-      // }
       this.submitted = true;
 
       if (this.articleForm.valid && (this.fileToUpload === null || this.fileToUpload.length > 0)) {

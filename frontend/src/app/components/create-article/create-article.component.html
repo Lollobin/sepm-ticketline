@@ -65,24 +65,6 @@
 
 
       <div>
-        <!--        <div class="form-group" style="margin: 4% auto 0 auto; position: relative">-->
-        <!--          <input type="file" multiple accept="image/png, image/jpeg" class="form-control"-->
-        <!--                 id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"-->
-        <!--                 aria-label="Upload"-->
-        <!--                 (change)="onFileChange($event)"/>-->
-
-
-        <!--        </div>-->
-        <!--        <div>-->
-        <!--          <small style="position: relative"-->
-        <!--                 class="form-text text-black" for="inputGroupFile04"-->
-        <!--          >Accepted Formats: jpg, jpeg, png-->
-        <!--          </small>-->
-        <!--        </div>-->
-
-        <!--        <div class="form-group" style="margin-top: 3%">-->
-        <!--          <img *ngFor='let preview of previews' [src]="preview" class="preview" alt="preview">-->
-        <!--        </div>-->
         <div class="form-group" style="margin: 3% auto 0 auto; position: relative">
           <input type="file" #myInput multiple accept="image/png, image/jpeg" class="form-control"
                  (change)="onFileChange($event)"/>
@@ -93,7 +75,8 @@
             </div>
             <div class="col">
               <button [hidden]="!this.imgChangeEvt" class="btn btn-secondary"
-                      style="float: right; margin-top: 3%" (click)="helpUpload(); reset()" [disabled]="fileToReturn === null">Add image
+                      style="float: right; margin-top: 3%" (click)="helpUpload(); reset()"
+                      [disabled]="fileToReturn === null">Add image
               </button>
             </div>
 
@@ -131,13 +114,15 @@
         </div>
         <div>
           <div style="margin-bottom: 0; margin-top: 2%">
-        <button
+            <button
                 [disabled]="!articleForm.valid && (articleForm.get('title').touched && articleForm.get('text').touched && articleForm.get('summary').touched) || (submitted && (articleForm.get('title').value === '' || articleForm.get('text').value === ''  || articleForm.get('summary').value === '' ))  "
-                class="btn btn-primary" (click)="this.fileToReturn !== null && this.articleForm.valid ? openModal() : createArticle()">Create Article
-        </button>
+                class="btn btn-primary"
+                (click)="this.fileToReturn !== null && this.articleForm.valid ? openModal() : createArticle()">
+              Create Article
+            </button>
           </div>
-        <small style="margin-top: 0; padding: 0" class="form-text text-black"
-               for="inputGroupFile04">Fields with * are mandatory</small>
+          <small style="margin-top: 0; padding: 0" class="form-text text-black"
+                 for="inputGroupFile04">Fields with * are mandatory</small>
         </div>
 
 
@@ -152,7 +137,8 @@
     <div class="row">
       <div class="col-3" [hidden]="this.previews.length === 0"
            *ngFor='let preview of previews; index as i'>
-        <button type="button" class="btn-close" (click)="removeImage(i)" aria-label="Close" style="top: 0" ></button>
+        <button type="button" class="btn-close" (click)="removeImage(i)" aria-label="Close"
+                style="top: 0"></button>
         <img [src]="preview" class="preview imgStyle" alt="preview">
 
 
@@ -168,12 +154,15 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 style="text-align: justify;">You did not upload the last selected image. Do you still want to continue?</h5>
+        <h5 style="text-align: justify;">You did not upload the last selected image. Do you still
+          want to continue?</h5>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning" (click)="createArticle()">Continue anyway</button>
+        <button type="button" class="btn btn-warning" (click)="createArticle()">Continue anyway
+        </button>
         <button type="button" class="btn btn-secondary"
-                (click)="onCloseHandled();">Cancel</button>
+                (click)="onCloseHandled();">Cancel
+        </button>
       </div>
     </div>
   </div>
