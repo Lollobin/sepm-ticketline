@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArticlePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.ARTICLES_BASE_URI;
@@ -381,5 +383,64 @@ class ArticleEndpointTest {
             () -> assertEquals(articleList.getArticles().get(1).getArticleId(), -2)
         );
     }
+
+    @Test
+
+    void articlesIdGetWithValidID_shouldReturnCorrectArticle() throws Exception {
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+
+        String name = "das ist ein Teststring";
+        String filePath = fileSystemRepository.save(name.getBytes(StandardCharsets.UTF_8), name);
+
+        Image image = new Image();
+        image.setFilePath(filePath);
+
+        String name2 = "das ist ein zweiter Teststring";
+        String filePath2 = fileSystemRepository.save(name2.getBytes(StandardCharsets.UTF_8), name2);
+
+        Image image2 = new Image();
+        image2.setFilePath(filePath2);
+
+        imageRepository.save(image);
+        imageRepository.save(image2);
+
+        List<Image> images = imageRepository.findAll();
+        Article article = new Article();
+        article.setText(ARTICLE_TEXT);
+        article.setTitle(ARTICLE_TITLE);
+        article.setSummary(ARTICLE_SUMMARY);
+        article.setImages(images);
+        article.setCreationDate(OffsetDateTime.now());
+
+        articleRepository.save(article);
+
+        assertThat(imageRepository.findAll()).hasSize(2);
+        assertThat(articleRepository.findAll()).hasSize(1);
+        Long id = articleRepository.findAll().get(0).getArticleId();
+
+        MvcResult result = this.mockMvc.perform(
+            MockMvcRequestBuilders.get("/articles/" + id)
+
+        ).andReturn();
+
+        MockHttpServletResponse servletResponse = result.getResponse();
+
+        ArticleDto articleDto = objectMapper.readValue(
+            servletResponse.getContentAsString(), ArticleDto.class);
+
+        assertThat(articleDto.getImages()).hasSize(2);
+
+        assertAll(
+            () -> assertEquals(articleDto.getArticleId(), id),
+            () -> assertEquals(articleDto.getImages().get(0), images.get(0).getImageId()),
+            () -> assertEquals(articleDto.getImages().get(1), images.get(1).getImageId())
+        );
+
+        imageRepository.deleteAll();
+        articleRepository.deleteAll();
+    }
+
 
 }
