@@ -152,10 +152,12 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         yoffset -= 30;
         if (isPurchased) {
             drawTicketBody(user, cs, xoffset, yoffset);
+            addQrCode(ticketDocument, cs, ticket, xoffset, 30);
         } else {
             drawReservationBody(user, cs, xoffset, yoffset, ticket);
         }
-        addQrCode(ticketDocument, cs, ticket, xoffset, 30);
+
+
         // drawTicketId(ticket, marginBody, cs, xoffset);
         cs.close();
         return ticketDocument;
