@@ -73,7 +73,7 @@ public class ArticleGenerator {
         article.setText(String.valueOf(faker.lorem().paragraphs(14)));
 
 
-        int numOfImages = numGenerator.nextInt(4);
+        int numOfImages = numGenerator.nextInt(1, 4);
 
         List<Long> imageIds = imageGenerator.generateData(numOfImages);
 
