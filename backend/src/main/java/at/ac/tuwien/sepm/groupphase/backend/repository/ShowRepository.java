@@ -37,7 +37,8 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
             + "day(s.date) = day(:date))))"
             + "and ((:price is null) or (sp.price <= :price)) and "
             + "((:seating is null) or (seatP.seatingPlanId = :seating)) and "
-            + "((:location is null) or (l.locationId = :location))")
+            + "((:location is null) or (l.locationId = :location)) and "
+            +  "(s.date >= CURRENT_DATE)")
     Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("hour") Integer hour,
         @Param("minute") Integer minutes, @Param("name") String eventName,
         @Param("price") BigDecimal price, @Param("seating") Long seatingPlan,
