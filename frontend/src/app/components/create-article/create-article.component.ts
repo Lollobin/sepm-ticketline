@@ -105,6 +105,10 @@ export class CreateArticleComponent implements OnInit {
         this.uploadSuccess = true;
         this.pressed = true;
         this.fileToReturn = null;
+      },
+      error: err => {
+        this.error = err;
+
       }
     });
 
