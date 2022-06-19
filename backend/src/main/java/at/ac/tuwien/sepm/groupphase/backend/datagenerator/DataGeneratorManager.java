@@ -20,7 +20,7 @@ public class DataGeneratorManager {
     private static final int NUMBER_OF_LOCATIONS = 1;
     private static final int MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION = 3;
 
-    private static final int NUMBER_OF_ARTICLES = 500;
+    private static final int NUMBER_OF_ARTICLES = 30;
 
     private static final Logger LOGGER =
         LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
