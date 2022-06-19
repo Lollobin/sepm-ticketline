@@ -16,9 +16,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquisitionService;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.PurchaseValidator;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -93,15 +92,17 @@ public class TicketAcquisitionServiceImpl implements TicketAcquisitionService {
 
     private List<Ticket> getUnavailableTickets(List<Ticket> ticketList, ApplicationUser user,
         BookingType bookingType) {
-        Set<Ticket> unavailableTickets = new HashSet<>();
+        List<Ticket> unavailableTickets = new ArrayList<>();
         for (Ticket ticket : ticketList) {
             if (ticket.getPurchasedBy() != null || (ticket.getReservedBy() != null
                 && ticket.getReservedBy().getUserId() != user.getUserId())) {
                 unavailableTickets.add(ticket);
+                continue;
             }
             if (bookingType.equals(BookingType.PURCHASE) && ticket.getShow().getDate()
                 .isBefore(OffsetDateTime.now())) {
                 unavailableTickets.add(ticket);
+                continue;
             }
             if (bookingType.equals(BookingType.RESERVATION) && ticket.getShow().getDate()
                 .minusMinutes(30).isBefore(OffsetDateTime.now())) {
