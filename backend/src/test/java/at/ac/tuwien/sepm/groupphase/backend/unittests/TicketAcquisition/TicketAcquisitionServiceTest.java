@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.unittests.TicketAcquisition;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,8 +14,10 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TicketMapperImpl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Sector;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.BookingType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
@@ -22,6 +25,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepm.groupphase.backend.service.TicketAcquisitionService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.TicketAcquisitionServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.PurchaseValidator;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +74,9 @@ public class TicketAcquisitionServiceTest {
         Ticket ticket = new Ticket();
         ticket.setTicketId(id);
         ticket.setSeat(seat);
+        Show show = new Show();
+        show.setDate(OffsetDateTime.now().plusDays(2));
+        ticket.setShow(show);
         return ticket;
     }
 
@@ -83,9 +90,55 @@ public class TicketAcquisitionServiceTest {
     }
 
     @Test
+    void acquireTickets_shouldThrowValidationExceptionWhenPurchasedTicketsAreInPast() {
+        TicketStatusDto ticketStatusDto = new TicketStatusDto();
+        long id = atomicLong.getAndIncrement();
+
+        List<Long> ticketIds = List.of(id);
+        ticketStatusDto.setPurchased(ticketIds);
+
+        Ticket returnedTicket = generateTicketWithSeatAndSector(id);
+        returnedTicket.getShow().setDate(OffsetDateTime.now().minusDays(1));
+        List<Ticket> ticketList = List.of(returnedTicket);
+        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
+
+        ApplicationUser user = new ApplicationUser();
+        when(authentication.getPrincipal()).thenReturn("");
+        when(authenticationFacade.getAuthentication()).thenReturn(authentication);
+        when(userRepository.findUserByEmail(any())).thenReturn(user);
+
+        assertThrows(ValidationException.class, ()->{
+            ticketAcquisitionService.acquireTickets(
+                ticketStatusDto);
+        });
+    }
+    @Test
+    void acquireTickets_shouldThrowValidationExceptionWhenReservedTicketsAreLessThan30MinutesInTheFuture() {
+        TicketStatusDto ticketStatusDto = new TicketStatusDto();
+        long id = atomicLong.getAndIncrement();
+
+        List<Long> ticketIds = List.of(id);
+        ticketStatusDto.setReserved(ticketIds);
+        Ticket returnedTicket = generateTicketWithSeatAndSector(id);
+        returnedTicket.getShow().setDate(OffsetDateTime.now().minusMinutes(25));
+        List<Ticket> ticketList = List.of(returnedTicket);
+        when(ticketRepository.findAllById(ticketIds)).thenReturn(ticketList);
+
+        ApplicationUser user = new ApplicationUser();
+        when(authentication.getPrincipal()).thenReturn("");
+        when(authenticationFacade.getAuthentication()).thenReturn(authentication);
+        when(userRepository.findUserByEmail(any())).thenReturn(user);
+
+        assertThrows(ValidationException.class, ()->{
+            ticketAcquisitionService.acquireTickets(
+                ticketStatusDto);
+        });
+    }
+
+    @Test
     void acquireTickets_shouldReturnSinglePurchasedTicket() {
         TicketStatusDto ticketStatusDto = new TicketStatusDto();
-        long id = atomicLong.get();
+        long id = atomicLong.getAndIncrement();
 
         List<Long> ticketIds = List.of(id);
         ticketStatusDto.setPurchased(ticketIds);
@@ -110,8 +163,8 @@ public class TicketAcquisitionServiceTest {
     @Test
     void acquireTickets_shouldReturnMultiplePurchasedTickets() {
         TicketStatusDto ticketStatusDto = new TicketStatusDto();
-        long id1 = atomicLong.get();
-        long id2 = atomicLong.get();
+        long id1 = atomicLong.getAndIncrement();
+        long id2 = atomicLong.getAndIncrement();
 
         List<Long> ticketIds = List.of(id1, id2);
         ticketStatusDto.setPurchased(ticketIds);
@@ -138,7 +191,7 @@ public class TicketAcquisitionServiceTest {
     @Test
     void acquireTickets_shouldReturnSingleReservedTicket() {
         TicketStatusDto ticketStatusDto = new TicketStatusDto();
-        long id = atomicLong.get();
+        long id = atomicLong.getAndIncrement();
 
         List<Long> ticketIds = List.of(id);
         ticketStatusDto.setReserved(ticketIds);
@@ -163,8 +216,8 @@ public class TicketAcquisitionServiceTest {
     @Test
     void acquireTickets_shouldReturnMultipleReservedTickets() {
         TicketStatusDto ticketStatusDto = new TicketStatusDto();
-        long id1 = atomicLong.get();
-        long id2 = atomicLong.get();
+        long id1 = atomicLong.getAndIncrement();
+        long id2 = atomicLong.getAndIncrement();
 
         List<Long> ticketIds = List.of(id1, id2);
         ticketStatusDto.setReserved(ticketIds);
