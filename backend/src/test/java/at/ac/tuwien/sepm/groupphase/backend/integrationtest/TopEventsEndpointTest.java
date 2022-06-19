@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
@@ -28,6 +29,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -39,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
-public class TopEventsEndpointTest implements TestData {
+class TopEventsEndpointTest implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -65,9 +68,20 @@ public class TopEventsEndpointTest implements TestData {
     }
 
     @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"),
+        @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_seat.sql"),
+        @Sql("classpath:/sql/insert_user.sql"),
+        @Sql("classpath:/sql/insert_event.sql"),
+        @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),
+        @Sql("classpath:/sql/insert_ticket.sql")
+    })
     void topEventsGet_shouldReturnAllEvents_whenNoParameters() throws Exception {
-
-        saveEventsWithShowsAndTickets();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                 .get("/topEvents")
@@ -79,8 +93,8 @@ public class TopEventsEndpointTest implements TestData {
         List<EventWithTicketsSoldDto> events = new ArrayList<>();
         events = objectMapper.readValue(response.getContentAsString(), List.class);
 
+        assertThat(events).hasSize(2);
 
-        assertThat(events).hasSize(1);
     }
 
     @Test

@@ -32,9 +32,6 @@ public class Event {
     @Column(columnDefinition = "CLOB")
     private String content;
 
-    @Transient
-    private long ticketsSold;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -113,13 +110,5 @@ public class Event {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public long getTicketsSold() {
-        return ticketsSold;
-    }
-
-    public void setTicketsSold(long ticketsSold) {
-        this.ticketsSold = ticketsSold;
     }
 }

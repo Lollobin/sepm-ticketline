@@ -1,7 +1,4 @@
-delete from EVENT where EVENT_ID < 0;
-commit;
-
-Delete
+delete
 from EVENT
 where EVENT_ID < 0;
 commit;
