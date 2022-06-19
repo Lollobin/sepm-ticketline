@@ -17,7 +17,6 @@ export class CreateEventComponent implements OnInit {
   categoriesType = Category;
   categories = [];
 
-
   eventForm: any;
   error = false;
   errorMessage = '';
@@ -53,7 +52,7 @@ export class CreateEventComponent implements OnInit {
     this.eventForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
       category: ['', [Validators.required]],
-      duration: [120, [Validators.min(10), Validators.max(360)]],
+      duration: [120, [Validators.min(5), Validators.max(360)]],
       description: ['']
     });
     this.role = this.authService.getUserRole();

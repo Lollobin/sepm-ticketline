@@ -28,6 +28,11 @@ const drawSeatingPlan = (stage: Container, seatingPlan: SeatingPlanLayout) => {
   drawStandingAreas(stage, seatingPlan);
   drawStaticAreas(stage, seatingPlan);
 };
+const drawSeatingPlanPreview = (stage: Container, seatingPlan: SeatingPlanLayout) => {
+  drawSeats(stage, seatingPlan);
+  drawStandingAreasPreview(stage, seatingPlan);
+  drawStaticAreas(stage, seatingPlan);
+};
 const drawSeats = (stage: Container, seatingPlan: SeatingPlanLayout) => {
   const sectorMap: { [id: number]: SeatingPlanSector } = {};
   for (const sector of seatingPlan.sectors) {
@@ -200,9 +205,41 @@ const drawArea = (location: Location, color: Color, radius: number) => {
     .drawRoundedRect(0, 0, location.w, location.h, radius);
   return areaGraphics;
 };
+const drawStandingAreaPreview = (
+  location: Location,
+  color: Color,
+  text?: string
+) => {
+  const areaGraphics = drawArea(location, color, 0);
+  if (text) {
+    const additionalText = drawText(text, 15, areaGraphics.width);
+    centerText(additionalText, areaGraphics.width);
+    additionalText.setTransform(
+      additionalText.position.x, location.h * 0.05
+    );
+    areaGraphics.addChild(additionalText);
+  }
+  return areaGraphics;
+};
+const drawStandingAreasPreview = (stage: Container, seatingPlan: SeatingPlanLayout) => {
+  const standingAreas = seatingPlan.sectors.filter(
+    (sector) => sector.noSeats
+  ) as Array<SeatingPlanSector>;
+  const seatCounts = countBy(seatingPlan.seats, "sectorId");
+  for (const standingArea of standingAreas) {
+    const standingAreaGraphics = drawStandingAreaPreview(
+      standingArea.location,
+      { baseColor: 0xf0f0f0, strokeColor: standingArea.color },
+      standingArea.description ? standingArea.description : ""
+    );
+    standingAreaGraphics.name = generateStandingAreaId(standingArea.id);
+    stage.addChild(standingAreaGraphics);
+  }
+};
 
 export {
   drawSeatingPlan,
+  drawSeatingPlanPreview,
   generateStandingAreaId,
   generateSeatId,
   generateStaticAreaId,
