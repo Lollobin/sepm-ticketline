@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.integrationtest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithTicketsSoldDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
@@ -16,7 +19,9 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,21 +55,41 @@ class TopEventsEndpointTest implements TestData {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Autowired
-    private EventRepository eventRepository;
+    @Test
+    @SqlGroup({@Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD),
+        @Sql("classpath:/sql/insert_address.sql"),
+        @Sql("classpath:/sql/insert_location.sql"),
+        @Sql("classpath:/sql/insert_seatingPlanLayout.sql"),
+        @Sql("classpath:/sql/insert_seatingPlan.sql"),
+        @Sql("classpath:/sql/insert_sector.sql"),
+        @Sql("classpath:/sql/insert_seat.sql"),
+        @Sql("classpath:/sql/insert_user.sql"),
+        @Sql("classpath:/sql/insert_event.sql"),
+        @Sql("classpath:/sql/insert_show.sql"),
+        @Sql("classpath:/sql/insert_sectorPrice.sql"),
+        @Sql("classpath:/sql/insert_ticket.sql")
+    })
+    void topEventsGet_shouldReturnAllEventsWithTicketsSold_whenNoParameters() throws Exception {
 
-    @Autowired
-    private ShowRepository showRepository;
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                .get("/topEvents")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn();
+        MockHttpServletResponse response = result.getResponse();
 
-    @Autowired
-    private UserRepository userRepository;
+        List<EventWithTicketsSoldDto> events = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
 
-    @Autowired
-    private TicketRepository ticketRepository;
+        assertAll(
+            () -> assertThat(events).hasSize(4),
+            () -> assertThat(events.get(0).getEventId()).isEqualTo(-2),
+            () -> assertThat(events.get(0).getTicketsSold()).isEqualTo(3),
+            () -> assertThat(events.get(1).getEventId()).isEqualTo(-1),
+            () -> assertThat(events.get(1).getTicketsSold()).isEqualTo(2)
+        );
 
-    @BeforeEach
-    public void setup() {
-        eventRepository.deleteAll();
     }
 
     @Test
@@ -81,74 +106,28 @@ class TopEventsEndpointTest implements TestData {
         @Sql("classpath:/sql/insert_sectorPrice.sql"),
         @Sql("classpath:/sql/insert_ticket.sql")
     })
-    void topEventsGet_shouldReturnAllEvents_whenNoParameters() throws Exception {
+    void topEventsGet_shouldReturnCorrectEvents_whenValidParameters() throws Exception {
+
+        TopEventSearchDto searchDto = new TopEventSearchDto().category(CategoryDto.POP).month(
+            LocalDate.of(2022, 8, 1));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                 .get("/topEvents")
+                .param("month", "2022-08-01")
+                .param("category", "POP")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn();
         MockHttpServletResponse response = result.getResponse();
 
-        List<EventWithTicketsSoldDto> events = new ArrayList<>();
-        events = objectMapper.readValue(response.getContentAsString(), List.class);
+        List<EventWithTicketsSoldDto> events = objectMapper.readValue(response.getContentAsString(),
+            new TypeReference<>() {
+            });
 
-        assertThat(events).hasSize(2);
-
-    }
-
-    @Test
-    void topEventsGet_shouldReturnCorrectEvents_whenValidParameters() {
-
-    }
-
-    @Test
-    void topEventsGet_shouldReturnNoEvents_whenInvalidParameters() {
-
-    }
-
-    @Test
-    void topEventsGet_shouldReturnCorrectAmountOfTicketsSold() {
-
-    }
-
-    private void saveEventsWithShowsAndTickets() {
-        ADDRESS_ENTITY.setAddressId(null);
-        ApplicationUser user = new ApplicationUser(USER_EMAIL, USER_FNAME, USER_LNAME, Gender.MALE,
-            ADDRESS_ENTITY, ENCODED_USER_PASSWORD_EXAMPLE);
-        userRepository.save(user);
-
-        Event event1 = new Event();
-        event1.setName(EVENT_NAME);
-        event1.setContent(EVENT_CONTENT);
-        event1.setCategory(EVENT_CATEGORY);
-        event1.setDuration(EVENT_DURATION);
-        eventRepository.save(event1);
-
-/*
-        Event event2 = new Event();
-        event2.setName(EVENT2_NAME);
-        event2.setContent(EVENT2_CONTENT);
-        event2.setCategory(EVENT2_CATEGORY);
-        event2.setDuration(EVENT2_DURATION);
-        eventRepository.save(event2);
-
-        Event event3 = new Event();
-        event3.setName(EVENT3_NAME);
-        event3.setContent(EVENT3_CONTENT);
-        event3.setCategory(EVENT3_CATEGORY);
-        event3.setDuration(EVENT3_DURATION);
-        eventRepository.save(event3);
- */
-
-        Show show1 = new Show();
-        show1.setDate(OffsetDateTime.now());
-        show1.setEvent(event1);
-        showRepository.save(show1);
-
-        Ticket ticket = new Ticket();
-        ticket.setPurchasedBy(user);
-        ticketRepository.save(ticket);
-
+        assertAll(
+            () -> assertThat(events).hasSize(1),
+            () -> assertThat(events.get(0).getEventId()).isEqualTo(-1),
+            () -> assertThat(events.get(0).getTicketsSold()).isEqualTo(2)
+        );
     }
 }
