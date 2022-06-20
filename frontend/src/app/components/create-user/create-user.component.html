@@ -4,11 +4,14 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Success: </strong> Succesfully created account for user <strong>{{this.successUser}}</strong>!
-  <button type="button" (click)="vanishSuccess()" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+<div class="container mt-3" *ngIf="success">
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Success!</h4>
+    Succesfully created {{this.createdAccount}} account <strong>{{this.successUser}}</strong>!
+    <p></p>
+    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
+      aria-label="Close"></button>
+  </div>
 </div>
 
 
@@ -16,10 +19,10 @@
   <div class="col-md-6">
     <div class="card">
       <header class="card-header">
-        <h4 class="card-title mt-2">Create a new user for Ticketline 4.0</h4>
+        <h4 class="card-title mt-2">Create a new account for Ticketline 4.0</h4>
       </header>
       <article class="card-body">
-        <form [formGroup]="registrationForm" (ngSubmit)="signUpUser()">
+        <form [formGroup]="registrationForm" (ngSubmit)="openModal()">
 
           <div class="row">
             <div class="col form-group">
@@ -67,36 +70,6 @@
               </small>
             </div>
           </div>
-
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input [maxlength]="64" type="password" name="password" formControlName="password" class="form-control"
-              id="password">
-            <div *ngIf="(f.password.touched|| submitted) && f.password.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.password.errors.required">A password
-                is
-                required!
-              </small>
-              <small class="form-text text-warning" *ngIf="f.password.errors.minlength">The password must be at least 8
-                characters long!
-              </small>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <input [maxlength]="64" type="password" name="confirmPassword" formControlName="confirmPassword"
-              class="form-control" id="confirmPassword">
-
-            <div *ngIf="f.confirmPassword.touched || submitted" class="error">
-              <small class="form-text text-warning" *ngIf=" registrationForm.errors?.['passwordsDoNotMatch']">Passwords
-                do not match
-              </small>
-              <small class="form-text text-warning" *ngIf="f.confirmPassword.errors?.required">Password Confirmation
-                required
-              </small>
-            </div>
-          </div>
-
 
           <div class="m-3">
             <h5>Postal Address</h5>
@@ -166,12 +139,61 @@
             </div>
 
           </div>
+          <div class="m-3">
+            <h5>Admin rights <fa-icon [icon]="faUserShield"></fa-icon>
+            </h5>
+          </div>
 
+          <div class="form-check form-switch form-group">
+
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="isAdmin" style="transform: scale(1.05);">
+            <label class="form-check-label" for="flexSwitchCheckDefault"> Should the account have admin rights?</label>
+          </div>
           <hr>
+
           <button type="button" class="btn btn-outline-primary" routerLink="/users" (click)="clearForm()"> Go back to
             User Management
           </button>
-          <button type="submit" class="btn btn-primary btn-block">Create new account</button>
+          <button type="submit" class="btn btn-primary btn-block" (click)="openModal()">Create new account</button>
+
+          <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+            style="background: rgba(0,0,0, .5); padding-top: 12%">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5>Are you sure you want to create a new {{this.userOrAdmin}}?</h5>
+                </div>
+                <div *ngIf="!this.authenticated">
+                  <div class="form-group alert alert-warning">
+                    <div>The created account will be sent a password reset email!</div>
+                  </div>
+                  <form class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm"
+                    (ngSubmit)="confirmUser()">
+                    <label for="password">Please enter your current password to confirm</label>
+                    <input [maxlength]="64" type="password" name="password" formControlName="password"
+                      class="form-control" id="password">
+                    <div *ngIf="p.password.touched && p.password.errors" class="error">
+                      <small class="form-text text-warning" *ngIf="p.password.errors.required">Your password
+                        is
+                        required!
+                      </small>
+                      <small class="form-text text-warning" *ngIf="p.password.errors.minlength">Your password must be at
+                        least 8
+                        characters long!
+                      </small>
+                    </div>
+
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" (click)="confirmUser(); onCloseHandled()"
+                    [disabled]="!this.passwordForm.valid && !this.authenticated">Confirm</button>
+                  <button type="button" class="btn btn-secondary"
+                    (click)="onCloseHandled(); this.passwordForm.reset()">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </form>
 

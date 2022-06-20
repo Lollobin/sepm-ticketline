@@ -173,7 +173,7 @@
                   <label for="password">Please enter your current password to confirm</label>
                   <input [maxlength]="64" type="password" name="password" formControlName="password"
                     class="form-control" id="password">
-                  <div *ngIf="(p.password.touched|| submitted) && p.password.errors" class="error">
+                  <div *ngIf="p.password.touched && p.password.errors" class="error">
                     <small class="form-text text-warning" *ngIf="p.password.errors.required">Your password
                       is
                       required!
