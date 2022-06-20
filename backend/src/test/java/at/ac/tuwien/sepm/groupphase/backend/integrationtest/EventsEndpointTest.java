@@ -31,11 +31,15 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventWithoutIdDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.CategoryMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.JwtTokenizer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,6 +70,9 @@ class EventsEndpointTest {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ShowRepository showRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -355,6 +362,26 @@ class EventsEndpointTest {
         event3.setDuration(EVENT3_DURATION);
 
         eventRepository.save(event3);
+
+
+        Show show1 = new Show();
+        show1.setSectorPrices(Set.of());
+        show1.setArtists(Set.of());
+        show1.setDate(OffsetDateTime.now().plusDays(1));
+        show1.setEvent(event1);
+        showRepository.save(show1);
+        Show show2 = new Show();
+        show2.setSectorPrices(Set.of());
+        show2.setArtists(Set.of());
+        show2.setDate(OffsetDateTime.now().plusDays(1));
+        show2.setEvent(event2);
+        showRepository.save(show2);
+        Show show3 = new Show();
+        show3.setSectorPrices(Set.of());
+        show3.setArtists(Set.of());
+        show3.setDate(OffsetDateTime.now().plusDays(1));
+        show3.setEvent(event3);
+        showRepository.save(show3);
     }
 }
 
