@@ -4,7 +4,7 @@
     <div>
       with
       <span *ngFor="let artist of artists; index as i">
-        <span class="font-family-bold text-primary"
+        <span class="fw-bold"
           >{{ artist.firstName }} '{{ artist.knownAs }}' {{ artist.lastName }}</span
         >
         <span *ngIf="artists.length - 2 !== i && artists.length - 1 !== i"> , </span>
