@@ -100,6 +100,39 @@ class UserEndpointTest implements TestData {
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertTrue(userRepository.existsByEmail(user.getEmail()));
+        assertFalse(userRepository.findUserByEmail(user.getEmail()).isHasAdministrativeRights());
+    }
+
+    @Test
+    void postAdministrativeUsersWithAdminRole_shouldReturnCreatedAndCreateAdminUser() throws Exception {
+        String body = objectMapper.writeValueAsString(user);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(ADMINISTRATIVEUSERS_BASE_URI).contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                .content(body))
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertTrue(userRepository.existsByEmail(user.getEmail()));
+        assertTrue(userRepository.findUserByEmail(user.getEmail()).isHasAdministrativeRights());
+    }
+
+    @Test
+    void postAdministrativeUsersWithoutRole_shouldThrow403() throws Exception {
+        String body = objectMapper.writeValueAsString(user);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(ADMINISTRATIVEUSERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 
     @Test
