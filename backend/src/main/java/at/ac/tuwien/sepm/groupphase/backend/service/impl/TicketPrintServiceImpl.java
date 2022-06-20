@@ -34,7 +34,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -143,9 +142,8 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         drawSeparatorLine(cs, xoffset, yoffset, xend);
 
         yoffset -= 30;
-        drawEventInformation(ticket, cs, xoffset, yoffset, location);
 
-        yoffset -= 60;
+        yoffset = drawEventInformation(ticket, cs, xoffset, yoffset, location);
 
         drawSeparatorLine(cs, xoffset, yoffset, xend);
 
@@ -157,14 +155,14 @@ public class TicketPrintServiceImpl implements TicketPrintService {
             drawReservationBody(user, cs, xoffset, yoffset, ticket);
         }
 
-
         // drawTicketId(ticket, marginBody, cs, xoffset);
         cs.close();
         return ticketDocument;
     }
 
-    private void drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,
+    private float drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,
         float yoffset, Location location) throws IOException {
+        float yoffsetAfter = yoffset;
         cs.beginText();
         cs.setLeading(20f);
         cs.newLineAtOffset(xoffset, yoffset);
@@ -178,20 +176,52 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.newLine();
         cs.setFont(plain, 12);
         cs.showText("| ");
-        Set<Artist> artists = ticket.getShow().getArtists();
+        List<Artist> artists = ticket.getShow().getArtists().stream().toList();
+
+        int lengthOfLine = 85;
+        float yoffsetLine = 60;
+
+        int lengthUntilNextLine = lengthOfLine;
         for (Artist artist : artists) {
             if (artist.getFirstName() != null) {
+                int l = artist.getFirstName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getFirstName() + " ");
+
             }
             if (artist.getLastName() != null) {
+                int l = artist.getLastName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getLastName() + " ");
             }
             if (artist.getBandName() != null) {
+                int l = artist.getBandName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getBandName() + " ");
             }
             cs.showText(" | ");
         }
         cs.endText();
+        yoffsetAfter -= yoffsetLine;
+        return yoffsetAfter;
     }
 
     private void drawLocationAddress(PDPageContentStream cs, float yoffset, float xcompanydata,
