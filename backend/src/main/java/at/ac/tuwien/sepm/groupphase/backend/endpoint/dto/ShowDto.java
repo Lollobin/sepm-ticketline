@@ -159,8 +159,8 @@ public class ShowDto   {
    * Get minPrice
    * @return minPrice
   */
-  @Valid 
-  @Schema(name = "minPrice", required = false)
+  @NotNull @Valid 
+  @Schema(name = "minPrice", required = true)
   public BigDecimal getMinPrice() {
     return minPrice;
   }
