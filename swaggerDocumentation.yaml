@@ -1405,6 +1405,7 @@ components:
         - event
         - artists
         - location
+        - minPrice
     ShowWithoutId:
       type: object
       properties:
