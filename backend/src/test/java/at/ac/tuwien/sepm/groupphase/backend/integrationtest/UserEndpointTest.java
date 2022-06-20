@@ -165,7 +165,7 @@ class UserEndpointTest implements TestData {
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
         @Sql("classpath:/sql/insert_sectorPrice.sql"), @Sql("classpath:/sql/insert_seat.sql"),
-        @Sql("classpath:/sql/insert_ticket.sql"),
+        @Sql("classpath:/sql/insert_ticket2.sql"),
         @Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD)})
     void shouldDeleteUserAndTicketReservationsAndOldAddress() throws Exception {
         userRepository.deleteAll();
