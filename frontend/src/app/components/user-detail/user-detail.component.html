@@ -1,7 +1,10 @@
 <div class="container mt-3" *ngIf="success">
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Success!</h4>
-    {{success}}
+    <div [hidden]="passW && !lock">
+    Successfully <strong *ngIf="lockStatus.length > 0">{{lockStatus}}</strong> user with email <strong>{{mail}}</strong>!</div>
+    <div [hidden]="!passW && lock">
+      Successfully <strong>reset password of</strong> user <strong>{{mail}}</strong></div>
     <p></p>
     <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
             aria-label="Close"></button>
@@ -19,6 +22,7 @@
 </div>
 
 <div class="container mt-5">
+
   <div class="main-body">
     <div class="row ">
 
@@ -30,7 +34,7 @@
                 <h6 class="mb-0">Full Name</h6>
               </div>
               <div class="col-sm-9 text-secondary">
-           <strong> {{user.firstName}} {{user.lastName}}</strong>
+                <strong> {{user.firstName}} {{user.lastName}}</strong>
               </div>
             </div>
             <hr>
@@ -80,13 +84,19 @@
             Password
             <fa-icon class="ms-2" [icon]="faRotateLeft"></fa-icon>
           </button>
-          <button *ngIf="user.lockedAccount; else notLocked"
-                  (click)="unlockUser(user.userId, user.email)" class="list-group-item"
-                  type="button">Unlock User
-            <fa-icon class="ms-2" [icon]="faLockOpen"></fa-icon>
-          </button>
+          <div *ngIf="user.lockedAccount;then locked else notLocked"></div>
+
+
+          <ng-template #locked>
+            <button (click)="manageLockedStatus(user.userId, user.email, false)"
+                    class="list-group-item"
+                    type="button">Unlock User
+              <fa-icon class="ms-2" [icon]="faLockOpen"></fa-icon>
+            </button>
+          </ng-template>
           <ng-template #notLocked>
-            <button class="list-group-item" type="button">Lock User (not implemented)
+            <button class="list-group-item" type="button"
+                    (click)="manageLockedStatus(user.userId, user.email, true)">Lock User
               <fa-icon class="ms-2" [icon]="faLockClose"></fa-icon>
             </button>
           </ng-template>

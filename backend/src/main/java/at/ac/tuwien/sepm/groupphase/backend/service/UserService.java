@@ -49,6 +49,20 @@ public interface UserService extends UserDetailsService {
     void save(UserWithPasswordDto user);
 
     /**
+     * Save a new admin User.
+     *
+     * @param user the admin user Object to be saved
+     * @throws at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException when Validation
+     *                                                                            fails because of
+     *                                                                            Duplicate Email,
+     *                                                                            invalid field
+     *                                                                            values, or
+     *                                                                            whitespace-only
+     *                                                                            values.
+     */
+    void saveAdmin(UserWithPasswordDto user);
+
+    /**
      * Updates a User with the given id from token in the database.
      *
      * @param userWithPasswordDto with new user data to be updated to

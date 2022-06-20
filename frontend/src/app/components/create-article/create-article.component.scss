@@ -1,8 +1,14 @@
 
-.widthDiv{
+.widthDiv {
   width: 60%;
 }
 
-.preview{
-  max-width: 170px;
+.preview {
+  max-width: 200px;
+  height: auto;
+}
+
+.crop-preview {
+  max-width: 500px;
+  height: auto;
 }

@@ -12,9 +12,9 @@ delete from ARTIST where ARTIST_ID < 0;
 
 delete from READ_ARTICLE where USER_ID < 0 and ARTICLE_ID < 0;
 
-delete from ARTICLE where ARTICLE_ID < 0;
+delete from IMAGE where IMAGE_ID < 10;
 
-delete from IMAGE where IMAGE_ID < 0;
+delete from ARTICLE where ARTICLE_ID < 10;
 
 delete from BOOKED_IN where TRANSACTION_ID < 0 and TICKET_ID < 0;
 

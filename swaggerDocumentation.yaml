@@ -389,6 +389,8 @@ paths:
           $ref: "#/components/responses/401-not-authenticated"
         403:
           $ref: "#/components/responses/403-forbidden"
+        422:
+          description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
   /articles:
@@ -431,15 +433,29 @@ paths:
         - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/filterRead"
+        - in: query
+          name: pageSize
+          description: Number of items on requested page
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: requestedPage
+          description: Index of requested page (starts with 0)
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            $ref: "#/components/schemas/Sort"
       responses:
         200:
           description: Successful retrieval of articles
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Article"
+                $ref: "#/components/schemas/ArticlePage"
         401:
           $ref: "#/components/responses/401-not-authenticated"
         500:
@@ -2088,4 +2104,18 @@ components:
           type: string
       required:
         - clientURI
+    ArticlePage:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        currentPage:
+          type: integer
+        numberOfResults:
+          type: integer
+        pagesTotal:
+          type: integer
+      
 

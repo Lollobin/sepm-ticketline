@@ -6,7 +6,7 @@ import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,15 +21,18 @@ public class LockedEndpoint implements LockStatusApi {
 
     public LockedEndpoint(LockedService lockedService) {
         this.lockedService = lockedService;
+
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Secured("ROLE_ADMIN")
     @Override
     public ResponseEntity<Void> lockStatusIdPut(Long id, Boolean body) {
-        LOGGER.info("PUT /lockStatus/{}", id);
+        LOGGER.info("PUT /lockStatus/{} with body set to: {}", id, body);
 
-        lockedService.unlockApplicationUser(id, body);
+        lockedService.manageLockedStatus(id, body);
 
         return ResponseEntity.noContent().build();
     }
+
+
 }

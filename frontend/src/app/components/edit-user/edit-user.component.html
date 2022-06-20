@@ -18,7 +18,7 @@
       <header class="card-header">
         <h4 class="card-title mt-2">Edit account details <button class="btn btn-secondary float-end"
             (click)="this.getUserInfo()">
-            <fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faArrowsRotate">
+            <fa-icon style="padding-left: 0; font-size: 18px;" [icon]="faArrowsRotate">
             </fa-icon>
           </button></h4>
       </header>
@@ -185,7 +185,7 @@
                   <label for="password">Please enter your current password to confirm</label>
                   <input [maxlength]="64" type="password" name="password" formControlName="password"
                     class="form-control" id="password">
-                  <div *ngIf="(p.password.touched|| submitted) && p.password.errors" class="error">
+                  <div *ngIf="p.password.touched && p.password.errors" class="error">
                     <small class="form-text text-warning" *ngIf="p.password.errors.required">Your password
                       is
                       required!

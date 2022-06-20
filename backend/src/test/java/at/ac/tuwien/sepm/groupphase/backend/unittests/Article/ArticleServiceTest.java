@@ -29,6 +29,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
@@ -66,14 +69,15 @@ class ArticleServiceTest {
         ApplicationUser user = new ApplicationUser();
         user.setUserId(1L);
 
+
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
-        when(articleRepository.findArticlesReadByUser(1L)).thenReturn(articleList);
+        when(articleRepository.findArticlesReadByUser(1L, Pageable.unpaged())).thenReturn(   new PageImpl<>(articleList));
 
-        articleService.getArticles(true, email, false);
+        articleService.getArticles(true, email, false, Pageable.unpaged());
 
-        verify(articleRepository).findArticlesReadByUser(1L);
+        verify(articleRepository).findArticlesReadByUser(1L, Pageable.unpaged());
         verify(userService).findApplicationUserByEmail(email);
-        verify(articleRepository, never()).findArticlesNotReadByUser(1L);
+        verify(articleRepository, never()).findArticlesNotReadByUser(1L, Pageable.unpaged());
 
     }
 
@@ -87,13 +91,13 @@ class ArticleServiceTest {
         user.setUserId(1L);
 
         when(userService.findApplicationUserByEmail(email)).thenReturn(user);
-        when(articleRepository.findArticlesNotReadByUser(1L)).thenReturn(articleList);
+        when(articleRepository.findArticlesNotReadByUser(1L, Pageable.unpaged())).thenReturn(new PageImpl<>(articleList));
 
-        articleService.getArticles(false, email, false);
+        articleService.getArticles(false, email, false, Pageable.unpaged());
 
-        verify(articleRepository).findArticlesNotReadByUser(1L);
+        verify(articleRepository).findArticlesNotReadByUser(1L, Pageable.unpaged());
         verify(userService).findApplicationUserByEmail(email);
-        verify(articleRepository, never()).findArticlesReadByUser(1L);
+        verify(articleRepository, never()).findArticlesReadByUser(1L, Pageable.unpaged());
 
     }
 
