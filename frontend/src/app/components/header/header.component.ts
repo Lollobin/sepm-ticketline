@@ -1,7 +1,10 @@
 import {Component} from "@angular/core";
 import {CustomAuthService} from "../../services/custom-auth.service";
-import {faEye, faCircleInfo, faUser, faNewspaper, faSearch, faBasketShopping, 
-  faUsers, faMapLocation, faCompactDisc , faFileLines} from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye, faCircleInfo, faUser, faNewspaper, faSearch, faBasketShopping,
+  faUsers, faMapLocation, faCompactDisc, faFileLines, faDashboard
+} from "@fortawesome/free-solid-svg-icons";
+import {Router} from "@angular/router";
 
 @Component({
   selector: "app-header",
@@ -19,13 +22,20 @@ export class HeaderComponent {
   location = faMapLocation;
   event = faCompactDisc;
   article = faFileLines;
-  adminView = false;
+  admin = faDashboard;
 
-  constructor(public authService: CustomAuthService) {
+  currentRoute: string;
+  adminRoutes = ["/admin", "/article/create", "/users", "/locations", "/events/create"];
+
+  constructor(public authService: CustomAuthService,
+              private router: Router) {
   }
 
-  toggleAdminView() {
-    this.adminView = !this.adminView;
+  onAdminRoute(): boolean {
+    console.log(this.router.url);
+    const value = this.adminRoutes.some(route => this.router.url.startsWith(route));
+    console.log(value);
+    return value;
   }
 
 }

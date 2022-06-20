@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 px-xl-5">
   <div class="container-fluid">
-    <a class="navbar-brand" href="">Ticketline</a>
+    <a class="navbar-brand fw-bold" href="">Ticketline</a>
 
     <button class="navbar-toggler ml-5" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
@@ -12,32 +12,49 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <!-- Public Menu -->
-        <li class="nav-item " *ngIf="!adminView">
-          <a class="nav-link" routerLink="/events" routerLinkActive="active"><fa-icon [icon]="search"></fa-icon> Events & Shows </a>
+        <li class="nav-item " *ngIf="!onAdminRoute()">
+          <a class="nav-link" routerLink="/events" routerLinkActive="active">
+            <fa-icon [icon]="search"></fa-icon>
+            Events & Shows </a>
         </li>
-        <li class="nav-item" *ngIf="!adminView">
-          <a class="nav-link" routerLink="/news/overview" routerLinkActive="active"><fa-icon [icon]="newspaper"></fa-icon> News </a>
+        <li class="nav-item" *ngIf="!onAdminRoute()">
+          <a class="nav-link" routerLink="/news/overview" routerLinkActive="active">
+            <fa-icon [icon]="newspaper"></fa-icon>
+            News </a>
         </li>
 
         <!-- Basic User Menu -->
-        <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/orders" routerLinkActive="active"><fa-icon [icon]="basket"></fa-icon> Your Orders </a>
+        <li class="nav-item " *ngIf="!onAdminRoute() && authService.isLoggedIn()">
+          <a class="nav-link" routerLink="/orders" routerLinkActive="active">
+            <fa-icon [icon]="basket"></fa-icon>
+            Your Orders </a>
         </li>
 
         <!-- Admin User Menu -->
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/events/create" routerLinkActive="active"><fa-icon [icon]="event"></fa-icon> Create
-            Events & Shows </a>
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <fa-icon [icon]="admin"></fa-icon>
+            Dashboard</a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/article/create" routerLinkActive="active"><fa-icon [icon]="article"></fa-icon> Create
-            Articles </a>
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+          <a class="nav-link" routerLink="/events/create" routerLinkActive="active">
+            <fa-icon [icon]="event"></fa-icon>
+            Create Events & Shows </a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/users" routerLinkActive="active"><fa-icon [icon]="users"></fa-icon> User Management</a>
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+          <a class="nav-link" routerLink="/article/create" routerLinkActive="active">
+            <fa-icon [icon]="article"></fa-icon>
+            Create Articles </a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/locations" routerLinkActive="active"><fa-icon [icon]="location"></fa-icon> Manage Locations</a>
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+          <a class="nav-link" routerLink="/users" routerLinkActive="active">
+            <fa-icon [icon]="users"></fa-icon>
+            User Management</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+          <a class="nav-link" routerLink="/locations" routerLinkActive="active">
+            <fa-icon [icon]="location"></fa-icon>
+            Manage Locations</a>
         </li>
       </ul>
 
@@ -48,15 +65,15 @@
 
       <div class="d-grid gap-2 d-flex">
         <button
-            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !adminView"
-            class="btn btn-primary me-1" (click)="toggleAdminView()" routerLink="/admin">
+            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !onAdminRoute()"
+            class="btn btn-primary me-1" routerLink="/admin">
           Switch to Admin View
           <fa-icon class="m-2" [icon]="eye"></fa-icon>
         </button>
 
         <button
-            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && adminView"
-            class="btn btn-primary me-1" (click)="toggleAdminView()" routerLink="/">
+            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && onAdminRoute()"
+            class="btn btn-primary me-1" routerLink="/">
           Switch to Customer View
           <fa-icon class="m-2" [icon]="eye"></fa-icon>
         </button>
@@ -72,7 +89,7 @@
             <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/profile">Edit
               Account</a></li>
             <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/"
-                   (click)="authService.logoutUser(); adminView = false">Logout</a></li>
+                   (click)="authService.logoutUser(); !onAdminRoute()">Logout</a></li>
           </ul>
         </div>
       </div>
