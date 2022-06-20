@@ -267,22 +267,6 @@ class ShowServiceTest {
     }
 
     @Test
-    void searchWithOnlyLocationId_shouldCallFindLocationByIdInRepo() {
-
-        ShowSearchDto searchDto = new ShowSearchDto();
-        searchDto.setLocation(1L);
-
-        List<Show> list = new ArrayList<>();
-
-        when(showRepository.findShowsByLocation(1L, pageable)).thenReturn(new PageImpl<>(list));
-
-        showService.search(searchDto, pageable);
-
-        verify(showRepository).findShowsByLocation(1L, pageable);
-
-    }
-
-    @Test
     void searchWithAllButLocationIdAndEventId_shouldCallSearchInRepo() {
 
         ShowSearchDto searchDto = new ShowSearchDto();

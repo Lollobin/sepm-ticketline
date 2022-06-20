@@ -64,7 +64,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
      * @param pageable contains information about the page
      * @return page of shows
      */
-    @Query("select s from Show s where s.event.eventId = :eventId")
+    @Query("select s from Show s WHERE (s.event.eventId = :eventId) AND (s.date >= CURRENT_DATE)")
     Page<Show> findShowsByEventId(@Param("eventId") Long eventId, Pageable pageable);
 
 

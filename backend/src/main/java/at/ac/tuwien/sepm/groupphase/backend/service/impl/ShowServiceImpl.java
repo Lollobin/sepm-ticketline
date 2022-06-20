@@ -84,38 +84,24 @@ public class ShowServiceImpl implements ShowService {
     @Override
     public ShowSearchResultDto search(ShowSearchDto showSearchDto, Pageable pageable) {
 
-        LOGGER.trace("Find all shows with pageable: {}", pageable);
-
-        if (showSearchDto.getDate() == null && showSearchDto.getEvent() == null
-            && showSearchDto.getPrice() == null && showSearchDto.getSeatingPlan() == null
-            && showSearchDto.getEventId() == null && showSearchDto.getLocation() != null) {
-
-            Page<Show> showPage = showRepository.findShowsByLocation(showSearchDto.getLocation(),
-                pageable);
-
-            return setShowSearchResultDto(showPage);
-
-        } else if (showSearchDto.getEventId() != null) {
+        LOGGER.debug("Find all shows with pageable: {}", pageable);
+        if (showSearchDto.getEventId() != null) {
             Page<Show> showPage = showRepository.findShowsByEventId(showSearchDto.getEventId(),
                 pageable);
 
             return setShowSearchResultDto(showPage);
-        } else {
-
-            Integer hours = 0;
-            Integer minutes = 0;
-            if (showSearchDto.getDate() != null) {
-                hours = showSearchDto.getDate().getHour();
-                minutes = showSearchDto.getDate().getMinute();
-            }
-
-            Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
-                showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
-                showSearchDto.getLocation(),
-                pageable);
-
-            return setShowSearchResultDto(showPage);
         }
+
+        int hours = showSearchDto.getDate() != null ? showSearchDto.getDate().getHour() : 0;
+        int minutes = showSearchDto.getDate() != null ? showSearchDto.getDate().getMinute() : 0;
+
+        Page<Show> showPage = showRepository.search(showSearchDto.getDate(), hours, minutes,
+            showSearchDto.getEvent(), showSearchDto.getPrice(), showSearchDto.getSeatingPlan(),
+            showSearchDto.getLocation(),
+            pageable);
+
+        return setShowSearchResultDto(showPage);
+
     }
 
     private ShowSearchResultDto setShowSearchResultDto(Page<Show> showPage) {

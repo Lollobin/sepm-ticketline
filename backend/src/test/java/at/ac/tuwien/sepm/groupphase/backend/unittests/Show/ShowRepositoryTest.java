@@ -278,7 +278,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 18, 45), zoneOffSet);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2024, 5, 25, 18, 45), zoneOffSet);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
             null, null, pageable).getContent();
@@ -300,7 +300,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 0, 0), ZoneOffset.UTC);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2024, 8, 15, 0, 0), ZoneOffset.UTC);
 
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null, null,
@@ -402,7 +402,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 8, 15, 14, 30), zoneOffSet);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2024, 8, 15, 14, 30), zoneOffSet);
 
         //case-insensitive and contains
         String eventName = "pop";
@@ -485,7 +485,7 @@ class ShowRepositoryTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), ZoneOffset.UTC);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2024, 5, 25, 0, 0), ZoneOffset.UTC);
 
         List<Show> shows = showRepository.search(date, date.getHour(), date.getMinute(), null,
             null, null, null, pageable).getContent();

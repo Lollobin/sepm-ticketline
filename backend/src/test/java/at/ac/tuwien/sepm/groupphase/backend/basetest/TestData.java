@@ -5,11 +5,9 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.GenderDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Category;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -153,10 +151,10 @@ public interface TestData {
     OffsetDateTime SHOW_DATE = OffsetDateTime.of(LocalDateTime.of(2024, 5, 12, 5, 45),
         zoneOffSet);
 
-    OffsetDateTime SHOW3_DATE = OffsetDateTime.of(LocalDateTime.of(2019, 9, 3, 5, 45),
+    OffsetDateTime SHOW3_DATE = OffsetDateTime.of(LocalDateTime.of(2023, 9, 3, 5, 45),
         zoneOffSet);
 
-    OffsetDateTime SHOW2_DATE = OffsetDateTime.of(LocalDateTime.of(2019, 7, 5, 5, 45),
+    OffsetDateTime SHOW2_DATE = OffsetDateTime.of(LocalDateTime.of(2023, 7, 5, 5, 45),
         zoneOffSet);
 
 
