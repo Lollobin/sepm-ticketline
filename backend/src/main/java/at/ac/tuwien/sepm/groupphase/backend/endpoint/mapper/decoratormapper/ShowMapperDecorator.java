@@ -8,7 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SectorPrice;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -25,7 +24,7 @@ public abstract class ShowMapperDecorator implements ShowMapper {
         ShowDto showDto = delegate.showToShowDto(show);
 
         BigDecimal minPrice = show.getSectorPrices().stream().map(SectorPrice::getPrice)
-           .min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+            .min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
 
         LocationDto locationDto = null;
         if (show.getSectorPrices().iterator().hasNext()) {
