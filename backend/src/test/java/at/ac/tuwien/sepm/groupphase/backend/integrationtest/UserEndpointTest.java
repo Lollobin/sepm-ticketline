@@ -122,7 +122,7 @@ class UserEndpointTest implements TestData {
     }
 
     @Test
-    void postAdministrativeUsersWithUserRole_shouldThrow403() throws Exception {
+    void postAdministrativeUsersWithoutRole_shouldThrow403() throws Exception {
         String body = objectMapper.writeValueAsString(user);
 
         MvcResult mvcResult =
