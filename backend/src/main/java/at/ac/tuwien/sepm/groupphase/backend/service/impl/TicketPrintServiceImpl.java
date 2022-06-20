@@ -20,26 +20,37 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.TicketPrintService;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TicketPrintServiceImpl implements TicketPrintService {
 
     PDFont plain = PDType1Font.HELVETICA;
@@ -59,35 +70,42 @@ public class TicketPrintServiceImpl implements TicketPrintService {
     }
 
     @Override
-    public Resource getTicketPdf(Long ticketId) throws IOException {
-        Optional<Ticket> optionalTicket = this.ticketRepository.findById(ticketId);
-        if (optionalTicket.isEmpty()) {
-            throw new NotFoundException(
-                String.format("Could not find purchased ticket with id %s", ticketId));
-        }
-        Ticket ticket = optionalTicket.get();
-        if (ticket.getPurchasedBy() == null) {
-            throw new NotFoundException(
-                String.format("Could not find purchased ticket with id %s", ticketId));
-        }
-        ApplicationUser user = this.userRepository.findUserByEmail(
-            authenticationFacade.getAuthentication().getPrincipal().toString());
-        if (user.getUserId() != ticket.getPurchasedBy().getUserId()) {
-            throw new CustomAuthenticationException("Not authorized to access this resource");
-        }
+    public Resource getTicketPdf(List<Long> tickets) throws IOException {
+
+        PDDocument pdDocument = new PDDocument();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        LOGGER.debug("Trying to generate PDF for ticket {}", ticketId);
-        PDDocument pdDocument = buildTicketPdf(ticket, user);
+        for (Long ticketId : tickets) {
+            Optional<Ticket> optionalTicket = this.ticketRepository.findById(ticketId);
+            if (optionalTicket.isEmpty()) {
+                throw new NotFoundException(
+                    String.format("Could not find purchased ticket with id %s", ticketId));
+            }
+            Ticket ticket = optionalTicket.get();
+            if (ticket.getPurchasedBy() == null && ticket.getReservedBy() == null) {
+                throw new NotFoundException(
+                    String.format("Could not find purchased/reserved ticket with id %s", ticketId));
+            }
+            ApplicationUser user = this.userRepository.findUserByEmail(
+                authenticationFacade.getAuthentication().getPrincipal().toString());
+            Long userOnTicket =
+                ticket.getPurchasedBy() != null ? ticket.getPurchasedBy().getUserId()
+                    : ticket.getReservedBy().getUserId();
+            if (user.getUserId() != userOnTicket) {
+                throw new CustomAuthenticationException("Not authorized to access this resource");
+            }
+
+            LOGGER.debug("Trying to generate PDF for ticket {}", ticketId);
+            buildTicketPdf(ticket, user, pdDocument);
+        }
         pdDocument.save(os);
         pdDocument.close();
         return new ByteArrayResource(os.toByteArray());
     }
 
-    public PDDocument buildTicketPdf(Ticket ticket, ApplicationUser user) throws IOException {
+    public PDDocument buildTicketPdf(Ticket ticket, ApplicationUser user, PDDocument ticketDocument)
+        throws IOException {
 
         float marginBody = 30;
-
-        PDDocument ticketDocument = new PDDocument();
 
         PDPage ticketPage = new PDPage(PDRectangle.A4);
 
@@ -106,16 +124,16 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         drawCompanyAddress(cs, xcompanydata, yoffset);
 
         yoffset -= 60;
-
-        drawSubtitle(cs, xoffset + 2, yoffset);
-
+        boolean isPurchased = ticket.getPurchasedBy() != null;
+        drawSubtitle(cs, xoffset + 2, yoffset, isPurchased);
+        cs.setNonStrokingColor(Color.black);
         yoffset -= 40;
 
         drawSeparatorLine(cs, xoffset, yoffset, xend);
 
         yoffset -= 30;
         Location location = ticket.getSeat().getSector().getSeatingPlan().getLocation();
-        drawEventInformation(ticket, cs, xoffset, yoffset, location);
+        drawDateAndSeatInfo(ticket, cs, xoffset, yoffset);
 
         drawLocationAddress(cs, yoffset, xcompanydata, location);
 
@@ -124,23 +142,27 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         drawSeparatorLine(cs, xoffset, yoffset, xend);
 
         yoffset -= 30;
-        drawDateAndSeatInfo(ticket, cs, xoffset, yoffset);
 
-        yoffset -= 30;
+        yoffset = drawEventInformation(ticket, cs, xoffset, yoffset, location);
 
         drawSeparatorLine(cs, xoffset, yoffset, xend);
 
         yoffset -= 30;
+        if (isPurchased) {
+            drawTicketBody(user, cs, xoffset, yoffset);
+            addQrCode(ticketDocument, cs, ticket, xoffset, 30);
+        } else {
+            drawReservationBody(user, cs, xoffset, yoffset, ticket);
+        }
 
-        drawTicketBody(user, cs, xoffset, yoffset);
-
-        drawTicketId(ticket, marginBody, cs, xoffset);
+        // drawTicketId(ticket, marginBody, cs, xoffset);
         cs.close();
         return ticketDocument;
     }
 
-    private void drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,
+    private float drawEventInformation(Ticket ticket, PDPageContentStream cs, float xoffset,
         float yoffset, Location location) throws IOException {
+        float yoffsetAfter = yoffset;
         cs.beginText();
         cs.setLeading(20f);
         cs.newLineAtOffset(xoffset, yoffset);
@@ -154,20 +176,52 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.newLine();
         cs.setFont(plain, 12);
         cs.showText("| ");
-        Set<Artist> artists = ticket.getShow().getArtists();
+        List<Artist> artists = ticket.getShow().getArtists().stream().toList();
+
+        int lengthOfLine = 85;
+        float yoffsetLine = 60;
+
+        int lengthUntilNextLine = lengthOfLine;
         for (Artist artist : artists) {
             if (artist.getFirstName() != null) {
+                int l = artist.getFirstName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getFirstName() + " ");
+
             }
             if (artist.getLastName() != null) {
+                int l = artist.getLastName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getLastName() + " ");
             }
             if (artist.getBandName() != null) {
+                int l = artist.getBandName().length();
+                if (lengthUntilNextLine >= l) {
+                    lengthUntilNextLine -= l;
+                } else {
+                    cs.newLine();
+                    yoffsetAfter -= yoffsetLine;
+                    lengthUntilNextLine = lengthOfLine;
+                }
                 cs.showText(artist.getBandName() + " ");
             }
             cs.showText(" | ");
         }
         cs.endText();
+        yoffsetAfter -= yoffsetLine;
+        return yoffsetAfter;
     }
 
     private void drawLocationAddress(PDPageContentStream cs, float yoffset, float xcompanydata,
@@ -178,7 +232,9 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         Address address = location.getAddress();
         cs.showText(address.getStreet() + " " + address.getHouseNumber());
         cs.newLine();
-        cs.showText(address.getZipCode() + " " + address.getCity() + ", " + address.getCountry());
+        cs.showText(address.getZipCode() + " " + address.getCity());
+        cs.newLine();
+        cs.showText(address.getCountry());
         cs.newLine();
 
         cs.endText();
@@ -286,13 +342,21 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.endText();
     }
 
-    private void drawSubtitle(PDPageContentStream cs, float xposition, float yposition)
+    private void drawSubtitle(PDPageContentStream cs, float xposition, float yposition,
+        boolean isPurchased)
 
         throws IOException {
-        String subtitle = "Ticket";
-
+        String subtitle;
+        if (isPurchased) {
+            subtitle = "Ticket";
+        } else {
+            subtitle = "RESERVATION";
+        }
         cs.beginText();
         cs.setFont(plain, 20);
+        if (!isPurchased) {
+            cs.setNonStrokingColor(Color.LIGHT_GRAY);
+        }
         cs.newLineAtOffset(xposition, yposition);
         cs.showText(subtitle);
         cs.endText();
@@ -304,5 +368,55 @@ public class TicketPrintServiceImpl implements TicketPrintService {
         cs.lineTo(xend, yoffset);
         cs.setStrokingColor(Color.BLACK);
         cs.stroke();
+    }
+
+    private void drawReservationBody(ApplicationUser user, PDPageContentStream cs, float xoffset,
+        float yoffset, Ticket ticket) throws IOException {
+
+        cs.beginText();
+        cs.setFont(bold, 14);
+        cs.setLeading(20f);
+        cs.newLineAtOffset(xoffset, yoffset);
+        cs.showText("This seat was reserved by: ");
+        cs.newLine();
+        cs.setFont(plain, 14);
+        cs.showText(user.getLastName() + " " + user.getFirstName());
+        cs.newLine();
+        cs.showText(user.getAddress().getStreet() + " " + user.getAddress().getHouseNumber());
+        cs.newLine();
+        cs.showText(user.getAddress().getZipCode() + " " + user.getAddress().getCity() + ", "
+            + user.getAddress().getCountry());
+        cs.newLine();
+        cs.setFont(bold, 14);
+        cs.newLine();
+        cs.showText("RESERVATION CODE");
+        cs.newLine();
+        cs.showText(
+            ticket.getBookedIns().iterator().next().getTransaction().getTransactionId().toString());
+        cs.newLine();
+        cs.endText();
+    }
+
+    private void addQrCode(PDDocument document, PDPageContentStream cs, Ticket ticket,
+        float xposition, float yposition) {
+        try {
+            String ticketMetadata =
+                "U" + ticket.getPurchasedBy().getUserId() + "ID" + ticket.getTicketId() + "SI"
+                    + ticket.getSeat().getSeatId();
+            BitMatrix matrix = new MultiFormatWriter().encode(
+                new String(ticketMetadata.getBytes("UTF-8"), "UTF-8"),
+                BarcodeFormat.QR_CODE, 200, 200);
+
+            MatrixToImageConfig config = new MatrixToImageConfig(0xFF000001, 0xFFFFFFFF);
+            BufferedImage bimage = MatrixToImageWriter.toBufferedImage(matrix, config);
+            PDImageXObject image = JPEGFactory.createFromImage(document, bimage);
+
+            cs.drawImage(image, xposition, yposition, 120, 120);
+        } catch (IOException e) {
+            LOGGER.error("failed to create QR code: ", e);
+
+        } catch (WriterException e) {
+            LOGGER.error("failed to create QR code: ", e);
+        }
     }
 }
