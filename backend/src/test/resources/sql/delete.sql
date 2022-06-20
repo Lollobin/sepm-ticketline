@@ -1,10 +1,8 @@
-
+delete from TICKET where TICKET_ID < 0;
 delete from PLAYS_IN where SHOW_ID < 0 and ARTIST_ID < 0;
-
 delete from SECTOR_PRICE where SECTOR_ID < 0 and SHOW_ID < 0;
 delete from TICKET where TICKET_ID < 0;
 delete from SHOW where SHOW_ID < 0;
-
 delete from EVENT where EVENT_ID < 0;
 
 delete from ARTIST where ARTIST_ID < 0;
