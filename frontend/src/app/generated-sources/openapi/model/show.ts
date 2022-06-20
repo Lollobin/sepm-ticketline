@@ -19,5 +19,6 @@ export interface Show {
     event: Event;
     artists: Array<number>;
     location: Location;
+    minPrice?: number;
 }
 

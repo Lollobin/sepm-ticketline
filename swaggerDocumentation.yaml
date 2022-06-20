@@ -1398,6 +1398,8 @@ components:
             type: integer
         location:
           $ref: "#/components/schemas/Location"
+        minPrice: 
+          type: number
       required:
         - showId
         - event
