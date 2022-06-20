@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketIdArrayDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
@@ -37,6 +38,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.TicketPrintService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.TicketPrintServiceImpl;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -159,7 +161,7 @@ public class TicketPrintServiceTest {
         when(userRepository.findUserByEmail(anyString())).thenReturn(user);
         when(authentication.getPrincipal()).thenReturn("");
         when(authenticationFacade.getAuthentication()).thenReturn(authentication);
-        Resource resource = ticketPrintService.getTicketPdf(1L);
+        Resource resource = ticketPrintService.getTicketPdf(List.of(1L));
         //We have currently no way to compare PDF outputs, so we check if the generated resource is not null
         assertThat(resource).isNotNull();
     }
@@ -168,6 +170,7 @@ public class TicketPrintServiceTest {
     void getTicketPdf_throwsNotFoundWhenTicketIdDoesNotExist() throws IOException {
         ApplicationUser user = generateUser();
         when(ticketRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> ticketPrintService.getTicketPdf(1L));
+        TicketIdArrayDto dto= new TicketIdArrayDto().ticketIds(List.of(1L));
+        assertThrows(NotFoundException.class, () -> ticketPrintService.getTicketPdf(List.of(1L)));
     }
 }

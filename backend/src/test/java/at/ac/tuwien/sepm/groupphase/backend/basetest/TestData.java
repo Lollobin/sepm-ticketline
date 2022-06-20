@@ -29,6 +29,7 @@ public interface TestData {
     String BASE_URI = "/api/v1";
     String MESSAGE_BASE_URI = BASE_URI + "/messages";
     String USERS_BASE_URI = "/users";
+    String ADMINISTRATIVEUSERS_BASE_URI = "/administrativeUsers";
     String ORDERS_BASE_URI = "/orders";
     String TICEKTS_BASE_URI = "/tickets";
 

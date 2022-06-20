@@ -1,16 +1,16 @@
-import { Component, OnInit, TemplateRef } from "@angular/core";
+import {Component, OnInit, TemplateRef} from "@angular/core";
 import {
   OrdersPage,
   Ticket,
   TicketsService,
   TicketStatus,
   TicketWithShowInfo,
-  TicketWithShowInfoTypeEnum,
+  TicketWithShowInfoTypeEnum
 } from "../../generated-sources/openapi";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
-import { forkJoin } from "rxjs";
-import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
+import {forkJoin} from "rxjs";
+import {faFileArrowDown} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-order-overview",
@@ -31,10 +31,11 @@ export class OrderOverviewComponent implements OnInit {
   ticketSelectionForm: FormGroup;
 
   constructor(
-    private ticketService: TicketsService,
-    private modalService: NgbModal,
-    private formBuilder: FormBuilder
-  ) {}
+      private ticketService: TicketsService,
+      private modalService: NgbModal,
+      private formBuilder: FormBuilder
+  ) {
+  }
 
   get ticketsFormArray() {
     return this.ticketSelectionForm.controls.tickets as FormArray;
@@ -77,25 +78,25 @@ export class OrderOverviewComponent implements OnInit {
   }
 
   openTicketSelectionModal(
-    ticketSelectionModal: TemplateRef<any>,
-    ticketsToSelect: TicketWithShowInfo
+      ticketSelectionModal: TemplateRef<any>,
+      ticketsToSelect: TicketWithShowInfo
   ) {
     this.selectedTickets = ticketsToSelect;
     this.ticketSelectionForm = this.formBuilder.group({
       tickets: new FormArray([], minSelectedCheckboxes(1)),
     });
     this.addCheckboxes();
-    this.modalService.open(ticketSelectionModal, { ariaLabelledBy: "modal-basic-title" });
+    this.modalService.open(ticketSelectionModal, {ariaLabelledBy: "modal-basic-title"});
   }
 
   purchaseTickets() {
     const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-      .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
-      .filter((v) => v !== null);
+    .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
+    .filter((v) => v !== null);
 
     const unSelectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-      .map((checked, i) => (checked ? null : this.selectedTickets.ticket[i].ticketId))
-      .filter((v) => v !== null);
+    .map((checked, i) => (checked ? null : this.selectedTickets.ticket[i].ticketId))
+    .filter((v) => v !== null);
 
     console.log("Buying tickets:" + selectedTicketIds);
     console.log("Cancelling reservations:" + selectedTicketIds);
@@ -120,29 +121,29 @@ export class OrderOverviewComponent implements OnInit {
       });
     } else {
       this.ticketService
-        .ticketsPost({
-          reserved: [],
-          purchased: selectedTicketIds,
-        })
-        .subscribe({
-          next: (response) => {
-            console.log(response);
-          },
-          error: (error) => {
-            this.setError(error);
-          },
-          complete: () => {
-            this.modalService.dismissAll();
-            this.ngOnInit();
-          },
-        });
+      .ticketsPost({
+        reserved: [],
+        purchased: selectedTicketIds,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          this.setError(error);
+        },
+        complete: () => {
+          this.modalService.dismissAll();
+          this.ngOnInit();
+        },
+      });
     }
   }
 
   cancelTickets() {
     const selectedTicketIds: Array<number> = this.ticketSelectionForm.value.tickets
-      .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
-      .filter((v) => v !== null);
+    .map((checked, i) => (checked ? this.selectedTickets.ticket[i].ticketId : null))
+    .filter((v) => v !== null);
 
     console.log("Cancelling tickets/reservations:" + selectedTicketIds);
 
@@ -201,20 +202,25 @@ export class OrderOverviewComponent implements OnInit {
       this.ticketsFormArray.at(i).setValue(false);
     }
   }
+
   openTicketPdf(tickets: Ticket[]) {
     let fileErrorCount = 0;
+    const ids: Array<number>= new Array<number>();
     for (const ticket of tickets) {
-      this.ticketService.ticketPrintsIdGet(ticket.ticketId).subscribe({
-        next: (blob) => {
-          window.open(URL.createObjectURL(blob));
-        },
-        error: () => {
-          fileErrorCount++;
-          this.error = new Error("Failed download of " + fileErrorCount + " files");
-        },
-      });
+      ids.push( ticket.ticketId);
     }
+
+    this.ticketService.ticketPrintsGet(ids).subscribe({
+      next: (blob) => {
+        window.open(URL.createObjectURL(blob));
+      },
+      error: () => {
+        fileErrorCount++;
+        this.error = new Error("Failed download of " + fileErrorCount + " files");
+      },
+    });
   }
+
   private addCheckboxes() {
     this.selectedTickets.ticket.forEach(() => this.ticketsFormArray.push(new FormControl(false)));
   }
@@ -224,13 +230,13 @@ export class OrderOverviewComponent implements OnInit {
 function minSelectedCheckboxes(min = 1) {
   const validator: ValidatorFn = (formArray: FormArray) => {
     const totalSelected = formArray.controls
-      // get a list of checkbox values (boolean)
-      .map((control) => control.value)
-      // total up the number of checked checkboxes
-      .reduce((prev, next) => (next ? prev + next : prev), 0);
+    // get a list of checkbox values (boolean)
+    .map((control) => control.value)
+    // total up the number of checked checkboxes
+    .reduce((prev, next) => (next ? prev + next : prev), 0);
 
     // if the total is not greater than the minimum, return the error message
-    return totalSelected >= min ? null : { required: true };
+    return totalSelected >= min ? null : {required: true};
   };
 
   return validator;
