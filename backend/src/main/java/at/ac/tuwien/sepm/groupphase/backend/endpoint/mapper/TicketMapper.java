@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketWithShowInfoDto.T
 import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,14 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface TicketMapper {
+
+    class SortTicketByDate implements Comparator<TicketWithShowInfoDto> {
+
+        @Override
+        public int compare(TicketWithShowInfoDto o1, TicketWithShowInfoDto o2) {
+            return o1.getShowDate().compareTo(o2.getShowDate());
+        }
+    }
 
     default TicketDto ticketToTicketDto(Ticket ticket) {
         TicketDto ticketDto = new TicketDto();
@@ -51,6 +60,11 @@ public interface TicketMapper {
 
             ticketWithShowInfoDtoSet.add(dto);
         }
-        return ticketWithShowInfoDtoSet.stream().toList();
+
+        List<TicketWithShowInfoDto> ticketWithShowInfoDtos = new ArrayList<>(
+            ticketWithShowInfoDtoSet.stream().toList());
+        ticketWithShowInfoDtos.sort(new SortTicketByDate());
+
+        return ticketWithShowInfoDtos;
     }
 }
