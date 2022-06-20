@@ -20,14 +20,8 @@
         </li>
 
         <!-- Basic User Menu -->
-        <!-- <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/message" routerLinkActive="active"> Message </a>
-        </li> -->
         <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
           <a class="nav-link" routerLink="/orders" routerLinkActive="active"><fa-icon [icon]="basket"></fa-icon> Your Orders </a>
-        </li>
-        <li class="nav-item " *ngIf="!adminView && authService.isLoggedIn()">
-          <a class="nav-link" routerLink="/news/read" routerLinkActive="active"> Show read News </a>
         </li>
 
         <!-- Admin User Menu -->
@@ -38,10 +32,6 @@
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
           <a class="nav-link" routerLink="/article/create" routerLinkActive="active"><fa-icon [icon]="article"></fa-icon> Create
             Articles </a>
-        </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
-          <a class="nav-link" routerLink="/lockedUsers" routerLinkActive="active">Show Locked
-            Users</a>
         </li>
         <li class="nav-item" *ngIf="authService.isLoggedIn() && adminView">
           <a class="nav-link" routerLink="/users" routerLinkActive="active"><fa-icon [icon]="users"></fa-icon> User Management</a>
