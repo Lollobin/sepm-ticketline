@@ -56,9 +56,6 @@ public interface ShowTicketsApi {
             @ApiResponse(responseCode = "401", description = "The user is not logged in"),
             @ApiResponse(responseCode = "404", description = "The user with the given ID was not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(
