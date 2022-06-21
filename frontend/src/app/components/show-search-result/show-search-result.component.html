@@ -1,6 +1,6 @@
 <h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
-<h2 *ngIf="shows&&eventId&&eventName" style="margin-top: 4%">All Shows of Event <strong
-    style="color: #4d61ff">{{eventName}}</strong></h2>
+<h1 *ngIf="shows&&eventId&&eventName">All Shows of Event <strong
+    style="color: #4d61ff">'{{eventName}}'</strong></h1>
 
 <p *ngIf="shows&&eventId&&eventDescription"><strong>Description:</strong>
   <em> {{eventDescription}}</em></p>

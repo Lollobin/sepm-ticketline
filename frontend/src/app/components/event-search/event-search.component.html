@@ -1,61 +1,66 @@
-
-<form class="form-margin" [formGroup]="eventForm">
+<form [formGroup]="eventForm">
   <div class="row">
-    <div class="form-group col">
+    <div class="col mb-3">
       <small for="name" class="form-label text-muted"> Name</small>
-      <input type="text" class="form-control " id="name"  formControlName="name">
+      <input type="text" class="form-control " id="name" formControlName="name">
     </div>
-    <div class="form-group col">
+    <div class="col mb-3">
       <small for="inputCategory" class="form-label text-muted"> Category</small>
       <select id="inputCategory" class="form-control form-override"
-              formControlName="category" style="background-position: 95%" >
+              formControlName="category" style="background-position: 95%">
         <option [value]="noCategory"></option>
-        <option *ngFor="let category1 of categories" [value]="category1|uppercase">{{category1}}</option>
+        <option *ngFor="let category1 of categories"
+                [value]="category1|uppercase">{{category1}}</option>
       </select>
     </div>
 
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <small for="description" class="form-label text-muted"> Description</small>
-    <input class="form-control " id="description" formControlName="description" >
+    <input class="form-control " id="description" formControlName="description">
   </div>
 
 
-<div class="row">
-    <div class="form-group col-md-4">
+  <div class="row mb-3">
+    <div class="col-md-4">
 
-        <small for="inputDuration" class="form-label text-muted"> Duration</small>
-        <input type="range" class="form-range" min="0" max="360" step="5" value="0" id="inputDuration" formControlName="duration"
-               oninput=" this.nextElementSibling.value = this.value">
-      <span *ngIf = "duration.value!==0">{{this.secondsToHms(this.duration.value)}}</span>
-      <span *ngIf = "duration.value===0">Any</span>
+      <small for="inputDuration" class="form-label text-muted"> Duration</small>
+      <input type="range" class="form-range" min="0" max="360" step="5" value="0" id="inputDuration"
+             formControlName="duration"
+             oninput=" this.nextElementSibling.value = this.value">
+      <span *ngIf="duration.value!==0">{{this.secondsToHms(this.duration.value)}}</span>
+      <span *ngIf="duration.value===0">Any</span>
 
     </div>
-  <button *ngIf="duration.value !== 0" type ="button" class="btn btn-outline-secondary col-2" style="margin: 15px " (click)="resetDuration()">Reset Duration Filter</button>
-</div>
-
-
-    <button type="submit" class="btn btn-primary col" (click)="onSearch()"
-    >Search
+    <button *ngIf="duration.value !== 0" type="button" class="btn btn-outline-secondary col-2"
+            style="margin: 15px " (click)="resetDuration()">Reset Duration Filter
     </button>
+  </div>
 
-    <button *ngIf="currentlyActiveFilters?.length===0" type="button"
+
+  <button type="submit" class="btn btn-primary col" (click)="onSearch()"
+  >Search
+  </button>
+
+  <button *ngIf="currentlyActiveFilters?.length===0" type="button"
+          style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
+    Clear all
+  </button>
+  <div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
+    <strong> Active Filters: </strong>
+    <button type="button" class="btn btn-secondary m-1" (click)="resetFilterOnField(filter)"
+            *ngFor="let filter of currentlyActiveFilters">{{filter}} &times;
+    </button>
+    <button type="button"
             style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
       Clear all
     </button>
-    <div class="m-2" *ngIf="currentlyActiveFilters?.length>0">
-      <strong> Active Filters: </strong>
-      <button type="button" class="btn btn-secondary m-1" (click)="resetFilterOnField(filter)" *ngFor="let filter of currentlyActiveFilters">{{filter}} &times;</button>
-      <button type="button"
-              style="margin-left: 1%" class="btn btn-secondary" (click)="resetAll()">
-        Clear all
-      </button>
-    </div>
-
+  </div>
 
 
 </form>
 <hr>
-<app-event-search-result *ngIf="eventsResult"  (nextRequestedPage)="handleEventPageEmit($event)" [events]="eventsResult" [pageSize]="pageSize" ></app-event-search-result>
+<app-event-search-result *ngIf="eventsResult" (nextRequestedPage)="handleEventPageEmit($event)"
+                         [events]="eventsResult" [pageSize]="pageSize"></app-event-search-result>
 
 

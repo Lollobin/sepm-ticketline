@@ -6,193 +6,189 @@
   </button>
 </div>
 
-<div class="row justify-content-center mt-3">
-  <div class="col-md-6">
-    <div class="card">
-      <header class="card-header">
-        <h4 class="card-title mt-2">Sign up for Ticketline 4.0</h4>
-      </header>
-      <article class="card-body">
-        <form [formGroup]="registrationForm" (ngSubmit)="signUpUser()">
+<div class="card w-50 mx-auto">
+  <header class="card-header">
+    <h4 class="card-title mt-2">Sign up for Ticketline 4.0</h4>
+  </header>
+  <article class="card-body">
+    <form [formGroup]="registrationForm" (ngSubmit)="signUpUser()">
 
-          <div class="row mb-3">
-            <div class="col form-group">
-              <label class="form-label">First name </label>
-              <input [maxlength]="100" type="text" class="form-control" formControlName="firstName"
-                     placeholder="">
+      <div class="row mb-3">
+        <div class="col form-group">
+          <label class="form-label">First name </label>
+          <input [maxlength]="100" type="text" class="form-control" formControlName="firstName"
+                 placeholder="">
 
-              <div *ngIf="(f.firstName.touched || submitted) && f.firstName.errors" class="error">
-                <small class="form-text text-warning" *ngIf="f.firstName.errors.required">Your first
-                  name is required!
-                </small>
-              </div>
-            </div>
-
-            <div class="col form-group">
-              <label class="form-label">Last name</label>
-              <input [maxlength]="100" type="text" class="form-control" formControlName="lastName"
-                     placeholder=" ">
-              <div *ngIf="(f.lastName.touched|| submitted)  && f.lastName.errors" class="error">
-                <small class="form-text text-warning" *ngIf="f.lastName.errors.required">Your last
-                  name is required!
-                </small>
-              </div>
-            </div>
+          <div *ngIf="(f.firstName.touched || submitted) && f.firstName.errors" class="error">
+            <small class="form-text text-warning" *ngIf="f.firstName.errors.required">Your first
+              name is required!
+            </small>
           </div>
+        </div>
 
-          <div class="form-group mb-3">
-            <p> Gender </p>
-            <div class="form-check form-check-inline" *ngFor="let gender of genders">
-              <label class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" formControlName="gender"
-                       [value]=gender.value>
-                <span class="form-check-label"> {{gender.description}} </span>
-              </label>
-            </div>
-            <div *ngIf="submitted && f.gender?.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.gender.errors.required">Your gender is
-                required!
-              </small>
-            </div>
+        <div class="col form-group">
+          <label class="form-label">Last name</label>
+          <input [maxlength]="100" type="text" class="form-control" formControlName="lastName"
+                 placeholder=" ">
+          <div *ngIf="(f.lastName.touched|| submitted)  && f.lastName.errors" class="error">
+            <small class="form-text text-warning" *ngIf="f.lastName.errors.required">Your last
+              name is required!
+            </small>
           </div>
+        </div>
+      </div>
 
-          <div class="form-group mb-3">
-            <label class="form-label">Email address</label>
-            <input [maxlength]="100" type="email" class="form-control" formControlName="email"
-                   placeholder="">
-            <div *ngIf="(f.email.touched || submitted)  && f.email.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.email.errors.required">Your email is
-                required!
-              </small>
-              <small class="form-text text-warning" *ngIf="f.email.errors.email">Not a valid mail
-                address!
-              </small>
-            </div>
-          </div>
+      <div class="form-group mb-3">
+        <p> Gender </p>
+        <div class="form-check form-check-inline" *ngFor="let gender of genders">
+          <label class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" formControlName="gender"
+                   [value]=gender.value>
+            <span class="form-check-label"> {{gender.description}} </span>
+          </label>
+        </div>
+        <div *ngIf="submitted && f.gender?.errors" class="error">
+          <small class="form-text text-warning" *ngIf="f.gender.errors.required">Your gender is
+            required!
+          </small>
+        </div>
+      </div>
 
-          <div class="form-group mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input [maxlength]="64" type="password" name="password" formControlName="password"
-                   class="form-control"
-                   id="password">
-            <div *ngIf="(f.password.touched|| submitted) && f.password.errors" class="error">
-              <small class="form-text text-warning" *ngIf="f.password.errors.required">Your password
-                is
-                required!
-              </small>
-              <small class="form-text text-warning" *ngIf="f.password.errors.minlength">Your
-                password must be at least 8
-                characters long!
-              </small>
-            </div>
-          </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Email address</label>
+        <input [maxlength]="100" type="email" class="form-control" formControlName="email"
+               placeholder="">
+        <div *ngIf="(f.email.touched || submitted)  && f.email.errors" class="error">
+          <small class="form-text text-warning" *ngIf="f.email.errors.required">Your email is
+            required!
+          </small>
+          <small class="form-text text-warning" *ngIf="f.email.errors.email">Not a valid mail
+            address!
+          </small>
+        </div>
+      </div>
 
-          <div class="form-group mb-3">
-            <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input [maxlength]="64" type="password" name="confirmPassword"
-                   formControlName="confirmPassword"
-                   class="form-control" id="confirmPassword">
+      <div class="form-group mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input [maxlength]="64" type="password" name="password" formControlName="password"
+               class="form-control"
+               id="password">
+        <div *ngIf="(f.password.touched|| submitted) && f.password.errors" class="error">
+          <small class="form-text text-warning" *ngIf="f.password.errors.required">Your password
+            is
+            required!
+          </small>
+          <small class="form-text text-warning" *ngIf="f.password.errors.minlength">Your
+            password must be at least 8
+            characters long!
+          </small>
+        </div>
+      </div>
 
-            <div *ngIf="f.confirmPassword.touched || submitted" class="error">
+      <div class="form-group mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input [maxlength]="64" type="password" name="confirmPassword"
+               formControlName="confirmPassword"
+               class="form-control" id="confirmPassword">
+
+        <div *ngIf="f.confirmPassword.touched || submitted" class="error">
+          <small class="form-text text-warning"
+                 *ngIf=" registrationForm.errors?.['passwordsDoNotMatch']">Passwords
+            do not match
+          </small>
+          <small class="form-text text-warning" *ngIf="f.confirmPassword.errors?.required">Password
+            Confirmation
+            required
+          </small>
+        </div>
+      </div>
+
+      <div class="mb-1">
+        <h5>Postal Address</h5>
+      </div>
+
+      <div formGroupName="address">
+        <div class="row mb-3">
+          <div class="form-group col-8">
+            <label for="street" class="form-label">Street</label>
+            <input [maxlength]="100" type="text" id="street" value="street"
+                   formControlName="street"
+                   class="form-control">
+            <div *ngIf="registrationForm.get('address.street').touched || submitted"
+                 class="error">
               <small class="form-text text-warning"
-                     *ngIf=" registrationForm.errors?.['passwordsDoNotMatch']">Passwords
-                do not match
-              </small>
-              <small class="form-text text-warning" *ngIf="f.confirmPassword.errors?.required">Password
-                Confirmation
-                required
+                     *ngIf="registrationForm.get('address.street').errors?.required">Street must
+                be filled in!
               </small>
             </div>
           </div>
 
-          <div class="mb-1">
-            <h5>Postal Address</h5>
-          </div>
-
-          <div formGroupName="address">
-            <div class="row mb-3">
-              <div class="form-group col-8">
-                <label for="street" class="form-label">Street</label>
-                <input [maxlength]="100" type="text" id="street" value="street"
-                       formControlName="street"
-                       class="form-control">
-                <div *ngIf="registrationForm.get('address.street').touched || submitted"
-                     class="error">
-                  <small class="form-text text-warning"
-                         *ngIf="registrationForm.get('address.street').errors?.required">Street must
-                    be filled in!
-                  </small>
-                </div>
-              </div>
-
-              <div class="col form-group">
-                <label for="houseNumber" class="form-label">House No.</label>
-                <input [maxlength]="40" type="text" id="houseNumber" value="houseNumber"
-                       formControlName="houseNumber"
-                       class="form-control">
-                <div *ngIf="registrationForm.get('address.houseNumber').touched || submitted"
-                     class="error">
-                  <small class="form-text text-warning"
-                         *ngIf="registrationForm.get('address.houseNumber').errors?.required">House
-                    Number must be filled in!
-                  </small>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="form-group col">
-                <label for="zipCode" class="form-label">Zip Code</label>
-                <input [maxlength]="16" type="text" id="zipCode" value="zipCode"
-                       formControlName="zipCode"
-                       class="form-control">
-                <div *ngIf="registrationForm.get('address.zipCode').touched || submitted"
-                     class="error">
-                  <small class="form-text text-warning"
-                         *ngIf="registrationForm.get('address.zipCode').errors?.required">Zip Code
-                    must be filled in!
-                  </small>
-                </div>
-              </div>
-              <div class="form-group col-7">
-                <label for="city" class="form-label">City</label>
-                <input [maxlength]="100" type="text" id="city" value="city" formControlName="city"
-                       class="form-control">
-                <div *ngIf="registrationForm.get('address.city').touched || submitted"
-                     class="error">
-                  <small class="form-text text-warning"
-                         *ngIf="registrationForm.get('address.city').errors?.required">City must be
-                    filled in!
-                  </small>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group mb-3">
-              <label for="country" class="form-label">Country</label>
-              <input [maxlength]="100" type="text" id="country" value="country"
-                     formControlName="country"
-                     class="form-control">
-              <div *ngIf="registrationForm.get('address.country').touched || submitted"
-                   class="error">
-                <small class="form-text text-warning"
-                       *ngIf="registrationForm.get('address.country').errors?.required">Country must
-                  be filled in!
-                </small>
-              </div>
+          <div class="col form-group">
+            <label for="houseNumber" class="form-label">House No.</label>
+            <input [maxlength]="40" type="text" id="houseNumber" value="houseNumber"
+                   formControlName="houseNumber"
+                   class="form-control">
+            <div *ngIf="registrationForm.get('address.houseNumber').touched || submitted"
+                 class="error">
+              <small class="form-text text-warning"
+                     *ngIf="registrationForm.get('address.houseNumber').errors?.required">House
+                Number must be filled in!
+              </small>
             </div>
           </div>
+        </div>
 
-          <div>
-            <button type="button" class="btn btn-outline-primary me-1" routerLink="/login"
-                    (click)="clearForm()">
-              Go back to login
-            </button>
-            <button type="submit" class="btn btn-primary"> Create new account</button>
+        <div class="row mb-3">
+          <div class="form-group col">
+            <label for="zipCode" class="form-label">Zip Code</label>
+            <input [maxlength]="16" type="text" id="zipCode" value="zipCode"
+                   formControlName="zipCode"
+                   class="form-control">
+            <div *ngIf="registrationForm.get('address.zipCode').touched || submitted"
+                 class="error">
+              <small class="form-text text-warning"
+                     *ngIf="registrationForm.get('address.zipCode').errors?.required">Zip Code
+                must be filled in!
+              </small>
+            </div>
           </div>
+          <div class="form-group col-7">
+            <label for="city" class="form-label">City</label>
+            <input [maxlength]="100" type="text" id="city" value="city" formControlName="city"
+                   class="form-control">
+            <div *ngIf="registrationForm.get('address.city').touched || submitted"
+                 class="error">
+              <small class="form-text text-warning"
+                     *ngIf="registrationForm.get('address.city').errors?.required">City must be
+                filled in!
+              </small>
+            </div>
+          </div>
+        </div>
 
-        </form>
-      </article>
-    </div>
-  </div>
+        <div class="form-group mb-3">
+          <label for="country" class="form-label">Country</label>
+          <input [maxlength]="100" type="text" id="country" value="country"
+                 formControlName="country"
+                 class="form-control">
+          <div *ngIf="registrationForm.get('address.country').touched || submitted"
+               class="error">
+            <small class="form-text text-warning"
+                   *ngIf="registrationForm.get('address.country').errors?.required">Country must
+              be filled in!
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" class="btn btn-outline-primary me-1" routerLink="/login"
+                (click)="clearForm()">
+          Go back to login
+        </button>
+        <button type="submit" class="btn btn-primary"> Create new account</button>
+      </div>
+
+    </form>
+  </article>
 </div>
