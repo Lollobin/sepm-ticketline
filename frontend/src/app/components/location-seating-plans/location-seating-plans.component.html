@@ -1,11 +1,11 @@
-<div class="container mt-3">
+<div>
 <h1 *ngIf="location">{{ location.name }}</h1>
 <p *ngIf="location">
   in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
   {{ location.address.houseNumber }}
 </p>
 <div *ngIf="seatingPlans && seatingPlans.length > 0">
-  <h2>Seating plans</h2>
+  <h3>Seating plans</h3>
   <table class="table table-striped">
     <thead>
       <tr>
