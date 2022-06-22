@@ -37,7 +37,8 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
             + "day(s.date) = day(:date))))"
             + "and ((:price is null) or (sp.price <= :price)) and "
             + "((:seating is null) or (seatP.seatingPlanId = :seating)) and "
-            + "((:location is null) or (l.locationId = :location))")
+            + "((:location is null) or (l.locationId = :location)) and "
+            +  "(s.date >= CURRENT_DATE)")
     Page<Show> search(@Param("date") OffsetDateTime dateTime, @Param("hour") Integer hour,
         @Param("minute") Integer minutes, @Param("name") String eventName,
         @Param("price") BigDecimal price, @Param("seating") Long seatingPlan,
@@ -63,7 +64,7 @@ public interface ShowRepository extends JpaRepository<Show, Long> {
      * @param pageable contains information about the page
      * @return page of shows
      */
-    @Query("select s from Show s where s.event.eventId = :eventId")
+    @Query("select s from Show s WHERE (s.event.eventId = :eventId) AND (s.date >= CURRENT_DATE)")
     Page<Show> findShowsByEventId(@Param("eventId") Long eventId, Pageable pageable);
 
 

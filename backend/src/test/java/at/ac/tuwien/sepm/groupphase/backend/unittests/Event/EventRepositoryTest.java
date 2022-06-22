@@ -16,8 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Show;
 import at.ac.tuwien.sepm.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ShowRepository;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -36,6 +40,8 @@ class EventRepositoryTest {
 
     private final Pageable pageable_asc = PageRequest.of(0, 10, Sort.by("name").ascending());
     private final Pageable pageable_desc = PageRequest.of(0, 2, Sort.by("name").descending());
+    @Autowired
+    private ShowRepository showRepository;
 
     @Test
     void should_CreateNewEvent_When_EventIsValid() {
@@ -117,6 +123,8 @@ class EventRepositoryTest {
     @Test
     void searchWithNoParams_shouldReturnAllEvents(){
 
+
+
         Event event = new Event();
         event.setName(EVENT_NAME);
         event.setContent(EVENT_CONTENT);
@@ -138,6 +146,25 @@ class EventRepositoryTest {
         eventRepository.save(event);
         eventRepository.save(event2);
         eventRepository.save(event3);
+
+        Show show1 = new Show();
+        show1.setSectorPrices(Set.of());
+        show1.setArtists(Set.of());
+        show1.setDate(OffsetDateTime.now().plusDays(1));
+        show1.setEvent(event);
+        showRepository.save(show1);
+        Show show2 = new Show();
+        show2.setSectorPrices(Set.of());
+        show2.setArtists(Set.of());
+        show2.setDate(OffsetDateTime.now().plusDays(1));
+        show2.setEvent(event2);
+        showRepository.save(show2);
+        Show show3 = new Show();
+        show3.setSectorPrices(Set.of());
+        show3.setArtists(Set.of());
+        show3.setDate(OffsetDateTime.now().plusDays(1));
+        show3.setEvent(event3);
+        showRepository.save(show3);
 
         Page<Event> events = eventRepository.search("", "", null, null, null, null, pageable_asc);
 
@@ -204,6 +231,25 @@ class EventRepositoryTest {
         eventRepository.save(event);
         eventRepository.save(event2);
         eventRepository.save(event3);
+
+        Show show1 = new Show();
+        show1.setSectorPrices(Set.of());
+        show1.setArtists(Set.of());
+        show1.setDate(OffsetDateTime.now().plusDays(1));
+        show1.setEvent(event);
+        showRepository.save(show1);
+        Show show2 = new Show();
+        show2.setSectorPrices(Set.of());
+        show2.setArtists(Set.of());
+        show2.setDate(OffsetDateTime.now().plusDays(1));
+        show2.setEvent(event2);
+        showRepository.save(show2);
+        Show show3 = new Show();
+        show3.setSectorPrices(Set.of());
+        show3.setArtists(Set.of());
+        show3.setDate(OffsetDateTime.now().plusDays(1));
+        show3.setEvent(event3);
+        showRepository.save(show3);
 
         Page<Event> events = eventRepository.search("morrow", "", null, null, null, null, pageable_asc);
 
