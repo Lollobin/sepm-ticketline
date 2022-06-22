@@ -64,6 +64,16 @@ public class ArticleGenerator {
             "The Great Gatsby", "Wicked: The musical", "Phantom haunts the halls again",
             "My fair Lady in theaters now!", "Book of Mormon - it's nice", "Jersey Boys"});
 
+    private String[][] imagePaths = new String[][]{
+        new String[]{"bttf1.jpeg", "bttf2.jpeg"},
+        new String[]{"lk1.jpeg"},
+        new String[]{"gg1.jpeg", "gg2.jpeg"},
+        new String[]{"w1.jpeg"},
+        new String[]{"ph1.jpeg", "ph2.jpeg"},
+        new String[]{"mfl1.jpeg"},
+        new String[]{"bom1.jpeg"},
+        new String[]{"jb1.jpeg"}
+    };
     private List<String> fullTexts = List.of(new String[]{
 
         "Welcome to Hill Valley! Take an electrifying ride back in time as the 1985 "
@@ -169,10 +179,11 @@ public class ArticleGenerator {
 
         LOGGER.debug("generating {} articles", numberOfArticles);
         for (int i = 0; i < fullTexts.size(); i++) {
-            Article article = generateArticle(fullTitles.get(i), fullTexts.get(i).split("\\.")[0],
+            Article article = generateCustomArticle(fullTitles.get(i),
+                fullTexts.get(i).split("\\.")[0],
                 fullTexts.get(i), faker.date()
                     .between(Date.from(OffsetDateTime.now().minusDays(2).toInstant()), new Date())
-                    .toInstant().atOffset(zoneOffSet));
+                    .toInstant().atOffset(zoneOffSet), imagePaths[i]);
             LOGGER.trace("saving article {}", article);
 
             articleRepository.save(article);
@@ -187,6 +198,33 @@ public class ArticleGenerator {
 
             articleRepository.save(article);
         }
+    }
+
+    private Article generateCustomArticle(String title, String summary, String text,
+        OffsetDateTime date, String[] images) {
+
+        Article article = new Article();
+        article.setCreationDate(date);
+        article.setTitle(title);
+        article.setSummary(summary);
+        article.setText(text);
+        List<Long> imageIds = imageGenerator.generateSpecificImages(images);
+
+        List<Image> imagesList = imageRepository.findAllById(imageIds);
+
+        article.setImages(imagesList);
+
+        Article savedArticle = articleRepository.save(article);
+
+        for (long i : imageIds) {
+            Image image = imageRepository.findById(i).get();
+            image.setArticle(savedArticle);
+            imageRepository.save(image);
+
+        }
+
+        return article;
+
     }
 
     private Article generateArticle(String title, String summary, String text, OffsetDateTime date)
