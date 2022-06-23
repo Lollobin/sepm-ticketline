@@ -1010,13 +1010,16 @@ paths:
           description: Validation failed for an input
         500:
           $ref: "#/components/responses/500-internal-error"
-  /ticketPrints/{id}:
+  /ticketPrints:
     get:
       tags:
         - tickets
       summary: Retreives a ticket in PDF-format or the given Ticket ID.
       parameters:
-        - $ref: "#/components/parameters/ticketId"
+        - name: tickets
+          in: query
+          schema:
+            $ref: "#/components/schemas/TicketIdArray"
       security:
         - BearerAuth: []
       responses:
@@ -1391,11 +1394,14 @@ components:
             type: integer
         location:
           $ref: "#/components/schemas/Location"
+        minPrice: 
+          type: number
       required:
         - showId
         - event
         - artists
         - location
+        - minPrice
     ShowWithoutId:
       type: object
       properties:
@@ -2113,5 +2119,12 @@ components:
           type: integer
         pagesTotal:
           type: integer
+
+    TicketIdArray:
+      type: array    
+      items: 
+        type: integer
+        format: int64
+
       
 

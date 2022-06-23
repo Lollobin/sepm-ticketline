@@ -18,13 +18,13 @@
   <tr
       *ngFor="let show of shows.shows">
 
-    <td style="width: 40%" *ngIf="!(shows&&eventId&&eventName)">{{show.event.name}}</td>
-    <td style="width: 40%" *ngIf="!(shows&&location)">{{show.location.name}}</td>
+    <td style="width: 30%" *ngIf="!(shows&&eventId&&eventName)">{{show.event.name}}</td>
+    <td style="width: 30%" *ngIf="!(shows&&location)">{{show.location.name}}</td>
     <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
     <td style="width: 30%; text-align: right;">
-      <button type="button" class="btn btn-primary" style="width: 150px; margin-right: 4%;"
+      <button type="button" class="btn btn-outline-primary" style="width: 150px; margin-right: 4%;"
               [routerLink]="['/buyTickets', show.showId]">Buy Tickets
-      </button>
+      <br><strong>from  <span style="font-size: larger">€{{show.minPrice}}</span></strong></button>
     </td>
 
   </tr>

@@ -43,6 +43,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         and ((:duration is null) or (event1.duration between :duration - 30 and :duration + 30))
         and ((:content is null) or upper(event1.content) like upper(concat('%', :content, '%')))
         and ((:category is null) or upper(event1.category) like upper(:category))
+        and 0 < (SELECT COUNT(*) from Event event3 join Show connectedShow ON event1.eventId = connectedShow.event.eventId WHERE event3.eventId = event1.eventId AND connectedShow.date>=CURRENT_DATE)
         """)
     Page<Event> search(@Param(value = "name") String name, @Param(value = "content") String content,
         @Param(value = "duration") Integer duration,

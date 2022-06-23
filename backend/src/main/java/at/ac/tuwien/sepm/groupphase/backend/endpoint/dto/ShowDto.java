@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LocationDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,9 @@ public class ShowDto   {
 
   @JsonProperty("location")
   private LocationDto location;
+
+  @JsonProperty("minPrice")
+  private BigDecimal minPrice;
 
   public ShowDto showId(Long showId) {
     this.showId = showId;
@@ -146,6 +150,25 @@ public class ShowDto   {
     this.location = location;
   }
 
+  public ShowDto minPrice(BigDecimal minPrice) {
+    this.minPrice = minPrice;
+    return this;
+  }
+
+  /**
+   * Get minPrice
+   * @return minPrice
+  */
+  @NotNull @Valid 
+  @Schema(name = "minPrice", required = true)
+  public BigDecimal getMinPrice() {
+    return minPrice;
+  }
+
+  public void setMinPrice(BigDecimal minPrice) {
+    this.minPrice = minPrice;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -159,12 +182,13 @@ public class ShowDto   {
         Objects.equals(this.date, show.date) &&
         Objects.equals(this.event, show.event) &&
         Objects.equals(this.artists, show.artists) &&
-        Objects.equals(this.location, show.location);
+        Objects.equals(this.location, show.location) &&
+        Objects.equals(this.minPrice, show.minPrice);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(showId, date, event, artists, location);
+    return Objects.hash(showId, date, event, artists, location, minPrice);
   }
 
   @Override
@@ -176,6 +200,7 @@ public class ShowDto   {
     sb.append("    event: ").append(toIndentedString(event)).append("\n");
     sb.append("    artists: ").append(toIndentedString(artists)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
+    sb.append("    minPrice: ").append(toIndentedString(minPrice)).append("\n");
     sb.append("}");
     return sb.toString();
   }

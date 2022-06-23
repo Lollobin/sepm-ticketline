@@ -138,41 +138,6 @@ class ShowEndpointTest {
     }
 
     @Test
-    void should_ReturnAllStoredShows_When_RepoNotEmpty() throws Exception {
-
-        deleteAll();
-
-        saveThreeShowsAndEvents();
-
-        MvcResult mvcResult =
-            this.mockMvc
-                .perform(
-                    get("/shows")
-                        .header(
-                            securityProperties.getAuthHeader(),
-                            jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES)))
-                .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-
-        ShowSearchResultDto resultDto =
-            objectMapper.readValue(response.getContentAsString(), ShowSearchResultDto.class);
-        List<ShowDto> showDtos = resultDto.getShows();
-
-        assertThat(showDtos).hasSize(3);
-        assertThat(showDtos.get(0).getDate()).isEqualTo(SHOW_DATE);
-        assertThat(showDtos.get(0).getShowId()).isEqualTo(1);
-        assertThat(showDtos.get(1).getDate()).isEqualTo(SHOW2_DATE);
-        assertThat(showDtos.get(1).getShowId()).isEqualTo(2);
-        assertThat(showDtos.get(2).getDate()).isEqualTo(SHOW3_DATE);
-        assertThat(showDtos.get(2).getShowId()).isEqualTo(3);
-
-
-    }
-
-    @Test
     void should_ReturnShowById_When_ShowIsPresent() throws Exception {
         deleteAll();
         saveThreeShowsAndEvents();
@@ -258,7 +223,7 @@ class ShowEndpointTest {
         ZoneId zone = ZoneId.of("Europe/Berlin");
         ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
 
-        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2022, 5, 25, 0, 0), ZoneOffset.UTC);
+        OffsetDateTime date = OffsetDateTime.of(LocalDateTime.of(2024, 5, 25, 0, 0), ZoneOffset.UTC);
 
         MvcResult mvcResult =
             this.mockMvc

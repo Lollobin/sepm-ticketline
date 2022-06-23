@@ -2,7 +2,9 @@ package at.ac.tuwien.sepm.groupphase.backend.unittests.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import at.ac.tuwien.sepm.groupphase.backend.basetest.TestData;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
@@ -31,6 +33,13 @@ class ApplicationUserRepositoryTest implements TestData {
         ApplicationUser testuser = generateAppUserWithGenericDetails();
         userRepository.save(testuser);
         assertThat(testuser.getUserId()).isNotZero();
+        assertFalse(testuser.isHasAdministrativeRights());
+        testuser = generateAppUserWithGenericDetails();
+        testuser.setEmail(USER2_EMAIL);
+        testuser.setHasAdministrativeRights(true);
+        userRepository.save(testuser);
+        assertThat(testuser.getUserId()).isNotZero();
+        assertTrue(testuser.isHasAdministrativeRights());
     }
 
     @Test

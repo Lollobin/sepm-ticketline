@@ -38,9 +38,9 @@ public interface TicketPrintsApi {
     }
 
     /**
-     * GET /ticketPrints/{id} : Retreives a ticket in PDF-format or the given Ticket ID.
+     * GET /ticketPrints : Retreives a ticket in PDF-format or the given Ticket ID.
      *
-     * @param id ID of the ticket that is retreived (required)
+     * @param tickets  (optional)
      * @return Successful retreival of a ticket. (status code 200)
      *         or The user is not logged in (status code 401)
      *         or The user needs administrative rights (status code 403)
@@ -48,7 +48,7 @@ public interface TicketPrintsApi {
      *         or Internal Server Error (status code 500)
      */
     @Operation(
-        operationId = "ticketPrintsIdGet",
+        operationId = "ticketPrintsGet",
         summary = "Retreives a ticket in PDF-format or the given Ticket ID.",
         tags = { "tickets" },
         responses = {
@@ -64,11 +64,11 @@ public interface TicketPrintsApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/ticketPrints/{id}",
+        value = "/ticketPrints",
         produces = { "application/pdf" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> ticketPrintsIdGet(
-        @Parameter(name = "id", description = "ID of the ticket that is retreived", required = true, schema = @Schema(description = "")) @PathVariable("id") Long id
+    default ResponseEntity<org.springframework.core.io.Resource> ticketPrintsGet(
+        @Parameter(name = "tickets", description = "", schema = @Schema(description = "")) @Valid @RequestParam(value = "tickets", required = false) List<Long> tickets
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

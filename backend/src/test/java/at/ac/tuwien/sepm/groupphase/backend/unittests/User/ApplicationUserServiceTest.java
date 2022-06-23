@@ -129,6 +129,37 @@ class ApplicationUserServiceTest implements TestData {
         assertEquals(USER_CTRY, capturedUser.getAddress().getCountry());
         assertEquals(USER_ZIPCODE, capturedUser.getAddress().getZipCode());
         assertEquals(USER_PASSWORD, capturedUser.getPassword());
+        assertFalse(capturedUser.isHasAdministrativeRights());
+    }
+
+    @Test
+    void shouldSaveNewAdminUser() {
+        ArgumentCaptor<ApplicationUser> userArgCaptor = ArgumentCaptor.forClass(
+            ApplicationUser.class);
+
+        when(userRepository.findUserByEmail("test@email.com")).thenReturn(null);
+        doNothing().when(userValidator).validateUserWithPasswordDto(any());
+        when(userEncodePasswordMapper.userWithPasswordDtoToAppUser(userToSave)).thenReturn(
+            fakePersistedUser);
+
+        userService.saveAdmin(userToSave);
+
+        verify(userRepository, times(1)).findUserByEmail("test@email.com");
+
+        verify(userRepository).save(userArgCaptor.capture());
+
+        ApplicationUser capturedUser = userArgCaptor.getValue();
+        assertEquals(USER_FNAME, capturedUser.getFirstName());
+        assertEquals(USER_LNAME, capturedUser.getLastName());
+        assertEquals(USER_EMAIL, capturedUser.getEmail());
+        assertEquals(USER_GENDER, capturedUser.getGender());
+        assertEquals(USER_HOUSE_NO, capturedUser.getAddress().getHouseNumber());
+        assertEquals(USER_STREET, capturedUser.getAddress().getStreet());
+        assertEquals(USER_CITY, capturedUser.getAddress().getCity());
+        assertEquals(USER_CTRY, capturedUser.getAddress().getCountry());
+        assertEquals(USER_ZIPCODE, capturedUser.getAddress().getZipCode());
+        assertEquals(USER_PASSWORD, capturedUser.getPassword());
+        assertTrue(capturedUser.isHasAdministrativeRights());
     }
 
     @Test
@@ -375,16 +406,16 @@ class ApplicationUserServiceTest implements TestData {
         userService.delete();
 
         assertAll(
-            () -> assertEquals(null, ticket1.getReservedBy()),
+            () -> assertNull(ticket1.getReservedBy()),
             () -> assertEquals(fakePersistedUser, ticket2.getPurchasedBy()),
             () -> assertEquals(del + fakePersistedUser.getUserId(), fakePersistedUser.getEmail()),
             () -> assertEquals(del, fakePersistedUser.getFirstName()),
             () -> assertEquals(del, fakePersistedUser.getLastName()),
             () -> assertEquals(Gender.OTHER, fakePersistedUser.getGender()),
             () -> assertEquals(del, fakePersistedUser.getPassword()),
-            () -> assertEquals(false, fakePersistedUser.isHasAdministrativeRights()),
-            () -> assertEquals(true, fakePersistedUser.isLockedAccount()),
-            () -> assertEquals(true, fakePersistedUser.getDeleted()),
+            () -> assertFalse(fakePersistedUser.isHasAdministrativeRights()),
+            () -> assertTrue(fakePersistedUser.isLockedAccount()),
+            () -> assertTrue(fakePersistedUser.getDeleted()),
             () -> assertEquals(inv, fakePersistedUser.getAddress().getHouseNumber()),
             () -> assertEquals(inv, fakePersistedUser.getAddress().getStreet()),
             () -> assertEquals(inv, fakePersistedUser.getAddress().getCity()),

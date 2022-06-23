@@ -100,6 +100,39 @@ class UserEndpointTest implements TestData {
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertTrue(userRepository.existsByEmail(user.getEmail()));
+        assertFalse(userRepository.findUserByEmail(user.getEmail()).isHasAdministrativeRights());
+    }
+
+    @Test
+    void postAdministrativeUsersWithAdminRole_shouldReturnCreatedAndCreateAdminUser() throws Exception {
+        String body = objectMapper.writeValueAsString(user);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(ADMINISTRATIVEUSERS_BASE_URI).contentType(MediaType.APPLICATION_JSON)
+                .header(securityProperties.getAuthHeader(), jwtTokenizer.getAuthToken(ADMIN_USER, ADMIN_ROLES))
+                .content(body))
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertTrue(userRepository.existsByEmail(user.getEmail()));
+        assertTrue(userRepository.findUserByEmail(user.getEmail()).isHasAdministrativeRights());
+    }
+
+    @Test
+    void postAdministrativeUsersWithoutRole_shouldThrow403() throws Exception {
+        String body = objectMapper.writeValueAsString(user);
+
+        MvcResult mvcResult =
+            this.mockMvc
+                .perform(post(ADMINISTRATIVEUSERS_BASE_URI).contentType(MediaType.APPLICATION_JSON).content(body))
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.getStatus());
     }
 
     @Test
@@ -132,7 +165,7 @@ class UserEndpointTest implements TestData {
         @Sql("classpath:/sql/insert_seatingPlan.sql"), @Sql("classpath:/sql/insert_sector.sql"),
         @Sql("classpath:/sql/insert_event.sql"), @Sql("classpath:/sql/insert_show.sql"),
         @Sql("classpath:/sql/insert_sectorPrice.sql"), @Sql("classpath:/sql/insert_seat.sql"),
-        @Sql("classpath:/sql/insert_ticket.sql"),
+        @Sql("classpath:/sql/insert_ticket2.sql"),
         @Sql(value = "classpath:/sql/delete.sql", executionPhase = AFTER_TEST_METHOD)})
     void shouldDeleteUserAndTicketReservationsAndOldAddress() throws Exception {
         userRepository.deleteAll();

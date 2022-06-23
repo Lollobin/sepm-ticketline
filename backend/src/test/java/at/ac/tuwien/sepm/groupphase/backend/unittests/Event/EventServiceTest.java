@@ -14,7 +14,6 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEG
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CATEGORY_DTO;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_CONTENT;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_DURATION;
-import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_CATEGORY_LENGTH;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_DURATION_LOWER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_DURATION_UPPER;
 import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_INVALID_NAME;
@@ -23,11 +22,15 @@ import static at.ac.tuwien.sepm.groupphase.backend.basetest.TestData.EVENT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.CategoryDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.EventSearchResultDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TopEventSearchDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -36,6 +39,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepm.groupphase.backend.service.impl.EventServiceImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.validation.EventValidator;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -188,9 +194,12 @@ class EventServiceTest {
         assertAll(
             () -> assertEquals(eventSearchResultDto.getEvents().size(), 3),
             () -> assertEquals(eventSearchResultDto.getEvents().get(0).getName(), EVENT2_NAME),
-            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getDuration(), BigDecimal.valueOf(EVENT2_DURATION)),
-            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getCategory(), EVENT2_CATEGORY_DTO),
-            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getContent(), EVENT2_CONTENT),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getDuration(),
+                BigDecimal.valueOf(EVENT2_DURATION)),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getCategory(),
+                EVENT2_CATEGORY_DTO),
+            () -> assertEquals(eventSearchResultDto.getEvents().get(0).getContent(),
+                EVENT2_CONTENT),
             () -> assertEquals(eventSearchResultDto.getEvents().get(1).getName(), EVENT3_NAME),
             () -> assertEquals(eventSearchResultDto.getEvents().get(2).getName(), EVENT_NAME)
         );
@@ -239,7 +248,8 @@ class EventServiceTest {
 
         when(eventRepository.search("a", null, null, null, null, null, pageable))
             .thenReturn(eventPage1);
-        when(eventRepository.search(EVENT_NAME.substring(1, EVENT_NAME.length() - 2), null, null, null, null, null, pageable))
+        when(eventRepository.search(EVENT_NAME.substring(1, EVENT_NAME.length() - 2), null, null,
+            null, null, null, pageable))
             .thenReturn(eventPage2);
         when(eventRepository.search("INVALID NAME", null, null, null, null, null, pageable))
             .thenReturn(eventPage3);
@@ -257,18 +267,46 @@ class EventServiceTest {
 
         assertAll(
             () -> assertEquals(eventSearchResultDto1.getEvents().size(), 3),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getName(), event2.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getCategory(), EVENT2_CATEGORY_DTO),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getName(), event3.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getCategory(), EVENT3_CATEGORY_DTO),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getName(),
+                event2.getName()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(0).getCategory(),
+                EVENT2_CATEGORY_DTO),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getName(),
+                event3.getName()),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(1).getCategory(),
+                EVENT3_CATEGORY_DTO),
             () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getName(), event.getName()),
-            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getCategory(), EVENT_CATEGORY_DTO),
+            () -> assertEquals(eventSearchResultDto1.getEvents().get(2).getCategory(),
+                EVENT_CATEGORY_DTO),
 
             () -> assertEquals(eventSearchResultDto2.getEvents().size(), 1),
             () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getName(), event.getName()),
-            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getCategory(), EVENT_CATEGORY_DTO),
+            () -> assertEquals(eventSearchResultDto2.getEvents().get(0).getCategory(),
+                EVENT_CATEGORY_DTO),
 
             () -> assertThat(eventSearchResultDto3.getEvents()).isEmpty()
         );
+    }
+
+    @Test
+    void getTopEvents_shouldCallCorrectMethods() {
+        when(eventRepository.getTopEvents(anyString(), any(OffsetDateTime.class),
+            any(OffsetDateTime.class)))
+            .thenReturn(new ArrayList<>());
+
+        TopEventSearchDto searchDto = new TopEventSearchDto().category(CategoryDto.EDM).month(
+            LocalDate.of(2022, 12, 3));
+        TopEventSearchDto searchDto2 = new TopEventSearchDto().category(CategoryDto.JAZZ).month(
+            LocalDate.of(2022, 1, 3));
+
+        eventService.getTopEvents(searchDto);
+        eventService.getTopEvents(searchDto2);
+
+        verify(eventRepository).getTopEvents("EDM",
+            OffsetDateTime.of(2022, 12, 1, 0, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2023, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC));
+        verify(eventRepository).getTopEvents("Jazz",
+            OffsetDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneOffset.UTC));
     }
 }

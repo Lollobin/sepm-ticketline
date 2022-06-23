@@ -1,3 +1,4 @@
+delete from TICKET where TICKET_ID < 0;
 delete from APPLICATION_USER where USER_ID < 0;
 commit ;
 

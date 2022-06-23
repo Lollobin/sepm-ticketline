@@ -37,21 +37,12 @@ public class EventsEndpoint implements EventsApi {
     public ResponseEntity<EventSearchResultDto> eventsGet(EventSearchDto search,
         Integer pageSize, Integer requestedPage, SortDto sort) {
 
-        Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort.getValue()), "name");
+        Pageable pageable = PageRequest.of(requestedPage, pageSize,
+            Direction.fromString(sort.getValue()), "name");
 
-        if ((search.getName() == null || search.getName().isBlank())
-            && (search.getContent() == null || search.getContent().isBlank())
-            && search.getCategory() == null
-            && search.getDuration() == null
-            && search.getLocation() == null
-            && search.getArtist() == null) {
+        EventSearchResultDto eventSearchResultDto = this.eventService.search(search, pageable);
+        return ResponseEntity.ok().body(eventSearchResultDto);
 
-            EventSearchResultDto eventSearchResultDto = this.eventService.findAll(pageable);
-            return ResponseEntity.ok().body(eventSearchResultDto);
-        } else {
-            EventSearchResultDto eventSearchResultDto = this.eventService.search(search, pageable);
-            return ResponseEntity.ok().body(eventSearchResultDto);
-        }
     }
 
     @Secured("ROLE_ADMIN")
