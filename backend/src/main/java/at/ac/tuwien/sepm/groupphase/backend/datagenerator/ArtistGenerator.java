@@ -41,11 +41,16 @@ public class ArtistGenerator {
 
     public Artist generateArtist() {
         Artist artist = new Artist();
-        String bandName = faker.rockBand().name();
-        artist.setBandName(bandName);
-        artist.setKnownAs(bandName);
-        artist.setFirstName(faker.name().firstName());
-        artist.setLastName(faker.name().lastName());
+        double random = faker.number().randomDouble(2, 0, 1);
+        if (random > 0.5) {
+            artist.setBandName(faker.rockBand().name());
+        } else {
+            if (random < 0.25) {
+                artist.setKnownAs(faker.hobbit().character());
+            }
+            artist.setFirstName(faker.name().firstName());
+            artist.setLastName(faker.name().lastName());
+        }
         return artist;
     }
 }

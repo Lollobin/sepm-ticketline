@@ -51,11 +51,12 @@ public class EventShowGenerator {
 
         LOGGER.debug("generating {} events with shows", numberOfEvents);
         List<Show> shows = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         List<Artist> allArtists = artistRepository.findAll();
         for (int i = 0; i < numberOfEvents; i++) {
             Event event = generateEvent();
             LOGGER.trace("saving event {}", event);
-            eventRepository.save(event);
+            events.add(event);
 
             Artist mainArtist = allArtists.get(faker.number().numberBetween(1, allArtists.size()));
 
@@ -77,8 +78,10 @@ public class EventShowGenerator {
                 shows.add(generateShow(event, new HashSet<>(artists.values())));
 
             }
-            showRepository.saveAll(shows);
+
         }
+        eventRepository.saveAll(events);
+        showRepository.saveAll(shows);
     }
 
     private Event generateEvent() {
