@@ -16,7 +16,9 @@ import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -60,18 +62,34 @@ public class TicketSectorPriceGenerator {
 
         LOGGER.debug("generating tickets and sector prices for each show");
 
+        Map<Long, SeatingPlan> seatingPlanMap = new HashMap<>();
+        for (SeatingPlan seatingPlan : seatingPlanRepository.findAll()) {
+            seatingPlanMap.put(seatingPlan.getSeatingPlanId(), seatingPlan);
+        }
+
+        Map<Long, List<Sector>> sectorMap = new HashMap<>();
+        for (Sector sector : sectorRepository.findAll()) {
+            long id = sector.getSeatingPlan().getSeatingPlanId();
+            sectorMap.computeIfAbsent(id, k -> new ArrayList<>());
+            sectorMap.get(id).add(sector);
+        }
+
+        Map<Long, List<Seat>> seatMap = new HashMap<>();
+        for (Seat seat : seatRepository.findAll()) {
+            long id = seat.getSector().getSectorId();
+            seatMap.computeIfAbsent(id, k -> new ArrayList<>());
+            seatMap.get(id).add(seat);
+        }
+
         List<Show> shows = showRepository.findAll();
         int totalNumberOfSeatingPlans = seatingPlanRepository.findAll().size();
         List<SectorPrice> sectorPrices = new ArrayList<>();
         List<Ticket> tickets = new ArrayList<>();
-        int count = 0;
         for (Show show : shows) {
-            LOGGER.trace("Show {} of {} shows", count++, shows.size());
-            SeatingPlan randSeatingPlan = seatingPlanRepository.getBySeatingPlanId(
+            SeatingPlan randSeatingPlan = seatingPlanMap.get(
                 (long) faker.number().numberBetween(1, totalNumberOfSeatingPlans + 1));
 
-            List<Sector> sectors = sectorRepository.findAllBySeatingPlanSeatingPlanId(
-                randSeatingPlan.getSeatingPlanId());
+            List<Sector> sectors = sectorMap.get(randSeatingPlan.getSeatingPlanId());
 
             for (Sector sector : sectors) {
                 //generate sector price
@@ -79,7 +97,7 @@ public class TicketSectorPriceGenerator {
                 sectorPrices.add(sectorPrice);
 
                 //generate tickets
-                List<Seat> seats = seatRepository.findBySectorSectorId(sector.getSectorId());
+                List<Seat> seats = seatMap.get(sector.getSectorId());
                 for (Seat seat : seats) {
                     Ticket ticket = generateTicket(seat, show);
                     tickets.add(ticket);
