@@ -48,7 +48,8 @@ import {TopEventsComponent} from './components/top-events/top-events.component';
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import { CreateUserComponent } from './components/create-user/create-user.component';
 import {ImageCropperModule} from "ngx-image-cropper";
-
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -101,7 +102,9 @@ import {ImageCropperModule} from "ngx-image-cropper";
     FormsModule,
     FontAwesomeModule,
     LazyLoadImageModule,
-    ImageCropperModule
+    ImageCropperModule, 
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({positionClass: 'toast-bottom-right',})
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]

@@ -5,11 +5,12 @@ import { UserManagementService } from 'src/app/generated-sources/openapi';
 import { CustomAuthService } from '../../services/custom-auth.service';
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { AuthRequest } from 'src/app/dtos/auth-request';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.scss']
+  styleUrls: ['./edit-user.component.scss'],
 })
 export class EditUserComponent implements OnInit {
 
@@ -32,7 +33,8 @@ export class EditUserComponent implements OnInit {
   action = "none";
 
   constructor(private formBuilder: FormBuilder, private authService: CustomAuthService,
-    private userManagementService: UserManagementService, private router: Router) {
+    private userManagementService: UserManagementService, private router: Router, 
+    private toastr: ToastrService) {
     this.editForm = this.formBuilder.group({
       firstName: ["", [Validators.required]],
       lastName: ["", [Validators.required]],
@@ -118,6 +120,7 @@ export class EditUserComponent implements OnInit {
         this.reloadToken();
         this.error = false;
         this.success = true;
+        this.toastr.success("Succesfully edited user!");
       },
       error: (error) => {
         console.error("Error putting user from authentication token");
@@ -129,6 +132,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
         this.passwordForm.reset();
       }
     });
@@ -151,6 +155,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
         this.passwordForm.reset();
       }
     });
@@ -225,6 +230,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
         this.passwordForm.reset();
       }
     });
@@ -249,6 +255,7 @@ export class EditUserComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
