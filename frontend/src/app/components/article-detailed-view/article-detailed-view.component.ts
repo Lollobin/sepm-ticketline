@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Article, ArticlesService} from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-article-detailed-view',
@@ -17,7 +18,7 @@ export class ArticleDetailedViewComponent implements OnInit {
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
 
   constructor(private articleService: ArticlesService, private activatedRoute: ActivatedRoute,
-              private customAuthService: CustomAuthService) {
+              private customAuthService: CustomAuthService, private toastrService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -49,6 +50,7 @@ export class ArticleDetailedViewComponent implements OnInit {
       },
       error: err => {
         this.error = err;
+        this.toastrService.error(err.errorMessage);
       }
     });
   }

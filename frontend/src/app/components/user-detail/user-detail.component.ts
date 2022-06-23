@@ -4,6 +4,7 @@ import {faLock, faLockOpen, faRotateLeft, faTrashCan} from '@fortawesome/free-so
 import {AdminPasswordReset, UserManagementService} from "../../generated-sources/openapi";
 import {UnlockUserComponent} from "../unlock-user/unlock-user.component";
 import {Location} from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-detail',
@@ -29,7 +30,7 @@ export class UserDetailComponent implements OnInit {
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
-              private route: ActivatedRoute, private userManagementService: UserManagementService) {
+              private route: ActivatedRoute, private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -43,6 +44,7 @@ export class UserDetailComponent implements OnInit {
             this.user = user;
           }, error: err => {
             this.error = err;
+            this.toastr.error(err.errorMessage);
           }
         }
     );
@@ -64,13 +66,14 @@ export class UserDetailComponent implements OnInit {
         this.success = true;
         this.error = null;
 
+        this.toastr.success("Succesfully " + status + " user!");
         this.reload.emit( null);
         this.refreshPage();
       },
       error: err => {
         this.success = false;
         this.handleError(err);
-
+        this.toastr.error(err.errorMessage);
       }
     });
 
@@ -89,8 +92,12 @@ export class UserDetailComponent implements OnInit {
             this.passW = true;
 
             this.success = "Successfully reset password of user " + this.user.email + "!";
+            this.toastr.success("Succesfully reset password of user '" + this.user.email + "'!");
           },
-          error: (err) => this.handleError(err)
+          error: (err) => {
+            this.handleError(err);
+            this.toastr.error(err.errorMessage);
+          }
         }
     );
   }

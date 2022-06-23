@@ -17,6 +17,7 @@ import {
 import { drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 
 interface SeatBookingInformation {
   color: number;
@@ -63,7 +64,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private seatingPlansService: SeatingPlansService,
     private ticketsService: TicketsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
   async ngOnInit() {
     this.route.paramMap.subscribe({
@@ -80,10 +82,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.retreiveEvent(show);
             this.retreiveSeatingPlan(show);
           },
-          error: (error) => this.setError(error),
+          error: (error) => {
+            this.setError(error);
+            this.toastr.error(error);
+          }
         });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        this.setError(error);
+        this.toastr.error(error);
+      }
     });
   }
   ngAfterViewInit() {
@@ -97,7 +105,10 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (event) => {
         this.event = event;
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        this.setError(error);
+        this.toastr.error(error);
+      }
     });
   }
   retreiveArtists(show: Show) {
@@ -107,7 +118,10 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         next: (artist) => {
           this.artists.push(artist);
         },
-        error: (error) => this.setError(error),
+        error: (error) => {
+          this.setError(error);
+          this.toastr.error(error);
+        }
       });
     }
   }
@@ -126,10 +140,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
               this.calculateSectorBookingInformation();
               this.initializeSeatingPlan();
             },
-            error: (error) => this.setError(error),
+            error: (error) => {
+              this.setError(error);
+              this.toastr.error(error);
+            }
           });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        this.setError(error);
+        this.toastr.error(error);
+      }
     });
   }
   setError(error: any) {
@@ -175,9 +195,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         next: (response) => {
           console.log(response);
           this.router.navigate(["/", "orders"]);
+          this.toastr.success("Succesfully purchased tickets!");
         },
         error: (error) => {
           this.setError(error);
+          this.toastr.error(error);
         },
       });
   }
@@ -192,7 +214,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         next: (response) => {
           console.log(response);
           this.router.navigate(["/", "orders"]);
+          this.toastr.success("Succesfully reserved tickets!");
         },
+        error: (error) => {
+          this.setError(error);
+          this.toastr.error(error);
+        }
       });
   }
   calculateSectorBookingInformation() {

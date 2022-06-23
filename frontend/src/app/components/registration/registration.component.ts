@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 import {Address, UserManagementService, UserWithPassword} from "../../generated-sources/openapi";
 import {passwordMatchValidator} from "./passwords-match-validator";
 
@@ -21,7 +22,8 @@ export class RegistrationComponent {
     value: "male"
   }, {description: "Other", value: "other"}];
 
-  constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, private router: Router,
+    private toastr: ToastrService) {
     this.registrationForm = this.formBuilder.group({
           firstName: ['', [Validators.required]],
           lastName: ['', [Validators.required]],
@@ -79,6 +81,7 @@ export class RegistrationComponent {
       next: () => {
         console.log("success!");
         this.router.navigate(['/login']);
+        this.toastr.success("Succesfully registrated user!");
       },
       error: error => {
         this.error = true;
@@ -87,14 +90,10 @@ export class RegistrationComponent {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
-
-  vanishError() {
-    this.error = false;
-  }
-
 
   clearForm() {
     this.registrationForm.reset();

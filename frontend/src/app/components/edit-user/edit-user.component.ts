@@ -114,6 +114,7 @@ export class EditUserComponent implements OnInit {
         console.log("Succesfully updated user information");
         this.reloadToken();
         this.toastr.success("Succesfully edited user!");
+        this.router.navigateByUrl("/");
       },
       error: (error) => {
         console.error("Error putting user from authentication token");

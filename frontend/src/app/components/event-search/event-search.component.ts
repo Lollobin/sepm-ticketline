@@ -6,6 +6,7 @@ import {
   EventsService
 } from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-event-search',
@@ -27,7 +28,8 @@ export class EventSearchComponent implements OnInit {
 
   events: EventSearchResult;
 
-  constructor(private formBuilder: FormBuilder, private eventService: EventsService) {
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, 
+    private toastr: ToastrService) {
 
     this.categories = Object.keys(this.categoriesType);
   }
@@ -98,6 +100,7 @@ export class EventSearchComponent implements OnInit {
             } else {
               this.errorMessage = err.error;
             }
+            this.toastr.error(this.errorMessage);
           }
         }
     );

@@ -11,6 +11,7 @@ import {
 } from "../../generated-sources/openapi";
 import {debounceTime, distinctUntilChanged, map, Observable, switchMap} from "rxjs";
 import {FormBuilder} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-show-search',
@@ -36,7 +37,8 @@ export class ShowSearchComponent implements OnInit {
   currentlyActiveFilters: string[];
 
   constructor(private showService: ShowsService, private seatingPlansService: SeatingPlansService,
-              private locationsService: LocationsService, private formBuilder: FormBuilder) {
+              private locationsService: LocationsService, private formBuilder: FormBuilder,
+              private toastr: ToastrService) {
 
   }
 
@@ -106,7 +108,10 @@ export class ShowSearchComponent implements OnInit {
             this.shows = response;
             this.setCurrentlyActiveFilters();
           },
-          error: err => this.error = err
+          error: err => {
+            this.error = err;
+            this.toastr.error(err.errorMessage);
+          }
         }
     );
 
@@ -131,6 +136,7 @@ export class ShowSearchComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }

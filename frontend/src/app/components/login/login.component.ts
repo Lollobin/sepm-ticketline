@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CustomAuthService} from '../../services/custom-auth.service';
 import {AuthRequest} from '../../dtos/auth-request';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
 
   constructor(private formBuilder: FormBuilder, private authService: CustomAuthService,
-              private router: Router, private route: ActivatedRoute) {
+              private router: Router, private route: ActivatedRoute, private toastr: ToastrService) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -67,6 +68,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }

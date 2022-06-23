@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: 'app-user-management',
@@ -29,7 +30,7 @@ export class UserManagementComponent implements OnInit {
   numberOfElems = 0;
   empty = false;
 
-  constructor(private userManagementService: UserManagementService) {
+  constructor(private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -48,7 +49,7 @@ export class UserManagementComponent implements OnInit {
       error: err => {
         console.log("Error fetching users: ", err);
         this.showErrorFetch("Not allowed, " + err.message);
-
+        this.toastr.error(err.message);
       }
     });
   }

@@ -6,6 +6,7 @@ import {Category, Event, EventsService, EventWithoutId} from 'src/app/generated-
 
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-event',
@@ -18,7 +19,6 @@ export class CreateEventComponent implements OnInit {
   categories = [];
 
   eventForm: any;
-  error = false;
   errorMessage = '';
   role = '';
   eventWithoutId: EventWithoutId = { name: "" };
@@ -27,7 +27,7 @@ export class CreateEventComponent implements OnInit {
 
 
   constructor(private formBuilder: FormBuilder, private eventService: EventsService, private router: Router,
-    private authService: CustomAuthService) {
+    private authService: CustomAuthService, private toastr: ToastrService) {
     this.categories = Object.values(this.categoriesType);
   }
 
@@ -88,23 +88,19 @@ export class CreateEventComponent implements OnInit {
         console.log(location);
         const id = location.split("/").pop();
         this.router.navigateByUrl("/events/" + id + "/shows/create");
-        this.error = false;
+        this.toastr.success("Succesfully created event!");
       },
       error: error => {
         console.log(error.message);
-        this.error = true;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     }
     );
-  }
-
-  vanishError() {
-    this.error = false;
   }
 
   clearForm() {

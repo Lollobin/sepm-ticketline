@@ -11,6 +11,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
 import {forkJoin} from "rxjs";
 import {faFileArrowDown} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-order-overview",
@@ -33,7 +34,8 @@ export class OrderOverviewComponent implements OnInit {
   constructor(
       private ticketService: TicketsService,
       private modalService: NgbModal,
-      private formBuilder: FormBuilder
+      private formBuilder: FormBuilder,
+      private toastr: ToastrService
   ) {
   }
 
@@ -49,6 +51,7 @@ export class OrderOverviewComponent implements OnInit {
       error: (error) => {
         console.error("Error getting tickets", error.message);
         this.setError(error);
+        this.toastr.error(error);
       },
       complete: () => {
         console.log("Received tickets");
@@ -65,6 +68,7 @@ export class OrderOverviewComponent implements OnInit {
       error: (error) => {
         console.error("Error getting orders", error.message);
         this.setError(error);
+        this.toastr.error(error);
       },
       complete: () => {
         console.log("Received orders");
@@ -112,8 +116,14 @@ export class OrderOverviewComponent implements OnInit {
           purchased: [],
         }),
       ]).subscribe({
-        next: (response) => console.log(response),
-        error: (error) => this.setError(error),
+        next: (response) => {
+          console.log(response);
+          this.toastr.success("Succesfully purchased selected & cancelled unselected tickets!");
+        },
+        error: (error) => {
+          this.setError(error);
+          this.toastr.error(error);
+        },
         complete: () => {
           this.modalService.dismissAll();
           this.ngOnInit();
@@ -128,9 +138,11 @@ export class OrderOverviewComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.toastr.success("Succesfully purchased tickets!");
         },
         error: (error) => {
           this.setError(error);
+          this.toastr.error(error);
         },
         complete: () => {
           this.modalService.dismissAll();
@@ -166,9 +178,11 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ticketCancellationsPost(ticketStatus).subscribe({
       next: (response) => {
         console.log(response);
+        this.toastr.success("Succesfully cancelled tickets!");
       },
       error: (error) => {
         this.setError(error);
+        this.toastr.error(error);
       },
       complete: () => {
         this.modalService.dismissAll();
@@ -183,7 +197,10 @@ export class OrderOverviewComponent implements OnInit {
         const fileURL = URL.createObjectURL(blob);
         window.open(fileURL, "_blank");
       },
-      error: (err) => this.setError(err),
+      error: (err) => {
+        this.setError(err);
+        this.toastr.error(err.errorMessage);
+      }
     });
   }
 
@@ -217,6 +234,7 @@ export class OrderOverviewComponent implements OnInit {
       error: () => {
         fileErrorCount++;
         this.error = new Error("Failed download of " + fileErrorCount + " files");
+        this.toastr.error(this.error.message);
       },
     });
   }

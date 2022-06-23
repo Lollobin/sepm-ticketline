@@ -7,6 +7,7 @@ import {
   EventSearchResult,
   EventsService
 } from "../../generated-sources/openapi";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-artist-search',
@@ -26,7 +27,8 @@ export class ArtistSearchComponent implements OnInit{
   clickedArtist: Artist;
   eventPageSize = 5;
 
-  constructor(private artistService: ArtistsService, private eventsService: EventsService) {
+  constructor(private artistService: ArtistsService, private eventsService: EventsService, 
+    private toastrService: ToastrService) {
   }
 
   ngOnInit() {
@@ -48,6 +50,7 @@ export class ArtistSearchComponent implements OnInit{
           },
           error: err => {
             console.log(err.error?.error);
+            this.toastrService.error(err.errorMessage);
           }
         }
     );
@@ -70,6 +73,7 @@ export class ArtistSearchComponent implements OnInit{
       },
       error: err => {
         console.log(err.error?.error);
+        this.toastrService.error(err.errorMessage);
       }
 
     });

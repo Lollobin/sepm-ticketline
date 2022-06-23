@@ -6,6 +6,7 @@ import {
   LocationsService, ShowSearch, ShowSearchResult, ShowsService
 } from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-location-search',
@@ -27,7 +28,8 @@ export class LocationSearchComponent implements OnInit {
 
   currentlyActiveFilters: string[];
 
-  constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService) {
+  constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService, 
+    private toastr: ToastrService) {
     this.locationForm = this._formBuilder.group({
       name: [],
       city: [],
@@ -92,6 +94,7 @@ export class LocationSearchComponent implements OnInit {
       },
       error: err => {
         this.err = err;
+        this.toastr.error(err.errorMessage);
       }
     });
   }
@@ -108,6 +111,7 @@ export class LocationSearchComponent implements OnInit {
         },
         error: err1 => {
           console.log(err1.err);
+          this.toastr.error(err1.errorMessage);
         }
       });
   }

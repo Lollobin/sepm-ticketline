@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 import {PasswordReset, UserManagementService} from "../../generated-sources/openapi";
 
 @Component({
@@ -15,7 +16,7 @@ export class PasswordResetComponent implements OnInit {
   email;
   submitted=false;
 
-  constructor(private router: Router, private userManagementService: UserManagementService) {
+  constructor(private router: Router, private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -35,8 +36,12 @@ export class PasswordResetComponent implements OnInit {
             this.submitted=true;
             console.log(response);
             this.successMessage = response;
+            this.toastr.success(this.successMessage);
           },
-          error: (err) => this.error = err
+          error: (err) => {
+            this.error = err;
+            this.toastr.error(this.error.errorMessage);
+          }
         }
     );
   }

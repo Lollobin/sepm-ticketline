@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, Validators} from "@angular/forms";
 import {PasswordUpdate, UserManagementService} from "../../generated-sources/openapi";
 import {passwordMatchValidator} from "../registration/passwords-match-validator";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-password-update',
@@ -18,7 +19,8 @@ export class PasswordUpdateComponent implements OnInit {
   success;
 
   constructor(private route: ActivatedRoute, private formBuilder: FormBuilder,
-              private userManagementService: UserManagementService, private router: Router) {
+              private userManagementService: UserManagementService, private router: Router,
+              private toastr: ToastrService) {
     this.passwordUpdateForm = this.formBuilder.group({
           password: ['', [Validators.required, Validators.minLength(8)]],
           confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
@@ -54,23 +56,17 @@ export class PasswordUpdateComponent implements OnInit {
           next: () => {
             this.submitted = true;
             this.success = "Successfully saved new password!";
-
+            this.toastr.success(this.success);
           },
           error: (err) => {
             this.handleError(err);
             console.log(err);
+            this.toastr.error(this.error);
           }
         }
     );
   }
 
-  vanishSuccess() {
-    this.success = null;
-  }
-
-  vanishError() {
-    this.error = null;
-  }
   handleError(error){
     if (error?.status===422){
       this.error="Your password reset link seems to be invalid. Please request a new one.";

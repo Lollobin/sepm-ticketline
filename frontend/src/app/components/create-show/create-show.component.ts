@@ -12,6 +12,7 @@ import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from '
 import { Application } from 'pixi.js';
 import { drawSeatingPlanPreview } from 'src/app/shared_modules/seatingPlanGraphics';
 import { dateTimeValidator } from './date-time-validator';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-show',
@@ -62,7 +63,8 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
 
   constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
     private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
-    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router) {
+    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router, 
+    private toastr: ToastrService) {
     this.showForm = this.formBuilder.group({
       date: ['', [Validators.required]],
       time: ['', [Validators.required]],
@@ -174,6 +176,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -195,6 +198,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -226,6 +230,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         this.error = false;
         this.clearForm();
         this.submitted = false;
+        this.toastr.success("Succesfully added show!")
       },
       error: error => {
         console.log("Error creating event", error.message);
@@ -235,6 +240,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -287,6 +293,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
           } else {
             this.errorMessage = error.error;
           }
+          this.toastr.error(this.errorMessage);
         }
       });
   }
@@ -309,6 +316,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }

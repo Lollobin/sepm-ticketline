@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Location, Show, ShowSearchResult, ShowsService} from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-show-search-result',
@@ -21,7 +22,7 @@ export class ShowSearchResultComponent implements OnInit {
   eventName;
 
 
-  constructor(private showService: ShowsService, private route: ActivatedRoute) {
+  constructor(private showService: ShowsService, private route: ActivatedRoute, private toastr: ToastrService) {
 
   }
 
@@ -46,7 +47,10 @@ export class ShowSearchResultComponent implements OnInit {
         console.log(response);
         this.eventName= this.shows.shows[0]?.event.name;
         },
-        error: err => console.log(err.error.error)
+        error: err => {
+          console.log(err.error.error);
+          this.toastr.error(err.errorMessage);
+        }
       });
     } else {
       console.log(this.shows);

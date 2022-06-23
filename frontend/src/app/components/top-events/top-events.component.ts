@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import { ToastrService } from "ngx-toastr";
 import {
   Category,
   EventsService,
@@ -20,7 +21,7 @@ export class TopEventsComponent implements OnInit {
   categories = [];
   categoriesType = Category;
 
-  constructor(private eventsService: EventsService) {
+  constructor(private eventsService: EventsService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -43,6 +44,7 @@ export class TopEventsComponent implements OnInit {
       error: error => {
         console.error("Error getting top events", error.message);
         this.setError(error);
+        this.toastr.error(error.errorMessage);
       },
       complete: () => {
         console.log("Received events");

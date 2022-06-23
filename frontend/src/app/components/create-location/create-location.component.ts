@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { LocationsService, LocationWithoutId } from "src/app/generated-sources/openapi";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: "app-create-location",
@@ -16,7 +17,8 @@ export class CreateLocationComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private locationsService: LocationsService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.locationForm = this.formBuilder.group({
       name: ["", [Validators.required]],
@@ -39,10 +41,12 @@ export class CreateLocationComponent implements OnInit {
       };
       this.locationsService.locationsPost(location).subscribe({
         next: () => {
+          this.toastr.success("Succesfully created location!");
           this.router.navigate(["/", "locations"]);
         },
         error: (error) => {
           this.error = error;
+          this.toastr.error(error.errorMessage);
         },
       });
     }

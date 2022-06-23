@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 import { Location, LocationsService, SeatingPlan } from "src/app/generated-sources/openapi";
 
 @Component({
@@ -12,7 +13,7 @@ export class LocationSeatingPlansComponent implements OnInit {
   location: Location;
   seatingPlans: SeatingPlan[];
   error: Error;
-  constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
+  constructor(private route: ActivatedRoute, private locationsService: LocationsService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -26,11 +27,13 @@ export class LocationSeatingPlansComponent implements OnInit {
             },
             error: (error) => {
               this.error = error;
+              this.toastr.error(error.errorMessage);
             },
           });
         },
         error: (error) => {
           this.error = error;
+          this.toastr.error(error.errorMessage);
         },
       });
     });

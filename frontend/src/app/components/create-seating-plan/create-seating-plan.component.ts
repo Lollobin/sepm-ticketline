@@ -13,6 +13,7 @@ import {
   SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
 import { ActivatedRoute, Route, Router } from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 
 type ClickElement =
   | {
@@ -44,7 +45,8 @@ export class CreateSeatingPlanComponent implements OnInit {
     private route: ActivatedRoute,
     private locationsService: LocationsService,
     private seatingPlansService: SeatingPlansService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,7 @@ export class CreateSeatingPlanComponent implements OnInit {
         },
         error: (error) => {
           this.error = error;
+          this.toastr.error(error.errorMessage);
         },
       });
     });
@@ -104,9 +107,11 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
       next: () => {
         this.router.navigate(["/", "locations", this.location.locationId]);
+        this.toastr.success("Succesfully added seating plan!");
       },
       error: (error) => {
         this.error = error;
+        this.toastr.error(error.errorMessage);
       },
     });
   }

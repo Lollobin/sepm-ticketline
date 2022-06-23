@@ -3,6 +3,7 @@ import {Article, ArticlePage, ArticlesService, Sort} from "../../generated-sourc
 import {Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {ViewportScroller} from "@angular/common";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-overview',
@@ -25,7 +26,8 @@ export class NewsOverviewComponent implements OnInit {
 
 
   constructor(public articleService: ArticlesService, private router: Router,
-              public authService: CustomAuthService, private scroll: ViewportScroller) {
+              public authService: CustomAuthService, private scroll: ViewportScroller,
+              private toastr: ToastrService) {
   }
 
 
@@ -59,6 +61,7 @@ export class NewsOverviewComponent implements OnInit {
       },
       error: error => {
         this.error = error;
+        this.toastr.error(error.errorMessage);
       }
     });
   }
@@ -86,7 +89,10 @@ export class NewsOverviewComponent implements OnInit {
     this.articleService.imagesIdGet(id).subscribe({
       next: image => {
         this.createImageFromBlob(image, articleId);
-      },
+      }, 
+      error: error => {
+        this.toastr.error(error.errorMessage);
+      }
     });
   }
 

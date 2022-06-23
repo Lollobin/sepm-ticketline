@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faLockOpen} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-unlock-user",
@@ -24,7 +25,7 @@ export class UnlockUserComponent implements OnInit {
   sort: 'ASC' | 'DESC' = 'ASC';
   numberOfElems = 0;
 
-  constructor(private userManagementService: UserManagementService) {
+  constructor(private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -41,7 +42,7 @@ export class UnlockUserComponent implements OnInit {
       error: err => {
         console.log("Error fetching users: ", err);
         this.showErrorFetch("Not allowed, " + err.message);
-
+        this.toastr.error(err.message);
       }
     });
   }
@@ -61,6 +62,7 @@ export class UnlockUserComponent implements OnInit {
       error: err => {
         console.log("Error unlocking user: ", err);
         this.showError(err.error);
+        this.toastr.error(err.message);
       }
     });
   }

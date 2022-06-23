@@ -5,6 +5,7 @@ import { Address, PasswordReset, UserManagementService, UserWithPassword } from 
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { CustomAuthService } from 'src/app/services/custom-auth.service';
 import { AuthRequest } from 'src/app/dtos/auth-request';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-user',
@@ -17,8 +18,6 @@ export class CreateUserComponent implements OnInit {
   passwordForm: FormGroup;
   submitted = false;
   faUserShield = faUserShield;
-  error = false;
-  success = false;
   successUser = "";
   errorMessage = '';
   genders = [{ description: "Female", value: "female" }, {
@@ -33,7 +32,8 @@ export class CreateUserComponent implements OnInit {
   clientUrl = 'http://' + window.location.host + '#/passwordUpdate';
 
   constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, 
-    private router: Router, private authService: CustomAuthService) {
+    private router: Router, private authService: CustomAuthService, 
+    private toastr: ToastrService) {
       
     this.getAdminInfo();
     this.registrationForm = this.formBuilder.group({
@@ -106,24 +106,22 @@ export class CreateUserComponent implements OnInit {
     this.userManagementService.usersPost(userWithPassword).subscribe({
       next: () => {
         console.log("success!");
-        this.success = true;
         this.successUser = this.f['email'].value;
         this.sendPasswordReset(this.f['email'].value);
-        this.error = false;
         this.clearForm();
         this.registrationForm.markAsPristine();
         this.registrationForm.markAsUntouched();
         this.submitted = false;
         this.createdAccount = "User";
+        this.toastr.success("Succesfully created User '" + this.successUser + "'!");
       },
       error: error => {
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -132,24 +130,22 @@ export class CreateUserComponent implements OnInit {
     this.userManagementService.administrativeUsersPost(userWithPassword).subscribe({
       next: () => {
         console.log("success!");
-        this.success = true;
         this.successUser = this.f['email'].value;
         this.sendPasswordReset(this.f['email'].value);
-        this.error = false;
         this.clearForm();
         this.registrationForm.markAsPristine();
         this.registrationForm.markAsUntouched();
         this.submitted = false;
         this.createdAccount = "Admin";
+        this.toastr.success("Succesfully created Admin '" + this.successUser + "'!");
       },
       error: error => {
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -159,17 +155,15 @@ export class CreateUserComponent implements OnInit {
       next: (next) => {
         this.adminMail = next.email;
         console.log("Succesfully got admin with id " + next.userId);
-        this.error = false;
       },
       error: (error) => {
         console.error("Error getting admin from authentication token");
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -185,12 +179,11 @@ export class CreateUserComponent implements OnInit {
         {
           next: (response) => {
             console.log("succesfully reset password for created account");
-            this.success = true;
+            this.toastr.success("Succesfully reset password of " + this.createdAccount + " '" + this.successUser + "'!");
           },
           error: (err) => {
-            this.error = err;
             console.log("failed to reset password for created account");
-            this.success = false;
+            this.toastr.error(err.errorMessage);
           }
         }
     );
@@ -220,24 +213,15 @@ export class CreateUserComponent implements OnInit {
       error: error => {
         console.log('Could not log in due to:');
         console.log(error);
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
         this.passwordForm.reset();
       }
     });
-  }
-
-  vanishError() {
-    this.error = false;
-  }
-
-  vanishSuccess() {
-    this.success = false;
   }
 
   clearForm() {
