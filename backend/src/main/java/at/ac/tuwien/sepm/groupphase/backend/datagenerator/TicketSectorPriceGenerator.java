@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,26 +61,34 @@ public class TicketSectorPriceGenerator {
         LOGGER.debug("generating tickets and sector prices for each show");
 
         List<Show> shows = showRepository.findAll();
+        int totalNumberOfSeatingPlans = seatingPlanRepository.findAll().size();
+        List<SectorPrice> sectorPrices = new ArrayList<>();
+        List<Ticket> tickets = new ArrayList<>();
+        int count = 0;
         for (Show show : shows) {
-            int totalNumberOfSeatingPlans = seatingPlanRepository.findAll().size();
+            LOGGER.trace("Show {} of {} shows", count++, shows.size());
             SeatingPlan randSeatingPlan = seatingPlanRepository.getBySeatingPlanId(
                 (long) faker.number().numberBetween(1, totalNumberOfSeatingPlans + 1));
 
             List<Sector> sectors = sectorRepository.findAllBySeatingPlanSeatingPlanId(
                 randSeatingPlan.getSeatingPlanId());
+
             for (Sector sector : sectors) {
                 //generate sector price
                 SectorPrice sectorPrice = generateSectorPrice(show, sector);
-                sectorPriceRepository.save(sectorPrice);
+                sectorPrices.add(sectorPrice);
 
                 //generate tickets
                 List<Seat> seats = seatRepository.findBySectorSectorId(sector.getSectorId());
                 for (Seat seat : seats) {
                     Ticket ticket = generateTicket(seat, show);
-                    ticketRepository.save(ticket);
+                    tickets.add(ticket);
                 }
             }
+
         }
+        ticketRepository.saveAll(tickets);
+        sectorPriceRepository.saveAll(sectorPrices);
     }
 
     private SectorPrice generateSectorPrice(Show show, Sector sector) {
