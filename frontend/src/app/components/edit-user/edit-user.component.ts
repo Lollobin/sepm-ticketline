@@ -21,9 +21,7 @@ export class EditUserComponent implements OnInit {
     firstName: "", lastName: "", email: "", gender: "",
     address: { houseNumber: "", street: "", zipCode: "", city: "", country: "" }
   };
-  error = false;
   errorMessage = '';
-  success = false;
   genders = [{ description: "Female", value: "female" }, {
     description: "Male",
     value: "male"
@@ -71,7 +69,6 @@ export class EditUserComponent implements OnInit {
       next: (next) => {
         this.user = next;
         console.log("Succesfully got user with id " + next.userId);
-        this.error = false;
         this.editForm.controls['firstName'].setValue(this.user.firstName);
         this.editForm.controls['lastName'].setValue(this.user.lastName);
         this.editForm.controls['gender'].setValue(this.user.gender);
@@ -84,17 +81,15 @@ export class EditUserComponent implements OnInit {
           country: this.user.address.country
         };
         this.editForm.controls['address'].setValue(address);
-        this.error = false;
       },
       error: (error) => {
         console.error("Error getting user from authentication token");
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
           this.errorMessage = error.error;
         }
+        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -118,14 +113,10 @@ export class EditUserComponent implements OnInit {
       next: (_next) => {
         console.log("Succesfully updated user information");
         this.reloadToken();
-        this.error = false;
-        this.success = true;
         this.toastr.success("Succesfully edited user!");
       },
       error: (error) => {
         console.error("Error putting user from authentication token");
-        this.error = true;
-        this.success = false;
         if (error.error != null && typeof error.error === 'object') {
           console.log(error.error);
           this.errorMessage = error.error.error;
@@ -143,12 +134,11 @@ export class EditUserComponent implements OnInit {
       next: (_next) => {
         console.log("Succesfully deleted user");
         this.authService.logoutUser();
+        this.toastr.success("Succesfully deleted user!");
         this.router.navigateByUrl("/");
       },
       error: (error) => {
         console.error("Error deleting user from authentication token");
-        this.error = true;
-        this.success = false;
         if (error.error != null && typeof error.error === 'object') {
           console.log(error.error);
           this.errorMessage = error.error.error;
@@ -167,14 +157,6 @@ export class EditUserComponent implements OnInit {
 
   onCloseHandled() {
     this.display = "none";
-  }
-
-  vanishError() {
-    this.error = false;
-  }
-
-  vanishSuccess() {
-    this.success = false;
   }
 
   clearForm() {
@@ -223,8 +205,6 @@ export class EditUserComponent implements OnInit {
       error: error => {
         console.log('Could not log in due to:');
         console.log(error);
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
@@ -248,8 +228,6 @@ export class EditUserComponent implements OnInit {
       error: error => {
         console.log('Could not log in due to:');
         console.log(error);
-        this.error = true;
-        this.success = false;
         if (typeof error.error === 'object') {
           this.errorMessage = error.error.error;
         } else {
