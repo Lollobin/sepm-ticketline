@@ -1,11 +1,16 @@
-<div *ngIf="show!==undefined">
+<div *ngIf="show !== undefined">
   <h1 class="text-center mt-5">{{ event.name }}</h1>
   <div class="d-flex mt-2 mb-4 justify-content-between">
     <div>
       with
       <span *ngFor="let artist of artists; index as i">
         <span class="font-family-bold text-primary"
-          >{{ artist.bandName }} {{ artist.firstName }} {{ artist.lastName }}</span
+          >{{ artist.bandName }} {{ artist.firstName }}
+          <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+            >"{{ artist.knownAs }}"
+          </span>
+          <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
+          {{ artist.lastName }}</span
         >
         <span *ngIf="artists.length - 1 !== i">and</span>
       </span>
