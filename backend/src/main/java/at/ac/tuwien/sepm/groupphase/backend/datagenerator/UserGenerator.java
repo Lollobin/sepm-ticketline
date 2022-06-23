@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -37,7 +39,7 @@ public class UserGenerator {
 
         LOGGER.debug("generating {} users", numberOfUsers);
 
-        ApplicationUser admin = generateApplicationUser();
+        ApplicationUser admin = generateApplicationUser(1);
         admin.setEmail("admin@email.com");
         admin.setPassword("password");
         admin.setHasAdministrativeRights(true);
@@ -46,7 +48,7 @@ public class UserGenerator {
         admin.setLockedAccount(false);
         userRepository.save(admin);
 
-        ApplicationUser user = generateApplicationUser();
+        ApplicationUser user = generateApplicationUser(1);
         user.setEmail("user@email.com");
         user.setPassword("password");
         user.setHasAdministrativeRights(false);
@@ -55,16 +57,18 @@ public class UserGenerator {
         user.setLockedAccount(false);
         userRepository.save(user);
 
+        List<ApplicationUser> users = new ArrayList<>();
         for (int i = 0; i < numberOfUsers; i++) {
-            ApplicationUser randomUser = generateApplicationUser();
-            LOGGER.trace("saving user {}", randomUser);
-            userRepository.save(randomUser);
+            users.add(generateApplicationUser(i));
+
         }
+        userRepository.saveAll(users);
+
     }
 
-    private ApplicationUser generateApplicationUser() {
+    private ApplicationUser generateApplicationUser(int counter) {
         ApplicationUser user = new ApplicationUser();
-        user.setEmail(faker.internet().emailAddress());
+        user.setEmail(faker.internet().emailAddress(faker.zelda().character().split(" ")[0] + counter));
         user.setFirstName(faker.name().firstName());
         user.setLastName(faker.name().lastName());
         user.setGender(faker.options().option(Gender.class));

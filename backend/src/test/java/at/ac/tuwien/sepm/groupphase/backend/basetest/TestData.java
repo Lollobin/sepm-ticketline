@@ -186,7 +186,7 @@ public interface TestData {
     String ARTIST_INVALIDNAME = "INVALID NAME";
 
     String SEATINGPLAN_NAME = "SeatingPlan Name";
-    String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan1.json";
+    String SEATINGPLANLAYOUT_PATH = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/cinema.json";
     Long SECTOR_ID1 = 1L;
     Long SECTOR_ID2 = 2L;
     Long SECTOR_ID3 = 3L;

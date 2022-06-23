@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataGeneratorManager {
 
-    private static final int NUMBER_OF_USERS = 2;
+    private static final int NUMBER_OF_USERS = 1000;
     private static final int NUMBER_OF_ARTISTS = 20;
-    private static final int NUMBER_OF_EVENTS = 30;
-    private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 5;
-    private static final int NUMBER_OF_LOCATIONS = 1;
+    private static final int NUMBER_OF_EVENTS = 200;
+    private static final int MAX_NUMBER_OF_SHOWS_PER_EVENT = 10;
+    private static final int NUMBER_OF_LOCATIONS = 25;
     private static final int MAX_NUMBER_OF_SEATING_PLANS_PER_LOCATION = 3;
 
     private static final int NUMBER_OF_ARTICLES = 30;

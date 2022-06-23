@@ -11,7 +11,11 @@ import com.github.javafaker.Faker;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,38 +50,38 @@ public class EventShowGenerator {
         }
 
         LOGGER.debug("generating {} events with shows", numberOfEvents);
-
+        List<Show> shows = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
+        List<Artist> allArtists = artistRepository.findAll();
         for (int i = 0; i < numberOfEvents; i++) {
             Event event = generateEvent();
             LOGGER.trace("saving event {}", event);
-            eventRepository.save(event);
+            events.add(event);
 
-            int numberOfArtists = artistRepository.findAll().size();
-            Artist mainArtist = artistRepository.getByArtistId(
-                (long) faker.number().numberBetween(1, numberOfArtists));
+            Artist mainArtist = allArtists.get(faker.number().numberBetween(1, allArtists.size()));
 
             int numberOfShows = faker.number().numberBetween(1, maxShowsPerEvent);
             for (int j = 0; j < numberOfShows; j++) {
 
-                Set<Artist> artists = new HashSet<>();
-                artists.add(mainArtist);
+                Map<Long, Artist> artists = new HashMap<>();
+                artists.put(mainArtist.getArtistId(), mainArtist);
 
                 double random = faker.number().randomDouble(3, 0, 1);
                 if (random < 0.3) {
                     int numberOfAdditionalArtists = faker.number().numberBetween(1, 3);
                     for (int k = 0; k < numberOfAdditionalArtists; k++) {
-                        Artist additionalArtist = artistRepository.getByArtistId(
-                            (long) faker.number().numberBetween(1, numberOfArtists));
-                        artists.add(additionalArtist);
+                        Artist additionalArtist = allArtists.get(faker.number().numberBetween(1, allArtists.size()));
+                        artists.put(additionalArtist.getArtistId(), additionalArtist);
                     }
                 }
 
-                Show show = generateShow(event, artists);
-                LOGGER.trace("saving show {}", show);
-                showRepository.save(show);
+                shows.add(generateShow(event, new HashSet<>(artists.values())));
+
             }
 
         }
+        eventRepository.saveAll(events);
+        showRepository.saveAll(shows);
     }
 
     private Event generateEvent() {

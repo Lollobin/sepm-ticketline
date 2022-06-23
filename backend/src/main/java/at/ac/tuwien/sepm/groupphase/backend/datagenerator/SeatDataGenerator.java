@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanLayoutDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanSeatDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanSectorDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Seat;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SeatingPlan;
@@ -11,23 +14,27 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.SeatRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanLayoutRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SeatingPlanRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectorRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 @Profile("generateData")
 @Component
 public class SeatDataGenerator {
 
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        MethodHandles.lookup().lookupClass());
 
     private final SeatingPlanLayoutRepository seatingPlanLayoutRepository;
     private final SeatingPlanRepository seatingPlanRepository;
@@ -36,20 +43,34 @@ public class SeatDataGenerator {
     private final SectorRepository sectorRepository;
     private final SeatRepository seatRepository;
     private final Faker faker = new Faker();
+    private static final String seatingPlanPath = "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlans/";
+    private static final File[] files = new File(seatingPlanPath).listFiles();
 
-    public SeatDataGenerator(
-        FileSystemRepository fileSystemRepository,
+    public SeatDataGenerator(FileSystemRepository fileSystemRepository,
         SeatingPlanLayoutRepository seatingPlanLayoutRepository,
-        SeatingPlanRepository seatingPlanRepository,
-        LocationRepository locationRepository,
-        SectorRepository sectorRepository,
-        SeatRepository seatRepository) {
+        SeatingPlanRepository seatingPlanRepository, LocationRepository locationRepository,
+        SectorRepository sectorRepository, SeatRepository seatRepository) {
         this.fileSystemRepository = fileSystemRepository;
         this.seatingPlanLayoutRepository = seatingPlanLayoutRepository;
         this.seatingPlanRepository = seatingPlanRepository;
         this.locationRepository = locationRepository;
         this.sectorRepository = sectorRepository;
         this.seatRepository = seatRepository;
+    }
+
+    private SeatingPlanLayout saveSeatingPlan(byte[] byteArray) throws IOException {
+
+        String path = this.fileSystemRepository.save(byteArray, "test");
+
+        SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
+        seatingPlanLayout.setSeatingLayoutPath(path);
+        return seatingPlanLayoutRepository.save(seatingPlanLayout);
+    }
+
+    private SeatingPlanLayoutDto parseSeatingPlan(File file) throws IOException {
+
+        return new ObjectMapper().readValue(FileUtil.readAsByteArray(file),
+            SeatingPlanLayoutDto.class);
     }
 
     public void generateData(int maxSeatingPlansPerLocation) throws IOException {
@@ -59,81 +80,63 @@ public class SeatDataGenerator {
         }
 
         LOGGER.debug("generating seating plan layouts, seating plans, sectors and seats");
-
-
-
-        FileInputStream fis = new FileInputStream(ResourceUtils.getFile(
-                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan2_19_seats.json")
-            .getAbsoluteFile());
-        String path = this.fileSystemRepository.save(
-            fis.readAllBytes(), "test");
-        fis.close();
-
-        SeatingPlanLayout seatingPlanLayout = new SeatingPlanLayout();
-        seatingPlanLayout.setSeatingLayoutPath(path);
-        seatingPlanLayoutRepository.save(seatingPlanLayout);
-
         List<Location> locations = locationRepository.findAll();
-        SeatingPlan seatingPlan = generateSeatingPlan("Hall A",
-            locations.get(0), seatingPlanLayout);
+        for (Location location : locations) {
+            for (int i = 0; i < faker.number().numberBetween(1, maxSeatingPlansPerLocation); i++) {
+                generateSeatingPlan(location);
+            }
+        }
+
+    }
+
+
+    private void generateSeatingPlan(Location location) throws IOException {
+        File file = files[faker.number().numberBetween(0, files.length)];
+        SeatingPlanLayout seatingPlanLayout = saveSeatingPlan(FileUtil.readAsByteArray(file));
+        SeatingPlanLayoutDto seatingPlanLayoutDto = parseSeatingPlan(file);
+        SeatingPlan seatingPlan = generateSeatingPlan(faker.starTrek().location(), location,
+            seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
+        List<Sector> sectorList = new ArrayList<>();
 
-        // TODO: generate sectors and seats based on seating plan layout
-        Sector sector1 = generateSector(seatingPlan);
-        Sector sector2 = generateSector(seatingPlan);
-        Sector sector3 = generateSector(seatingPlan);
-        sectorRepository.save(sector1);
-        sectorRepository.save(sector2);
-        sectorRepository.save(sector3);
+        for (SeatingPlanSectorDto sectorDto : seatingPlanLayoutDto.getSectors()) {
+            sectorList.add(generateSector(seatingPlan));
+        }
+        List<Sector> updatedSectors = sectorRepository.saveAll(sectorList);
+        Map<Long, SeatingPlanSectorDto> seatingPlanSectors = new HashMap<>();
+        Map<Long, Sector> sectors = new HashMap<>();
+        int counter = 0;
+        for (SeatingPlanSectorDto sectorDto : seatingPlanLayoutDto.getSectors()) {
+            seatingPlanSectors.put(sectorDto.getId(), sectorDto);
+            sectors.put(sectorDto.getId(), updatedSectors.get(counter));
+            sectorDto.setId(updatedSectors.get(counter).getSectorId());
 
-        for (int j = 0; j < 5; j++) {
-            seatRepository.save(generateSeat(sector1));
-        }
-        for (int j = 0; j < 5; j++) {
-            seatRepository.save(generateSeat(sector2));
-        }
-        for (int j = 0; j < 9; j++) {
-            seatRepository.save(generateSeat(sector3));
+            counter++;
         }
 
-        fis = new FileInputStream(ResourceUtils.getFile(
-                "src/main/java/at/ac/tuwien/sepm/groupphase/backend/datagenerator/seatingPlan3_139_seats.json")
-            .getAbsoluteFile());
-        path = this.fileSystemRepository.save(
-            fis.readAllBytes(), "test");
-        fis.close();
+        List<Seat> seats = new ArrayList<>();
+        long count = 0;
+        for (SeatingPlanSeatDto seatDto : seatingPlanLayoutDto.getSeats()) {
+            if (seatingPlanSectors.get(seatDto.getSectorId()).getNoSeats()) {
+                seats.add(generateSeat(sectors.get(seatDto.getSectorId()), null, null));
 
-        seatingPlanLayout = new SeatingPlanLayout();
+            } else {
+                count++;
+                seats.add(generateSeat(sectors.get(seatDto.getSectorId()),
+                    (long) Math.floor(((double) count) / 10) + 1, count % 10));
+            }
+        }
+        List<Seat> savedSeats = seatRepository.saveAll(seats);
+        counter = 0;
+        for (SeatingPlanSeatDto seatDto : seatingPlanLayoutDto.getSeats()) {
+            seatDto.setId(savedSeats.get(counter).getSeatId());
+            seatDto.setSectorId(sectors.get(seatDto.getSectorId()).getSectorId());
+            counter++;
+        }
+        String path = this.fileSystemRepository.save(
+            new ObjectMapper().writeValueAsBytes(seatingPlanLayoutDto), "test");
         seatingPlanLayout.setSeatingLayoutPath(path);
         seatingPlanLayoutRepository.save(seatingPlanLayout);
-
-        seatingPlan = generateSeatingPlan("Hall B",
-            locations.get(0), seatingPlanLayout);
-        seatingPlanRepository.save(seatingPlan);
-
-        sector1 = generateSector(seatingPlan);
-        sector2 = generateSector(seatingPlan);
-        sector3 = generateSector(seatingPlan);
-        Sector sector4 = generateSector(seatingPlan);
-        sectorRepository.save(sector1);
-        sectorRepository.save(sector2);
-        sectorRepository.save(sector3);
-        sectorRepository.save(sector4);
-
-        for (int j = 0; j < 50; j++) {
-            seatRepository.save(generateSeat(sector1));
-        }
-        for (int j = 0; j < 50; j++) {
-            seatRepository.save(generateSeat(sector2));
-        }
-        for (int j = 0; j < 20; j++) {
-            seatRepository.save(generateSeat(sector3));
-        }
-        for (int j = 0; j < 20; j++) {
-            seatRepository.save(generateSeat(sector4));
-        }
-
-
     }
 
     private SeatingPlan generateSeatingPlan(String name, Location location,
@@ -151,11 +154,12 @@ public class SeatDataGenerator {
         return sector;
     }
 
-    private Seat generateSeat(Sector sector) {
+    private Seat generateSeat(Sector sector, Long rowNumber, Long seatNumber) {
         Seat seat = new Seat();
         seat.setSector(sector);
-        seat.setSeatNumber((long) Math.floor(Math.random() * 10));
-        seat.setRowNumber((long) Math.floor(Math.random() * 10));
+        seat.setSeatNumber(rowNumber);
+        seat.setRowNumber(seatNumber);
+
         return seat;
     }
 }
