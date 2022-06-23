@@ -32,9 +32,7 @@ export class HeaderComponent {
   }
 
   onAdminRoute(): boolean {
-    console.log(this.router.url);
     const value = this.adminRoutes.some(route => this.router.url.startsWith(route));
-    console.log(value);
     return value;
   }
 

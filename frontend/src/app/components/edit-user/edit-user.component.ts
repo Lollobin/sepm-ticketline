@@ -252,11 +252,10 @@ export class EditUserComponent implements OnInit {
         {
           next: (response) => {
             console.log(response);
-            this.success = true;
             this.authService.logoutUser();
             this.router.navigateByUrl("/");
           },
-          error: (err) => this.error = err
+          error: (err) => this.toastr.error(err.errorMessage),
         }
     );
   }
