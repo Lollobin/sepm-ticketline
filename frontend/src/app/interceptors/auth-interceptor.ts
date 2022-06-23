@@ -25,8 +25,10 @@ export class AuthInterceptor implements HttpInterceptor {
       this.globals.backendCustomUri + "/shows",
       this.globals.backendCustomUri + "/seatingPlan",
       this.globals.backendCustomUri + "/topEvents",
-      this.globals.backendCustomUri + '/articles',
-      this.globals.backendCustomUri + '/images'
+      this.globals.backendCustomUri + "/articles",
+      this.globals.backendCustomUri + "/images",
+      this.globals.backendCustomUri + "/showTickets",
+      this.globals.backendCustomUri + "/seatingPlanLayouts"
     ];
 
     const isget = req.method === "GET";

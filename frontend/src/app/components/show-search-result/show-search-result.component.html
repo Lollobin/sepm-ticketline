@@ -1,11 +1,15 @@
 <h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
-<h2 *ngIf="shows&&eventId&&eventName" style="margin-top: 4%">All Shows of Event <strong style="color: #4d61ff">{{eventName}}</strong></h2>
+<h1 *ngIf="shows&&eventId&&eventName">All Shows of Event <strong
+    style="color: #4d61ff">'{{eventName}}'</strong></h1>
+
+<p *ngIf="shows&&eventId&&eventDescription"><strong>Description:</strong>
+  <em> {{eventDescription}}</em></p>
 <table class="table table-striped" *ngIf="this.shows?.numberOfResults">
   <thead>
   <tr>
 
-    <th scope="col"  *ngIf="!(shows&&eventId&&eventName)">Event</th>
-    <th scope="col"  *ngIf="!(shows&&location)">Location</th>
+    <th scope="col" *ngIf="!(shows&&eventId&&eventName)">Event</th>
+    <th scope="col" *ngIf="!(shows&&location)">Location</th>
     <th scope="col">Show Date & Time</th>
 
   </tr>
@@ -14,12 +18,14 @@
   <tr
       *ngFor="let show of shows.shows">
 
-    <td style="width: 30%" *ngIf="!(shows&&eventId&&eventName)" >{{show.event.name}}</td>
-    <td style="width: 30%" *ngIf="!(shows&&location)" >{{show.location.name}}</td>
+    <td style="width: 30%" *ngIf="!(shows&&eventId&&eventName)">{{show.event.name}}</td>
+    <td style="width: 30%" *ngIf="!(shows&&location)">{{show.location.name}}</td>
     <td style="width: 30%">{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
-
-    <td style="width: 30%; text-align: right;"><button type="button" class="btn btn-outline-primary" style="width: 150px; margin-right: 4%;"
-                                                       [routerLink]="['/buyTickets', show.showId]">Buy Tickets <br><strong>from  <span style="font-size: larger">€{{show.minPrice}}</span></strong></button></td>
+    <td style="width: 30%; text-align: right;">
+      <button type="button" class="btn btn-outline-primary" style="width: 150px; margin-right: 4%;"
+              [routerLink]="['/buyTickets', show.showId]">Buy Tickets
+      <br><strong>from  <span style="font-size: larger">€{{show.minPrice}}</span></strong></button>
+    </td>
 
   </tr>
   </tbody>
@@ -28,12 +34,14 @@
   <div class="alert alert-warning" role="alert">
     <h4>There aren't any shows fitting your input!</h4>
 
-        <button type="button" class="btn-close" (click)="vanishEmpty()" data-bs-dismiss="alert"
-                aria-label="Close"></button>
+    <button type="button" class="btn-close" (click)="vanishEmpty()" data-bs-dismiss="alert"
+            aria-label="Close"></button>
 
   </div>
 </div>
 
-<ngb-pagination *ngIf="this.shows?.numberOfResults" [collectionSize]="shows?.numberOfResults" [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
-                [pageSize]="pageSize" class="d-flex justify-content-center" (pageChange)="onPageChange(page)"></ngb-pagination>
+<ngb-pagination *ngIf="this.shows?.numberOfResults" [collectionSize]="shows?.numberOfResults"
+                [(page)]="page" [maxSize]="5" [boundaryLinks]="true"
+                [pageSize]="pageSize" class="d-flex justify-content-center"
+                (pageChange)="onPageChange(page)"></ngb-pagination>
 

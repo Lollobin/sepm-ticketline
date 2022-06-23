@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { SectorBuilder } from "src/app/shared_modules/seatingPlanGraphics";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
 import { SeatingPlanEditorComponent } from "../seating-plan-editor/seating-plan-editor.component";
 import {
   LocationsService,
@@ -12,7 +12,7 @@ import {
   SeatingPlansService,
   SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
-import { ActivatedRoute, Route, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from 'ngx-toastr';
 
 type ClickElement =
@@ -40,6 +40,7 @@ export class CreateSeatingPlanComponent implements OnInit {
   seatInformation: { [provisionalId: number]: { rowNumber: number; seatNumber: number } } = {};
   seatingPlanName = "";
   location: Location;
+  plus = faPlus;
 
   constructor(
     private route: ActivatedRoute,

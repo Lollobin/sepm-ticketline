@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserManagementService } from 'src/app/generated-sources/openapi';
+import { PasswordReset, UserManagementService } from 'src/app/generated-sources/openapi';
 import { CustomAuthService } from '../../services/custom-auth.service';
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { AuthRequest } from 'src/app/dtos/auth-request';
@@ -169,7 +169,7 @@ export class EditUserComponent implements OnInit {
   }
 
   setAction(text: string) {
-    if (text === "edit" || text === "delete") {
+    if (text === "edit" || text === "delete" || text === "changePassword") {
       this.action = text;
     } else {
       this.action = "none";
@@ -181,6 +181,8 @@ export class EditUserComponent implements OnInit {
       this.putUser();
     } else if (this.action === "delete") {
       this.deleteUser();
+    } else if (this.action === "changePassword") {
+      this.sendRequest();
     }
   }
 
@@ -237,5 +239,25 @@ export class EditUserComponent implements OnInit {
         this.toastr.error(this.errorMessage);
       }
     });
+  }
+
+  sendRequest() {
+
+    const passwordReset: PasswordReset = {
+      email: this.user.email,
+      clientURI: 'http://' + window.location.host + '#/passwordUpdate'
+    };
+    console.log("sending");
+    this.userManagementService.passwordResetPost(passwordReset, 'body', true).subscribe(
+        {
+          next: (response) => {
+            console.log(response);
+            this.success = true;
+            this.authService.logoutUser();
+            this.router.navigateByUrl("/");
+          },
+          error: (err) => this.error = err
+        }
+    );
   }
 }

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, find, groupBy, map, noop } from "lodash";
-import { Application } from "pixi.js";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {countBy, find, groupBy, map, noop} from "lodash";
+import {Application} from "pixi.js";
 import {
   Artist,
   ArtistsService,
@@ -17,6 +17,8 @@ import {
 import { drawSeatingPlan } from "src/app/shared_modules/seatingPlanGraphics";
 import { applyShowInformation } from "./seatingPlanEvents";
 import { ActivatedRoute, Router } from "@angular/router";
+import {CustomAuthService} from "../../services/custom-auth.service";
+import {faCircleInfo} from "@fortawesome/free-solid-svg-icons";
 import { ToastrService } from "ngx-toastr";
 
 interface SeatBookingInformation {
@@ -57,6 +59,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   };
   error = undefined;
   artists: Artist[] = [];
+  info = faCircleInfo;
+
   constructor(
     private showsService: ShowsService,
     private artistsService: ArtistsService,
@@ -65,7 +69,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private ticketsService: TicketsService,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public authService: CustomAuthService
   ) {}
   async ngOnInit() {
     this.route.paramMap.subscribe({
@@ -94,12 +99,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   ngAfterViewInit() {
     this.pixiApplication = new Application({
       antialias: true,
       backgroundAlpha: 0,
     });
   }
+
   retreiveEvent(show: Show) {
     this.eventsService.eventsIdGet(show.event.eventId).subscribe({
       next: (event) => {
@@ -111,6 +118,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   retreiveArtists(show: Show) {
     this.artists = [];
     for (const artistId of show.artists) {
@@ -125,22 +133,23 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
   retreiveSeatingPlan(show: Show) {
     this.showsService.showTicketsIdGet(show.showId).subscribe({
       next: (showInformation) => {
         this.showInformation = showInformation;
         this.seatingPlansService
-          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
-          .subscribe({
-            next: async (seatingPlan) => {
-              this.seatingPlan = seatingPlan;
-              this.showInformation.sectors.forEach((sector) => {
-                this.sectorPriceMap[sector.sectorId] = sector.price;
-              });
-              this.calculateSectorBookingInformation();
-              this.initializeSeatingPlan();
-            },
-            error: (error) => {
+        .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
+        .subscribe({
+          next: async (seatingPlan) => {
+            this.seatingPlan = seatingPlan;
+            this.showInformation.sectors.forEach((sector) => {
+              this.sectorPriceMap[sector.sectorId] = sector.price;
+            });
+            this.calculateSectorBookingInformation();
+            this.initializeSeatingPlan();
+          },
+          error: (error) => {
               this.setError(error);
               this.toastr.error(error);
             }
@@ -152,9 +161,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   setError(error: any) {
     this.error = error;
   }
+
   initializeSeatingPlan() {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlan.general.width;
@@ -174,16 +185,19 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         mouseout: this.seatBlur.bind(this),
         click: this.triggerSeat.bind(this),
       },
-      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this) },
-      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
+      {mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
+      {mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this)}
     );
   }
+
   convertToCurrency(value: number) {
-    return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
+    return value.toLocaleString(undefined, {style: "currency", currency: "EUR"});
   }
+
   numberToCssColorString(color: number) {
     return `#${color.toString(16).padStart(6, "0")}`;
   }
+
   confirmPurchase() {
     //TODO: Add redirect to bill
     this.ticketsService
@@ -200,8 +214,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         error: (error) => {
           this.setError(error);
           this.toastr.error(error);
-        },
-      });
+      },
+    });
   }
   confirmReservation() {
     //TODO: Add redirect to "reservation"-bill
@@ -220,12 +234,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           this.setError(error);
           this.toastr.error(error);
         }
-      });
+    });
   }
+
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
       const sectorSeatInformation = this.getSectorSeatInformation(sector.id);
-      return { color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation };
+      return {color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation};
     });
     this.totalPrice =
       this.sectorBookingInformation.reduce(
@@ -233,13 +248,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         0
       ) / 100;
   }
+
   getSectorSeatInformation(sectorId: number) {
     const sectorSeats = groupBy(this.chosenSeats, "sector")[sectorId];
     if (!sectorSeats) {
       const emptySector = this.showInformation.sectors.find(
         (sector) => sector.sectorId === sectorId
       );
-      return { totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0 };
+      return {totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0};
     }
     const totalPrice =
       sectorSeats.reduce(
@@ -247,8 +263,9 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         0
       ) / 100;
     const ticketCount = sectorSeats.length;
-    return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
+    return {totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount};
   }
+
   private seatHover(seatId: number) {
     const seatInformation = this.showInformation.seats.find((seat) => seat.seatId === seatId);
     const sectorInformation = this.seatingPlan.sectors.find(
@@ -261,9 +278,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       color: sectorInformation ? sectorInformation.color : 0xffffff,
     };
   }
+
   private seatBlur(seatId: number) {
     this.hoverInfo = undefined;
   }
+
   private triggerSeat(seatId: number) {
     if (this.chosenSeats[seatId]) {
       delete this.chosenSeats[seatId];
@@ -277,6 +296,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       return "unavailable";
     }
   }
+
   private addStandingSeat(sectorId: number) {
     const freeSeat = this.showInformation.seats.find(
       (seat) =>
@@ -291,6 +311,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       return countBy(this.chosenSeats, "sector")[sectorId];
     }
   }
+
   private removeStandingSeat(sectorId: number) {
     const seatToFree = find(this.chosenSeats, (seat) => seat.sector === sectorId);
     if (seatToFree) {

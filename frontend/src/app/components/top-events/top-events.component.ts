@@ -33,9 +33,10 @@ export class TopEventsComponent implements OnInit {
 
   reloadEvents() {
     const search: TopEventSearch = {
-      month: this.month + "-01",
+      month: this.month === "" ? null : this.month + "-01",
       category: this.category
     };
+
 
     this.eventsService.topEventsGet(search).subscribe({
       next: data => {

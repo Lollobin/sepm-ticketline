@@ -89,27 +89,12 @@ public class CustomUserDetailService implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.debug("Load all user by email");
-        ApplicationUser applicationUser = new ApplicationUser();
-        //this is kept for easier development purposes (=hardcoded users)
-        String encodedTestPassword = passwordEncoder.encode("password");
-        if (email.equals("admin@email.com")) {
-            applicationUser.setEmail("admin@email.com");
-            applicationUser.setPassword(encodedTestPassword);
-            applicationUser.setHasAdministrativeRights(true);
-            applicationUser.setLockedAccount(false);
-        } else if (email.equals("user@email.com")) {
-            applicationUser.setEmail("user@email.com");
-            applicationUser.setPassword(encodedTestPassword);
-            applicationUser.setHasAdministrativeRights(false);
-            applicationUser.setLockedAccount(false);
-        } else {
-
-            LOGGER.debug("Load user by email");
-            try {
-                applicationUser = findApplicationUserByEmail(email);
-            } catch (NotFoundException e) {
-                throw new UsernameNotFoundException(e.getMessage(), e);
-            }
+        ApplicationUser applicationUser;
+        LOGGER.debug("Load user by email");
+        try {
+            applicationUser = findApplicationUserByEmail(email);
+        } catch (NotFoundException e) {
+            throw new UsernameNotFoundException(e.getMessage(), e);
         }
         List<GrantedAuthority> grantedAuthorities;
         if (applicationUser.isHasAdministrativeRights()) {
