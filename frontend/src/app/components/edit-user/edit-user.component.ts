@@ -112,9 +112,9 @@ export class EditUserComponent implements OnInit {
     this.userManagementService.usersPut(user).subscribe({
       next: (_next) => {
         console.log("Succesfully updated user information");
+        this.router.navigateByUrl("/");
         this.reloadToken();
         this.toastr.success("Succesfully edited user!");
-        this.router.navigateByUrl("/");
       },
       error: (error) => {
         console.error("Error putting user from authentication token");

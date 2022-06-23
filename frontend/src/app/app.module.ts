@@ -104,7 +104,7 @@ import { ToastrModule } from "ngx-toastr";
     LazyLoadImageModule,
     ImageCropperModule, 
     BrowserAnimationsModule,
-    ToastrModule.forRoot({positionClass: 'toast-bottom-right',})
+    ToastrModule.forRoot({positionClass: 'toast-bottom-right', progressBar: true})
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]
