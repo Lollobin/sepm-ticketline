@@ -130,7 +130,8 @@ public class TransactionBookedInGenerator {
                             bookedIn.getTicket().setReservedBy(null);
                             bookedIn.getTicket().setPurchasedBy(null);
 
-                            BookedIn bookedIn2 = generateBookedIn(transaction2, bookedIn.getTicket(),
+                            BookedIn bookedIn2 = generateBookedIn(transaction2,
+                                bookedIn.getTicket(),
                                 bookingType);
                             bookedInRepository.save(bookedIn2);
                         }
@@ -143,7 +144,9 @@ public class TransactionBookedInGenerator {
     private Transaction generateTransaction(ApplicationUser user, OffsetDateTime beforeDate) {
         Transaction transaction = new Transaction();
         transaction.setUser(user);
-        OffsetDateTime transactionDate = beforeDate
+        OffsetDateTime earlierDate =
+            beforeDate.isBefore(OffsetDateTime.now()) ? beforeDate : OffsetDateTime.now();
+        OffsetDateTime transactionDate = earlierDate
             .minusDays(faker.number().numberBetween(0, 500))
             .minusMinutes(faker.number().numberBetween(0, 1000));
         transaction.setDate(transactionDate);
