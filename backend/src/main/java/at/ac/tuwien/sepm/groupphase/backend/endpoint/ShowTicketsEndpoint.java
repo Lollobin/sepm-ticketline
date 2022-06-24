@@ -21,7 +21,6 @@ public class ShowTicketsEndpoint implements ShowTicketsApi {
         this.showTicketService = showTicketsEndpoint;
     }
 
-    @Secured("ROLE_USER")
     @Override
     public ResponseEntity<ShowInformationDto> showTicketsIdGet(Long id) {
         LOGGER.info("GET shows/{}", id);

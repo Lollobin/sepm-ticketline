@@ -1,5 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Location, Show, ShowSearchResult, ShowsService} from "../../generated-sources/openapi";
+import {
+  Location,
+  Show,
+  ShowSearchResult,
+  ShowsService
+} from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -19,9 +24,11 @@ export class ShowSearchResultComponent implements OnInit {
 
   eventId?;
   eventName;
+  eventDescription;
 
 
-  constructor(private showService: ShowsService, private route: ActivatedRoute) {
+  constructor(private showService: ShowsService,
+              private route: ActivatedRoute) {
 
   }
 
@@ -40,11 +47,12 @@ export class ShowSearchResultComponent implements OnInit {
       this.eventId = params["id"];
     });
     if (this.eventId) {
-      this.showService.showsGet({eventId: this.eventId}, this.pageSize, this.page-1).subscribe({
+      this.showService.showsGet({eventId: this.eventId}, this.pageSize, this.page - 1).subscribe({
         next: response => {
-        this.shows = response;
-        console.log(response);
-        this.eventName= this.shows.shows[0]?.event.name;
+          this.shows = response;
+          console.log(response);
+          this.eventName = this.shows.shows[0]?.event.name;
+          this.eventDescription = this.shows.shows[0]?.event.content;
         },
         error: err => console.log(err.error.error)
       });

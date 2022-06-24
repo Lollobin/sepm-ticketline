@@ -1,41 +1,34 @@
-<div class="container-fluid" style="margin: 4% auto;">
-
-  <div class="clearfix" id="slideShow">
-    <h1 class="w3-center">{{article?.title}}</h1><br>
-    <div id="slideShowLeft">
-      <ngb-carousel *ngIf="articleImages && article?.images.length > 1"
-                    [showNavigationArrows]="true"
-                    data-[interval]="2900">
-        <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
-          <div class="carousel-inner ">
-            <img [src]="articleImages[i]" alt="slide">
-          </div>
-        </ng-template>
-      </ngb-carousel>
-      <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
-        <div [hidden]="article?.images.length === 1"
-             class="carousel-inner " style="margin: 0 auto">
-          <img [src]="errorImage" alt="slide">
+<div class="clearfix" id="slideShow">
+  <h1 class="w3-center">{{article?.title}}</h1><br>
+  <div id="slideShowLeft">
+    <ngb-carousel *ngIf="articleImages && article?.images.length > 1"
+                  [showNavigationArrows]="true"
+                  data-[interval]="2900">
+      <ng-template ngbSlide *ngFor="let num of article?.images; index as i">
+        <div class="carousel-inner ">
+          <img [src]="articleImages[i]" alt="slide">
         </div>
-        <div [hidden]="article?.images.length === 0"
-             class="carousel-inner " style="margin: 0 auto">
-          <img [src]="articleImages[0]" alt="slide">
-        </div>
+      </ng-template>
+    </ngb-carousel>
+    <div *ngIf="article?.images.length === 0 || article?.images.length === 1">
+      <div [hidden]="article?.images.length === 1"
+           class="carousel-inner " style="margin: 0 auto">
+        <img [src]="errorImage" alt="slide">
+      </div>
+      <div [hidden]="article?.images.length === 0"
+           class="carousel-inner " style="margin: 0 auto">
+        <img [src]="articleImages[0]" alt="slide">
       </div>
     </div>
+  </div>
 
-
-    <!-- About Section -->
-    <div id="slideShowRight">
-
-      <div class="w3-col m6 w3-padding-large">
-
-        <h5 class="w3-center summary" style="text-align: justify">{{article?.summary}}</h5>
-        <p class="w3-large" style="text-align: justify">{{article?.text}}</p>
-      </div>
-
-
+  <!-- About Section -->
+  <div id="slideShowRight">
+    <div class="w3-col m6 w3-padding-large">
+      <h5 class="w3-center summary" style="text-align: justify">{{article?.summary}}</h5>
+      <p class="w3-large" style="text-align: justify">{{article?.text}}</p>
     </div>
   </div>
 </div>
+
 

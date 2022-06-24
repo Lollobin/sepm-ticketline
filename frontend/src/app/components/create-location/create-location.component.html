@@ -1,11 +1,11 @@
-<div class="card">
+<div class="card col-lg-8 mx-auto">
   <header class="card-header">
-    <h4 class="card-title mt-2">Create Location</h4>
+    <h1 class="card-title mt-2">Create Location</h1>
   </header>
   <article class="card-body">
     <form [formGroup]="locationForm" (ngSubmit)="createLocation()">
       <div class="form-group">
-        <label>Name</label>
+        <label class="form-label">Name</label>
         <input
           [maxlength]="100"
           type="text"
@@ -27,9 +27,9 @@
       </div>
 
       <div formGroupName="address">
-        <div class="row">
+        <div class="row mb-3">
           <div class="form-group col-8">
-            <label for="street">Street</label>
+            <label for="street" class="form-label">Street</label>
             <input
               [maxlength]="100"
               type="text"
@@ -48,7 +48,7 @@
           </div>
 
           <div class="col form-group">
-            <label for="houseNumber">House No.</label>
+            <label for="houseNumber" class="form-label">House No.</label>
             <input
               [maxlength]="40"
               type="text"
@@ -67,9 +67,9 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row mb-3">
           <div class="form-group col">
-            <label for="zipCode">Zip Code</label>
+            <label for="zipCode" class="form-label">Zip Code</label>
             <input
               [maxlength]="16"
               type="text"
@@ -87,7 +87,7 @@
             </div>
           </div>
           <div class="form-group col-7">
-            <label for="city">City</label>
+            <label for="city" class="form-label">City</label>
             <input
               [maxlength]="100"
               type="text"
@@ -105,8 +105,8 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="country">Country</label>
+        <div class="form-group mb-3">
+          <label for="country" class="form-label">Country</label>
           <input
             [maxlength]="100"
             type="text"

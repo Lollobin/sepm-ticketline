@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Profile("generateData")
@@ -21,13 +22,16 @@ public class UserGenerator {
 
     private final AddressDataGenerator addressDataGenerator;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final Faker faker = new Faker();
 
     public UserGenerator(
         AddressDataGenerator addressDataGenerator,
-        UserRepository userRepository) {
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder) {
         this.addressDataGenerator = addressDataGenerator;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void generateData(int numberOfUsers) {
@@ -41,7 +45,7 @@ public class UserGenerator {
 
         ApplicationUser admin = generateApplicationUser(1);
         admin.setEmail("admin@email.com");
-        admin.setPassword("password");
+        admin.setPassword(passwordEncoder.encode("password"));
         admin.setHasAdministrativeRights(true);
         admin.setLoginTries(0);
         admin.setMustResetPassword(false);
@@ -50,7 +54,7 @@ public class UserGenerator {
 
         ApplicationUser user = generateApplicationUser(1);
         user.setEmail("user@email.com");
-        user.setPassword("password");
+        user.setPassword(passwordEncoder.encode("password"));
         user.setHasAdministrativeRights(false);
         user.setLoginTries(0);
         user.setMustResetPassword(false);
