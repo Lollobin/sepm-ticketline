@@ -1,8 +1,13 @@
 <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
   <strong>Error occured: </strong> {{ errorMessage }}
-  <button *ngIf="!this.notFound" type="button" (click)="vanishError()" class="close"
-          data-dismiss="alert"
-          aria-label="Close">
+  <button
+    *ngIf="!this.notFound"
+    type="button"
+    (click)="vanishError()"
+    class="close"
+    data-dismiss="alert"
+    aria-label="Close"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -15,88 +20,104 @@
   <div *ngIf="role === 'ADMIN' && !this.notFound">
     <div class="row">
       <div class="col col-3" style="margin-bottom: 15px">
-        <h5>Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5>
+        <h5>
+          Shows of <strong style="color: #4d61ff">{{ this.eventName }}</strong>
+        </h5>
         <table class="table table-hover">
           <thead>
-          <tr>
-            <th scope="col">Location</th>
-            <th scope="col">Date & Time</th>
-          </tr>
+            <tr>
+              <th scope="col">Location</th>
+              <th scope="col">Date & Time</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let show of shows">
-            <td>{{show.location.name}}</td>
-            <td>{{show.date | date: 'EEEE, d LLLL YYYY HH:mm' }}</td>
-          </tr>
+            <tr *ngFor="let show of shows">
+              <td>{{ show.location.name }}</td>
+              <td>{{ show.date | date: "EEEE, d LLLL YYYY HH:mm" }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
       <div class="col col-5">
-        <h1 class="mb-3">
-          Add shows to "{{this.eventName}}"
-        </h1>
+        <h1 class="mb-3">Add shows to "{{ this.eventName }}"</h1>
 
         <form class="" [formGroup]="showForm">
           <div class="form-group">
             <small for="name" class="form-label text-muted">Event Name</small>
-            <div type="text" class="form-control"
-                 style="border-top: 0; border-left: 0; border-right: 0">
-              {{this.eventName}}</div>
+            <div
+              type="text"
+              class="form-control"
+              style="border-top: 0; border-left: 0; border-right: 0"
+            >
+              {{ this.eventName }}
+            </div>
           </div>
           <div class="row">
             <div class="form-group col-md-6">
               <small for="inputCategory" class="form-label text-muted">Event Category</small>
-              <div class="form-control form-override"
-                   style="border-top: 0; border-left: 0; border-right: 0; margin-bottom: 20px;">
-                {{this.eventCategory}}
+              <div
+                class="form-control form-override"
+                style="border-top: 0; border-left: 0; border-right: 0; margin-bottom: 20px"
+              >
+                {{ this.eventCategory }}
               </div>
             </div>
             <div class="form-group col-md-6">
               <small for="inputCategory" class="form-label text-muted">Event Duration</small>
-              <div class="form-control form-override"
-                   style="border-top: 0; border-left: 0; border-right: 0">
-                {{this.secondsToHms(this.eventDuration)}}</div>
+              <div
+                class="form-control form-override"
+                style="border-top: 0; border-left: 0; border-right: 0"
+              >
+                {{ this.secondsToHms(this.eventDuration) }}
+              </div>
             </div>
           </div>
 
           <div class="row">
             <div class="form-group col-md-6">
               <small for="inputDate" class="form-label text-muted">Date</small>*
-              <input id="inputDate" class="form-control form-override" formControlName="date"
-                     type="date"
-                     placeholder="yyyy-mm-dd">
+              <input
+                id="inputDate"
+                class="form-control form-override"
+                formControlName="date"
+                type="date"
+                placeholder="yyyy-mm-dd"
+              />
               <div
-                  *ngIf="!this.date.valid || showForm.errors?.['dateInPast'] || showForm.errors?.['dateTimeInPast']"
-                  class="invalid-feedback" style="display: block">
+                *ngIf="!this.date.valid || showForm.errors?.['dateInPast'] || showForm.errors?.['dateTimeInPast']"
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div *ngIf="this.date.errors?.required && (this.date.touched || this.submitted)">
-                  Date is
-                  required!
+                  Date is required!
                 </div>
-                <div *ngIf="this.date.errors?.invalid && (this.date.touched || this.submitted)">Date
-                  is
-                  invalid!
+                <div *ngIf="this.date.errors?.invalid && (this.date.touched || this.submitted)">
+                  Date is invalid!
                 </div>
                 <div
-                    *ngIf="showForm.errors?.['dateInPast'] && (this.date.touched || this.submitted) && (!this.date.errors?.required && !this.date.errors?.invalid)">
+                  *ngIf="showForm.errors?.['dateInPast'] && (this.date.touched || this.submitted) && (!this.date.errors?.required && !this.date.errors?.invalid)"
+                >
                   Date has to be in the future!
                 </div>
               </div>
             </div>
             <div class="form-group col-md-6">
               <small for="inputTime" class="form-label text-muted">Time</small>*
-              <input class="form-control form-override" type="time" formControlName="time">
-              <div *ngIf="!this.time.valid || showForm.errors?.['dateTimeInPast']"
-                   class="invalid-feedback" style="display: block">
+              <input class="form-control form-override" type="time" formControlName="time" />
+              <div
+                *ngIf="!this.time.valid || showForm.errors?.['dateTimeInPast']"
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div *ngIf="this.time.errors?.required && (this.time.touched || this.submitted)">
-                  Time is
-                  required!
+                  Time is required!
                 </div>
-                <div *ngIf="this.time.errors?.invalid && (this.time.touched || this.submitted)">Time
-                  is
-                  invalid!
+                <div *ngIf="this.time.errors?.invalid && (this.time.touched || this.submitted)">
+                  Time is invalid!
                 </div>
                 <div
-                    *ngIf="this.showForm.errors?.['dateTimeInPast'] && (this.date.touched || this.submitted) && (!this.time.errors?.required && !this.time.errors?.invalid)">
+                  *ngIf="this.showForm.errors?.['dateTimeInPast'] && (this.date.touched || this.submitted) && (!this.time.errors?.required && !this.time.errors?.invalid)"
+                >
                   Date has to be in the future!
                 </div>
               </div>
@@ -105,66 +126,114 @@
           <div class="row">
             <div class="form-group col-md-6">
               <small for="inputLocation" class="form-label text-muted">Location Name</small>*
-              <input class="form-control" type="text" formControlName="location"
-                     [ngbTypeahead]="locationSearch" #instance="ngbTypeahead"
-                     [resultFormatter]="locationFormatter" [inputFormatter]="locationFormatter"/>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="location"
+                [ngbTypeahead]="locationSearch"
+                #instance="ngbTypeahead"
+                [resultFormatter]="locationFormatter"
+                [inputFormatter]="locationFormatter"
+              />
               <div
-                  *ngIf="!this.locationValid && (this.showForm.get('location').touched || this.submitted)"
-                  class="invalid-feedback" style="display: block">
+                *ngIf="
+                  !this.locationValid && (this.showForm.get('location').touched || this.submitted)
+                "
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div>Location is required!</div>
               </div>
             </div>
             <div class="form-group col-md-6">
               <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>*
-              <select *ngIf="!this.locationValid" class="form-control form-override"
-                      style="background-position: 92%" disabled></select>
+              <select
+                *ngIf="!this.locationValid"
+                class="form-control form-override"
+                style="background-position: 92%"
+                disabled
+              ></select>
               <div
-                  *ngIf="!this.locationValid && (this.showForm.get('location').touched || this.submitted)"
-                  class="invalid-feedback" style="display: block">
+                *ngIf="
+                  !this.locationValid && (this.showForm.get('location').touched || this.submitted)
+                "
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div>Please select a location first!</div>
               </div>
-              <select *ngIf="this.locationValid" id="inputSeatingPlan"
-                      class="form-control form-override"
-                      formControlName="seatingPlan" style="background-position: 92%">
+              <select
+                *ngIf="this.locationValid"
+                id="inputSeatingPlan"
+                class="form-control form-override"
+                formControlName="seatingPlan"
+                style="background-position: 92%"
+              >
                 <option hidden="true">Pick one</option>
                 <option *ngFor="let seatingPlan of seatingPlans" [ngValue]="seatingPlan">
-                  {{seatingPlan.name}}
+                  {{ seatingPlan.name }}
                 </option>
               </select>
               <div
-                  *ngIf="!this.showForm.get('seatingPlan').valid && this.showForm.get('seatingPlan').touched"
-                  class="invalid-feedback" style="display: block">
+                *ngIf="
+                  !this.showForm.get('seatingPlan').valid &&
+                  this.showForm.get('seatingPlan').touched
+                "
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div>Seating plan is required!</div>
               </div>
             </div>
           </div>
           <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>*
-            <div class="invalid-feedback" style="display: block"
-                 *ngIf="!this.showForm.get('seatingPlan').valid && (this.showForm.get('seatingPlan').touched || this.submitted)">
+            <div
+              class="invalid-feedback"
+              style="display: block"
+              *ngIf="
+                !this.showForm.get('seatingPlan').valid &&
+                (this.showForm.get('seatingPlan').touched || this.submitted)
+              "
+            >
               Please select a seating plan first!
             </div>
           </div>
           <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
             <small for="inputArtists" class="form-label text-muted">Sector Prices</small>*
             <!-- <div class="container"> -->
-            <div class="row"
-                 *ngIf="this.gotFromSeatingPlan===this.showForm.value.seatingPlan.seatingPlanId">
-              <small class="col-md-3 form-label text-muted input-icon input-icon-right"
-                     *ngFor="let field of sectors; let i = index">
-                Sector {{i + 1}}*
+            <div
+              class="row"
+              *ngIf="this.gotFromSeatingPlan === this.showForm.value.seatingPlan.seatingPlanId"
+            >
+              <small
+                class="col-md-3 form-label text-muted input-icon input-icon-right"
+                *ngFor="let field of sectors; let i = index"
+              >
+                Sector {{ i + 1 }}*
                 <div class="input-group">
                   <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
-                  <input [formControlName]="'sector'+i" class="form-control currency"
-                         style="text-align: right" name="currency" type="number" min="0.01"/>
+                  <input
+                    [formControlName]="'sector' + i"
+                    class="form-control currency"
+                    style="text-align: right"
+                    name="currency"
+                    type="number"
+                    min="0.01"
+                  />
                 </div>
               </small>
               <div
-                  *ngIf="!this.sectorForm.valid && this.showForm.value.seatingPlan && (this.sectorForm.touched || this.submitted)"
-                  class="invalid-feedback" style="display: block">
+                *ngIf="
+                  !this.sectorForm.valid &&
+                  this.showForm.value.seatingPlan &&
+                  (this.sectorForm.touched || this.submitted)
+                "
+                class="invalid-feedback"
+                style="display: block"
+              >
                 <div>Correct prices are required for every sector</div>
               </div>
-
             </div>
             <!-- </div> -->
           </div>
@@ -174,14 +243,25 @@
                 <small for="inputArtists" class="form-label text-muted">Artists</small>
                 <div class="row">
                   <div class="col-9">
-                    <input class="form-control" style="width: 105%" type="text"
-                           formControlName="artist" [ngbTypeahead]="artistSearch"
-                           #instance="ngbTypeahead" [resultFormatter]="artistResultFormatter"
-                           [inputFormatter]="artistInputFormatter"/>
+                    <input
+                      class="form-control"
+                      style="width: 105%"
+                      type="text"
+                      formControlName="artist"
+                      [ngbTypeahead]="artistSearch"
+                      #instance="ngbTypeahead"
+                      [resultFormatter]="artistResultFormatter"
+                      [inputFormatter]="artistInputFormatter"
+                    />
                   </div>
                   <div class="col-3">
-                    <button class="btn btn-secondary form-group" style="width: 100%"
-                            (click)="addArtist()" [disabled]="!this.artistFormValid">Add artist
+                    <button
+                      class="btn btn-secondary form-group"
+                      style="width: 100%"
+                      (click)="addArtist()"
+                      [disabled]="!this.artistFormValid"
+                    >
+                      Add artist
                     </button>
                   </div>
                 </div>
@@ -190,67 +270,85 @@
           </div>
           <table class="table table-hover" *ngIf="this.artists.length > 0">
             <thead>
-            <tr>
-              <th scope="col">First Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Known as</th>
-              <th scope="col">Band</th>
-              <th scope="col"></th>
-            </tr>
+              <tr>
+                <th scope="col">Name</th>
+              </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let artist of artists">
-              <td>{{artist.firstName}}</td>
-              <td>{{artist.lastName}}</td>
-              <td>{{artist.knownAs}}</td>
-              <td>{{artist.bandName}}</td>
-              <td>
-                <button class="btn btn-light"
-                        style="margin: 0; padding-top: 1px; padding-bottom: 1px"
-                        (click)="removeFromArtists(artist)">
-                  <fa-icon [icon]="faUserMinus"></fa-icon>
-                </button>
-              </td>
-            </tr>
+              <tr *ngFor="let artist of artists">
+                <td>
+                  <span>{{ artist.bandName }} </span>
+                  <span>{{ artist.firstName }} </span>
+                  <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+                    >"{{ artist.knownAs }}"
+                  </span>
+                  <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
+
+                  <span>{{ artist.lastName }} </span>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-light"
+                    style="margin: 0; padding-top: 1px; padding-bottom: 1px"
+                    (click)="removeFromArtists(artist)"
+                  >
+                    <fa-icon [icon]="faUserMinus"></fa-icon>
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
 
-          <button type="submit" class="btn btn-primary me-1"
-                  (click)="openModal()">Save Show
+          <button type="submit" class="btn btn-primary me-1" (click)="openModal()">
+            Save Show
           </button>
-          <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
-               style="background: rgba(0,0,0, .5); padding-top: 15%">
+          <div
+            class="modal"
+            tabindex="-1"
+            role="dialog"
+            [ngStyle]="{ display: display }"
+            style="background: rgba(0, 0, 0, 0.5); padding-top: 15%"
+          >
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5>Are you sure you want to create this show?</h5>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-primary"
-                          (click)="createShow(); onCloseHandled()">Create
-                    Show
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="createShow(); onCloseHandled()"
+                  >
+                    Create Show
                   </button>
-                  <button type="button" class="btn btn-secondary"
-                          (click)="onCloseHandled()">Close
+                  <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">
+                    Close
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <button *ngIf="shows.length===0" class="btn btn-outline-primary"
-                  (click)="goToHome()">Cancel
+          <button *ngIf="shows.length === 0" class="btn btn-outline-primary" (click)="goToHome()">
+            Cancel
           </button>
-          <button *ngIf="shows.length>0" type="button" class="btn btn-outline-primary"
-                  (click)="goToHome()">Finish
+          <button
+            *ngIf="shows.length > 0"
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="goToHome()"
+          >
+            Finish
           </button>
         </form>
       </div>
 
       <div class="col col-4" *ngIf="this.seatingPlan.valid">
-        <h5>Seating Plan of <strong style="color: #4d61ff">{{this.seatingPlan.value.name}}</strong>
+        <h5>
+          Seating Plan of <strong style="color: #4d61ff">{{ this.seatingPlan.value.name }}</strong>
         </h5>
-        <div #pixiContainer style="margin-top: 15%; overflow: auto;"></div>
+        <div #pixiContainer style="margin-top: 15%; overflow: auto"></div>
         <div class="container m-3">
           <div class="row border-bottom border-secondary border-3">
             <div class="col text-center py-1"></div>
@@ -260,19 +358,19 @@
           </div>
           <div class="row" *ngFor="let sector of sectors; let i = index">
             <div class="col py-1 text-truncate">
-                            <span *ngIf="sector.noSeats"
-                                  [style.color]="numberToCssColorString(sector.color)">
-                                &#9632;
-                            </span>
+              <span *ngIf="sector.noSeats" [style.color]="numberToCssColorString(sector.color)">
+                &#9632;
+              </span>
               <span *ngIf="!sector.noSeats" [style.color]="numberToCssColorString(sector.color)">
-                                &#9673;
-                            </span>
+                &#9673;
+              </span>
               <span> Sector {{ i + 1 }} </span>
             </div>
             <div class="col border-start border-secondary border-3 text-center py-1 text-truncate">
-              <div *ngIf="this.sectorForm.get('sector'+i).valid">
-                {{this.convertToCurrency(this.sectorForm.get('sector' + i).value)}}</div>
-              <div *ngIf="!this.sectorForm.get('sector'+i).valid">-</div>
+              <div *ngIf="this.sectorForm.get('sector' + i).valid">
+                {{ this.convertToCurrency(this.sectorForm.get("sector" + i).value) }}
+              </div>
+              <div *ngIf="!this.sectorForm.get('sector' + i).valid">-</div>
             </div>
           </div>
         </div>

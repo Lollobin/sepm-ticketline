@@ -5,7 +5,12 @@
       with
       <span *ngFor="let artist of artists; index as i">
         <span class="fw-bold"
-        >{{ artist.firstName }} '{{ artist.knownAs }}' {{ artist.lastName }}</span
+          >{{ artist.bandName }} {{ artist.firstName }}
+          <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+            >"{{ artist.knownAs }}"
+          </span>
+          <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
+          {{ artist.lastName }}</span
         >
         <span *ngIf="artists.length - 2 !== i && artists.length - 1 !== i"> , </span>
         <span *ngIf="artists.length - 2 === i"> and </span>

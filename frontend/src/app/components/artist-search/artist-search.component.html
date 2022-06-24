@@ -1,53 +1,51 @@
 <form>
   <div class="form-group mb-3">
     <small for="inputname" class="form-label text-muted"> Search for Band Names or Artists</small>
-    <input id="inputname" class="form-control" type="text" name="searchTerm" [(ngModel)]="search"
-    />
+    <input id="inputname" class="form-control" type="text" name="searchTerm" [(ngModel)]="search" />
   </div>
-  <button class="btn btn-primary me-1 " (click)="onSearch()">Search</button>
-  <button type="button"
-          class="btn btn-secondary m-1" (click)="resetAll()">
-    Clear search
-  </button>
+  <button class="btn btn-primary me-1" (click)="onSearch()">Search</button>
+  <button type="button" class="btn btn-secondary m-1" (click)="resetAll()">Clear search</button>
 </form>
-<hr>
+<hr />
 <div *ngIf="artists">
   <table class="table table-striped">
     <thead>
-    <tr>
-
-      <th scope="col">Known As</th>
-      <th scope="col">Band Name</th>
-      <th scope="col">First name</th>
-      <th scope="col">Last name</th>
-
-    </tr>
+      <tr>
+        <th scope="col">Name</th>
+      </tr>
     </thead>
     <tbody>
-    <tr
-        *ngFor="let artist of artists " (click)="artistGetEvents(artist,1)">
+      <tr *ngFor="let artist of artists" (click)="artistGetEvents(artist, 1)">
+        <td>
+          <span>{{ artist.bandName }} </span>
+          <span>{{ artist.firstName }} </span>
+          <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+            >"{{ artist.knownAs }}"
+          </span>
+          <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
 
-      <td>
-        <div class="mr-2">{{artist.knownAs}}</div>
-      </td>
-      <td>{{ artist.bandName}}</td>
-      <td>{{ artist.firstName}}</td>
-      <td>{{ artist.lastName}}</td>
-
-
-    </tr>
+          <span>{{ artist.lastName }} </span>
+        </td>
+      </tr>
     </tbody>
   </table>
 
-  <ngb-pagination [collectionSize]="data?.numberOfResults" [(page)]="page" [maxSize]="5"
-                  [boundaryLinks]="true"
-                  [pageSize]="pageSize" class="d-flex justify-content-center"
-                  (pageChange)="onPageChange(page)"></ngb-pagination>
-  <hr *ngIf="eventsOfClickedArtist">
+  <ngb-pagination
+    [collectionSize]="data?.numberOfResults"
+    [(page)]="page"
+    [maxSize]="5"
+    [boundaryLinks]="true"
+    [pageSize]="pageSize"
+    class="d-flex justify-content-center"
+    (pageChange)="onPageChange(page)"
+  ></ngb-pagination>
+  <hr *ngIf="eventsOfClickedArtist" />
 
-  <app-event-search-result *ngIf="eventsOfClickedArtist"
-                           (nextRequestedPage)="handleEventPageEmit($event)"
-                           [pageSize]="eventPageSize" [artist]="clickedArtist"
-                           [events]="eventsOfClickedArtist"></app-event-search-result>
+  <app-event-search-result
+    *ngIf="eventsOfClickedArtist"
+    (nextRequestedPage)="handleEventPageEmit($event)"
+    [pageSize]="eventPageSize"
+    [artist]="clickedArtist"
+    [events]="eventsOfClickedArtist"
+  ></app-event-search-result>
 </div>
-
