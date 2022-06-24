@@ -13,7 +13,7 @@ import {
   faUser,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: "app-header",
@@ -33,6 +33,8 @@ export class HeaderComponent {
   article = faFileLines;
   admin = faDashboard;
 
+  showAdminMenu = false;
+
   currentRoute: string;
   adminRoutesRegEx = [
     /^\/events\/[0-9]*\/shows\/create$/g,
@@ -48,10 +50,18 @@ export class HeaderComponent {
 
   constructor(public authService: CustomAuthService,
               private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.showAdminMenu = this.onAdminRoute();
+      }
+    });
   }
+
 
   onAdminRoute(): boolean {
     const url = this.router.url;
-    return this.adminRoutesRegEx.some(route => url.match(route) != null);
+    const value = this.adminRoutesRegEx.some(route => url.match(route) != null);
+    console.log(url + " Admin menu: " + value);
+    return value;
   }
 }

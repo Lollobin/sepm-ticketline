@@ -12,46 +12,46 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <!-- Public Menu -->
-        <li class="nav-item " *ngIf="!onAdminRoute()">
+        <li class="nav-item " *ngIf="!showAdminMenu">
           <a class="nav-link" routerLink="/events" routerLinkActive="active">
             <fa-icon [icon]="search"></fa-icon>
             Events & Shows </a>
         </li>
-        <li class="nav-item" *ngIf="!onAdminRoute()">
+        <li class="nav-item" *ngIf="!showAdminMenu">
           <a class="nav-link" routerLink="/news/overview" routerLinkActive="active">
             <fa-icon [icon]="newspaper"></fa-icon>
             News </a>
         </li>
 
         <!-- Basic User Menu -->
-        <li class="nav-item " *ngIf="!onAdminRoute() && authService.isLoggedIn()">
+        <li class="nav-item " *ngIf="!showAdminMenu && authService.isLoggedIn()">
           <a class="nav-link" routerLink="/orders" routerLinkActive="active">
             <fa-icon [icon]="basket"></fa-icon>
             Your Orders </a>
         </li>
 
         <!-- Admin User Menu -->
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && showAdminMenu">
           <a class="nav-link" routerLink="/admin" routerLinkActive="active">
             <fa-icon [icon]="admin"></fa-icon>
             Dashboard</a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && showAdminMenu">
           <a class="nav-link" routerLink="/events/create" routerLinkActive="active">
             <fa-icon [icon]="event"></fa-icon>
             Create Events & Shows </a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && showAdminMenu">
           <a class="nav-link" routerLink="/article/create" routerLinkActive="active">
             <fa-icon [icon]="article"></fa-icon>
             Create Articles </a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && showAdminMenu">
           <a class="nav-link" routerLink="/users" routerLinkActive="active">
             <fa-icon [icon]="users"></fa-icon>
             User Management</a>
         </li>
-        <li class="nav-item" *ngIf="authService.isLoggedIn() && onAdminRoute()">
+        <li class="nav-item" *ngIf="authService.isLoggedIn() && showAdminMenu">
           <a class="nav-link" routerLink="/locations" routerLinkActive="active">
             <fa-icon [icon]="location"></fa-icon>
             Manage Locations</a>
@@ -65,14 +65,14 @@
 
       <div class="d-grid gap-2 d-flex">
         <button
-            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !onAdminRoute()"
+            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && !showAdminMenu"
             class="btn btn-primary me-1" routerLink="/admin">
           Switch to Admin View
           <fa-icon class="m-2" [icon]="eye"></fa-icon>
         </button>
 
         <button
-            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && onAdminRoute()"
+            *ngIf="authService.isLoggedIn() && authService.getUserRole() === 'ADMIN' && showAdminMenu"
             class="btn btn-primary me-1" routerLink="/">
           Switch to Customer View
           <fa-icon class="m-2" [icon]="eye"></fa-icon>
@@ -89,7 +89,7 @@
             <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/profile">Edit
               Account</a></li>
             <li><a class="dropdown-item" *ngIf="authService.isLoggedIn()" routerLink="/"
-                   (click)="authService.logoutUser(); !onAdminRoute()">Logout</a></li>
+                   (click)="authService.logoutUser()">Logout</a></li>
           </ul>
         </div>
       </div>
