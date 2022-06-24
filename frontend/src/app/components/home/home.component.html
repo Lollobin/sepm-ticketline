@@ -1,51 +1,42 @@
-<div class="container">
-  <h1 style="margin-top: 4%; color: #4d61ff; font-weight: bold; font-family: 'Roboto', sans-serif"
-      class="display-4">Welcome to the SEPM group phase!</h1>
+<h1 class="mb-3">News</h1>
 
-
-  <div id="cards_landscape_wrap-2">
-    <div class="container-md">
-      <div class="row">
-        <div class="col-xs-10 col-s col-sm-6 col-md-6 col-lg-6 col-xl-3"
-             *ngFor="let article of articles">
-          <a [routerLink]="['/news/overview', article.articleId]">
-            <div class="card-flyer">
-              <div class="text-box">
-                <div class="image-box">
-                  <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
-                       class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
-
-
-                </div>
-                <div class="text-container">
-                  <h6 class="text-break"> {{article.title}}</h6>
-                  <p style="padding-top: 3%;"
-                     class="card-text with-overflow">{{article?.summary}}</p>
-                </div>
-                <div class="card-footer">
-                  <small class="text-muted" style="font-size: smaller">Created
-                    on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small>
-                </div>
-              </div>
+<div id="cards_landscape_wrap-2" class="mb-5">
+  <div class="row">
+    <div class="col-xs-10 col-s col-sm-6 col-md-6 col-lg-6 col-xl-3"
+         *ngFor="let article of articles">
+      <a [routerLink]="['/news/overview', article.articleId]">
+        <div class="card-flyer mt-0">
+          <div class="text-box">
+            <div class="image-box">
+              <img [lazyLoad]="articleImages[article.articleId]" [defaultImage]="defaultImage"
+                   class="img-fluid rounded-start card-img-top mx-auto d-block" alt="...">
             </div>
-          </a>
+            <div class="text-container">
+              <h6 class="text-break"> {{article.title}}</h6>
+              <p style="padding-top: 3%;"
+                 class="card-text with-overflow">{{article?.summary}}</p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted" style="font-size: smaller">Created
+                on {{article.creationDate | date: 'EEEE, d LLLL YYYY HH:mm'}}</small>
+            </div>
+          </div>
         </div>
-
-
-      </div>
+      </a>
     </div>
-  </div>
-
-  <div class="container mt-3" *ngIf="empty">
-    <div class="alert alert-warning" role="alert">
-      <h4 *ngIf="!filterRead">There aren't any new news!</h4>
-      <h4 *ngIf="filterRead">You have not read any news yet!</h4>
-      <button type="button" class="btn-close stretched-link" (click)="vanishEmpty()"
-              data-bs-dismiss="alert"
-              aria-label="Close"></button>
-    </div>
-
   </div>
 </div>
+
+<div class="container mb-5" *ngIf="empty">
+  <div class="alert alert-warning" role="alert">
+    <h4 *ngIf="!filterRead">There aren't any new news!</h4>
+    <h4 *ngIf="filterRead">You have not read any news yet!</h4>
+    <button type="button" class="btn-close stretched-link" (click)="vanishEmpty()"
+            data-bs-dismiss="alert"
+            aria-label="Close"></button>
+  </div>
+</div>
+
+<app-top-events></app-top-events>
 
 

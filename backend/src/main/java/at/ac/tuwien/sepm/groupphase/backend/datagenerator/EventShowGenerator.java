@@ -95,8 +95,7 @@ public class EventShowGenerator {
 
     private Show generateShow(Event event, Set<Artist> artists) {
         Show show = new Show();
-        OffsetDateTime date = OffsetDateTime.of(2018, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
-            .plusYears(faker.number().numberBetween(0, 6))
+        OffsetDateTime date = OffsetDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
             .plusDays(faker.number().numberBetween(0, 364))
             .plusHours(faker.number().numberBetween(0, 23));
         show.setDate(date);

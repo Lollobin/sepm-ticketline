@@ -1,83 +1,79 @@
-<div>
-  <h2 class="h2 mt-3">Tickets & Reservations for Upcoming Events</h2>
-</div>
+<h1 class="mb-3">Tickets & Reservations for Upcoming Events</h1>
 
-<div>
-  <table class="table table-striped align-middle">
-    <thead>
-      <tr>
-        <th scope="col">Ticket Information</th>
-        <th scope="col">Event</th>
-        <th scope="col">Date</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let ticket of tickets; let i = index">
-        <td>
-          {{ ticket.ticket.length }}
-          <ng-template [ngIf]="ticket.type === 'purchased'" [ngIfElse]="reservation">
-            <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleTickets"
-              >Ticket
-            </ng-template>
-            <ng-template #multipleTickets>Tickets</ng-template>
+<table class="table table-striped align-middle mb-5">
+  <thead>
+    <tr>
+      <th scope="col">Ticket Information</th>
+      <th scope="col">Event</th>
+      <th scope="col">Date</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ticket of tickets; let i = index">
+      <td>
+        {{ ticket.ticket.length }}
+        <ng-template [ngIf]="ticket.type === 'purchased'" [ngIfElse]="reservation">
+          <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleTickets"
+            >Ticket
           </ng-template>
-          <ng-template #reservation>
-            <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleReservations">
-              Reservation
-            </ng-template>
-            <ng-template #multipleReservations>Reservations</ng-template>
+          <ng-template #multipleTickets>Tickets</ng-template>
+        </ng-template>
+        <ng-template #reservation>
+          <ng-template [ngIf]="ticket.ticket.length === 1" [ngIfElse]="multipleReservations">
+            Reservation
           </ng-template>
-        </td>
-        <td>
-          <span *ngFor="let artist of ticket.artists; let index = index">
-            <span>{{ artist.bandName }} </span>
-            <span>{{ artist.firstName }} </span>
-            <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
-              >"{{ artist.knownAs }}"
-            </span>
-            <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
+          <ng-template #multipleReservations>Reservations</ng-template>
+        </ng-template>
+      </td>
+      <td>
+        <span *ngFor="let artist of ticket.artists; let index = index">
+          <span>{{ artist.bandName }} </span>
+          <span>{{ artist.firstName }} </span>
+          <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+            >"{{ artist.knownAs }}"
+          </span>
+          <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
 
-            <span>{{ artist.lastName }}</span>
-            <span *ngIf="index + 1 !== ticket.artists.length">, </span> </span
-          ><br />
-          <strong>{{ ticket.eventName }}</strong> <br />
-          {{ ticket.city + ", " + ticket.locationName }}
-        </td>
-        <td>
-          {{ ticket.showDate | date }} <br />
-          {{ ticket.showDate | date: "HH:mm" }}
-        </td>
-        <td>
-          <fa-icon
-            class="btn btn-primary"
-            [icon]="faFileArrowDown"
-            data-bs-toggle="tooltip"
-            data-placement="bottom"
-            title="Download tickets"
-            (click)="openTicketPdf(ticket.ticket)"
-          >
-          </fa-icon>
-          <button
-            *ngIf="ticket.type === 'reserved'"
-            class="btn btn-outline-primary me-1"
-            id="{{ 'purchaseBtn' + i }}"
-            (click)="openTicketSelectionModal(purchaseModal, ticket)"
-          >
-            Purchase
-          </button>
-          <button
-            class="btn btn-outline-primary"
-            id="{{ 'cancelBtn' + i }}"
-            (click)="openTicketSelectionModal(cancelModal, ticket)"
-          >
-            Cancel
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+          <span>{{ artist.lastName }}</span>
+          <span *ngIf="index + 1 !== ticket.artists.length">, </span> </span
+        ><br />
+        <strong>{{ ticket.eventName }}</strong> <br />
+        {{ ticket.city + ", " + ticket.locationName }}
+      </td>
+      <td>
+        {{ ticket.showDate | date }} <br />
+        {{ ticket.showDate | date: "HH:mm" }}
+      </td>
+      <td>
+        <fa-icon
+          class="btn btn-primary me-1 mb-1"
+          [icon]="faFileArrowDown"
+          data-bs-toggle="tooltip"
+          data-placement="bottom"
+          title="Download tickets"
+          (click)="openTicketPdf(ticket.ticket)"
+        >
+        </fa-icon>
+        <button
+          *ngIf="ticket.type === 'reserved'"
+          class="btn btn-outline-primary me-1 mb-1"
+          id="{{ 'purchaseBtn' + i }}"
+          (click)="openTicketSelectionModal(purchaseModal, ticket)"
+        >
+          Purchase
+        </button>
+        <button
+          class="btn btn-outline-primary me-1 mb-1"
+          id="{{ 'cancelBtn' + i }}"
+          (click)="openTicketSelectionModal(cancelModal, ticket)"
+        >
+          Cancel
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <ng-template #purchaseModal let-modal>
   <div class="modal-header">
@@ -183,9 +179,7 @@
   </div>
 </ng-template>
 
-<div>
-  <h2 class="h2 mt-3">Transaction History</h2>
-</div>
+<h1 class="mb-3">Transaction History</h1>
 
 <div>
   <table class="table table-striped">
@@ -195,7 +189,7 @@
         <th scope="col">Event</th>
         <th scope="col">Date</th>
         <th scope="col">Ticket Information</th>
-        <th></th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -251,7 +245,7 @@
           <button
             *ngIf="order.type !== 'dereservation'"
             (click)="getTransactionPdf(order.transactionId)"
-            class="btn btn-secondary"
+            class="btn btn-outline-primary"
           >
             Print Info
           </button>

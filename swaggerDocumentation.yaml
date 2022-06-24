@@ -133,8 +133,6 @@ paths:
       tags:
         - seatingPlans
       summary: Retreives seating plan layout with the given ID
-      security:
-        - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/seatingPlanLayoutId"
       responses:
@@ -971,8 +969,6 @@ paths:
       tags:
         - shows
       summary: Gets all tickets of a show with their corresponding booking status + hall plan + sectors
-      security:
-        - BearerAuth: []
       parameters:
         - $ref: "#/components/parameters/showId"
       responses:

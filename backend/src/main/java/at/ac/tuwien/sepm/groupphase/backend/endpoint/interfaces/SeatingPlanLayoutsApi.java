@@ -53,9 +53,6 @@ public interface SeatingPlanLayoutsApi {
         responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  SeatingPlanLayoutDto.class))),
             @ApiResponse(responseCode = "404", description = "The seating plan layout with the given ID was not found")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(

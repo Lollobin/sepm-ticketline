@@ -1,76 +1,83 @@
 <div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Error occured: </strong> {{ errorMessage }}
-    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+  <strong>Error occured: </strong> {{ errorMessage }}
+  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert"
+          aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
 
 <div *ngIf="role !== 'ADMIN'" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Authentication error: </strong> Only admins are allowed to create events
+  <strong>Authentication error: </strong> Only admins are allowed to create events
 </div>
 
-<div *ngIf="role === 'ADMIN'">
-    <p class="h2 form-margin form-group">
-        <fa-icon style="padding-left: 0; font-size: 20px;" [icon]="faCircleQuestion" data-bs-toggle="tooltip"
-            data-placement="bottom"
-            title="In this step an event is created, to which we can later add specific shows that act as specific implementations of an event. After creating an event you get redirected to the add shows screen.">
-        </fa-icon>
-        Create a new event
-    </p>
-    <form class="form-margin" [formGroup]="eventForm">
-        <div class="form-group">
-            *<small for="name" class="form-label text-muted">Name</small>
-            <input type="text" class="form-control" id="name" formControlName="name">
-            <div *ngIf="this.name.errors" class="invalid-feedback" style="display: block">
-                <div *ngIf="this.name.errors?.required && this.name.touched">Name is required!</div>
-                <div *ngIf="this.name.errors?.maxlength">The Name is too long!</div>
-            </div>
+<div *ngIf="role === 'ADMIN'" class="w-75 mx-auto">
+  <h1 class="mb-3"> Create a new event </h1>
+
+  <form [formGroup]="eventForm">
+    <div class="mb-3">
+      <small for="name" class="form-label text-muted">Name</small>*
+      <input type="text" class="form-control" id="name" formControlName="name">
+      <div *ngIf="this.name.errors" class="invalid-feedback" style="display: block">
+        <div *ngIf="this.name.errors?.required && this.name.touched">Name is required!</div>
+        <div *ngIf="this.name.errors?.maxlength">The Name is too long!</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <small for="inputCategory" class="form-label text-muted">Category</small>*
+        <select id="inputCategory" class="form-control form-override" formControlName="category"
+                style="background-position: 92%">
+          <option hidden="true">Pick one</option>
+          <option *ngFor="let category1 of categories">{{category1}}</option>
+        </select>
+        <div *ngIf="this.category.errors" class="invalid-feedback" style="display: block">
+          <div *ngIf="this.category.errors?.required && this.category.touched">Category is
+            required!
+          </div>
         </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                *<small for="inputCategory" class="form-label text-muted">Category</small>
-                <select id="inputCategory" class="form-control form-override" formControlName="category" style="background-position: 92%">
-                    <option hidden="true">Pick one</option>
-                    <option *ngFor="let category1 of categories">{{category1}}</option>
-                </select>
-                <div *ngIf="this.category.errors" class="invalid-feedback" style="display: block">
-                    <div *ngIf="this.category.errors?.required && this.category.touched">Category is required!</div>
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                *<small for="inputDuration" class="form-label text-muted">Duration</small>
-                <input type="range" class="form-range" min="5" max="360" step="5" value="120" id="inputDuration"
-                    oninput="this.nextElementSibling.value = this.value" required formControlName="duration">
-                <span>{{this.secondsToHms(this.duration.value)}}</span>
-                <div *ngIf="this.duration.errors" class="invalid-feedback" style="display: block">
-                    <div *ngIf="this.duration.errors.max">The Duration is too long!</div>
-                    <div *ngIf="this.duration.errors.min">The Duration is too short!</div>
-                </div>
-            </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <small for="inputDuration" class="form-label text-muted">Duration</small>*
+        <input type="range" class="form-range" min="5" max="360" step="5" value="120"
+               id="inputDuration"
+               oninput="this.nextElementSibling.value = this.value" required
+               formControlName="duration">
+        <span>{{this.secondsToHms(this.duration.value)}}</span>
+        <div *ngIf="this.duration.errors" class="invalid-feedback" style="display: block">
+          <div *ngIf="this.duration.errors.max">The Duration is too long!</div>
+          <div *ngIf="this.duration.errors.min">The Duration is too short!</div>
         </div>
-        <div class="form-group">
-            <small for="exampleFormControlTextarea1" class="form-label text-muted">Description</small>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <small for="exampleFormControlTextarea1" class="form-label text-muted">Description</small>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"
                 formControlName="description"></textarea>
-        </div>
+    </div>
 
-        <button type="button" style="margin-left: 5px;"  class="btn btn-primary" (click)="openModal()"
-            [disabled]="!eventForm.valid">Submit</button>
-        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
-            style="background: rgba(0,0,0, .5); padding-top: 15%">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5>Are you sure you want to create this event?</h5>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="createEvent(); onCloseHandled()">Create Event</button>
-                        <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Close</button>
-                    </div>
-                </div>
-            </div>
+    <button type="button" class="btn btn-primary me-3" (click)="openModal()"
+            [disabled]="!eventForm.valid">Submit
+    </button>
+    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}"
+         style="background: rgba(0,0,0, .5); padding-top: 15%">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>Are you sure you want to create this event?</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onCloseHandled()">Cancel
+            </button>
+            <button type="button" class="btn btn-primary" (click)="createEvent(); onCloseHandled()">
+              Create Event
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <button type="button" class="btn btn-outline-primary m-3" (click)="goToHome()">Cancel</button>
-    </form>
+    <button type="button" class="btn btn-outline-primary" (click)="goToHome()">Cancel</button>
+  </form>
 </div>

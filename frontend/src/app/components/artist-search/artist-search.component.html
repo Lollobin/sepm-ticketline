@@ -1,9 +1,9 @@
 <form>
-  <div class="form-group" style="margin-bottom: 1%">
+  <div class="form-group mb-3">
     <small for="inputname" class="form-label text-muted"> Search for Band Names or Artists</small>
     <input id="inputname" class="form-control" type="text" name="searchTerm" [(ngModel)]="search" />
   </div>
-  <button class="btn btn-primary m-1" (click)="onSearch()">Search</button>
+  <button class="btn btn-primary me-1" (click)="onSearch()">Search</button>
   <button type="button" class="btn btn-secondary m-1" (click)="resetAll()">Clear search</button>
 </form>
 <hr />

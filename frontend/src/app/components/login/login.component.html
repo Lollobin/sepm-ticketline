@@ -6,61 +6,59 @@
   </button>
 </div>
 
-<div class="pt-5">
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <span class="anchor" id="formLogin"></span>
+<span class="anchor" id="formLogin"></span>
+<div class="card w-50 mx-auto">
+  <div class="card-header">
+    <h3 class="mb-0">Login</h3>
+  </div>
 
-      <div class="card rounded-0">
-        <div class="card-header">
-          <h3 class="mb-0">Login</h3>
+  <div class="card-body">
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="loginUser()">
+
+      <div class="form-group mb-3">
+        <label for="inputUsername" class="form-label">Email address</label>
+        <input type="text" name="username" formControlName="username" class="form-control"
+               id="inputUsername"
+               aria-describedby="usernameHelp" placeholder="Enter email address">
+        <div *ngIf="submitted && loginForm.controls.username.errors" class="error">
+          <small class="form-text text-danger"
+                 *ngIf="loginForm.controls.username.errors.required">Your username is
+            required!
+          </small>
         </div>
-
-        <div class="card-body">
-          <form class="form" [formGroup]="loginForm" (ngSubmit)="loginUser()">
-
-            <div class="form-group">
-              <label for="inputUsername">Username</label>
-              <input type="text" name="username" formControlName="username" class="form-control"
-                     id="inputUsername"
-                     aria-describedby="usernameHelp" placeholder="Enter username">
-              <div *ngIf="submitted && loginForm.controls.username.errors" class="error">
-                <small class="form-text text-warning"
-                       *ngIf="loginForm.controls.username.errors.required">Your username is
-                  required!
-                </small>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input (keydown.enter)="loginUser()" type="password" name="password" formControlName="password" class="form-control"
-                     id="password"
-                     placeholder="Password">
-              <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
-                <small class="form-text text-warning"
-                       *ngIf="loginForm.controls.password.errors.required">Your password
-                  is
-                  required!
-                </small>
-                <small class="form-text text-warning"
-                       *ngIf="loginForm.controls.password.errors.minlength">Your password
-                  must be at least 8 characters long!
-                </small>
-              </div>
-            </div>
-
-            <button type="button" (click)="loginUser()" class="btn btn-success float-right">Login
-            </button>
-            <hr>
-           <div> <strong class="mb-0">Don't have an account yet? <a routerLink="/registration">Sign up here.</a></strong></div>
-            <div><strong class="mb-0">Forgot your password? <a routerLink="/passwordReset">Request password reset.</a></strong></div>
-          </form>
-        </div>
-
       </div>
 
+      <div class="form-group mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input (keydown.enter)="loginUser()" type="password" name="password"
+               formControlName="password" class="form-control"
+               id="password"
+               placeholder="Password"
+               aria-describedby="password-help">
+        <div class="form-text" id="password-help">
+          <a routerLink="/passwordReset">Forgot your password?</a>
+        </div>
+        <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
+          <small class="form-text text-danger"
+                 *ngIf="loginForm.controls.password.errors.required">Your password
+            is
+            required!
+          </small>
+          <small class="form-text text-danger"
+                 *ngIf="loginForm.controls.password.errors.minlength">Your password
+            must be at least 8 characters long!
+          </small>
+        </div>
+      </div>
+    </form>
+    <div class="float-end">
+      <button type="button" routerLink="/registration" class="btn btn-outline-primary me-1">
+        Sign Up
+      </button>
+      <button type="button" (click)="loginUser()" class="btn btn-primary">Login
+      </button>
     </div>
   </div>
 </div>
+
 

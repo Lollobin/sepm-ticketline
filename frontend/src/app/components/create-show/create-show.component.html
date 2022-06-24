@@ -19,12 +19,10 @@
 <div class="container-fluid">
   <div *ngIf="role === 'ADMIN' && !this.notFound">
     <div class="row">
-      <div class="col col-3" style="margin-top: 5%; margin-bottom: 15px">
-        <!-- <div class="form-group col col-3" style="margin-top: 5%; margin-bottom: 15px;"> -->
+      <div class="col col-3" style="margin-bottom: 15px">
         <h5>
           Shows of <strong style="color: #4d61ff">{{ this.eventName }}</strong>
         </h5>
-        <!-- <h5>Shows of <strong style="color: #4d61ff">{{this.eventName}}</strong></h5> -->
         <table class="table table-hover">
           <thead>
             <tr>
@@ -41,19 +39,9 @@
         </table>
       </div>
       <div class="col col-5">
-        <p class="h2 form-margin form-group">
-          <fa-icon
-            style="padding-left: 0; font-size: 20px"
-            [icon]="faCircleQuestion"
-            data-bs-toggle="tooltip"
-            data-placement="bottom"
-            title="In this step a specific show is created. It specifies the given event and gives it a date, a location, a seating plan and artists. After the seating plan is selected make sure set the sector prices! To add artists please click on the 'Add to show' button."
-          >
-          </fa-icon>
-          Add shows to "{{ this.eventName }}"
-        </p>
+        <h1 class="mb-3">Add shows to "{{ this.eventName }}"</h1>
 
-        <form class="form-margin" [formGroup]="showForm">
+        <form class="" [formGroup]="showForm">
           <div class="form-group">
             <small for="name" class="form-label text-muted">Event Name</small>
             <div
@@ -87,7 +75,7 @@
 
           <div class="row">
             <div class="form-group col-md-6">
-              *<small for="inputDate" class="form-label text-muted">Date</small>
+              <small for="inputDate" class="form-label text-muted">Date</small>*
               <input
                 id="inputDate"
                 class="form-control form-override"
@@ -114,7 +102,7 @@
               </div>
             </div>
             <div class="form-group col-md-6">
-              *<small for="inputTime" class="form-label text-muted">Time</small>
+              <small for="inputTime" class="form-label text-muted">Time</small>*
               <input class="form-control form-override" type="time" formControlName="time" />
               <div
                 *ngIf="!this.time.valid || showForm.errors?.['dateTimeInPast']"
@@ -137,7 +125,7 @@
           </div>
           <div class="row">
             <div class="form-group col-md-6">
-              *<small for="inputLocation" class="form-label text-muted">Location Name</small>
+              <small for="inputLocation" class="form-label text-muted">Location Name</small>*
               <input
                 class="form-control"
                 type="text"
@@ -158,7 +146,7 @@
               </div>
             </div>
             <div class="form-group col-md-6">
-              *<small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>
+              <small for="inputSeatingPlan" class="form-label text-muted">Room/Seating Plan</small>*
               <select
                 *ngIf="!this.locationValid"
                 class="form-control form-override"
@@ -199,7 +187,7 @@
             </div>
           </div>
           <div class="form-group" *ngIf="!this.showForm.value.seatingPlan">
-            *<small for="inputArtists" class="form-label text-muted">Sector Prices</small>
+            <small for="inputArtists" class="form-label text-muted">Sector Prices</small>*
             <div
               class="invalid-feedback"
               style="display: block"
@@ -212,7 +200,7 @@
             </div>
           </div>
           <div [formGroup]="sectorForm" class="form-group" *ngIf="this.showForm.value.seatingPlan">
-            *<small for="inputArtists" class="form-label text-muted">Sector Prices</small>
+            <small for="inputArtists" class="form-label text-muted">Sector Prices</small>*
             <!-- <div class="container"> -->
             <div
               class="row"
@@ -222,7 +210,7 @@
                 class="col-md-3 form-label text-muted input-icon input-icon-right"
                 *ngFor="let field of sectors; let i = index"
               >
-                *Sector {{ i + 1 }}
+                Sector {{ i + 1 }}*
                 <div class="input-group">
                   <div class="input-group-addon" style="margin-right: 5px; font-size: 20px">€</div>
                   <input
@@ -284,7 +272,6 @@
             <thead>
               <tr>
                 <th scope="col">Name</th>
-                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -312,12 +299,7 @@
             </tbody>
           </table>
 
-          <button
-            type="submit"
-            class="btn btn-primary form-group"
-            style="margin-left: 5px"
-            (click)="openModal()"
-          >
+          <button type="submit" class="btn btn-primary me-1" (click)="openModal()">
             Save Show
           </button>
           <div
@@ -348,19 +330,13 @@
             </div>
           </div>
 
-          <button
-            *ngIf="shows.length === 0"
-            class="btn btn-outline-primary form-group"
-            style="margin-left: 5px"
-            (click)="goToHome()"
-          >
+          <button *ngIf="shows.length === 0" class="btn btn-outline-primary" (click)="goToHome()">
             Cancel
           </button>
           <button
             *ngIf="shows.length > 0"
             type="button"
-            class="btn btn-outline-primary form-group"
-            style="margin-left: 5px"
+            class="btn btn-outline-primary"
             (click)="goToHome()"
           >
             Finish
@@ -368,7 +344,7 @@
         </form>
       </div>
 
-      <div class="col col-4" style="margin-top: 5%" *ngIf="this.seatingPlan.valid">
+      <div class="col col-4" *ngIf="this.seatingPlan.valid">
         <h5>
           Seating Plan of <strong style="color: #4d61ff">{{ this.seatingPlan.value.name }}</strong>
         </h5>
