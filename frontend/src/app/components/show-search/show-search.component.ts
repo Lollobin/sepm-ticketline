@@ -106,8 +106,7 @@ export class ShowSearchComponent implements OnInit {
             this.setCurrentlyActiveFilters();
             console.log(this.shows);
             if (this.shows.numberOfResults === 0) {
-              console.log("here");
-              this.toastr.warning("There aren't any shows fitting your input!");
+              this.toastr.info("There aren't any shows fitting your input!");
             }
           },
           error: (error) => {
