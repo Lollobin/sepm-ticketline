@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrdersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces.OrdersApi;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ArtistMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.TransactionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.OrderService;
 import java.lang.invoke.MethodHandles;
@@ -21,10 +22,13 @@ public class OrderEndpoint implements OrdersApi {
         MethodHandles.lookup().lookupClass());
     private final OrderService orderService;
     private final TransactionMapper transactionMapper;
+    private final ArtistMapper artistMapper;
 
-    public OrderEndpoint(OrderService orderService, TransactionMapper transactionMapper) {
+    public OrderEndpoint(OrderService orderService, TransactionMapper transactionMapper,
+        ArtistMapper artistMapper) {
         this.orderService = orderService;
         this.transactionMapper = transactionMapper;
+        this.artistMapper = artistMapper;
     }
 
     @Secured("ROLE_USER")
@@ -36,7 +40,7 @@ public class OrderEndpoint implements OrdersApi {
 
         return ResponseEntity.ok(
             transactionMapper.transactionPageToOrdersPageDto(
-                orderService.findAllByCurrentUser(pageable))
+                orderService.findAllByCurrentUser(pageable), artistMapper)
         );
     }
 }

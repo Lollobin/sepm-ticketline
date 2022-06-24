@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Artist } from './artist';
 import { BookingType } from './bookingType';
 
 
@@ -16,7 +17,7 @@ export interface Order {
     type: BookingType;
     transactionDate?: string;
     showDate?: string;
-    artists: Array<string>;
+    artists: Array<Artist>;
     eventName: string;
     city: string;
     locationName: string;

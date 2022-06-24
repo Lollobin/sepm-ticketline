@@ -64,7 +64,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
-      
+
       responses:
         200:
           description: OK
@@ -1398,7 +1398,7 @@ components:
             type: integer
         location:
           $ref: "#/components/schemas/Location"
-        minPrice: 
+        minPrice:
           type: number
       required:
         - showId
@@ -1838,7 +1838,7 @@ components:
         artists:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/Artist"
         eventName:
           type: string
         city:
@@ -1880,7 +1880,7 @@ components:
         artists:
           type: array
           items:
-              $ref: "#/components/schemas/Artist"
+            $ref: "#/components/schemas/Artist"
         eventName:
           type: string
         city:
@@ -2125,10 +2125,7 @@ components:
           type: integer
 
     TicketIdArray:
-      type: array    
-      items: 
+      type: array
+      items:
         type: integer
         format: int64
-
-      
-

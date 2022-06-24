@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.BookingTypeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrderDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.OrdersPageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TransactionDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.BookedIn;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Location;
@@ -25,7 +24,7 @@ public interface TransactionMapper {
 
     BookingTypeDto bookingTypeToBookingTypeDto(BookingType bookingType);
 
-    default OrderDto transActionToOrderDto(Transaction transaction) {
+    default OrderDto transActionToOrderDto(Transaction transaction, ArtistMapper artistMapper) {
         OrderDto orderDto = new OrderDto();
 
         orderDto.setTransactionDate(transaction.getDate());
@@ -41,7 +40,8 @@ public interface TransactionMapper {
 
             orderDto.setType(bookingTypeToBookingTypeDto(bookedIn.getBookingType()));
             orderDto.setShowDate(show.getDate());
-            orderDto.setArtists(show.getArtists().stream().map(Artist::getKnownAs).toList());
+            orderDto.setArtists(
+                show.getArtists().stream().map(artistMapper::artistToArtistDto).toList());
             orderDto.setEventName(event.getName());
             orderDto.setCity(location.getAddress().getCity());
             orderDto.setLocationName(location.getName());
@@ -54,13 +54,16 @@ public interface TransactionMapper {
         return orderDto;
     }
 
-    default OrdersPageDto transactionPageToOrdersPageDto(Page<Transaction> transactionPage) {
+    default OrdersPageDto transactionPageToOrdersPageDto(Page<Transaction> transactionPage,
+        ArtistMapper artistMapper) {
         OrdersPageDto ordersPageDto = new OrdersPageDto();
         ordersPageDto.setCurrentPage(transactionPage.getNumber());
         ordersPageDto.setNumberOfResults((int) transactionPage.getTotalElements());
         ordersPageDto.setPagesTotal(transactionPage.getTotalPages());
         ordersPageDto.setOrders(
-            transactionPage.getContent().stream().map(this::transActionToOrderDto).toList());
+            transactionPage.getContent().stream()
+                .map(transaction -> this.transActionToOrderDto(transaction, artistMapper))
+                .toList());
         return ordersPageDto;
     }
 }
