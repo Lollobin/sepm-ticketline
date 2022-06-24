@@ -13,7 +13,6 @@ export class ArticleDetailedViewComponent implements OnInit {
 
   article: Article;
   id: number;
-  error: Error;
   articleImages = {};
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
 
@@ -48,9 +47,13 @@ export class ArticleDetailedViewComponent implements OnInit {
           this.articleImages[0] = this.errorImage;
         }
       },
-      error: err => {
-        this.error = err;
-        this.toastrService.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
       }
     });
   }
@@ -78,15 +81,28 @@ export class ArticleDetailedViewComponent implements OnInit {
     this.articleService.imagesIdGet(id).subscribe({
       next: image => {
         this.createImageFromBlob(image, position);
-      },
+      }, 
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
+      }
     });
   }
 
   setArticleToRead(id: number) {
     this.articleService.readArticleStatusIdPut(id).subscribe({
 
-      error: err => {
-        this.error = err;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
       }
     });
   }

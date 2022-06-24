@@ -13,7 +13,6 @@ export class UnlockUserComponent implements OnInit {
   data: UsersPage = null;
   page = 1;
   users: User[];
-  error = "";
   empty = false;
   success = false;
   firstName = "";
@@ -39,10 +38,13 @@ export class UnlockUserComponent implements OnInit {
         this.users = data.users;
         this.empty = data.users.length === 0;
       },
-      error: err => {
-        console.log("Error fetching users: ", err);
-        this.showErrorFetch("Not allowed, " + err.message);
-        this.toastr.error(err.message);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -59,20 +61,19 @@ export class UnlockUserComponent implements OnInit {
         this.success = true;
         this.reloadUser();
       },
-      error: err => {
-        console.log("Error unlocking user: ", err);
-        this.showError(err.error);
-        this.toastr.error(err.message);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
 
   public vanishEmpty(): void {
     this.empty = null;
-  }
-
-  public vanishError(): void {
-    this.error = null;
   }
 
   public vanishErrorFetch(): void {
@@ -82,14 +83,4 @@ export class UnlockUserComponent implements OnInit {
   public vanishSuccess(): void {
     this.success = null;
   }
-
-  private showError(msg: string) {
-    this.error = msg;
-  }
-
-  private showErrorFetch(msg: string) {
-    this.errorFetch = msg;
-  }
-
-
 }

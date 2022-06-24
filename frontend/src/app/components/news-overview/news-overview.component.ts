@@ -14,7 +14,6 @@ export class NewsOverviewComponent implements OnInit {
 
   articles: Article[] = [];
   articleResult: ArticlePage;
-  error: Error;
   empty = false;
   filterRead = null;
   articleImages = {};
@@ -59,9 +58,13 @@ export class NewsOverviewComponent implements OnInit {
         }
 
       },
-      error: error => {
-        this.error = error;
-        this.toastr.error(error.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -90,8 +93,13 @@ export class NewsOverviewComponent implements OnInit {
       next: image => {
         this.createImageFromBlob(image, articleId);
       }, 
-      error: error => {
-        this.toastr.error(error.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }

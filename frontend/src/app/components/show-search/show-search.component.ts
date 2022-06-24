@@ -20,9 +20,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ShowSearchComponent implements OnInit {
 
-  error;
-  errorMessage;
-
   shows: ShowSearchResult;
   page = 1;
   pageSize = 10;
@@ -108,9 +105,13 @@ export class ShowSearchComponent implements OnInit {
             this.shows = response;
             this.setCurrentlyActiveFilters();
           },
-          error: err => {
-            this.error = err;
-            this.toastr.error(err.errorMessage);
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
@@ -126,17 +127,14 @@ export class ShowSearchComponent implements OnInit {
       next: data => {
         console.log("Succesfully got seating plans of location with id", id);
         this.seatingPlans = data;
-        this.error = false;
       },
-      error: error => {
-        console.log("Error getting seating plans of location with id", id);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }

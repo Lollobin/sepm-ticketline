@@ -19,7 +19,6 @@ export class CreateUserComponent implements OnInit {
   submitted = false;
   faUserShield = faUserShield;
   successUser = "";
-  errorMessage = '';
   genders = [{ description: "Female", value: "female" }, {
     description: "Male",
     value: "male"
@@ -115,13 +114,13 @@ export class CreateUserComponent implements OnInit {
         this.createdAccount = "User";
         this.toastr.success("Succesfully created User '" + this.successUser + "'!");
       },
-      error: error => {
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -139,13 +138,13 @@ export class CreateUserComponent implements OnInit {
         this.createdAccount = "Admin";
         this.toastr.success("Succesfully created Admin '" + this.successUser + "'!");
       },
-      error: error => {
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -157,13 +156,12 @@ export class CreateUserComponent implements OnInit {
         console.log("Succesfully got admin with id " + next.userId);
       },
       error: (error) => {
-        console.error("Error getting admin from authentication token");
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }
@@ -181,9 +179,13 @@ export class CreateUserComponent implements OnInit {
             console.log("succesfully reset password for created account");
             this.toastr.success("Succesfully reset password of " + this.createdAccount + " '" + this.successUser + "'!");
           },
-          error: (err) => {
-            console.log("failed to reset password for created account");
-            this.toastr.error(err.errorMessage);
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
@@ -210,15 +212,13 @@ export class CreateUserComponent implements OnInit {
         this.authenticated = true;
         console.log('Successfully confirmed user: ' + authRequest.email);
       },
-      error: error => {
-        console.log('Could not log in due to:');
+      error: (error) => {
         console.log(error);
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
         this.passwordForm.reset();
       }
     });

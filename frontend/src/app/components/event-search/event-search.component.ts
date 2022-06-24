@@ -19,8 +19,6 @@ export class EventSearchComponent implements OnInit {
   noCategory = null;
   eventsResult: EventSearchResult;
   eventForm: FormGroup;
-  err;
-  errorMessage;
   categoriesType = Category;
   categories = [];
 
@@ -91,16 +89,13 @@ export class EventSearchComponent implements OnInit {
             this.eventsResult = events;
             this.setCurrentlyActiveFilters();
           },
-          error: err => {
-            console.log('Could not fetch events: ');
-            console.log(err);
-            this.err = true;
-            if (typeof err.error === 'object') {
-              this.errorMessage = err.error.error;
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
             } else {
-              this.errorMessage = err.error;
+              this.toastr.warning(error.error);
             }
-            this.toastr.error(this.errorMessage);
           }
         }
     );

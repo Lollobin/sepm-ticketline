@@ -19,7 +19,6 @@ import { ToastrService } from "ngx-toastr";
   styleUrls: ["./order-overview.component.scss"],
 })
 export class OrderOverviewComponent implements OnInit {
-  error = undefined;
   tickets: TicketWithShowInfo[];
   today = new Date();
   faFileArrowDown = faFileArrowDown;
@@ -49,9 +48,12 @@ export class OrderOverviewComponent implements OnInit {
         this.tickets = data;
       },
       error: (error) => {
-        console.error("Error getting tickets", error.message);
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
       complete: () => {
         console.log("Received tickets");
@@ -66,9 +68,12 @@ export class OrderOverviewComponent implements OnInit {
         this.orders = data;
       },
       error: (error) => {
-        console.error("Error getting orders", error.message);
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
       complete: () => {
         console.log("Received orders");
@@ -121,8 +126,12 @@ export class OrderOverviewComponent implements OnInit {
           this.toastr.success("Succesfully purchased selected & cancelled unselected tickets!");
         },
         error: (error) => {
-          this.setError(error);
-          this.toastr.error(error);
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         },
         complete: () => {
           this.modalService.dismissAll();
@@ -141,8 +150,12 @@ export class OrderOverviewComponent implements OnInit {
           this.toastr.success("Succesfully purchased tickets!");
         },
         error: (error) => {
-          this.setError(error);
-          this.toastr.error(error);
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         },
         complete: () => {
           this.modalService.dismissAll();
@@ -181,8 +194,12 @@ export class OrderOverviewComponent implements OnInit {
         this.toastr.success("Succesfully cancelled tickets!");
       },
       error: (error) => {
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
       complete: () => {
         this.modalService.dismissAll();
@@ -197,15 +214,15 @@ export class OrderOverviewComponent implements OnInit {
         const fileURL = URL.createObjectURL(blob);
         window.open(fileURL, "_blank");
       },
-      error: (err) => {
-        this.setError(err);
-        this.toastr.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
-  }
-
-  setError(error: any) {
-    this.error = error;
   }
 
   selectAll() {
@@ -231,11 +248,11 @@ export class OrderOverviewComponent implements OnInit {
       next: (blob) => {
         window.open(URL.createObjectURL(blob));
       },
-      error: () => {
+      error: (error) => {
         fileErrorCount++;
-        this.error = new Error("Failed download of " + fileErrorCount + " files");
-        this.toastr.error(this.error.message);
-      },
+        error = new Error("Failed download of " + fileErrorCount + " files");
+        this.toastr.warning(error.message);
+      }
     });
   }
 

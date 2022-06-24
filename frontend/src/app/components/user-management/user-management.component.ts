@@ -16,7 +16,6 @@ export class UserManagementComponent implements OnInit {
   data: UsersPage = null;
   page = 1;
   users: User[];
-  error = "";
   faLockOpen = faLockOpen;
   faArrowRight = faArrowRight;
   faUserPlus = faUserPlus;
@@ -46,10 +45,13 @@ export class UserManagementComponent implements OnInit {
         this.users = data.users;
 
       },
-      error: err => {
-        console.log("Error fetching users: ", err);
-        this.showErrorFetch("Not allowed, " + err.message);
-        this.toastr.error(err.message);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -69,10 +71,6 @@ export class UserManagementComponent implements OnInit {
     this.userDetail = user;
   }
 
-  public vanishError(): void {
-    this.error = null;
-  }
-
   public vanishErrorFetch(): void {
     this.errorFetch = null;
   }
@@ -80,15 +78,6 @@ export class UserManagementComponent implements OnInit {
   public vanishSuccess(): void {
     this.success = null;
   }
-
-  private showError(msg: string) {
-    this.error = msg;
-  }
-
-  private showErrorFetch(msg: string) {
-    this.errorFetch = msg;
-  }
-
 
 
 }

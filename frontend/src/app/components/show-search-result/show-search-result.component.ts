@@ -55,9 +55,13 @@ export class ShowSearchResultComponent implements OnInit {
           this.eventName = this.shows.shows[0]?.event.name;
           this.eventDescription = this.shows.shows[0]?.event.content;
         },
-        error: err => {
-          console.log(err.error.error);
-          this.toastr.error(err.errorMessage);
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         }
       });
     } else {

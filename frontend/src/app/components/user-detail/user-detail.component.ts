@@ -16,7 +16,6 @@ export class UserDetailComponent implements OnInit {
   @Output() reload: EventEmitter<any> = new EventEmitter<any>();
 
 
-  error;
   success;
   faLockOpen = faLockOpen;
   faLockClose = faLock;
@@ -42,9 +41,13 @@ export class UserDetailComponent implements OnInit {
         {
           next: user => {
             this.user = user;
-          }, error: err => {
-            this.error = err;
-            this.toastr.error(err.errorMessage);
+          }, error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
@@ -64,16 +67,18 @@ export class UserDetailComponent implements OnInit {
         this.lockStatus = status;
         this.mail = mail;
         this.success = true;
-        this.error = null;
 
         this.toastr.success("Succesfully " + status + " user!");
         this.reload.emit( null);
         this.refreshPage();
       },
-      error: err => {
-        this.success = false;
-        this.handleError(err);
-        this.toastr.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
 
@@ -94,24 +99,20 @@ export class UserDetailComponent implements OnInit {
             this.success = "Successfully reset password of user " + this.user.email + "!";
             this.toastr.success("Succesfully reset password of user '" + this.user.email + "'!");
           },
-          error: (err) => {
-            this.handleError(err);
-            this.toastr.error(err.errorMessage);
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
   }
 
-  handleError(error) {
-    this.error = error.message && !error.error ? error.message : error.error;
-  }
-
   back(): void {
     this.location.back();
-  }
-
-  vanishError() {
-    this.error = null;
   }
 
 

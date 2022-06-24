@@ -146,10 +146,10 @@
                 <div class="modal-header">
                   <h5>Are you sure you want to create a new {{this.userOrAdmin}}?</h5>
                 </div>
+                <div class="form-group alert alert-warning">
+                  <div>The created account will be sent a password reset email!</div>
+                </div>
                 <div *ngIf="!this.authenticated">
-                  <div class="form-group alert alert-warning">
-                    <div>The created account will be sent a password reset email!</div>
-                  </div>
                   <form class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm"
                     (ngSubmit)="confirmUser()">
                     <label for="password">Please enter your current password to confirm</label>

@@ -91,13 +91,12 @@ export class CreateEventComponent implements OnInit {
         this.toastr.success("Succesfully created event!");
       },
       error: error => {
-        console.log(error.message);
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     }
     );

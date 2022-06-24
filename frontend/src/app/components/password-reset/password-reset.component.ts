@@ -11,7 +11,6 @@ import {PasswordReset, UserManagementService} from "../../generated-sources/open
 export class PasswordResetComponent implements OnInit {
 
   clientUrl = 'http://' + window.location.host + '#/passwordUpdate';
-  error;
   successMessage: string;
   email;
   submitted=false;
@@ -38,17 +37,16 @@ export class PasswordResetComponent implements OnInit {
             this.successMessage = response;
             this.toastr.success(this.successMessage);
           },
-          error: (err) => {
-            this.error = err;
-            this.toastr.error(this.error.errorMessage);
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
   }
-  vanishSuccess(){
-    this.successMessage=null;
-  }
-  vanishError(){
-    this.error=null;
-  }
+
 }

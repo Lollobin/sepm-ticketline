@@ -14,9 +14,6 @@ export class RegistrationComponent {
 
   registrationForm: FormGroup;
   submitted=false;
-
-  error = false;
-  errorMessage = '';
   genders = [{description: "Female", value: "female"}, {
     description: "Male",
     value: "male"
@@ -83,14 +80,13 @@ export class RegistrationComponent {
         this.router.navigate(['/login']);
         this.toastr.success("Succesfully registrated user!");
       },
-      error: error => {
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }

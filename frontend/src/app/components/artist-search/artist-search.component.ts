@@ -48,9 +48,13 @@ export class ArtistSearchComponent implements OnInit{
             this.artists = result.artists;
 
           },
-          error: err => {
-            console.log(err.error?.error);
-            this.toastrService.error(err.errorMessage);
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastrService.error(error.message);
+            } else {
+              this.toastrService.warning(error.error);
+            }
           }
         }
     );
@@ -71,9 +75,13 @@ export class ArtistSearchComponent implements OnInit{
       next: response => {
         this.eventsOfClickedArtist = response;
       },
-      error: err => {
-        console.log(err.error?.error);
-        this.toastrService.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
       }
 
     });

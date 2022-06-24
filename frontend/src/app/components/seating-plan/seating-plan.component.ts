@@ -88,14 +88,22 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.retreiveSeatingPlan(show);
           },
           error: (error) => {
-            this.setError(error);
-            this.toastr.error(error);
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         });
       },
       error: (error) => {
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -113,8 +121,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         this.event = event;
       },
       error: (error) => {
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -127,8 +139,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           this.artists.push(artist);
         },
         error: (error) => {
-          this.setError(error);
-          this.toastr.error(error);
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         }
       });
     }
@@ -150,14 +166,22 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.initializeSeatingPlan();
           },
           error: (error) => {
-              this.setError(error);
-              this.toastr.error(error);
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
             }
+          }
           });
       },
       error: (error) => {
-        this.setError(error);
-        this.toastr.error(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -212,9 +236,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           this.toastr.success("Succesfully purchased tickets!");
         },
         error: (error) => {
-          this.setError(error);
-          this.toastr.error(error);
-      },
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
     });
   }
   confirmReservation() {
@@ -231,8 +259,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           this.toastr.success("Succesfully reserved tickets!");
         },
         error: (error) => {
-          this.setError(error);
-          this.toastr.error(error);
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         }
     });
   }

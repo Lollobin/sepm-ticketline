@@ -105,9 +105,13 @@ export class CreateArticleComponent implements OnInit {
         this.fileToReturn = null;
         this.toastr.success("Successfully uploaded image!");
       },
-      error: err => {
-        this.error = err;
-        this.toastr.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
 
@@ -146,10 +150,14 @@ export class CreateArticleComponent implements OnInit {
             this.toastr.success("Successfully created article!");
 
           },
-          error: err1 => {
+          error: (error) => {
             this.imageIds = [];
-            this.error = err1;
-            this.toastr.error(err1.errorMessage);
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         });
 

@@ -19,7 +19,6 @@ export class LocationSearchComponent implements OnInit {
   pageSize = 10;
   locationResult: LocationSearchResult = null;
   locationForm: FormGroup;
-  err;
   locations: Location[];
   numberOfResult: number;
   showOfClickedLocation: ShowSearchResult = null;
@@ -92,9 +91,13 @@ export class LocationSearchComponent implements OnInit {
         this.locations = locationResult.locations;
         this.setCurrentlyActiveFilters();
       },
-      error: err => {
-        this.err = err;
-        this.toastr.error(err.errorMessage);
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -109,9 +112,13 @@ export class LocationSearchComponent implements OnInit {
           this.showOfClickedLocation = value;
           console.log(value);
         },
-        error: err1 => {
-          console.log(err1.err);
-          this.toastr.error(err1.errorMessage);
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         }
       });
   }

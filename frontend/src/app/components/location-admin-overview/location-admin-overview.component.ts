@@ -10,7 +10,6 @@ import { Location, LocationsService } from "src/app/generated-sources/openapi";
 })
 export class LocationAdminOverviewComponent implements OnInit {
   locations: Location[];
-  error: Error;
   page = 1;
   pageSize = 10;
   numberOfResults = 0;
@@ -30,9 +29,13 @@ export class LocationAdminOverviewComponent implements OnInit {
         this.numberOfResults = locationSearchResult.numberOfResults;
       },
       error: (error) => {
-        this.error = error;
-        this.toastr.error(error.errorMessage);
-      },
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
   onPageChange(ngbpage: number) {

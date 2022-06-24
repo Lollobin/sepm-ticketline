@@ -30,7 +30,6 @@ type ClickElement =
 })
 export class CreateSeatingPlanComponent implements OnInit {
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
-  error: Error;
   locationId: number;
   page: number;
   faXmark = faXmark;
@@ -61,9 +60,13 @@ export class CreateSeatingPlanComponent implements OnInit {
           console.log(location);
         },
         error: (error) => {
-          this.error = error;
-          this.toastr.error(error.errorMessage);
-        },
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     });
   }
@@ -111,9 +114,13 @@ export class CreateSeatingPlanComponent implements OnInit {
         this.toastr.success("Succesfully added seating plan!");
       },
       error: (error) => {
-        this.error = error;
-        this.toastr.error(error.errorMessage);
-      },
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
   convertToCurrency(value: number) {

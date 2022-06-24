@@ -14,15 +14,11 @@ export const dateTimeValidator: ValidatorFn = (control: AbstractControl):
         monthString + '-' + dayString;
     const formattedTime = currentDateTime.getHours() + ":" + currentDateTime.getMinutes();
 
-    console.log("input date: " + date.value + ", new Date(): ", formattedDate);
     if (date.value < formattedDate) {
         return { dateInPast: true };
     }
-    console.log("passed 1");
-    console.log(time.value + ", formattedTime: ", formattedTime);
     if (date.value === formattedDate && time.value < formattedTime) {
         return { dateTimeInPast: true };
     }
-    console.log("passed 2");
     return null;
 };

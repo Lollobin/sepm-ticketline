@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import {Article, ArticlesService, Sort} from "../../generated-sources/openapi";
 
 @Component({
@@ -16,7 +17,7 @@ export class HomeComponent implements OnInit {
   defaultImage = 'https://dummyimage.com/640x360/fff/aaa';
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
 
-  constructor(private articleService: ArticlesService) {
+  constructor(private articleService: ArticlesService, private toastr: ToastrService) {
   }
 
   ngOnInit() {
@@ -37,8 +38,13 @@ export class HomeComponent implements OnInit {
           }
         }
       },
-      error: err => {
-        this.error = err;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -66,6 +72,14 @@ export class HomeComponent implements OnInit {
       next: image => {
         this.createImageFromBlob(image, articleId);
       },
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 

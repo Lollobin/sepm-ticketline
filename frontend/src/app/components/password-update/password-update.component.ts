@@ -58,10 +58,14 @@ export class PasswordUpdateComponent implements OnInit {
             this.success = "Successfully saved new password!";
             this.toastr.success(this.success);
           },
-          error: (err) => {
-            this.handleError(err);
-            console.log(err);
-            this.toastr.error(this.error);
+          error: (error) => {
+            console.log(error);
+            this.handleError(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );

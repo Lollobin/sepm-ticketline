@@ -16,9 +16,6 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
   submitted = false;
-  // Error flag
-  error = false;
-  errorMessage = '';
   returnUrl: string;
 
   constructor(private formBuilder: FormBuilder, private authService: CustomAuthService,
@@ -57,28 +54,17 @@ export class LoginComponent implements OnInit {
     this.authService.loginUser(authRequest).subscribe({
       next: () => {
         console.log('Successfully logged in user: ' + authRequest.email);
+        this.toastr.success("Succesfully logged in!");
         this.router.navigate([this.returnUrl]);
       },
-      error: error => {
-        console.log('Could not log in due to:');
+      error: (error) => {
         console.log(error);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
-        this.toastr.error(this.errorMessage);
       }
     });
   }
-
-  /**
-   * Error flag will be deactivated, which clears the error message
-   */
-  vanishError() {
-    this.error = false;
-  }
-
-
 }

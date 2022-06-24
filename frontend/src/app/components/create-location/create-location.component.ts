@@ -11,7 +11,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CreateLocationComponent implements OnInit {
   locationForm: FormGroup;
-  error: Error;
   submitted = false;
 
   constructor(
@@ -45,9 +44,13 @@ export class CreateLocationComponent implements OnInit {
           this.router.navigate(["/", "locations"]);
         },
         error: (error) => {
-          this.error = error;
-          this.toastr.error(error.errorMessage);
-        },
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     }
   }

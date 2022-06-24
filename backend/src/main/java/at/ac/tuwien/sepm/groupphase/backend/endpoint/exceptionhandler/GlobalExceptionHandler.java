@@ -45,7 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMaxUploadSizeExceededException(RuntimeException ex,
         WebRequest request) {
         LOGGER.warn(ex.getMessage());
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(),
+        return handleExceptionInternal(ex, "Maximum upload size exceeded", new HttpHeaders(),
             HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
 
