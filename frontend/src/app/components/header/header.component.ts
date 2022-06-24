@@ -1,10 +1,19 @@
 import {Component} from "@angular/core";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {
-  faEye, faCircleInfo, faUser, faNewspaper, faSearch, faBasketShopping,
-  faUsers, faMapLocation, faCompactDisc, faFileLines, faDashboard
+  faBasketShopping,
+  faCircleInfo,
+  faCompactDisc,
+  faDashboard,
+  faEye,
+  faFileLines,
+  faMapLocation,
+  faNewspaper,
+  faSearch,
+  faUser,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: "app-header",
@@ -24,18 +33,35 @@ export class HeaderComponent {
   article = faFileLines;
   admin = faDashboard;
 
+  showAdminMenu = false;
+
   currentRoute: string;
-  adminRoutes = ["/admin", "/article/create", "/users", "/locations", "/events/create"];
+  adminRoutesRegEx = [
+    /^\/events\/[0-9]*\/shows\/create$/g,
+    /^\/article\/create$/g,
+    /^\/admin$/g,
+    /^\/users$/g,
+    /^\/users\/create$/g,
+    /^\/locations$/g,
+    /^\/locations\/create$/g,
+    /^\/locations\/[0-9]*$/g,
+    /^\/locations\/[0-9]*\/seatingPlans\/create$/g,
+    /^\/events\/create$/g];
 
   constructor(public authService: CustomAuthService,
               private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.showAdminMenu = this.onAdminRoute();
+      }
+    });
   }
+
 
   onAdminRoute(): boolean {
-    console.log(this.router.url);
-    const value = this.adminRoutes.some(route => this.router.url.startsWith(route));
-    console.log(value);
+    const url = this.router.url;
+    const value = this.adminRoutesRegEx.some(route => url.match(route) != null);
+    console.log(url + " Admin menu: " + value);
     return value;
   }
-
 }
