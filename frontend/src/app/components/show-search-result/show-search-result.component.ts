@@ -54,6 +54,9 @@ export class ShowSearchResultComponent implements OnInit {
           console.log(response);
           this.eventName = this.shows.shows[0]?.event.name;
           this.eventDescription = this.shows.shows[0]?.event.content;
+          if (!this.shows?.numberOfResults) {
+            this.toastr.info("There aren't any shows fitting your input!");
+          }
         },
         error: (error) => {
           console.log(error);
