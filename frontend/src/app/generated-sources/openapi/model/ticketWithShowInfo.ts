@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Artist } from './artist';
 import { Ticket } from './ticket';
 
 
@@ -16,7 +17,7 @@ export interface TicketWithShowInfo {
     ticket: Array<Ticket>;
     type: TicketWithShowInfoTypeEnum;
     showDate: string;
-    artists: Array<string>;
+    artists: Array<Artist>;
     eventName: string;
     city: string;
     locationName: string;

@@ -30,7 +30,18 @@
           </ng-template>
         </td>
         <td>
-          {{ ticket.artists.join(", ") + " - " + ticket.eventName }} <br />
+          <span *ngFor="let artist of ticket.artists; let index=index">
+            <span>{{ artist.bandName }} </span>
+            <span>{{ artist.firstName }} </span>
+            <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
+              >"{{ artist.knownAs }}"
+            </span>
+            <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
+
+            <span>{{ artist.lastName }} </span>
+            <span *ngIf="index+1 !== ticket.artists.length">, </span>
+          </span><br />
+          <strong>{{ ticket.eventName }}</strong> <br />
           {{ ticket.city + ", " + ticket.locationName }}
         </td>
         <td>
@@ -179,13 +190,13 @@
 <div>
   <table class="table table-striped">
     <thead>
-    <tr>
-      <th scope="col">Transaction Date</th>
-      <th scope="col">Event</th>
-      <th scope="col">Date</th>
-      <th scope="col">Ticket Information</th>
-      <th></th>
-    </tr>
+      <tr>
+        <th scope="col">Transaction Date</th>
+        <th scope="col">Event</th>
+        <th scope="col">Date</th>
+        <th scope="col">Ticket Information</th>
+        <th></th>
+      </tr>
     </thead>
     <tbody>
       <tr
@@ -221,12 +232,20 @@
             <ng-template #reservations>Reservations</ng-template>
           </ng-template>
 
-        <ng-template [ngIf]="order.type === 'cancellation' || order.type === 'dereservation'">
-          <br>(cancelled)
-        </ng-template>
-      </td>
-      <td><button *ngIf="order.type!== 'dereservation'" (click)="getTransactionPdf(order.transactionId)" class="btn btn-secondary">Print Info</button></td>
-    </tr>
+          <ng-template [ngIf]="order.type === 'cancellation' || order.type === 'dereservation'">
+            <br />(cancelled)
+          </ng-template>
+        </td>
+        <td>
+          <button
+            *ngIf="order.type !== 'dereservation'"
+            (click)="getTransactionPdf(order.transactionId)"
+            class="btn btn-secondary"
+          >
+            Print Info
+          </button>
+        </td>
+      </tr>
     </tbody>
   </table>
   <ngb-pagination

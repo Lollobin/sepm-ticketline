@@ -1880,7 +1880,7 @@ components:
         artists:
           type: array
           items:
-            type: string
+              $ref: "#/components/schemas/Artist"
         eventName:
           type: string
         city:

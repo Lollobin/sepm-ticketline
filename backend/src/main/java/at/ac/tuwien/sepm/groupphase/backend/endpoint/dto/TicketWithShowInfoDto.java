@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.net.URI;
 import java.util.Objects;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ArtistDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -74,7 +75,7 @@ public class TicketWithShowInfoDto   {
 
   @JsonProperty("artists")
   @Valid
-  private List<String> artists = new ArrayList<>();
+  private List<ArtistDto> artists = new ArrayList<>();
 
   @JsonProperty("eventName")
   private String eventName;
@@ -150,12 +151,12 @@ public class TicketWithShowInfoDto   {
     this.showDate = showDate;
   }
 
-  public TicketWithShowInfoDto artists(List<String> artists) {
+  public TicketWithShowInfoDto artists(List<ArtistDto> artists) {
     this.artists = artists;
     return this;
   }
 
-  public TicketWithShowInfoDto addArtistsItem(String artistsItem) {
+  public TicketWithShowInfoDto addArtistsItem(ArtistDto artistsItem) {
     if (this.artists == null) {
       this.artists = new ArrayList<>();
     }
@@ -167,13 +168,13 @@ public class TicketWithShowInfoDto   {
    * Get artists
    * @return artists
   */
-  @NotNull 
+  @NotNull @Valid 
   @Schema(name = "artists", required = true)
-  public List<String> getArtists() {
+  public List<ArtistDto> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<String> artists) {
+  public void setArtists(List<ArtistDto> artists) {
     this.artists = artists;
   }
 
