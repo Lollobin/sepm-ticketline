@@ -99,35 +99,6 @@ paths:
           $ref: "#/components/responses/403-forbidden"
         500:
           $ref: "#/components/responses/500-internal-error"
-  /seatingPlanLayouts:
-    post:
-      tags:
-        - seatingPlans
-      summary: Uploads a seating plan layout.
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          # Change to correct schema
-          application/json:
-            schema:
-              type: string
-              format: binary
-      responses:
-        201:
-          description: Successful upload of a seating plan layout.
-          headers:
-            Location:
-              required: true
-              description: The location of the created resource
-              schema:
-                type: string
-                format: uri
-        422:
-          description: Validation failed for an input
-        500:
-          $ref: "#/components/responses/500-internal-error"
   /seatingPlanLayouts/{id}:
     get:
       tags:
@@ -897,47 +868,6 @@ paths:
           $ref: "#/components/responses/403-forbidden"
         422:
           description: Validation failed for an input
-        500:
-          $ref: "#/components/responses/500-internal-error"
-    get:
-      tags:
-        - seatingPlans
-      summary: Gets all seating plans
-      security:
-        - BearerAuth: []
-      responses:
-        200:
-          description: Successful retreival of seating plans
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SeatingPlan"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
-        500:
-          $ref: "#/components/responses/500-internal-error"
-  /seatingPlans/{id}:
-    get:
-      tags:
-        - seatingPlans
-      summary: Retreives information of the seating plan with the given ID.
-      parameters:
-        - $ref: "#/components/parameters/seatingPlanId"
-      security:
-        - BearerAuth: []
-      responses:
-        200:
-          description: Successful retreival of a seating plan.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SeatingPlan"
-        401:
-          $ref: "#/components/responses/401-not-authenticated"
-        404:
-          description: The seating plan with the given ID was not found
         500:
           $ref: "#/components/responses/500-internal-error"
   /seatingPlans/{id}/sectors:
