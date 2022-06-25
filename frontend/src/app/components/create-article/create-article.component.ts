@@ -15,6 +15,7 @@ export class CreateArticleComponent implements OnInit {
   myInputVariable: ElementRef;
   fileToUpload: FileList | null = null;
   articleForm: FormGroup;
+  MAX_UPLOAD_SIZE = 4194304;
 
   error: Error;
   submitted = false;
@@ -50,14 +51,32 @@ export class CreateArticleComponent implements OnInit {
   }
 
   onFileChange(event: any): void {
-    this.pressed = false;
-    this.imgChangeEvt = event;
-    this.uploadSuccess = false;
+    console.log("nothing selected");
+    if (event.target.files[0] == null) {
+      this.cropImgPreview = null;
+      this.imgChangeEvt = null;
+      this.fileToReturn = null;
+    } else {
+
+      if (event.target.files[0].size > this.MAX_UPLOAD_SIZE) {
+        console.log("image size too big");
+        //if the selected image is already larger than 4MB dont event allow it to load in the preview
+        this.reset();
+      } else {
+        this.pressed = false;
+        this.imgChangeEvt = event;
+        this.uploadSuccess = false;
+      }
+    }
   }
 
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
     this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target?.files[0].name);
+    if (this.fileToReturn.size > this.MAX_UPLOAD_SIZE) {
+      console.log("Cropped image size is larger than 4MB");
+      //here we could inform the user that the cropped image size exceeds 4MB
+    }
 
   }
 
@@ -94,7 +113,7 @@ export class CreateArticleComponent implements OnInit {
 
 
   helpUpload() {
-
+    console.log(this.fileToReturn.size + " is neue size");
     this.articleService.imagesPost(this.fileToReturn, "response").subscribe({
       next: res => {
         const location = res.headers.get("location");
@@ -103,6 +122,7 @@ export class CreateArticleComponent implements OnInit {
         this.previews.push(this.cropImgPreview);
         this.uploaded = true;
         this.uploadSuccess = true;
+        this.error = null;
         this.pressed = true;
         this.fileToReturn = null;
       },
