@@ -46,7 +46,9 @@ export class ArtistSearchComponent implements OnInit{
           next: result => {
             this.data = result;
             this.artists = result.artists;
-
+            if (!this.data?.numberOfResults) {
+              this.toastrService.info("There aren't any artists fitting your input!");
+            }
           },
           error: (error) => {
             console.log(error);
@@ -74,6 +76,9 @@ export class ArtistSearchComponent implements OnInit{
     this.eventsService.eventsGet(searchParams, this.eventPageSize, childpage - 1).subscribe({
       next: response => {
         this.eventsOfClickedArtist = response;
+        if (!this.eventsOfClickedArtist?.numberOfResults) {
+          this.toastrService.info("There aren't any events of " + this.clickedArtist.firstName + " '" + this.clickedArtist.knownAs + "' " + this.clickedArtist.lastName + " !");
+        }
       },
       error: (error) => {
         console.log(error);

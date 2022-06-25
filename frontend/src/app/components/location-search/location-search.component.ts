@@ -90,6 +90,9 @@ export class LocationSearchComponent implements OnInit {
         this.numberOfResult = locationResult.numberOfResults;
         this.locations = locationResult.locations;
         this.setCurrentlyActiveFilters();
+        if (!this.locationResult?.numberOfResults) {
+          this.toastr.info("There aren't any locations fitting your input!");
+        }
       },
       error: (error) => {
         console.log(error);
