@@ -43,7 +43,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   pixiApplication: Application;
   hoverInfo: { seatNumber: number; rowNumber: number; price: number; color: number } | undefined =
-      undefined;
+    undefined;
   showInformation: ShowInformation;
   chosenSeats: { [seatId: number]: SeatWithBookingStatus } = {};
   seatingPlan: SeatingPlanLayout;
@@ -210,15 +210,15 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
     drawSeatingPlan(this.pixiApplication.stage, this.seatingPlan);
     applyShowInformation(
-        this.pixiApplication.stage,
-        this.showInformation,
-        {
-          mouseover: this.seatHover.bind(this),
-          mouseout: this.seatBlur.bind(this),
-          click: this.triggerSeat.bind(this),
-        },
-        {mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
-        {mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this)}
+      this.pixiApplication.stage,
+      this.showInformation,
+      {
+        mouseover: this.seatHover.bind(this),
+        mouseout: this.seatBlur.bind(this),
+        click: this.triggerSeat.bind(this),
+      },
+      {mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
+      {mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this)}
     );
   }
 
@@ -326,33 +326,44 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       return {color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation};
     });
     this.totalPrice =
-        this.sectorBookingInformation.reduce(
-            (oldValue, sector) => oldValue + Math.ceil(sector.totalPrice * 100),
-            0
-        ) / 100;
+      this.sectorBookingInformation.reduce(
+        (oldValue, sector) => oldValue + Math.ceil(sector.totalPrice * 100),
+        0
+      ) / 100;
   }
 
   getSectorSeatInformation(sectorId: number) {
     const sectorSeats = groupBy(this.chosenSeats, "sector")[sectorId];
     if (!sectorSeats) {
       const emptySector = this.showInformation.sectors.find(
-          (sector) => sector.sectorId === sectorId
+        (sector) => sector.sectorId === sectorId
       );
       return {totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0};
     }
     const totalPrice =
-        sectorSeats.reduce(
-            (oldValue, seat) => oldValue + Math.ceil(this.sectorPriceMap[seat.sector] * 100),
-            0
-        ) / 100;
+      sectorSeats.reduce(
+        (oldValue, seat) => oldValue + Math.ceil(this.sectorPriceMap[seat.sector] * 100),
+        0
+      ) / 100;
     const ticketCount = sectorSeats.length;
     return {totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount};
+  }
+
+  secondsToHms(d): string {
+    d = Number(d * 60);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+    const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
   }
 
   private seatHover(seatId: number) {
     const seatInformation = this.showInformation.seats.find((seat) => seat.seatId === seatId);
     const sectorInformation = this.seatingPlan.sectors.find(
-        (sector) => seatInformation.sector === sector.id
+      (sector) => seatInformation.sector === sector.id
     );
     this.hoverInfo = {
       rowNumber: seatInformation.rowNumber,
@@ -382,11 +393,11 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   private addStandingSeat(sectorId: number) {
     const freeSeat = this.showInformation.seats.find(
-        (seat) =>
-            seat.sector === sectorId &&
-            !seat.reserved &&
-            !seat.purchased &&
-            !this.chosenSeats[seat.seatId]
+      (seat) =>
+        seat.sector === sectorId &&
+        !seat.reserved &&
+        !seat.purchased &&
+        !this.chosenSeats[seat.seatId]
     );
     if (freeSeat) {
       this.chosenSeats[freeSeat.seatId] = freeSeat;

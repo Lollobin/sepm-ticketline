@@ -1,6 +1,5 @@
-<div>
 <h1 *ngIf="location">{{ location.name }}</h1>
-<p *ngIf="location">
+<p *ngIf="location" class="fs-3">
   in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
   {{ location.address.houseNumber }}
 </p>
@@ -8,20 +7,21 @@
   <h3>Seating plans</h3>
   <table class="table table-striped">
     <thead>
-      <tr>
-        <th scope="col">Name</th>
-      </tr>
+    <tr>
+      <th scope="col">Name</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let seatingPlan of seatingPlans">
-        <td>{{ seatingPlan.name }}</td>
-      </tr>
+    <tr *ngFor="let seatingPlan of seatingPlans">
+      <td>{{ seatingPlan.name }}</td>
+    </tr>
     </tbody>
   </table>
 </div>
 <button
-  class="btn btn-primary"
-  routerLink="/locations/{{ locationId }}/seatingPlans/create"
+    class="btn btn-primary"
+    routerLink="/locations/{{ locationId }}/seatingPlans/create"
 >
+  <fa-icon [icon]="plus"></fa-icon>
   Add seating plan
 </button>

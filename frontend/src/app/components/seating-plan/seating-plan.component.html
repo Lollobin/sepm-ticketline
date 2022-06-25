@@ -1,6 +1,6 @@
 <div *ngIf="show !== undefined">
   <h1 class="text-center">{{ event.name }}</h1>
-  <div class="d-flex mt-2 mb-4 justify-content-between">
+  <div class="d-flex mt-2 mb-4 justify-content-center">
     <div>
       with
       <span *ngFor="let artist of artists; index as i">
@@ -16,7 +16,6 @@
         <span *ngIf="artists.length - 2 === i"> and </span>
       </span>
     </div>
-    <div class="flex-end">starting at {{ show.date | date: "EEEE, d LLLL YYYY HH:mm" }}</div>
   </div>
   <div class="d-flex justify-content-center align-content-center">
     <div class="my-auto me-3">
@@ -24,8 +23,9 @@
     </div>
     <div class="flex-column w-33 ms-3">
       <div class="p-3 overflow-auto">
-        <h4 class="mb-3">Description of the show</h4>
-        {{ event.content }}
+        <p class="mb-3 fw-bold"> {{ show.date | date: "EEEE, d LLLL YYYY" }} <br>
+          {{ show.date | date: "HH:mm" }} ({{secondsToHms(event.duration)}})</p>
+        <p class="fst-italic">{{ event.content }}</p>
       </div>
       <div class="container m-3">
         <div class="row border-bottom border-secondary border-3">

@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
-import { Location, LocationsService, SeatingPlan } from "src/app/generated-sources/openapi";
+import {Component, OnInit} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
+import {Location, LocationsService, SeatingPlan} from "src/app/generated-sources/openapi";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-location-seating-plans",
@@ -12,7 +13,10 @@ export class LocationSeatingPlansComponent implements OnInit {
   locationId = 1;
   location: Location;
   seatingPlans: SeatingPlan[];
-  constructor(private route: ActivatedRoute, private locationsService: LocationsService, private toastr: ToastrService) {}
+  plus = faPlus;
+
+  constructor(private route: ActivatedRoute, private locationsService: LocationsService, private toastr: ToastrService) {
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
