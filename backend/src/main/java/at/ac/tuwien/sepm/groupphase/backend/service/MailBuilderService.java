@@ -6,4 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 public interface MailBuilderService {
 
     SimpleMailMessage buildPasswordResetMail(String recipientMail, URI resetUri);
+
+    SimpleMailMessage buildAccountLockedMail(String email);
 }

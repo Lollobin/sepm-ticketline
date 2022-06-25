@@ -7,15 +7,15 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserWithPasswordDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserEncodePasswordMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Address;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepm.groupphase.backend.entity.enums.Gender;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Article;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.CustomAuthenticationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ArticleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.security.AuthenticationUtil;
 import at.ac.tuwien.sepm.groupphase.backend.service.EmailService;
@@ -154,7 +154,8 @@ public class CustomUserDetailService implements UserService {
 
         userValidator.validateUserWithPasswordDto(userWithPasswordDto);
 
-        ApplicationUser emailUser = this.userRepository.findUserByEmail(userWithPasswordDto.getEmail());
+        ApplicationUser emailUser = this.userRepository.findUserByEmail(
+            userWithPasswordDto.getEmail());
         if (emailUser != null && emailUser.getUserId() != userId) {
             throw new ConflictException(EMAIL_INVALID);
         }
@@ -194,7 +195,6 @@ public class CustomUserDetailService implements UserService {
     @Override
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
-
         if (filterLocked == null) {
             return userRepository.findAll(pageable);
         }
@@ -242,6 +242,7 @@ public class CustomUserDetailService implements UserService {
             String token = resetTokenService.generateToken();
             user.setResetPasswordToken(token);
             user.setMustResetPassword(true);
+            user.setLockedAccount(false);
             userRepository.save(user);
             URI resetUri = buildResetUri(dto.getClientURI(), token);
             SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(user.getEmail(),
@@ -258,12 +259,18 @@ public class CustomUserDetailService implements UserService {
             passwordResetDto);
         ApplicationUser user = userRepository.findUserByEmail(passwordResetDto.getEmail());
         if (user != null) {
-            String token = resetTokenService.generateToken();
-            user.setResetPasswordToken(token);
-            userRepository.save(user);
-            URI resetUri = buildResetUri(passwordResetDto.getClientURI(), token);
-            SimpleMailMessage message = mailBuilderService.buildPasswordResetMail(
-                passwordResetDto.getEmail(), resetUri);
+            SimpleMailMessage message;
+            if (!user.isLockedAccount()) {
+                String token = resetTokenService.generateToken();
+                user.setResetPasswordToken(token);
+                userRepository.save(user);
+                URI resetUri = buildResetUri(passwordResetDto.getClientURI(), token);
+                message = mailBuilderService.buildPasswordResetMail(
+                    passwordResetDto.getEmail(), resetUri);
+            } else {
+                message = mailBuilderService.buildAccountLockedMail(
+                    passwordResetDto.getEmail());
+            }
             emailService.sendEmail(message);
         }
 

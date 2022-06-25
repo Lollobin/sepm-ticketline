@@ -50,7 +50,7 @@ public class UsersEndpoint implements UsersApi {
         LOGGER.info("GET /users, filterLocked set to: {}", filterLocked);
 
         Pageable pageable = PageRequest.of(requestedPage, pageSize, Direction.fromString(sort),
-            "lastName");
+            "email");
 
         Page<ApplicationUser> userPage = userService.findAll(filterLocked, pageable);
 
