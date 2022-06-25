@@ -92,7 +92,11 @@
       >
         <div>
           <fa-icon [icon]="info"></fa-icon>
-          To purchase/reserve tickets, you have to be logged in!
+          <p>To purchase/reserve tickets, you have to be logged in!</p>
+          <button class="btn btn-outline-primary"
+                  (click)="this.router.navigate(['/login'], {queryParams: {redirectUrl: '/buyTickets/' + this.showId}});"
+                  routerLinkActive="active">Login & Buy
+          </button>
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ export class CreateArticleComponent implements OnInit {
   myInputVariable: ElementRef;
   fileToUpload: FileList | null = null;
   articleForm: FormGroup;
+  maxUploadSize = 4194304;
 
   error: Error;
   submitted = false;
@@ -32,7 +33,7 @@ export class CreateArticleComponent implements OnInit {
   errorImage = "";
 
 
-  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller, 
+  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller,
     private toastr: ToastrService) {
     this.articleForm = this._formBuilder.group({
       title: ["", [Validators.required]],
@@ -50,13 +51,27 @@ export class CreateArticleComponent implements OnInit {
   }
 
   onFileChange(event: any): void {
-    this.pressed = false;
-    this.imgChangeEvt = event;
+    if (event.target.files[0] == null) {
+      this.cropImgPreview = null;
+      this.imgChangeEvt = null;
+      this.fileToReturn = null;
+    } else {
+
+      if (event.target.files[0].size > this.maxUploadSize) {
+        this.toastr.warning("Maximum file size exceeded");
+      } else {
+        this.pressed = false;
+        this.imgChangeEvt = event;
+      }
+    }
   }
 
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
-    this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target?.files[0].name);
+    this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target.files[0]?.name);
+    if (this.fileToReturn.size > this.maxUploadSize) {
+      this.toastr.info("The cropped image size exceeds 4MB");
+    }
 
   }
 
@@ -94,6 +109,7 @@ export class CreateArticleComponent implements OnInit {
 
   helpUpload() {
 
+
     this.articleService.imagesPost(this.fileToReturn, "response").subscribe({
       next: res => {
         const location = res.headers.get("location");
@@ -103,10 +119,10 @@ export class CreateArticleComponent implements OnInit {
         this.uploaded = true;
         this.pressed = true;
         this.fileToReturn = null;
+        this.reset();
         this.toastr.success("Successfully uploaded image!");
       },
       error: (error) => {
-        console.log(error);
         if (error.status === 0 || error.status === 500) {
           this.toastr.error(error.message);
         } else {
@@ -152,7 +168,7 @@ export class CreateArticleComponent implements OnInit {
           },
           error: (error) => {
             this.imageIds = [];
-            console.log(error);
+
             if (error.status === 0 || error.status === 500) {
               this.toastr.error(error.message);
             } else {
@@ -168,7 +184,6 @@ export class CreateArticleComponent implements OnInit {
   }
 
   removeImage(id: number) {
-    console.log(this.imageIds);
 
     this.imageIds.splice(id, 1);
     this.previews.splice(id, 1);
@@ -178,7 +193,4 @@ export class CreateArticleComponent implements OnInit {
     this.display = "block";
   }
 
-  public vanishError(): void {
-    this.errorImage = null;
-  }
 }

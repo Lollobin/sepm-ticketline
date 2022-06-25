@@ -38,10 +38,12 @@ export class CreateLocationComponent implements OnInit {
         name: this.locationForm.get("name").value,
         address: this.locationForm.get("address").value,
       };
-      this.locationsService.locationsPost(location).subscribe({
-        next: () => {
+      this.locationsService.locationsPost(location, "response").subscribe({
+        next: res => {
+          const header = res.headers.get('Location');
+          const id = header.split("/").pop();
+          this.router.navigateByUrl("/locations/" + id);
           this.toastr.success("Succesfully created location!");
-          this.router.navigate(["/", "locations"]);
         },
         error: (error) => {
           console.log(error);
