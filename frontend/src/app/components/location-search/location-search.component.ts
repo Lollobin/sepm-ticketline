@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 export class LocationSearchComponent implements OnInit {
 
   page = 1;
-  pageSize = 10;
+  pageSize = 9;
   locationResult: LocationSearchResult = null;
   locationForm: FormGroup;
   locations: Location[];
@@ -86,6 +86,7 @@ export class LocationSearchComponent implements OnInit {
 
     this.locationService.locationsGet(search, this.pageSize, this.page-1).subscribe({
       next: locationResult => {
+        console.log(locationResult);
         this.locationResult = locationResult;
         this.numberOfResult = locationResult.numberOfResults;
         this.locations = locationResult.locations;
