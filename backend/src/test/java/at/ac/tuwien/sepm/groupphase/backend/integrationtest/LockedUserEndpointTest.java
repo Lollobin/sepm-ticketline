@@ -105,12 +105,12 @@ class LockedUserEndpointTest {
 
         assertThat(userDtos).asList().hasSize(3);
         assertThat(userDtos.get(0).getLockedAccount()).isTrue();
-        assertThat(userDtos.get(0).getEmail()).isEqualTo(USER_EMAIL);
-        assertThat(userDtos.get(0).getLastName()).isEqualTo(USER_LNAME);
+        assertThat(userDtos.get(0).getEmail()).isEqualTo(USER2_EMAIL);
+        assertThat(userDtos.get(0).getLastName()).isEqualTo(USER2_LNAME);
 
         assertThat(userDtos.get(1).getLockedAccount()).isTrue();
-        assertThat(userDtos.get(1).getEmail()).isEqualTo(USER3_EMAIL);
-        assertThat(userDtos.get(1).getFirstName()).isEqualTo(USER3_FNAME);
+        assertThat(userDtos.get(1).getEmail()).isEqualTo(USER_EMAIL);
+        assertThat(userDtos.get(1).getFirstName()).isEqualTo(USER_FNAME);
 
         userRepository.deleteAll();
 
