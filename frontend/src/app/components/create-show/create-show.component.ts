@@ -247,7 +247,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         this.getShowsOfEvent(this.eventId);
         this.clearForm();
         this.submitted = false;
-        this.toastr.success("Succesfully added show!");
+        this.toastr.success("Successfully added show!");
       },
       error: error => {
         console.log("Error creating event", error);

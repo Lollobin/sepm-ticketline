@@ -78,7 +78,7 @@ export class RegistrationComponent {
       next: () => {
         console.log("success!");
         this.router.navigate(['/login']);
-        this.toastr.success("Succesfully registrated user!");
+        this.toastr.success("Successfully registered user!");
       },
       error: (error) => {
         console.log(error);

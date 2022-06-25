@@ -111,7 +111,7 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
       next: () => {
         this.router.navigate(["/", "locations", this.location.locationId]);
-        this.toastr.success("Succesfully added seating plan!");
+        this.toastr.success("Successfully added seating plan!");
       },
       error: (error) => {
         console.log(error);

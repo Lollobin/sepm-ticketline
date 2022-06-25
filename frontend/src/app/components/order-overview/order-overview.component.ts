@@ -137,7 +137,7 @@ export class OrderOverviewComponent implements OnInit {
       ]).subscribe({
         next: (response) => {
           console.log(response);
-          this.toastr.success("Succesfully purchased selected & cancelled unselected tickets!");
+          this.toastr.success("Successfully purchased selected & cancelled unselected tickets!");
         },
         error: (error) => {
           console.log(error);
@@ -161,7 +161,7 @@ export class OrderOverviewComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log(response);
-          this.toastr.success("Succesfully purchased tickets!");
+          this.toastr.success("Successfully purchased tickets!");
         },
         error: (error) => {
           console.log(error);
@@ -205,7 +205,7 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ticketCancellationsPost(ticketStatus).subscribe({
       next: (response) => {
         console.log(response);
-        this.toastr.success("Succesfully cancelled tickets!");
+        this.toastr.success("Successfully cancelled tickets!");
       },
       error: (error) => {
         console.log(error);
