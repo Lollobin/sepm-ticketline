@@ -107,6 +107,7 @@ export class EventSearchComponent implements OnInit {
 
   resetDuration() {
     this.eventForm.controls.duration.setValue(0);
+    this.setCurrentlyActiveFilters();
   }
 
   handleEventPageEmit(number) {
@@ -141,6 +142,7 @@ export class EventSearchComponent implements OnInit {
 
   resetAll() {
     this.eventForm.reset();
+    this.duration.setValue(0);
     this.onSearch();
   }
 }
