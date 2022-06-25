@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { countBy, find, groupBy, map, noop } from "lodash";
-import { Application } from "pixi.js";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {countBy, find, groupBy, map, noop} from "lodash";
+import {Application} from "pixi.js";
 import {
   Artist,
   ArtistsService,
@@ -20,7 +20,7 @@ import {applyShowInformation} from "./seatingPlanEvents";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {faCircleInfo} from "@fortawesome/free-solid-svg-icons";
-import { ToastrService } from "ngx-toastr";
+import {ToastrService} from "ngx-toastr";
 
 interface SeatBookingInformation {
   color: number;
@@ -63,6 +63,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   info = faCircleInfo;
   purchaseFinished = false;
   responseTickets: FullTicketWithStatus;
+
   constructor(
     private showsService: ShowsService,
     private artistsService: ArtistsService,
@@ -73,7 +74,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private router: Router,
     private toastr: ToastrService,
     public authService: CustomAuthService
-  ) {}
+  ) {
+  }
 
   async ngOnInit() {
     this.purchaseFinished = false;
@@ -159,25 +161,25 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (showInformation) => {
         this.showInformation = showInformation;
         this.seatingPlansService
-          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
-          .subscribe({
-            next: async (seatingPlan) => {
-              this.seatingPlan = seatingPlan;
-              this.showInformation.sectors.forEach((sector) => {
-                this.sectorPriceMap[sector.sectorId] = sector.price;
-              });
-              this.calculateSectorBookingInformation();
-              this.initializeSeatingPlan();
-            },
-            error: (error) => {
-              console.log(error);
-              if (error.status === 0 || error.status === 500) {
-                this.toastr.error(error.message);
-              } else {
-                this.toastr.warning(error.error);
-              }
+        .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
+        .subscribe({
+          next: async (seatingPlan) => {
+            this.seatingPlan = seatingPlan;
+            this.showInformation.sectors.forEach((sector) => {
+              this.sectorPriceMap[sector.sectorId] = sector.price;
+            });
+            this.calculateSectorBookingInformation();
+            this.initializeSeatingPlan();
+          },
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
             }
-          });
+          }
+        });
       },
       error: (error) => {
         console.log(error);
@@ -213,13 +215,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         mouseout: this.seatBlur.bind(this),
         click: this.triggerSeat.bind(this),
       },
-      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this) },
-      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
+      {mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
+      {mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this)}
     );
   }
 
   convertToCurrency(value: number) {
-    return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
+    return value.toLocaleString(undefined, {style: "currency", currency: "EUR"});
   }
 
   numberToCssColorString(color: number) {
@@ -228,24 +230,24 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
 
   confirmPurchase() {
     this.ticketsService
-      .ticketsPost({
-        reserved: [],
-        purchased: map(this.chosenSeats, (seat) => seat.ticketId),
-      })
-      .subscribe({
-        next: (response) => {
-          this.purchaseFinished = true;
-          this.responseTickets = response;
-        },
-        error: (error) => {
-          console.log(error);
-          if (error.status === 0 || error.status === 500) {
-            this.toastr.error(error.message);
-          } else {
-            this.toastr.warning(error.error);
-          }
-        },
-      });
+    .ticketsPost({
+      reserved: [],
+      purchased: map(this.chosenSeats, (seat) => seat.ticketId),
+    })
+    .subscribe({
+      next: (response) => {
+        this.purchaseFinished = true;
+        this.responseTickets = response;
+      },
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      },
+    });
   }
 
   goToOrders() {
@@ -258,52 +260,10 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     }
     if (this.responseTickets.purchased) {
       this.ticketsService
-        .ticketPrintsGet(this.responseTickets.purchased.map((ticket) => ticket.ticketId))
-        .subscribe({
-          next: (blob) => {
-            window.open(URL.createObjectURL(blob));
-          },
-          error: (error) => {
-            console.log(error);
-            if (error.status === 0 || error.status === 500) {
-              this.toastr.error(error.message);
-            } else {
-              this.toastr.warning(error.error);
-            }
-            this.router.navigate(["/", "orders"]);
-          },
-        });
-    }
-    if (this.responseTickets.reserved) {
-      this.ticketsService
-        .ticketPrintsGet(this.responseTickets.reserved.map((ticket) => ticket.ticketId))
-        .subscribe({
-          next: (blob) => {
-            window.open(URL.createObjectURL(blob));
-          },
-          error: (error) => {
-            console.log(error);
-            if (error.status === 0 || error.status === 500) {
-              this.toastr.error(error.message);
-            } else {
-              this.toastr.warning(error.error);
-            }
-            this.router.navigate(["/", "orders"]);
-          },
-        });
-    }
-  }
-
-  confirmReservation() {
-    this.ticketsService
-      .ticketsPost({
-        reserved: map(this.chosenSeats, (seat) => seat.ticketId),
-        purchased: [],
-      })
+      .ticketPrintsGet(this.responseTickets.purchased.map((ticket) => ticket.ticketId))
       .subscribe({
-        next: (response) => {
-          this.purchaseFinished = true;
-          this.responseTickets = response;
+        next: (blob) => {
+          window.open(URL.createObjectURL(blob));
         },
         error: (error) => {
           console.log(error);
@@ -312,14 +272,56 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           } else {
             this.toastr.warning(error.error);
           }
+          this.router.navigate(["/", "orders"]);
         },
       });
+    }
+    if (this.responseTickets.reserved) {
+      this.ticketsService
+      .ticketPrintsGet(this.responseTickets.reserved.map((ticket) => ticket.ticketId))
+      .subscribe({
+        next: (blob) => {
+          window.open(URL.createObjectURL(blob));
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+          this.router.navigate(["/", "orders"]);
+        },
+      });
+    }
+  }
+
+  confirmReservation() {
+    this.ticketsService
+    .ticketsPost({
+      reserved: map(this.chosenSeats, (seat) => seat.ticketId),
+      purchased: [],
+    })
+    .subscribe({
+      next: (response) => {
+        this.purchaseFinished = true;
+        this.responseTickets = response;
+      },
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      },
+    });
   }
 
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
       const sectorSeatInformation = this.getSectorSeatInformation(sector.id);
-      return { color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation };
+      return {color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation};
     });
     this.totalPrice =
       this.sectorBookingInformation.reduce(
@@ -334,7 +336,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       const emptySector = this.showInformation.sectors.find(
         (sector) => sector.sectorId === sectorId
       );
-      return { totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0 };
+      return {totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0};
     }
     const totalPrice =
       sectorSeats.reduce(
@@ -342,7 +344,18 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         0
       ) / 100;
     const ticketCount = sectorSeats.length;
-    return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
+    return {totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount};
+  }
+
+  secondsToHms(d): string {
+    d = Number(d * 60);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+    const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
   }
 
   private seatHover(seatId: number) {
