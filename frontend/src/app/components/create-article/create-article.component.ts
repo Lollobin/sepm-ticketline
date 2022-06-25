@@ -119,6 +119,7 @@ export class CreateArticleComponent implements OnInit {
         this.uploaded = true;
         this.pressed = true;
         this.fileToReturn = null;
+        this.reset();
         this.toastr.success("Successfully uploaded image!");
       },
       error: (error) => {
