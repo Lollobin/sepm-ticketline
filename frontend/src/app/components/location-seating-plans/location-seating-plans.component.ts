@@ -4,6 +4,7 @@ import { ToastrService } from "ngx-toastr";
 import { Application } from "pixi.js";
 import { Location, LocationsService, SeatingPlan, SeatingPlanLayout, SeatingPlansService } from "src/app/generated-sources/openapi";
 import { drawSeatingPlanPreview } from "src/app/shared_modules/seatingPlanGraphics";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-location-seating-plans",
@@ -15,12 +16,14 @@ export class LocationSeatingPlansComponent implements OnInit, AfterViewInit {
   @ViewChild("infoOverlay") infoOverlay: ElementRef<HTMLDivElement>;
 
   pixiApplication: Application;
-  
+
   locationId = 1;
   location: Location;
   seatingPlans: SeatingPlan[];
   seatingPlanLayout: SeatingPlanLayout;
   selectedSeatingPlan: SeatingPlan;
+  plus = faPlus;
+
   constructor(private route: ActivatedRoute, private locationsService: LocationsService, private toastr: ToastrService,
     private seatingPlansService: SeatingPlansService) {}
 

@@ -13,7 +13,7 @@ import {
   SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from "ngx-toastr";
 
 type ClickElement =
   | {
@@ -56,7 +56,6 @@ export class CreateSeatingPlanComponent implements OnInit {
       this.locationsService.locationsIdGet(this.locationId).subscribe({
         next: (location) => {
           this.location = location;
-          //TODO: Add location get interface
           console.log(location);
         },
         error: (error) => {
@@ -69,6 +68,7 @@ export class CreateSeatingPlanComponent implements OnInit {
         }
       });
     });
+    this.addSector();
   }
   removeSector(index: number) {
     this.sectors.splice(index, 1);
