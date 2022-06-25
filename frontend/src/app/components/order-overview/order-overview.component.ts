@@ -49,6 +49,9 @@ export class OrderOverviewComponent implements OnInit {
       next: (data) => {
         this.tickets = data;
         this.loadingTickets = false;
+        if (this.tickets.length === 0) {
+          this.toastr.info("You don't have any tickets!");
+        }
       },
       error: (error) => {
         console.log(error);
@@ -72,6 +75,9 @@ export class OrderOverviewComponent implements OnInit {
       next: (data) => {
         this.orders = data;
         this.loadingOrders = false;
+        if (!this.orders?.numberOfResults) {
+          this.toastr.info("You haven't made any transactions!");
+        }
       },
       error: (error) => {
         console.log(error);
