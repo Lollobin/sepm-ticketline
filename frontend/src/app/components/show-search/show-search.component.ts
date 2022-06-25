@@ -180,7 +180,7 @@ export class ShowSearchComponent implements OnInit {
     if (this.seatingPlan.value) {
       this.currentlyActiveFilters.push("seatingPlan");
     }
-    if (this.price.value) {
+    if (this.price.value == 0 || this.price.value) {
       this.currentlyActiveFilters.push("price");
     }
   }
