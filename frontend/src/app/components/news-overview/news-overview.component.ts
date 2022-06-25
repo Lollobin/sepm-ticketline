@@ -57,7 +57,11 @@ export class NewsOverviewComponent implements OnInit {
 
         }
         if (this.empty) {
-          this.toastr.info("There are no new news!");
+          if (this.filterRead) {
+            this.toastr.info("You have not read any news!");
+          } else {
+            this.toastr.info("There are no new news!");
+          }
         }
       },
       error: (error) => {
