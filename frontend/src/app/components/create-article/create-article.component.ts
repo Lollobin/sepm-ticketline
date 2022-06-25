@@ -16,7 +16,7 @@ export class CreateArticleComponent implements OnInit {
   myInputVariable: ElementRef;
   fileToUpload: FileList | null = null;
   articleForm: FormGroup;
-  MAX_UPLOAD_SIZE = 4194304;
+  maxUploadSize = 4194304;
 
   error: Error;
   submitted = false;
@@ -57,7 +57,7 @@ export class CreateArticleComponent implements OnInit {
       this.fileToReturn = null;
     } else {
 
-      if (event.target.files[0].size > this.MAX_UPLOAD_SIZE) {
+      if (event.target.files[0].size > this.maxUploadSize) {
         this.toastr.warning("Maximum file size exceeded");
       } else {
         this.pressed = false;
@@ -69,7 +69,7 @@ export class CreateArticleComponent implements OnInit {
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
     this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target.files[0]?.name);
-    if (this.fileToReturn.size > this.MAX_UPLOAD_SIZE) {
+    if (this.fileToReturn.size > this.maxUploadSize) {
       this.toastr.info("The cropped image size exceeds 4MB");
     }
 
