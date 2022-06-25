@@ -73,6 +73,7 @@ export class LocationSearchComponent implements OnInit {
 
   onSearch() {
 
+    this.clickedLocation = null;
     this.showOfClickedLocation = null;
     const search: LocationSearch = {
       name: this.name.value,

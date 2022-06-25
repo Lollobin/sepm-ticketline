@@ -16,7 +16,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let artist of artists" (click)="artistGetEvents(artist, 1)">
-        <td>
+        <td [class.table-primary]="this.clickedArtist?.artistId===artist.artistId">
           <span>{{ artist.bandName }} </span>
           <span>{{ artist.firstName }} </span>
           <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
