@@ -9,17 +9,19 @@
       <h3>Seating plans</h3>
       <table class="table table-striped">
         <thead>
-        <tr>
-          <th scope="col">Name</th>
-        </tr>
+          <tr>
+            <th scope="col">Name</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let seatingPlan of seatingPlans" (click)="this.getSeatingPlanLayout(seatingPlan)">
-          <td [class.table-primary]="this.selectedSeatingPlan?.seatingPlanId===seatingPlan.seatingPlanId">{{ seatingPlan.name }}</td>
-        </tr>
+          <tr *ngFor="let seatingPlan of seatingPlans" (click)="this.getSeatingPlanLayout(seatingPlan)">
+            <td [class.table-primary]="this.selectedSeatingPlan?.seatingPlanId===seatingPlan.seatingPlanId">{{
+              seatingPlan.name }}</td>
+          </tr>
         </tbody>
       </table>
       <button class="btn btn-primary" routerLink="/locations/{{ locationId }}/seatingPlans/create">
+        <fa-icon [icon]="plus"></fa-icon>
         Add seating plan
       </button>
     </div>
@@ -31,10 +33,3 @@
     </div>
 
   </div>
-  <button
-      class="btn btn-primary"
-      routerLink="/locations/{{ locationId }}/seatingPlans/create"
-  >
-    <fa-icon [icon]="plus"></fa-icon>
-    Add seating plan
-  </button>
