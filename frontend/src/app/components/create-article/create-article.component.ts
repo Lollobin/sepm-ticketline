@@ -51,7 +51,6 @@ export class CreateArticleComponent implements OnInit {
   }
 
   onFileChange(event: any): void {
-    console.log("nothing selected");
     if (event.target.files[0] == null) {
       this.cropImgPreview = null;
       this.imgChangeEvt = null;
@@ -59,10 +58,7 @@ export class CreateArticleComponent implements OnInit {
     } else {
 
       if (event.target.files[0].size > this.MAX_UPLOAD_SIZE) {
-        console.log("image size too big");
-        this.toastr.warning("Max file size exceeded");
-        //if the selected image is already larger than 4MB dont event allow it to load in the preview
-        this.reset();
+        this.toastr.warning("Maximum file size exceeded");
       } else {
         this.pressed = false;
         this.imgChangeEvt = event;
@@ -72,10 +68,9 @@ export class CreateArticleComponent implements OnInit {
 
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
-    this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target?.files[0].name);
+    this.fileToReturn = this.base64ToFile(e.base64, this.imgChangeEvt.target.files[0]?.name);
     if (this.fileToReturn.size > this.MAX_UPLOAD_SIZE) {
-      console.log("Cropped image size is larger than 4MB");
-      //here we could inform the user that the cropped image size exceeds 4MB
+      this.toastr.info("The cropped image size exceeds 4MB");
     }
 
   }
@@ -113,7 +108,8 @@ export class CreateArticleComponent implements OnInit {
 
 
   helpUpload() {
-    console.log(this.fileToReturn.size + " is neue size");
+
+
     this.articleService.imagesPost(this.fileToReturn, "response").subscribe({
       next: res => {
         const location = res.headers.get("location");
@@ -126,7 +122,6 @@ export class CreateArticleComponent implements OnInit {
         this.toastr.success("Successfully uploaded image!");
       },
       error: (error) => {
-        console.log(error);
         if (error.status === 0 || error.status === 500) {
           this.toastr.error(error.message);
         } else {
@@ -172,7 +167,7 @@ export class CreateArticleComponent implements OnInit {
           },
           error: (error) => {
             this.imageIds = [];
-            console.log(error);
+
             if (error.status === 0 || error.status === 500) {
               this.toastr.error(error.message);
             } else {
@@ -188,7 +183,6 @@ export class CreateArticleComponent implements OnInit {
   }
 
   removeImage(id: number) {
-    console.log(this.imageIds);
 
     this.imageIds.splice(id, 1);
     this.previews.splice(id, 1);
@@ -198,7 +192,4 @@ export class CreateArticleComponent implements OnInit {
     this.display = "block";
   }
 
-  public vanishError(): void {
-    this.errorImage = null;
-  }
 }
