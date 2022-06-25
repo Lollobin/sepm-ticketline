@@ -177,7 +177,7 @@ export class CreateUserComponent implements OnInit {
         {
           next: (response) => {
             console.log("succesfully reset password for created account");
-            this.toastr.success("Succesfully reset password of " + this.createdAccount + " \"" + this.successUser + "\"!");
+            this.toastr.info("Succesfully reset password of " + this.createdAccount + " \"" + this.successUser + "\"!");
           },
           error: (error) => {
             console.log(error);

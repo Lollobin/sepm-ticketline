@@ -1,27 +1,35 @@
-<h1 *ngIf="location">{{ location.name }}</h1>
-<p *ngIf="location" class="fs-3">
-  in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
-  {{ location.address.houseNumber }}
-</p>
-<div *ngIf="seatingPlans && seatingPlans.length > 0">
-  <h3>Seating plans</h3>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th scope="col">Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let seatingPlan of seatingPlans">
-      <td>{{ seatingPlan.name }}</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-<button
-    class="btn btn-primary"
-    routerLink="/locations/{{ locationId }}/seatingPlans/create"
->
-  <fa-icon [icon]="plus"></fa-icon>
-  Add seating plan
-</button>
+<div>
+  <h1 *ngIf="location">{{ location.name }}</h1>
+  <p *ngIf="location">
+    in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
+    {{ location.address.houseNumber }}
+  </p>
+  <div class="row">
+    <div *ngIf="seatingPlans && seatingPlans.length > 0" class="col col-6">
+      <h3>Seating plans</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let seatingPlan of seatingPlans" (click)="this.getSeatingPlanLayout(seatingPlan)">
+            <td [class.table-primary]="this.selectedSeatingPlan?.seatingPlanId===seatingPlan.seatingPlanId">{{
+              seatingPlan.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-primary" routerLink="/locations/{{ locationId }}/seatingPlans/create">
+        <fa-icon [icon]="plus"></fa-icon>
+        Add seating plan
+      </button>
+    </div>
+    <div class="col col-6" *ngIf="this.selectedSeatingPlan">
+      <h5>
+        Seating Plan of <strong style="color: #4d61ff">{{ this.selectedSeatingPlan.name }}</strong>
+      </h5>
+      <div #pixiContainer style="overflow: auto"></div>
+    </div>
+
+  </div>
