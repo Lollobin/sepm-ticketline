@@ -6,7 +6,7 @@
     <div class="row">
 
       <div class="mb-3">
-        <small for="validationDefault01" class="form-label text-muted"> Title* </small>
+        <label for="validationDefault01" class="form-label text-muted"> Title* </label>
         <input type="text" class="form-control" id="validationDefault01" formControlName="title">
         <div *ngIf="articleForm.get('title').touched || submitted" class="error">
           <small
@@ -18,7 +18,7 @@
       </div>
 
       <div class="mb-3">
-        <small for="validationDefault02" class="form-label text-muted"> Summary*</small>
+        <label for="validationDefault02" class="form-label text-muted"> Summary*</label>
         <textarea type="text" class="form-control" id="validationDefault02"
                   formControlName="summary"></textarea>
         <div *ngIf="articleForm.get('summary').touched || submitted" class="error">
@@ -31,7 +31,7 @@
       </div>
 
       <div class="mb-3">
-        <small for="validationDefault03" class="form-label text-muted"> Text* </small>
+        <label for="validationDefault03" class="form-label text-muted"> Text* </label>
         <textarea type="text" class="form-control" id="validationDefault03"
                   formControlName="text"></textarea>
         <div *ngIf="articleForm.get('text').touched || submitted" class="error">
@@ -45,25 +45,22 @@
 
       <div>
         <div class="mb-3">
-          <input type="file" #myInput multiple accept="image/png, image/jpeg" class="form-control"
+          <input type="file" #myInput accept="image/png, image/jpeg" class="form-control"
                  (change)="onFileChange($event)"/>
-
-
-            <div class="row">
-              <div class="col">
-              <small class="form-text text-muted"
-                     for="inputGroupFile04">Accepted Formats: jpg, jpeg, png</small>
-              </div>
-              <div class="col">
-              <small class="form-text text-muted" style="float: right">Max image size: 4MB</small>
-              </div>
+          <div class="row">
+            <div class="col">
+              <small class="form-text text-muted">Accepted Formats: jpg, jpeg, png</small>
             </div>
-            <div class="row">
-              <div class="col"></div>
-              <div class="col float-end">
-              <button class="btn btn-secondary w-auto float-end" style="margin-top: 2%;"
-                      (click)="helpUpload(); reset()"
-                      [disabled]="fileToReturn === null">Add image
+            <div class="col">
+              <small class="form-text text-muted float-end">Max image size: 4MB</small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col"></div>
+            <div class="col float-end">
+              <button class="btn btn-success w-auto float-end mt-2"
+                      (click)="helpUpload()"
+                      [disabled]="fileToReturn === null">Crop & Upload Image
               </button>
             </div>
 
