@@ -35,7 +35,8 @@ export class PasswordResetComponent implements OnInit {
             this.submitted=true;
             console.log(response);
             this.successMessage = response;
-            this.toastr.success(this.successMessage);
+            this.toastr.info(this.successMessage);
+            this.router.navigateByUrl("/login");
           },
           error: (error) => {
             console.log(error);

@@ -68,7 +68,7 @@ export class UserDetailComponent implements OnInit {
         this.mail = mail;
         this.success = true;
 
-        this.toastr.success("Succesfully " + status + " user!");
+        this.toastr.success("Succesfully " + status + " account \"" + this.mail + "\"!");
         this.reload.emit( null);
         this.refreshPage();
       },
@@ -96,8 +96,8 @@ export class UserDetailComponent implements OnInit {
             this.lock = false;
             this.passW = true;
 
-            this.success = "Successfully reset password of user " + this.user.email + "!";
-            this.toastr.success("Succesfully reset password of user '" + this.user.email + "'!");
+            this.success = "Successfully reset password of account " + this.user.email + "!";
+            this.toastr.success("Succesfully reset password of account \"" + this.user.email + "\"!");
           },
           error: (error) => {
             console.log(error);

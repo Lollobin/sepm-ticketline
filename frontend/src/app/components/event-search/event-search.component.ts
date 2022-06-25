@@ -90,7 +90,7 @@ export class EventSearchComponent implements OnInit {
             this.setCurrentlyActiveFilters();
             console.log(events);
             if (!events?.numberOfResults) {
-              this.toastr.info("There aren't any events fitting your input!");
+              this.toastr.info("There are no events fitting your input!");
             }
           },
           error: (error) => {

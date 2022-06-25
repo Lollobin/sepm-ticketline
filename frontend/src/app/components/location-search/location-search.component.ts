@@ -91,7 +91,7 @@ export class LocationSearchComponent implements OnInit {
         this.locations = locationResult.locations;
         this.setCurrentlyActiveFilters();
         if (!this.locationResult?.numberOfResults) {
-          this.toastr.info("There aren't any locations fitting your input!");
+          this.toastr.info("There are no locations fitting your input!");
         }
       },
       error: (error) => {
@@ -114,6 +114,9 @@ export class LocationSearchComponent implements OnInit {
         next: value => {
           this.showOfClickedLocation = value;
           console.log(value);
+          if (!this.showOfClickedLocation?.numberOfResults) {
+            this.toastr.info("There are no shows at " + this.clickedLocation.name + "!");
+          }
         },
         error: (error) => {
           console.log(error);

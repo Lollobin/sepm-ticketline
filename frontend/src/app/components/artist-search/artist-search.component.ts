@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   Artist,
   ArtistsSearchResult,
@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './artist-search.component.html',
   styleUrls: ['./artist-search.component.scss']
 })
-export class ArtistSearchComponent implements OnInit{
+export class ArtistSearchComponent implements OnInit {
   data: ArtistsSearchResult = null;
   page = 1;
 
@@ -27,7 +27,7 @@ export class ArtistSearchComponent implements OnInit{
   clickedArtist: Artist;
   eventPageSize = 5;
 
-  constructor(private artistService: ArtistsService, private eventsService: EventsService, 
+  constructor(private artistService: ArtistsService, private eventsService: EventsService,
     private toastrService: ToastrService) {
   }
 
@@ -39,26 +39,26 @@ export class ArtistSearchComponent implements OnInit{
     this.eventsOfClickedArtist = null;
     this.clickedArtist = null;
     return this.artistService.artistsGet(
-        this.search,
-        this.pageSize,
-        this.page - 1
+      this.search,
+      this.pageSize,
+      this.page - 1
     ).subscribe({
-          next: result => {
-            this.data = result;
-            this.artists = result.artists;
-            if (!this.data?.numberOfResults) {
-              this.toastrService.info("There aren't any artists fitting your input!");
-            }
-          },
-          error: (error) => {
-            console.log(error);
-            if (error.status === 0 || error.status === 500) {
-              this.toastrService.error(error.message);
-            } else {
-              this.toastrService.warning(error.error);
-            }
-          }
+      next: result => {
+        this.data = result;
+        this.artists = result.artists;
+        if (!this.data?.numberOfResults) {
+          this.toastrService.info("There are no artists fitting your input!");
         }
+      },
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
+      }
+    }
     );
   }
 
@@ -72,12 +72,30 @@ export class ArtistSearchComponent implements OnInit{
   artistGetEvents(artist: Artist, childpage: number) {
     const id = artist.artistId;
     this.clickedArtist = artist;
-    const searchParams: EventSearch = {artist: id};
+    const searchParams: EventSearch = { artist: id };
     this.eventsService.eventsGet(searchParams, this.eventPageSize, childpage - 1).subscribe({
       next: response => {
         this.eventsOfClickedArtist = response;
         if (!this.eventsOfClickedArtist?.numberOfResults) {
-          this.toastrService.info("There aren't any events of " + this.clickedArtist.firstName + " '" + this.clickedArtist.knownAs + "' " + this.clickedArtist.lastName + " !");
+          let artistName = "";
+          if (this.clickedArtist.bandName) {
+            artistName = this.clickedArtist.bandName;
+          } else {
+            if (this.clickedArtist.firstName && this.clickedArtist.lastName) {
+              artistName += this.clickedArtist.firstName;
+            }
+            if (this.clickedArtist.knownAs) {
+              if (this.clickedArtist.firstName && this.clickedArtist.lastName && this.clickedArtist.knownAs) {
+                artistName += " \"" + this.clickedArtist.knownAs + "\"";
+              } else {
+                artistName = this.clickedArtist.knownAs;
+              }
+            }
+            if (this.clickedArtist.lastName && this.clickedArtist.firstName) {
+              artistName += " " + this.clickedArtist.lastName;
+            }
+          }
+          this.toastrService.info("There are no events with " + artistName + "!");
         }
       },
       error: (error) => {
@@ -97,7 +115,7 @@ export class ArtistSearchComponent implements OnInit{
   }
 
   resetAll() {
-    this.search=null;
+    this.search = null;
     this.onSearch();
   }
 

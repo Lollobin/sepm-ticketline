@@ -1,4 +1,4 @@
-<h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
+<h2 *ngIf="shows&&location&&this.shows?.numberOfResults">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
 <h1 *ngIf="shows&&eventId&&eventName">All Shows of Event <strong
     style="color: #4d61ff">'{{eventName}}'</strong></h1>
 

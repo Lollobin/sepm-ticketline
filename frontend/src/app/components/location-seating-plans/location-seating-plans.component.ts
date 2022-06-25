@@ -23,6 +23,9 @@ export class LocationSeatingPlansComponent implements OnInit {
           this.locationsService.locationsIdSeatingPlansGet(this.locationId).subscribe({
             next: (seatingPlans) => {
               this.seatingPlans = seatingPlans;
+              if (this.seatingPlans.length === 0) {
+                this.toastr.info("There are no seating plans for this location!");
+              }
             },
             error: (error) => {
               console.log(error);

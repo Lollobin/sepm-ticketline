@@ -1,4 +1,4 @@
-<h2 *ngIf="artist">
+<h2 *ngIf="artist && this.events?.numberOfResults">
   Events with
   <strong style="color: #4d61ff">
     <span>{{ artist.bandName }} </span>

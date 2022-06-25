@@ -43,7 +43,14 @@ export class UserManagementComponent implements OnInit {
 
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
-
+        if (!this.numberOfElems) {
+          if (this.filterLocked) {
+            this.toastr.info("There are no locked users!");
+          } else {
+            // This should never happen
+            this.toastr.error("There are no users!");
+          }
+        }
       },
       error: (error) => {
         console.log(error);

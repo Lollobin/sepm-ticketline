@@ -56,7 +56,9 @@ export class NewsOverviewComponent implements OnInit {
 
 
         }
-
+        if (this.empty) {
+          this.toastr.info("There are no new news!");
+        }
       },
       error: (error) => {
         console.log(error);

@@ -37,6 +37,9 @@ export class HomeComponent implements OnInit {
             this.articleImages[article.articleId] = this.errorImage;
           }
         }
+        if (this.empty) {
+          this.toastr.info("There are no new news!");
+        }
       },
       error: (error) => {
         console.log(error);

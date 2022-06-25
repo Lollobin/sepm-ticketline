@@ -55,8 +55,9 @@ export class PasswordUpdateComponent implements OnInit {
         {
           next: () => {
             this.submitted = true;
-            this.success = "Successfully saved new password!";
+            this.success = "Successfully updated password!";
             this.toastr.success(this.success);
+            this.router.navigateByUrl("/login");
           },
           error: (error) => {
             console.log(error);

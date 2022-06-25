@@ -243,6 +243,7 @@ export class EditUserComponent implements OnInit {
         {
           next: (response) => {
             console.log(response);
+            this.toastr.success("Succesfully sent password reset mail!");
             this.authService.logoutUser();
             this.router.navigateByUrl("/");
           },
