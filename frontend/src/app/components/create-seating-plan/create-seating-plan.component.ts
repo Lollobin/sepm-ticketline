@@ -13,6 +13,7 @@ import {
   SeatingPlanLayout,
 } from "src/app/generated-sources/openapi";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 
 type ClickElement =
   | {
@@ -29,7 +30,6 @@ type ClickElement =
 })
 export class CreateSeatingPlanComponent implements OnInit {
   @ViewChild(SeatingPlanEditorComponent) seatingPlanEditor: SeatingPlanEditorComponent;
-  error: Error;
   locationId: number;
   page: number;
   faXmark = faXmark;
@@ -45,7 +45,8 @@ export class CreateSeatingPlanComponent implements OnInit {
     private route: ActivatedRoute,
     private locationsService: LocationsService,
     private seatingPlansService: SeatingPlansService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -59,8 +60,13 @@ export class CreateSeatingPlanComponent implements OnInit {
           console.log(location);
         },
         error: (error) => {
-          this.error = error;
-        },
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     });
   }
@@ -105,10 +111,16 @@ export class CreateSeatingPlanComponent implements OnInit {
     this.seatingPlansService.seatingPlansPost(seatingPlan).subscribe({
       next: () => {
         this.router.navigate(["/", "locations", this.location.locationId]);
+        this.toastr.success("Succesfully added seating plan!");
       },
       error: (error) => {
-        this.error = error;
-      },
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
   convertToCurrency(value: number) {

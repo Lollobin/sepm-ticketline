@@ -11,6 +11,7 @@ import {
 } from "../../generated-sources/openapi";
 import {debounceTime, distinctUntilChanged, map, Observable, switchMap} from "rxjs";
 import {FormBuilder} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-show-search',
@@ -18,9 +19,6 @@ import {FormBuilder} from "@angular/forms";
   styleUrls: ['./show-search.component.scss']
 })
 export class ShowSearchComponent implements OnInit {
-
-  error;
-  errorMessage;
 
   shows: ShowSearchResult;
   page = 1;
@@ -36,7 +34,8 @@ export class ShowSearchComponent implements OnInit {
   currentlyActiveFilters: string[];
 
   constructor(private showService: ShowsService, private seatingPlansService: SeatingPlansService,
-              private locationsService: LocationsService, private formBuilder: FormBuilder) {
+              private locationsService: LocationsService, private formBuilder: FormBuilder,
+              private toastr: ToastrService) {
 
   }
 
@@ -105,8 +104,19 @@ export class ShowSearchComponent implements OnInit {
           next: response => {
             this.shows = response;
             this.setCurrentlyActiveFilters();
+            console.log(this.shows);
+            if (this.shows.numberOfResults === 0) {
+              this.toastr.info("There are no shows fitting your input!");
+            }
           },
-          error: err => this.error = err
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         }
     );
 
@@ -121,15 +131,13 @@ export class ShowSearchComponent implements OnInit {
       next: data => {
         console.log("Succesfully got seating plans of location with id", id);
         this.seatingPlans = data;
-        this.error = false;
       },
-      error: error => {
-        console.log("Error getting seating plans of location with id", id);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       }
     });
@@ -172,7 +180,7 @@ export class ShowSearchComponent implements OnInit {
     if (this.seatingPlan.value) {
       this.currentlyActiveFilters.push("seatingPlan");
     }
-    if (this.price.value) {
+    if (this.price.value === 0 || this.price.value) {
       this.currentlyActiveFilters.push("price");
     }
   }

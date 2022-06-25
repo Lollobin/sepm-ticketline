@@ -15,7 +15,6 @@ import { httpInterceptorProviders } from "./interceptors";
 import { SeatingPlanComponent } from "./components/seating-plan/seating-plan.component";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
 import { CreateShowComponent } from "./components/create-show/create-show.component";
-import { ErrorAlertComponent } from "./components/error-alert/error-alert.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UnlockUserComponent } from "./components/unlock-user/unlock-user.component";
@@ -48,7 +47,8 @@ import {TopEventsComponent} from './components/top-events/top-events.component';
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import { CreateUserComponent } from './components/create-user/create-user.component';
 import {ImageCropperModule} from "ngx-image-cropper";
-
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -61,7 +61,6 @@ import {ImageCropperModule} from "ngx-image-cropper";
     SeatingPlanComponent,
     CreateEventComponent,
     CreateShowComponent,
-    ErrorAlertComponent,
     RegistrationComponent,
     UnlockUserComponent,
     SeatingPlanEditorComponent,
@@ -101,7 +100,9 @@ import {ImageCropperModule} from "ngx-image-cropper";
     FormsModule,
     FontAwesomeModule,
     LazyLoadImageModule,
-    ImageCropperModule
+    ImageCropperModule, 
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({positionClass: 'toast-bottom-right', progressBar: true, timeOut: 7000})
   ],
   providers: [httpInterceptorProviders, AuthService, UnlockUserComponent],
   bootstrap: [AppComponent]

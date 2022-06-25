@@ -39,7 +39,7 @@
     class="d-flex justify-content-center"
     (pageChange)="onPageChange(page)"
   ></ngb-pagination>
-  <hr *ngIf="eventsOfClickedArtist" />
+  <hr *ngIf="eventsOfClickedArtist&&!this.data?.numberOfResults" />
 
   <app-event-search-result
     *ngIf="eventsOfClickedArtist"

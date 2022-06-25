@@ -38,6 +38,7 @@
               <label class="form-check-label">Standing sector</label>
               <input class="form-check-input" type="checkbox" [(ngModel)]="sector.standingSector"/>
             </div>
+            <div><input type="checkbox" [(ngModel)]="sector.standingSector" /> standing sector</div>
           </div>
           <div class="text-end">
             <button class="btn-danger btn" (click)="removeSector(index)">Remove</button>
@@ -256,5 +257,3 @@
     <button class="btn btn-success ms-auto" (click)="finish()" *ngIf="page >= 2">Finish</button>
   </div>
 </div>
-
-<app-error-alert [(error)]="error"></app-error-alert>

@@ -6,6 +6,7 @@ import {
   LocationsService, ShowSearch, ShowSearchResult, ShowsService
 } from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-location-search',
@@ -15,10 +16,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 export class LocationSearchComponent implements OnInit {
 
   page = 1;
-  pageSize = 10;
+  pageSize = 9;
   locationResult: LocationSearchResult = null;
   locationForm: FormGroup;
-  err;
   locations: Location[];
   numberOfResult: number;
   showOfClickedLocation: ShowSearchResult = null;
@@ -27,7 +27,8 @@ export class LocationSearchComponent implements OnInit {
 
   currentlyActiveFilters: string[];
 
-  constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService) {
+  constructor(private _formBuilder: FormBuilder, private locationService: LocationsService, private showService: ShowsService, 
+    private toastr: ToastrService) {
     this.locationForm = this._formBuilder.group({
       name: [],
       city: [],
@@ -85,13 +86,22 @@ export class LocationSearchComponent implements OnInit {
 
     this.locationService.locationsGet(search, this.pageSize, this.page-1).subscribe({
       next: locationResult => {
+        console.log(locationResult);
         this.locationResult = locationResult;
         this.numberOfResult = locationResult.numberOfResults;
         this.locations = locationResult.locations;
         this.setCurrentlyActiveFilters();
+        if (!this.locationResult?.numberOfResults) {
+          this.toastr.info("There are no locations fitting your input!");
+        }
       },
-      error: err => {
-        this.err = err;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -105,9 +115,17 @@ export class LocationSearchComponent implements OnInit {
         next: value => {
           this.showOfClickedLocation = value;
           console.log(value);
+          if (!this.showOfClickedLocation?.numberOfResults) {
+            this.toastr.info("There are no shows at " + this.clickedLocation.name + "!");
+          }
         },
-        error: err1 => {
-          console.log(err1.err);
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         }
       });
   }

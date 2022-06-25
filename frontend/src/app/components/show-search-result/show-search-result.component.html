@@ -1,4 +1,4 @@
-<h2 *ngIf="shows&&location">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
+<h2 *ngIf="shows&&location&&this.shows?.numberOfResults">Shows at <strong style="color: #4d61ff">{{location.name}}</strong></h2>
 <h1 *ngIf="shows&&eventId&&eventName">All Shows of Event <strong
     style="color: #4d61ff">'{{eventName}}'</strong></h1>
 
@@ -30,15 +30,6 @@
   </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.shows?.numberOfResults&&(location||shows)">
-  <div class="alert alert-warning" role="alert">
-    <h4>There aren't any shows fitting your input!</h4>
-
-    <button type="button" class="btn-close" (click)="vanishEmpty()" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-
-  </div>
-</div>
 
 <ngb-pagination *ngIf="this.shows?.numberOfResults" [collectionSize]="shows?.numberOfResults"
                 [(page)]="page" [maxSize]="5" [boundaryLinks]="true"

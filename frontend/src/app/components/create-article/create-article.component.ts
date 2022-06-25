@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ArticlesService, ArticleWithoutId} from "../../generated-sources/openapi";
 import {ViewportScroller} from "@angular/common";
 import {ImageCroppedEvent} from "ngx-image-cropper";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-article',
@@ -18,7 +19,6 @@ export class CreateArticleComponent implements OnInit {
 
   error: Error;
   submitted = false;
-  success = false;
   title = "";
 
   imageIds = [];
@@ -27,13 +27,13 @@ export class CreateArticleComponent implements OnInit {
   cropImgPreview: any = '';
   fileToReturn: File = null;
   uploaded = false;
-  uploadSuccess = false;
   pressed = false;
   display = "none";
   errorImage = "";
 
 
-  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller) {
+  constructor(private _formBuilder: FormBuilder, private articleService: ArticlesService, private scroll: ViewportScroller, 
+    private toastr: ToastrService) {
     this.articleForm = this._formBuilder.group({
       title: ["", [Validators.required]],
       summary: ["", [Validators.required]],
@@ -52,7 +52,6 @@ export class CreateArticleComponent implements OnInit {
   onFileChange(event: any): void {
     this.pressed = false;
     this.imgChangeEvt = event;
-    this.uploadSuccess = false;
   }
 
   cropImg(e: ImageCroppedEvent) {
@@ -102,13 +101,17 @@ export class CreateArticleComponent implements OnInit {
         this.imageIds.push(id);
         this.previews.push(this.cropImgPreview);
         this.uploaded = true;
-        this.uploadSuccess = true;
         this.pressed = true;
         this.fileToReturn = null;
+        this.toastr.success("Successfully uploaded image!");
       },
-      error: err => {
-        this.error = err;
-
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
 
@@ -139,41 +142,30 @@ export class CreateArticleComponent implements OnInit {
           next: () => {
             this.imageIds = [];
             this.submitted = false;
-            this.success = true;
-            this.uploadSuccess = false;
             this.previews = [];
             this.reset();
             this.display = "none";
             this.articleForm.reset();
             this.scroll.scrollToPosition([0, 0]);
-
+            this.toastr.success("Successfully created article!");
 
           },
-          error: err1 => {
-            this.success = false;
+          error: (error) => {
             this.imageIds = [];
-
-            this.error = err1;
-
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         });
 
       }
     } catch (error) {
-      this.success = false;
       this.error = error;
     }
   }
-
-
-  public vanishSuccess(): void {
-    this.success = null;
-  }
-
-  public vanishUploadSuccess(): void {
-    this.uploadSuccess = null;
-  }
-
 
   removeImage(id: number) {
     console.log(this.imageIds);

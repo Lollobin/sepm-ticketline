@@ -64,4 +64,5 @@ export class HeaderComponent {
     console.log(url + " Admin menu: " + value);
     return value;
   }
+
 }

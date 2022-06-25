@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 import { Location, LocationsService, SeatingPlan } from "src/app/generated-sources/openapi";
 
 @Component({
@@ -11,8 +12,7 @@ export class LocationSeatingPlansComponent implements OnInit {
   locationId = 1;
   location: Location;
   seatingPlans: SeatingPlan[];
-  error: Error;
-  constructor(private route: ActivatedRoute, private locationsService: LocationsService) {}
+  constructor(private route: ActivatedRoute, private locationsService: LocationsService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -23,15 +23,28 @@ export class LocationSeatingPlansComponent implements OnInit {
           this.locationsService.locationsIdSeatingPlansGet(this.locationId).subscribe({
             next: (seatingPlans) => {
               this.seatingPlans = seatingPlans;
+              if (this.seatingPlans.length === 0) {
+                this.toastr.info("There are no seating plans for this location!");
+              }
             },
             error: (error) => {
-              this.error = error;
-            },
+              console.log(error);
+              if (error.status === 0 || error.status === 500) {
+                this.toastr.error(error.message);
+              } else {
+                this.toastr.warning(error.error);
+              }
+            }
           });
         },
         error: (error) => {
-          this.error = error;
-        },
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     });
   }

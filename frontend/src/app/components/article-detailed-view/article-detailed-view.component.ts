@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Article, ArticlesService} from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-article-detailed-view',
@@ -12,12 +13,11 @@ export class ArticleDetailedViewComponent implements OnInit {
 
   article: Article;
   id: number;
-  error: Error;
   articleImages = {};
   errorImage = 'https://mdbcdn.b-cdn.net/img/new/standard/city/053.webp';
 
   constructor(private articleService: ArticlesService, private activatedRoute: ActivatedRoute,
-              private customAuthService: CustomAuthService) {
+              private customAuthService: CustomAuthService, private toastrService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -47,8 +47,13 @@ export class ArticleDetailedViewComponent implements OnInit {
           this.articleImages[0] = this.errorImage;
         }
       },
-      error: err => {
-        this.error = err;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
       }
     });
   }
@@ -76,15 +81,28 @@ export class ArticleDetailedViewComponent implements OnInit {
     this.articleService.imagesIdGet(id).subscribe({
       next: image => {
         this.createImageFromBlob(image, position);
-      },
+      }, 
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
+      }
     });
   }
 
   setArticleToRead(id: number) {
     this.articleService.readArticleStatusIdPut(id).subscribe({
 
-      error: err => {
-        this.error = err;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastrService.error(error.message);
+        } else {
+          this.toastrService.warning(error.error);
+        }
       }
     });
   }

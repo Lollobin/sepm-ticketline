@@ -19,13 +19,9 @@
     </tbody>
   </table>
 </div>
-<div *ngIf="seatingPlans && seatingPlans.length === 0">No seating plan found</div>
 <button
   class="btn btn-primary"
   routerLink="/locations/{{ locationId }}/seatingPlans/create"
 >
   Add seating plan
 </button>
-
-<app-error-alert [(error)]="error"></app-error-alert>
-</div>
