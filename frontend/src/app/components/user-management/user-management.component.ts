@@ -34,6 +34,7 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.reloadUser(null);
+
   }
 
   reloadUser(filterLocked: boolean) {
@@ -43,6 +44,7 @@ export class UserManagementComponent implements OnInit {
 
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
+        this.getDetail(this.users[0]);
 
       },
       error: err => {
