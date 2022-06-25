@@ -26,6 +26,8 @@ export class OrderOverviewComponent implements OnInit {
   orders: OrdersPage;
   currentPage = 1;
   pageSize = 10;
+  loadingTickets = true;
+  loadingOrders = true;
 
   selectedTickets: TicketWithShowInfo;
   ticketSelectionForm: FormGroup;
@@ -46,6 +48,7 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ticketInfoGet().subscribe({
       next: (data) => {
         this.tickets = data;
+        this.loadingTickets = false;
       },
       error: (error) => {
         console.log(error);
@@ -54,9 +57,11 @@ export class OrderOverviewComponent implements OnInit {
         } else {
           this.toastr.warning(error.error);
         }
+        this.loadingTickets = false;
       },
       complete: () => {
         console.log("Received tickets");
+        this.loadingTickets = false;
       },
     });
     this.reloadOrders();
@@ -66,6 +71,7 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ordersGet(this.pageSize, this.currentPage - 1).subscribe({
       next: (data) => {
         this.orders = data;
+        this.loadingOrders = false;
       },
       error: (error) => {
         console.log(error);
@@ -74,9 +80,11 @@ export class OrderOverviewComponent implements OnInit {
         } else {
           this.toastr.warning(error.error);
         }
+        this.loadingOrders = false;
       },
       complete: () => {
         console.log("Received orders");
+        this.loadingOrders = false;
       },
     });
   }
