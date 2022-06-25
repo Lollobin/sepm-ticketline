@@ -45,7 +45,14 @@ public class LocationGenerator {
 
     private Location generateLocation() {
         Location location = new Location();
-        location.setName(faker.overwatch().location());
+        double rand = faker.number().randomDouble(2, 0, 1);
+        if (rand < 0.33) {
+            location.setName(faker.overwatch().location());
+        } else if (rand > 0.66) {
+            location.setName(faker.witcher().location());
+        } else {
+            location.setName(faker.hobbit().location());
+        }
         location.setAddress(addressDataGenerator.generateRandomAddress());
         return location;
     }

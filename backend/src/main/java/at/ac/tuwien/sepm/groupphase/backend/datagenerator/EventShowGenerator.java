@@ -87,11 +87,15 @@ public class EventShowGenerator {
 
     private Event generateEvent() {
         Event event = new Event();
-        if (faker.number().randomDouble(2, 0, 1) > 0.5) {
+        double rand = faker.number().randomDouble(2, 0, 1);
+
+        if (rand < 0.33) {
             event.setName(faker.harryPotter().location() + ": " + faker.esports().event());
 
-        } else {
+        } else if (rand > 0.66) {
             event.setName(faker.starTrek().location() + " - " + faker.book().title());
+        } else {
+            event.setName(faker.witcher().location() + " - " + faker.starTrek().specie());
         }
         event.setDuration(faker.number().numberBetween(1, 70) * 5L);
         event.setCategory(faker.options().option(Category.class));
