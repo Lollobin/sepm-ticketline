@@ -1,25 +1,3 @@
-<div class="container" *ngIf="success">
-  <div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">Success!</h4>
-    <strong>Successfully</strong> created article "<strong>{{title}}</strong>"
-    <p></p>
-    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-  </div>
-</div>
-
-<div *ngIf="errorImage">
-  <div class="alert alert-danger" role="alert">
-    <h4>Error!</h4>{{ errorImage }}
-
-    <p></p>
-    <button type="button" class="btn-close" (click)="vanishError()" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-  </div>
-</div>
-
-<app-error-alert [error]="error"></app-error-alert>
-
 <div class="w-75 mx-auto">
 
   <h1 class="mb-3">Create Article</h1>
@@ -87,20 +65,8 @@
                       (click)="helpUpload(); reset()"
                       [disabled]="fileToReturn === null">Add image
               </button>
-              </div>
             </div>
 
-
-          <div class="container mt-3" *ngIf="uploadSuccess"
-               style="width: 50%; float: right; margin-right: 0; padding-right: 0">
-            <div class="alert alert-success fade show" role="alert" style="margin-right: 0">
-              <h4 class="alert-heading">Success!</h4>
-              Successfully uploaded image!
-              <p></p>
-              <button type="button" class="btn-close" (click)="vanishUploadSuccess()"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
-            </div>
           </div>
           <div class="col-md-4">
           </div>

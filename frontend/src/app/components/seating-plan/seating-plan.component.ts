@@ -1,11 +1,12 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
-import {countBy, find, groupBy, map, noop} from "lodash";
-import {Application} from "pixi.js";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { countBy, find, groupBy, map, noop } from "lodash";
+import { Application } from "pixi.js";
 import {
   Artist,
   ArtistsService,
   Event,
   EventsService,
+  FullTicketWithStatus,
   SeatingPlanLayout,
   SeatingPlansService,
   SeatWithBookingStatus,
@@ -19,6 +20,7 @@ import {applyShowInformation} from "./seatingPlanEvents";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {faCircleInfo} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 interface SeatBookingInformation {
   color: number;
@@ -59,7 +61,8 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   error = undefined;
   artists: Artist[] = [];
   info = faCircleInfo;
-
+  purchaseFinished = false;
+  responseTickets: FullTicketWithStatus;
   constructor(
     private showsService: ShowsService,
     private artistsService: ArtistsService,
@@ -68,11 +71,12 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     private ticketsService: TicketsService,
     private route: ActivatedRoute,
     private router: Router,
+    private toastr: ToastrService,
     public authService: CustomAuthService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
+    this.purchaseFinished = false;
     this.route.paramMap.subscribe({
       next: (params) => {
         if (isNaN(+params.get("showId"))) {
@@ -87,10 +91,24 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.retreiveEvent(show);
             this.retreiveSeatingPlan(show);
           },
-          error: (error) => this.setError(error),
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -106,7 +124,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (event) => {
         this.event = event;
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -117,7 +142,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         next: (artist) => {
           this.artists.push(artist);
         },
-        error: (error) => this.setError(error),
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     }
   }
@@ -127,20 +159,34 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (showInformation) => {
         this.showInformation = showInformation;
         this.seatingPlansService
-        .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
-        .subscribe({
-          next: async (seatingPlan) => {
-            this.seatingPlan = seatingPlan;
-            this.showInformation.sectors.forEach((sector) => {
-              this.sectorPriceMap[sector.sectorId] = sector.price;
-            });
-            this.calculateSectorBookingInformation();
-            this.initializeSeatingPlan();
-          },
-          error: (error) => this.setError(error),
-        });
+          .seatingPlanLayoutsIdGet(this.showInformation.seatingPlan.seatingPlanLayoutId)
+          .subscribe({
+            next: async (seatingPlan) => {
+              this.seatingPlan = seatingPlan;
+              this.showInformation.sectors.forEach((sector) => {
+                this.sectorPriceMap[sector.sectorId] = sector.price;
+              });
+              this.calculateSectorBookingInformation();
+              this.initializeSeatingPlan();
+            },
+            error: (error) => {
+              console.log(error);
+              if (error.status === 0 || error.status === 500) {
+                this.toastr.error(error.message);
+              } else {
+                this.toastr.warning(error.error);
+              }
+            }
+          });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -167,13 +213,13 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         mouseout: this.seatBlur.bind(this),
         click: this.triggerSeat.bind(this),
       },
-      {mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this)},
-      {mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this)}
+      { mouseover: noop, mouseout: noop, click: this.addStandingSeat.bind(this) },
+      { mouseover: noop, mouseout: noop, click: this.removeStandingSeat.bind(this) }
     );
   }
 
   convertToCurrency(value: number) {
-    return value.toLocaleString(undefined, {style: "currency", currency: "EUR"});
+    return value.toLocaleString(undefined, { style: "currency", currency: "EUR" });
   }
 
   numberToCssColorString(color: number) {
@@ -181,42 +227,99 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   }
 
   confirmPurchase() {
-    //TODO: Add redirect to bill
     this.ticketsService
-    .ticketsPost({
-      reserved: [],
-      purchased: map(this.chosenSeats, (seat) => seat.ticketId),
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-        this.router.navigate(["/", "orders"]);
-      },
-      error: (error) => {
-        this.setError(error);
-      },
-    });
+      .ticketsPost({
+        reserved: [],
+        purchased: map(this.chosenSeats, (seat) => seat.ticketId),
+      })
+      .subscribe({
+        next: (response) => {
+          this.purchaseFinished = true;
+          this.responseTickets = response;
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        },
+      });
+  }
+
+  goToOrders() {
+    this.router.navigate(["/", "orders"]);
+  }
+
+  printTickets() {
+    if (!this.responseTickets) {
+      this.router.navigate(["/", "orders"]);
+    }
+    if (this.responseTickets.purchased) {
+      this.ticketsService
+        .ticketPrintsGet(this.responseTickets.purchased.map((ticket) => ticket.ticketId))
+        .subscribe({
+          next: (blob) => {
+            window.open(URL.createObjectURL(blob));
+          },
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+            this.router.navigate(["/", "orders"]);
+          },
+        });
+    }
+    if (this.responseTickets.reserved) {
+      this.ticketsService
+        .ticketPrintsGet(this.responseTickets.reserved.map((ticket) => ticket.ticketId))
+        .subscribe({
+          next: (blob) => {
+            window.open(URL.createObjectURL(blob));
+          },
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+            this.router.navigate(["/", "orders"]);
+          },
+        });
+    }
   }
 
   confirmReservation() {
-    //TODO: Add redirect to "reservation"-bill
     this.ticketsService
-    .ticketsPost({
-      reserved: map(this.chosenSeats, (seat) => seat.ticketId),
-      purchased: [],
-    })
-    .subscribe({
-      next: (response) => {
-        console.log(response);
-        this.router.navigate(["/", "orders"]);
-      },
-    });
+      .ticketsPost({
+        reserved: map(this.chosenSeats, (seat) => seat.ticketId),
+        purchased: [],
+      })
+      .subscribe({
+        next: (response) => {
+          this.purchaseFinished = true;
+          this.responseTickets = response;
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        },
+      });
   }
 
   calculateSectorBookingInformation() {
     this.sectorBookingInformation = this.seatingPlan.sectors.map((sector) => {
       const sectorSeatInformation = this.getSectorSeatInformation(sector.id);
-      return {color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation};
+      return { color: sector.color, isStandingSector: sector.noSeats, ...sectorSeatInformation };
     });
     this.totalPrice =
       this.sectorBookingInformation.reduce(
@@ -231,7 +334,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       const emptySector = this.showInformation.sectors.find(
         (sector) => sector.sectorId === sectorId
       );
-      return {totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0};
+      return { totalPrice: 0, singlePrice: emptySector.price, ticketCount: 0 };
     }
     const totalPrice =
       sectorSeats.reduce(
@@ -239,7 +342,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         0
       ) / 100;
     const ticketCount = sectorSeats.length;
-    return {totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount};
+    return { totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount };
   }
 
   private seatHover(seatId: number) {

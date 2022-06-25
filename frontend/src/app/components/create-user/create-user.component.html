@@ -1,20 +1,3 @@
-<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Validation Errors: </strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="container mt-3" *ngIf="success">
-  <div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">Success!</h4>
-    Succesfully created {{this.createdAccount}} account <strong>{{this.successUser}}</strong>!
-    <p></p>
-    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
-      aria-label="Close"></button>
-  </div>
-</div>
-
-
 <div class="row justify-content-center">
   <div class="col-md-6">
     <div class="card">
@@ -163,10 +146,10 @@
                 <div class="modal-header">
                   <h5>Are you sure you want to create a new {{this.userOrAdmin}}?</h5>
                 </div>
+                <div class="form-group alert alert-warning">
+                  <div>The created account will be sent a password reset email!</div>
+                </div>
                 <div *ngIf="!this.authenticated">
-                  <div class="form-group alert alert-warning">
-                    <div>The created account will be sent a password reset email!</div>
-                  </div>
                   <form class="form-group form-control" style="margin: 0px" [formGroup]="passwordForm"
                     (ngSubmit)="confirmUser()">
                     <label for="password">Please enter your current password to confirm</label>

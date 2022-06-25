@@ -1,4 +1,4 @@
-<h2 *ngIf="artist">
+<h2 *ngIf="artist && this.events?.numberOfResults">
   Events with
   <strong style="color: #4d61ff">
     <span>{{ artist.bandName }} </span>
@@ -35,19 +35,7 @@
     </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.events?.numberOfResults && events">
-  <div class="alert alert-warning" role="alert">
-    <h4>There aren't any events fitting this input!</h4>
 
-    <button
-      type="button"
-      class="btn-close"
-      (click)="vanishEmpty()"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-</div>
 <ngb-pagination
   *ngIf="this.events?.numberOfResults"
   [collectionSize]="events?.numberOfResults"

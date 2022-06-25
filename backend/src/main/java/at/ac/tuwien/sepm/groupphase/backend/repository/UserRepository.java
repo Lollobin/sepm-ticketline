@@ -30,6 +30,13 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
     ApplicationUser save(ApplicationUser user);
 
     /**
+     * Gets a page of users who are not deleted.
+     *
+     * @return Page of non deleted ApplicationsUsers
+     */
+    Page<ApplicationUser> findByDeletedIsFalse(Pageable pageable);
+
+    /**
      * Gets a page of users where lockedAccount is equal to the parameter.
      *
      * @param lockedAccount if true then only locked users will be returned and vice versa

@@ -1,4 +1,4 @@
-<h1 class="mb-3">News</h1>
+<h1 class="mb-3" *ngIf="!this.empty">News</h1>
 
 <div id="cards_landscape_wrap-2" class="mb-5">
   <div class="row">
@@ -24,16 +24,6 @@
         </div>
       </a>
     </div>
-  </div>
-</div>
-
-<div class="container mb-5" *ngIf="empty">
-  <div class="alert alert-warning" role="alert">
-    <h4 *ngIf="!filterRead">There aren't any new news!</h4>
-    <h4 *ngIf="filterRead">You have not read any news yet!</h4>
-    <button type="button" class="btn-close stretched-link" (click)="vanishEmpty()"
-            data-bs-dismiss="alert"
-            aria-label="Close"></button>
   </div>
 </div>
 

@@ -6,6 +6,7 @@ import {
   EventsService
 } from "../../generated-sources/openapi";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-event-search',
@@ -18,8 +19,6 @@ export class EventSearchComponent implements OnInit {
   noCategory = null;
   eventsResult: EventSearchResult;
   eventForm: FormGroup;
-  err;
-  errorMessage;
   categoriesType = Category;
   categories = [];
 
@@ -27,7 +26,8 @@ export class EventSearchComponent implements OnInit {
 
   events: EventSearchResult;
 
-  constructor(private formBuilder: FormBuilder, private eventService: EventsService) {
+  constructor(private formBuilder: FormBuilder, private eventService: EventsService, 
+    private toastr: ToastrService) {
 
     this.categories = Object.keys(this.categoriesType);
   }
@@ -88,15 +88,17 @@ export class EventSearchComponent implements OnInit {
           next: events => {
             this.eventsResult = events;
             this.setCurrentlyActiveFilters();
+            console.log(events);
+            if (!events?.numberOfResults) {
+              this.toastr.info("There are no events fitting your input!");
+            }
           },
-          error: err => {
-            console.log('Could not fetch events: ');
-            console.log(err);
-            this.err = true;
-            if (typeof err.error === 'object') {
-              this.errorMessage = err.error.error;
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
             } else {
-              this.errorMessage = err.error;
+              this.toastr.warning(error.error);
             }
           }
         }

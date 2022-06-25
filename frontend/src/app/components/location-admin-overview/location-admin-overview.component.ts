@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 import { Location, LocationsService } from "src/app/generated-sources/openapi";
 
 @Component({
@@ -9,11 +10,11 @@ import { Location, LocationsService } from "src/app/generated-sources/openapi";
 })
 export class LocationAdminOverviewComponent implements OnInit {
   locations: Location[];
-  error: Error;
   page = 1;
   pageSize = 10;
   numberOfResults = 0;
-  constructor(private locationsService: LocationsService, private router: Router) {}
+  constructor(private locationsService: LocationsService, private router: Router, 
+    private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.searchLocations();
@@ -28,8 +29,13 @@ export class LocationAdminOverviewComponent implements OnInit {
         this.numberOfResults = locationSearchResult.numberOfResults;
       },
       error: (error) => {
-        this.error = error;
-      },
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
   onPageChange(ngbpage: number) {
