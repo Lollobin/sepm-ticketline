@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketWithShowInfoDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.TicketWithShowInfoDto.TypeEnum;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Artist;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Ticket;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,14 +33,14 @@ public interface TicketMapper {
 
     List<TicketDto> ticketToTicketDto(List<Ticket> tickets);
 
-    default List<TicketWithShowInfoDto> ticketToTicketWithShowInfoDto(List<Ticket> tickets) {
+    default List<TicketWithShowInfoDto> ticketToTicketWithShowInfoDto(List<Ticket> tickets, ArtistMapper artistMapper) {
         Set<TicketWithShowInfoDto> ticketWithShowInfoDtoSet = new HashSet<>();
 
         for (Ticket ticket : tickets) {
             TicketWithShowInfoDto dto = new TicketWithShowInfoDto();
             dto.setType(ticket.getPurchasedBy() == null ? TypeEnum.RESERVED : TypeEnum.PURCHASED);
             dto.setShowDate(ticket.getShow().getDate());
-            dto.setArtists(ticket.getShow().getArtists().stream().map(Artist::getKnownAs).toList());
+            dto.setArtists(ticket.getShow().getArtists().stream().map(artistMapper::artistToArtistDto).toList());
             dto.setEventName(ticket.getShow().getEvent().getName());
             dto.setCity(
                 ticket.getSeat().getSector().getSeatingPlan().getLocation().getAddress().getCity());

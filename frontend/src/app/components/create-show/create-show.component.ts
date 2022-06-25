@@ -1,23 +1,34 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
-  EventsService, Sector, ShowsService, SeatingPlansService,
-  SectorPrice, ShowWithoutId, LocationsService, LocationSearch, Location,
-  ArtistsService, Artist, ShowSearch, SeatingPlanLayout, SeatingPlanSector
-} from 'src/app/generated-sources/openapi';
+  EventsService,
+  Sector,
+  ShowsService,
+  SeatingPlansService,
+  SectorPrice,
+  ShowWithoutId,
+  LocationsService,
+  LocationSearch,
+  Location,
+  ArtistsService,
+  Artist,
+  ShowSearch,
+  SeatingPlanLayout,
+  SeatingPlanSector,
+} from "src/app/generated-sources/openapi";
 import { faCircleQuestion, faUserMinus } from "@fortawesome/free-solid-svg-icons";
 import { CustomAuthService } from "../../services/custom-auth.service";
-import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
-import { Application } from 'pixi.js';
-import { drawSeatingPlanPreview } from 'src/app/shared_modules/seatingPlanGraphics';
-import { dateTimeValidator } from './date-time-validator';
+import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from "rxjs";
+import { Application } from "pixi.js";
+import { drawSeatingPlanPreview } from "src/app/shared_modules/seatingPlanGraphics";
+import { dateTimeValidator } from "./date-time-validator";
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-create-show',
-  templateUrl: './create-show.component.html',
-  styleUrls: ['./create-show.component.scss']
+  selector: "app-create-show",
+  templateUrl: "./create-show.component.html",
+  styleUrls: ["./create-show.component.scss"],
 })
 export class CreateShowComponent implements OnInit, AfterViewInit {
   @ViewChild("pixiContainer") pixiContainer: ElementRef<HTMLDivElement>;
@@ -33,12 +44,12 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     event: 0,
     artists: [],
     seatingPlan: 0,
-    sectorPrices: []
+    sectorPrices: [],
   };
   sectors: SeatingPlanSector[];
   showForm: any;
   sectorForm = this.formBuilder.group({
-    ignore: ["", [Validators.required]]
+    ignore: ["", [Validators.required]],
   });
   sectorPrice: SectorPrice = { price: 0, sectorId: 0 };
   notFound = true;
@@ -59,9 +70,15 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   seatingPlanLayout: SeatingPlanLayout;
   pixiApplication: Application;
 
-  constructor(private formBuilder: FormBuilder, private showService: ShowsService, private eventService: EventsService,
-    private route: ActivatedRoute, private authService: CustomAuthService, private seatingPlansService: SeatingPlansService,
-    private locationsService: LocationsService, private artistsService: ArtistsService, private router: Router,
+  constructor(private formBuilder: FormBuilder,
+    private showService: ShowsService,
+    private eventService: EventsService,
+    private route: ActivatedRoute,
+    private authService: CustomAuthService,
+    private seatingPlansService: SeatingPlansService,
+    private locationsService: LocationsService,
+    private artistsService: ArtistsService,
+    private router: Router,
     private toastr: ToastrService) {
     this.showForm = this.formBuilder.group({
       date: ['', [Validators.required]],
@@ -69,7 +86,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
       event: [],
       location: ['', [Validators.required]],
       seatingPlan: ['', [Validators.required]],
-      sectorPrices: []
+      sectorPrices: [],
     }, {
       validators: dateTimeValidator,
     }
@@ -97,8 +114,12 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         return false;
       }
     }
-    if (this.artistForm.get("artist").value.firstName || this.artistForm.get("artist").value.lastName
-      || this.artistForm.get("artist").value.knownAs || this.artistForm.get("artist").value.bandName) {
+    if (
+      this.artistForm.get("artist").value.firstName ||
+      this.artistForm.get("artist").value.lastName ||
+      this.artistForm.get("artist").value.knownAs ||
+      this.artistForm.get("artist").value.bandName
+    ) {
       return true;
     }
     return false;
@@ -114,9 +135,9 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.artistForm = this.formBuilder.group({
-      artist: []
+      artist: [],
     });
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.eventId = params["id"];
       this.showForm.value.id = this.eventId;
       this.notFound = true;
@@ -124,12 +145,12 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     });
     this.getShowsOfEvent(this.eventId);
     this.role = this.authService.getUserRole();
-    this.showForm.get('location').valueChanges.subscribe(val => {
+    this.showForm.get("location").valueChanges.subscribe((val) => {
       if (val && val.locationId) {
         this.getSeatingPlansOfLocation(val.locationId);
       }
     });
-    this.showForm.get('seatingPlan').valueChanges.subscribe(val => {
+    this.showForm.get("seatingPlan").valueChanges.subscribe((val) => {
       if (val && val.seatingPlanId) {
         this.getSeatingPlanLayout(val.seatingPlanId);
       }
@@ -144,8 +165,12 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   }
 
   openModal() {
-    if (!this.showForm.valid || !this.sectorForm.valid || !this.sectors || this.gotFromSeatingPlan
-      !== this.showForm.value.seatingPlan.seatingPlanId) {
+    if (
+      !this.showForm.valid ||
+      !this.sectorForm.valid ||
+      !this.sectors ||
+      this.gotFromSeatingPlan !== this.showForm.value.seatingPlan.seatingPlanId
+    ) {
       this.submitted = true;
     } else {
       this.display = "block";
@@ -157,7 +182,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
 
   getDetails(id: number): void {
     this.eventService.eventsIdGet(this.eventId).subscribe({
-      next: data => {
+      next: (data) => {
         console.log("Succesfully got event with id", id);
         this.eventName = data.name;
         this.eventCategory = data.category;
@@ -165,21 +190,21 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         this.eventDescription = data.content;
         this.notFound = false;
       },
-      error: error => {
+      error: (error) => {
         console.log("Error getting event", error);
         if (error.status === 0 || error.status === 500) {
           this.toastr.error(error.message);
         } else {
           this.toastr.warning(error.error);
         }
-      }
+      },
     });
   }
 
   getShowsOfEvent(id: number): void {
     this.showSearch.eventId = id;
     this.showService.showsGet(this.showSearch).subscribe({
-      next: data => {
+      next: (data) => {
         console.log("Succesfully got shows of event with id " + id);
         this.shows = data.shows;
         console.log(data.shows);
@@ -191,14 +216,15 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.toastr.warning(error.error);
         }
-      }
+      },
     });
   }
 
   createShow(): void {
     this.showForm.value.event = this.eventId;
     if (this.showForm.value.date.length !== 25) {
-      this.showForm.value.date = this.showForm.value.date + "T" + this.showForm.value.time + ":00+02:00";
+      this.showForm.value.date =
+        this.showForm.value.date + "T" + this.showForm.value.time + ":00+02:00";
     }
     this.showWithoutId.date = this.showForm.value.date;
     this.showWithoutId.event = this.eventId;
@@ -214,10 +240,10 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
       this.showWithoutId.artists.push(artist.artistId);
     }
     console.log("POST http://localhost:8080/shows " + JSON.stringify(this.showWithoutId));
-    this.showService.showsPost(this.showWithoutId, 'response').subscribe({
-      next: data => {
+    this.showService.showsPost(this.showWithoutId, "response").subscribe({
+      next: (data) => {
         console.log("Succesfully created show");
-        console.log(data.headers.get('Location'));
+        console.log(data.headers.get("Location"));
         this.getShowsOfEvent(this.eventId);
         this.clearForm();
         this.submitted = false;
@@ -230,15 +256,15 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         } else {
           this.toastr.warning(error.error);
         }
-      }
+      },
     });
   }
 
   secondsToHms(d): string {
     d = Number(d * 60);
     const h = Math.floor(d / 3600);
-    const m = Math.floor(d % 3600 / 60);
-    const s = Math.floor(d % 3600 % 60);
+    const m = Math.floor((d % 3600) / 60);
+    const s = Math.floor((d % 3600) % 60);
     const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
     const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
     const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
@@ -253,7 +279,9 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   createGroup() {
     const group = this.formBuilder.group({});
     let i = 0;
-    this.sectors.forEach(control => group.addControl("sector" + i++, this.formBuilder.control('', Validators.required)));
+    this.sectors.forEach((control) =>
+      group.addControl("sector" + i++, this.formBuilder.control("", Validators.required))
+    );
     return group;
   }
 
@@ -276,7 +304,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
           } else {
             this.toastr.warning(error.error);
           }
-        }
+        },
       });
   }
 
@@ -285,29 +313,31 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
       return;
     }
     this.locationsService.locationsIdSeatingPlansGet(id).subscribe({
-      next: data => {
+      next: (data) => {
         console.log("Succesfully got seating plans of location with id", id);
         this.seatingPlans = data;
       },
-      error: error => {
+      error: (error) => {
         console.log("Error getting seating plans of location with id", id);
         if (error.status === 0 || error.status === 500) {
           this.toastr.error(error.message);
         } else {
           this.toastr.warning(error.error);
         }
-      }
+      },
     });
   }
 
-  locationSearch = (text$: Observable<string>) => text$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap((search: string) => this.locationsService.locationsGet(this.getLocationSearch(search)).pipe(
-      map(locationResult => locationResult.locations)
-    )
-    )
-  );
+  locationSearch = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((search: string) =>
+        this.locationsService
+          .locationsGet(this.getLocationSearch(search))
+          .pipe(map((locationResult) => locationResult.locations))
+      )
+    );
 
   getLocationSearch(search: string) {
     this.locationSearchDto.name = search;
@@ -318,21 +348,33 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     return location.name;
   }
 
-  artistSearch = (text$: Observable<string>) => text$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap((search: string) => this.artistsService.artistsGet(search).pipe(
-      map(artistResult => artistResult.artists)
-    )
-    )
-  );
+  artistSearch = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((search: string) =>
+        this.artistsService.artistsGet(search).pipe(map((artistResult) => artistResult.artists))
+      )
+    );
 
-  artistResultFormatter(artist: any) {
-    return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
+  artistResultFormatter(artist: Artist) {
+    let formatted = "";
+    formatted += artist.bandName ? artist.bandName + " " : "";
+    formatted += artist.firstName ? artist.firstName + " " : "";
+    formatted += artist.knownAs ? '"' + artist.knownAs + '" ' : "";
+    formatted += artist.lastName ? artist.lastName : "";
+
+    return formatted;
   }
 
-  artistInputFormatter(artist: any) {
-    return (artist.firstName + " '" + artist.knownAs + "' " + artist.lastName);
+  artistInputFormatter(artist: Artist) {
+    let formatted = "";
+    formatted += artist.bandName ? artist.bandName + " " : "";
+    formatted += artist.firstName ? artist.firstName + " " : "";
+    formatted += artist.knownAs ? '"' + artist.knownAs + '" ' : "";
+    formatted += artist.lastName ? artist.lastName : "";
+
+    return formatted;
   }
 
   addArtist() {
