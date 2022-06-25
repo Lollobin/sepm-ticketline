@@ -207,7 +207,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     if (!this.responseTickets) {
       this.router.navigate(["/", "orders"]);
     }
-    if (this.responseTickets.purchased && this.responseTickets.purchased.length != 0) {
+    if (this.responseTickets.purchased && this.responseTickets.purchased.length !== 0) {
       this.ticketsService
         .ticketPrintsGet(this.responseTickets.purchased.map((ticket) => ticket.ticketId))
         .subscribe({
@@ -219,7 +219,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           },
         });
     }
-    if (this.responseTickets.reserved && this.responseTickets.reserved.length != 0) {
+    if (this.responseTickets.reserved && this.responseTickets.reserved.length !== 0) {
       this.ticketsService
         .ticketPrintsGet(this.responseTickets.reserved.map((ticket) => ticket.ticketId))
         .subscribe({
