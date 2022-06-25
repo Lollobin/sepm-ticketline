@@ -196,7 +196,7 @@ public class CustomUserDetailService implements UserService {
     public Page<ApplicationUser> findAll(Boolean filterLocked, Pageable pageable) {
         LOGGER.debug("Find all users based on filterLocked. Set to: {}", filterLocked);
         if (filterLocked == null) {
-            return userRepository.findAll(pageable);
+            return userRepository.findAllByDeletedIsFalse(pageable);
         }
         boolean isLocked = filterLocked;
 
