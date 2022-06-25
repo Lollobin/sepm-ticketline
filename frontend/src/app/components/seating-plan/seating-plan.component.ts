@@ -51,6 +51,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
   show: Show;
+  showId: number;
   event: Event = {
     eventId: 0,
     name: "",
@@ -65,15 +66,15 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   responseTickets: FullTicketWithStatus;
 
   constructor(
-    private showsService: ShowsService,
-    private artistsService: ArtistsService,
-    private eventsService: EventsService,
-    private seatingPlansService: SeatingPlansService,
-    private ticketsService: TicketsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private toastr: ToastrService,
-    public authService: CustomAuthService
+      private showsService: ShowsService,
+      private artistsService: ArtistsService,
+      private eventsService: EventsService,
+      private seatingPlansService: SeatingPlansService,
+      private ticketsService: TicketsService,
+      private route: ActivatedRoute,
+      public router: Router,
+      private toastr: ToastrService,
+      public authService: CustomAuthService
   ) {
   }
 
@@ -86,6 +87,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           return;
         }
         const showId = +params.get("showId");
+        this.showId = showId;
         this.showsService.showsIdGet(showId).subscribe({
           next: (show) => {
             this.show = show;
