@@ -94,7 +94,7 @@ public class SeatDataGenerator {
         File file = files[faker.number().numberBetween(0, files.length)];
         SeatingPlanLayout seatingPlanLayout = saveSeatingPlan(FileUtil.readAsByteArray(file));
         SeatingPlanLayoutDto seatingPlanLayoutDto = parseSeatingPlan(file);
-        SeatingPlan seatingPlan = generateSeatingPlan(faker.starTrek().location(), location,
+        SeatingPlan seatingPlan = generateSeatingPlan(location,
             seatingPlanLayout);
         seatingPlanRepository.save(seatingPlan);
         List<Sector> sectorList = new ArrayList<>();
@@ -139,10 +139,17 @@ public class SeatDataGenerator {
         seatingPlanLayoutRepository.save(seatingPlanLayout);
     }
 
-    private SeatingPlan generateSeatingPlan(String name, Location location,
+    private SeatingPlan generateSeatingPlan(Location location,
         SeatingPlanLayout seatingPlanLayout) {
         SeatingPlan seatingPlan = new SeatingPlan();
-        seatingPlan.setName(name);
+        double rand = faker.number().randomDouble(2, 0, 1);
+        if (rand < 0.33) {
+            seatingPlan.setName("Hall " + faker.zelda().character());
+        } else if (rand > 0.66) {
+            seatingPlan.setName("Room " + faker.number().randomNumber(3, false));
+        } else {
+            seatingPlan.setName(faker.space().constellation());
+        }
         seatingPlan.setLocation(location);
         seatingPlan.setSeatingPlanLayout(seatingPlanLayout);
         return seatingPlan;
