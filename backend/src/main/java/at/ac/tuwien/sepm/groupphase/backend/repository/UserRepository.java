@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
 
+    Page<ApplicationUser> findAllByDeletedIsFalse(Pageable pageable);
 
     /**
      * Fetches a user with the given email.
@@ -42,7 +43,8 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
      * @param lockedAccount if true then only locked users will be returned and vice versa
      * @return Page of ApplicationsUsers based on lockedAccount
      */
-    Page<ApplicationUser> findByLockedAccountEqualsAndDeletedIsFalse(boolean lockedAccount, Pageable pageable);
+    Page<ApplicationUser> findByLockedAccountEqualsAndDeletedIsFalse(boolean lockedAccount,
+        Pageable pageable);
 
     /**
      * checks if there exists a user with the given email.

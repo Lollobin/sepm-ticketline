@@ -72,7 +72,7 @@ public class UserGenerator {
 
     private ApplicationUser generateApplicationUser(int counter) {
         ApplicationUser user = new ApplicationUser();
-        user.setEmail(faker.internet().emailAddress(faker.zelda().character().split(" ")[0] + counter));
+        user.setEmail((faker.internet().emailAddress(faker.zelda().character().split(" ")[0] + counter)).toLowerCase());
         user.setFirstName(faker.name().firstName());
         user.setLastName(faker.name().lastName());
         user.setGender(faker.options().option(Gender.class));

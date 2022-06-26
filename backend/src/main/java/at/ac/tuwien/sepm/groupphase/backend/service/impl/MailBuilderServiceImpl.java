@@ -12,7 +12,15 @@ import org.springframework.stereotype.Service;
 public class MailBuilderServiceImpl implements MailBuilderService {
 
     private static final String SUBJECT_RESET_PASSWORD_MAIL = "Ticketline 4.0: Reset Password";
-    private static final String CONTENT_RESET_PASSWORD_MAIL = "A password reset was requested for your account on ticketline, please click this link to reset your password: ";
+    private static final String CONTENT_RESET_PASSWORD_MAIL =
+        "A password reset was requested for your account on ticketline, "
+            + "please click this link to reset your password: ";
+    private static final String CONTENT_ACCOUNT_LOCKED_MAIL =
+        "A password reset was requested for your account on ticketline, "
+            + "unfortunately it seems your account has been locked. \n "
+            + "To unlock it please contact an administrator,"
+            + " who will then send you a password reset mail again";
+
     private static final String MAIL_FROM = "ticketline.2022@gmail.com";
 
 
@@ -28,6 +36,17 @@ public class MailBuilderServiceImpl implements MailBuilderService {
         message.setTo(recipientMail);
         message.setSubject(SUBJECT_RESET_PASSWORD_MAIL);
         message.setText(CONTENT_RESET_PASSWORD_MAIL + resetUri);
+        message.setFrom(MAIL_FROM);
+        return message;
+    }
+
+    @Override
+    public SimpleMailMessage buildAccountLockedMail(String email) {
+        LOGGER.debug("Build account locked mail for {}", email);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(SUBJECT_RESET_PASSWORD_MAIL);
+        message.setText(CONTENT_ACCOUNT_LOCKED_MAIL);
         message.setFrom(MAIL_FROM);
         return message;
     }

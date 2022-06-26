@@ -6,7 +6,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.interfaces;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SeatingPlanLayoutDto;
-import java.net.URI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -72,40 +71,6 @@ public interface SeatingPlanLayoutsApi {
                 }
             }
         });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    /**
-     * POST /seatingPlanLayouts : Uploads a seating plan layout.
-     *
-     * @param body  (required)
-     * @return Successful upload of a seating plan layout. (status code 201)
-     *         or Validation failed for an input (status code 422)
-     *         or Internal Server Error (status code 500)
-     */
-    @Operation(
-        operationId = "seatingPlanLayoutsPost",
-        summary = "Uploads a seating plan layout.",
-        tags = { "seatingPlans" },
-        responses = {
-            @ApiResponse(responseCode = "201", description = "Successful upload of a seating plan layout."),
-            @ApiResponse(responseCode = "422", description = "Validation failed for an input"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
-        },
-        security = {
-            @SecurityRequirement(name = "BearerAuth")
-        }
-    )
-    @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/seatingPlanLayouts",
-        consumes = { "application/json" }
-    )
-    default ResponseEntity<Void> seatingPlanLayoutsPost(
-        @Parameter(name = "body", description = "", required = true, schema = @Schema(description = "")) @Valid @RequestBody org.springframework.core.io.Resource body
-    ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

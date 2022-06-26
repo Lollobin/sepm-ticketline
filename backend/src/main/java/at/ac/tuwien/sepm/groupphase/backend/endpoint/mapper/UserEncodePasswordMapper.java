@@ -29,7 +29,7 @@ public class UserEncodePasswordMapper {
         applicationUser.setGender(genderMapper.genderDtoToGender(userWithPasswordDto.getGender()));
         applicationUser.setFirstName(userWithPasswordDto.getFirstName());
         applicationUser.setLastName(userWithPasswordDto.getLastName());
-        applicationUser.setEmail(userWithPasswordDto.getEmail());
+        applicationUser.setEmail((userWithPasswordDto.getEmail()).toLowerCase());
         applicationUser.setAddress(
             addressMapper.addressDtoToAddress(userWithPasswordDto.getAddress()));
         return applicationUser;

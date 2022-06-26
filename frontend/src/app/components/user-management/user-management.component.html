@@ -17,7 +17,7 @@
       </thead>
       <tbody>
         <tr style="cursor: pointer" (click)="getDetail(user)" *ngFor="let user of users" class="bottom-line"
-          [class.alert-primary]="user===userDetail">
+          [class.alert-primary]="user.userId===userDetail?.userId">
           <td class="left col-5">{{user.email}}</td>
           <td class="mid col-5">{{user.firstName}} {{user.lastName}}</td>
         </tr>

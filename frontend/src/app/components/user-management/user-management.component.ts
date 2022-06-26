@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import { ToastrService } from "ngx-toastr";
@@ -9,7 +9,7 @@ import { ToastrService } from "ngx-toastr";
   styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-
+  firstLoad = false;
   userDetail;
 
   filterLocked = null;
@@ -33,7 +33,9 @@ export class UserManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.firstLoad = true;
     this.reloadUser(null);
+
   }
 
   reloadUser(filterLocked: boolean) {
@@ -43,6 +45,11 @@ export class UserManagementComponent implements OnInit {
 
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
+        if (this.firstLoad) {
+          this.getDetail(this.users[0]);
+          this.firstLoad = false;
+        }
+
         if (!this.numberOfElems) {
           if (this.filterLocked) {
             this.toastr.info("There are no locked users!");
@@ -85,6 +92,5 @@ export class UserManagementComponent implements OnInit {
   public vanishSuccess(): void {
     this.success = null;
   }
-
 
 }
