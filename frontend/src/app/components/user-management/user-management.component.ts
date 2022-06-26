@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 
@@ -8,7 +8,7 @@ import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-
   styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-
+  firstLoad = false;
   userDetail;
 
   filterLocked = null;
@@ -33,6 +33,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.firstLoad = true;
     this.reloadUser(null);
 
   }
@@ -44,7 +45,10 @@ export class UserManagementComponent implements OnInit {
 
         this.numberOfElems = data.numberOfResults;
         this.users = data.users;
-        this.getDetail(this.users[0]);
+        if (this.firstLoad) {
+          this.getDetail(this.users[0]);
+          this.firstLoad = false;
+        }
 
       },
       error: err => {
@@ -89,7 +93,6 @@ export class UserManagementComponent implements OnInit {
   private showErrorFetch(msg: string) {
     this.errorFetch = msg;
   }
-
 
 
 }
