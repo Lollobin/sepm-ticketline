@@ -202,6 +202,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlan.general.width;
     this.pixiApplication.view.height = this.seatingPlan.general.height;
+    this.pixiApplication.renderer.resize(this.pixiApplication.view.width, this.pixiApplication.view.height)
     document.addEventListener("mousemove", (event) => {
       this.infoOverlay.nativeElement.style.left = event.x + 20 + "px";
       this.infoOverlay.nativeElement.style.top = event.y + "px";
