@@ -400,7 +400,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     this.pixiApplication.stage.removeChildren();
     this.pixiApplication.view.width = this.seatingPlanLayout.general.width;
     this.pixiApplication.view.height = this.seatingPlanLayout.general.height;
-    this.pixiApplication.renderer.resize(this.pixiApplication.view.width, this.pixiApplication.view.height)
+    this.pixiApplication.renderer.resize(this.pixiApplication.view.width, this.pixiApplication.view.height);
     document.addEventListener("mousemove", (event) => event);
     this.pixiContainer.nativeElement.appendChild(this.pixiApplication.view);
     drawSeatingPlanPreview(this.pixiApplication.stage, this.seatingPlanLayout);
