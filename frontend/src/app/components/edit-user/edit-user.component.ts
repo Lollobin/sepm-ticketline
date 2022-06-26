@@ -112,7 +112,7 @@ export class EditUserComponent implements OnInit {
       next: (_next) => {
         console.log("Succesfully updated user information");
         this.reloadToken();
-        this.toastr.success("Succesfully edited account!");
+        this.toastr.success("Successfully edited account!");
       },
       error: (error) => {
         console.log(error);
@@ -131,7 +131,7 @@ export class EditUserComponent implements OnInit {
       next: (_next) => {
         console.log("Succesfully deleted user");
         this.authService.logoutUser();
-        this.toastr.success("Succesfully deleted account!");
+        this.toastr.success("Successfully deleted account!");
         this.router.navigateByUrl("/");
       },
       error: (error) => {
@@ -243,7 +243,7 @@ export class EditUserComponent implements OnInit {
         {
           next: (response) => {
             console.log(response);
-            this.toastr.success("Succesfully sent password reset mail!");
+            this.toastr.success("Successfully sent password reset mail!");
             this.authService.logoutUser();
             this.router.navigateByUrl("/");
           },

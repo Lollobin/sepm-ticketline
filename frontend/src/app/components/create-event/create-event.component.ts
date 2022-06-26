@@ -88,7 +88,7 @@ export class CreateEventComponent implements OnInit {
         console.log(location);
         const id = location.split("/").pop();
         this.router.navigateByUrl("/events/" + id + "/shows/create");
-        this.toastr.success("Succesfully created event!");
+        this.toastr.success("Successfully created event!");
       },
       error: error => {
         console.log(error);

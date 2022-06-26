@@ -43,7 +43,7 @@ export class CreateLocationComponent implements OnInit {
           const header = res.headers.get('Location');
           const id = header.split("/").pop();
           this.router.navigateByUrl("/locations/" + id);
-          this.toastr.success("Succesfully created location!");
+          this.toastr.success("Successfully created location!");
         },
         error: (error) => {
           console.log(error);

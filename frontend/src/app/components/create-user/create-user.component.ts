@@ -112,7 +112,7 @@ export class CreateUserComponent implements OnInit {
         this.registrationForm.markAsUntouched();
         this.submitted = false;
         this.createdAccount = "User";
-        this.toastr.success("Succesfully created User \"" + this.successUser + "\"!");
+        this.toastr.success("Successfully created User \"" + this.successUser + "\"!");
       },
       error: (error) => {
         console.log(error);
@@ -136,7 +136,7 @@ export class CreateUserComponent implements OnInit {
         this.registrationForm.markAsUntouched();
         this.submitted = false;
         this.createdAccount = "Admin";
-        this.toastr.success("Succesfully created Admin \"" + this.successUser + "\"!");
+        this.toastr.success("Successfully created Admin \"" + this.successUser + "\"!");
       },
       error: (error) => {
         console.log(error);
@@ -177,7 +177,7 @@ export class CreateUserComponent implements OnInit {
         {
           next: (response) => {
             console.log("succesfully reset password for created account");
-            this.toastr.info("Succesfully reset password of " + this.createdAccount + " \"" + this.successUser + "\"!");
+            this.toastr.info("Successfully reset password of " + this.createdAccount + " \"" + this.successUser + "\"!");
           },
           error: (error) => {
             console.log(error);

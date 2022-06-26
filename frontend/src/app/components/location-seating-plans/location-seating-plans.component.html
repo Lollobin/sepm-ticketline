@@ -1,13 +1,14 @@
 <div>
   <h1 *ngIf="location">{{ location.name }}</h1>
   <p *ngIf="location">
-    in {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
-    {{ location.address.houseNumber }}
+    in <strong> {{ location.address.zipCode }} {{ location.address.city }}, {{ location.address.street }}
+    {{ location.address.houseNumber }}</strong>
   </p>
   <div class="row">
-    <div *ngIf="seatingPlans && seatingPlans.length > 0" class="col col-6">
+    <div class="col col-6">
+      <div *ngIf="seatingPlans && seatingPlans.length > 0">
       <h3>Seating plans</h3>
-      <table class="table table-striped">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -20,10 +21,13 @@
           </tr>
         </tbody>
       </table>
+      </div>
+      <div>
       <button class="btn btn-primary" routerLink="/locations/{{ locationId }}/seatingPlans/create">
         <fa-icon [icon]="plus"></fa-icon>
         Add seating plan
       </button>
+      </div>
     </div>
     <div class="col col-6" *ngIf="this.selectedSeatingPlan">
       <h5>
