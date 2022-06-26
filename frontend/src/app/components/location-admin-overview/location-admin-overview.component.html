@@ -1,7 +1,10 @@
 <div class="d-flex mb-3 align-items-center">
   <h1>Manage Locations</h1>
   <div class="ms-auto">
-    <button class="btn btn-primary" routerLink="/locations/create">Add location</button>
+    <button class="btn btn-primary px-4" routerLink="/locations/create">
+      <fa-icon [icon]="plus"></fa-icon>
+      Add location
+    </button>
 
   </div>
 </div>
@@ -36,4 +39,3 @@
 
 </div>
 
-<app-error-alert [(error)]="error"></app-error-alert>

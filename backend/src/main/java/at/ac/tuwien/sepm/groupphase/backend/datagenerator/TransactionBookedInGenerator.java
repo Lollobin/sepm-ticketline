@@ -104,7 +104,8 @@ public class TransactionBookedInGenerator {
                 }
 
                 for (int j = 0; j < numberOfTicketsToBuy; j++) {
-                    Ticket randomTicket = showTickets.get(0);
+                    int randomNumber = (int) Math.floor(Math.random() * showTickets.size());
+                    Ticket randomTicket = showTickets.get(randomNumber);
 
                     if (bookingType == BookingType.PURCHASE) {
                         randomTicket.setPurchasedBy(user);
@@ -112,7 +113,7 @@ public class TransactionBookedInGenerator {
                         randomTicket.setReservedBy(user);
                     }
                     tickets.add(randomTicket);
-                    showTickets.remove(0);
+                    showTickets.remove(randomNumber);
                     BookedIn bookedIn = generateBookedIn(transaction, randomTicket, bookingType);
                     bookedIns.add(bookedIn);
                 }

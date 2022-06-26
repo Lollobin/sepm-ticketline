@@ -59,7 +59,7 @@
     <tbody>
     <tr
         *ngFor="let location of locations " (click)="loadShowsOfLocation(location,1)"
-        style="cursor: pointer">
+        style="cursor: pointer" [class.table-primary]="location===clickedLocation">
 
       <td>{{location.name}}</td>
       <td>{{location.address.city}}</td>

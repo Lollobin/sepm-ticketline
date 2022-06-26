@@ -6,6 +6,7 @@ import {
   ArtistsService,
   Event,
   EventsService,
+  FullTicketWithStatus,
   SeatingPlanLayout,
   SeatingPlansService,
   SeatWithBookingStatus,
@@ -19,6 +20,7 @@ import {applyShowInformation} from "./seatingPlanEvents";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {faCircleInfo} from "@fortawesome/free-solid-svg-icons";
+import {ToastrService} from "ngx-toastr";
 
 interface SeatBookingInformation {
   color: number;
@@ -49,6 +51,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   sectorPriceMap: { [sectorId: number]: number } = {};
   totalPrice = 0;
   show: Show;
+  showId: number;
   event: Event = {
     eventId: 0,
     name: "",
@@ -59,20 +62,24 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   error = undefined;
   artists: Artist[] = [];
   info = faCircleInfo;
+  purchaseFinished = false;
+  responseTickets: FullTicketWithStatus;
 
   constructor(
-    private showsService: ShowsService,
-    private artistsService: ArtistsService,
-    private eventsService: EventsService,
-    private seatingPlansService: SeatingPlansService,
-    private ticketsService: TicketsService,
-    private route: ActivatedRoute,
-    private router: Router,
-    public authService: CustomAuthService
+      private showsService: ShowsService,
+      private artistsService: ArtistsService,
+      private eventsService: EventsService,
+      private seatingPlansService: SeatingPlansService,
+      private ticketsService: TicketsService,
+      private route: ActivatedRoute,
+      public router: Router,
+      private toastr: ToastrService,
+      public authService: CustomAuthService
   ) {
   }
 
   async ngOnInit() {
+    this.purchaseFinished = false;
     this.route.paramMap.subscribe({
       next: (params) => {
         if (isNaN(+params.get("showId"))) {
@@ -80,6 +87,7 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
           return;
         }
         const showId = +params.get("showId");
+        this.showId = showId;
         this.showsService.showsIdGet(showId).subscribe({
           next: (show) => {
             this.show = show;
@@ -87,10 +95,24 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.retreiveEvent(show);
             this.retreiveSeatingPlan(show);
           },
-          error: (error) => this.setError(error),
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -106,7 +128,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       next: (event) => {
         this.event = event;
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -117,7 +146,14 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
         next: (artist) => {
           this.artists.push(artist);
         },
-        error: (error) => this.setError(error),
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     }
   }
@@ -137,10 +173,24 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
             this.calculateSectorBookingInformation();
             this.initializeSeatingPlan();
           },
-          error: (error) => this.setError(error),
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         });
       },
-      error: (error) => this.setError(error),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 
@@ -181,7 +231,6 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
   }
 
   confirmPurchase() {
-    //TODO: Add redirect to bill
     this.ticketsService
     .ticketsPost({
       reserved: [],
@@ -189,17 +238,67 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     })
     .subscribe({
       next: (response) => {
-        console.log(response);
-        this.router.navigate(["/", "orders"]);
+        this.purchaseFinished = true;
+        this.responseTickets = response;
       },
       error: (error) => {
-        this.setError(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
     });
   }
 
+  goToOrders() {
+    this.router.navigate(["/", "orders"]);
+  }
+
+  printTickets() {
+    if (!this.responseTickets) {
+      this.router.navigate(["/", "orders"]);
+    }
+    if (this.responseTickets.purchased && this.responseTickets.purchased.length !== 0) {
+      this.ticketsService
+      .ticketPrintsGet(this.responseTickets.purchased.map((ticket) => ticket.ticketId))
+      .subscribe({
+        next: (blob) => {
+          window.open(URL.createObjectURL(blob));
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+          this.router.navigate(["/", "orders"]);
+        },
+      });
+    }
+    if (this.responseTickets.reserved && this.responseTickets.reserved.length !== 0) {
+      this.ticketsService
+      .ticketPrintsGet(this.responseTickets.reserved.map((ticket) => ticket.ticketId))
+      .subscribe({
+        next: (blob) => {
+          window.open(URL.createObjectURL(blob));
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+          this.router.navigate(["/", "orders"]);
+        },
+      });
+    }
+  }
+
   confirmReservation() {
-    //TODO: Add redirect to "reservation"-bill
     this.ticketsService
     .ticketsPost({
       reserved: map(this.chosenSeats, (seat) => seat.ticketId),
@@ -207,8 +306,16 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
     })
     .subscribe({
       next: (response) => {
-        console.log(response);
-        this.router.navigate(["/", "orders"]);
+        this.purchaseFinished = true;
+        this.responseTickets = response;
+      },
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
     });
   }
@@ -240,6 +347,17 @@ export class SeatingPlanComponent implements OnInit, AfterViewInit {
       ) / 100;
     const ticketCount = sectorSeats.length;
     return {totalPrice, singlePrice: this.sectorPriceMap[sectorId], ticketCount};
+  }
+
+  secondsToHms(d): string {
+    d = Number(d * 60);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+    const hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") + (m > 0 || s > 0 ? ", " : "") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
   }
 
   private seatHover(seatId: number) {

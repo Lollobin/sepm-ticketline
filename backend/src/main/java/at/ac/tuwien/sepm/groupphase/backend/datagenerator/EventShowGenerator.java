@@ -70,7 +70,8 @@ public class EventShowGenerator {
                 if (random < 0.3) {
                     int numberOfAdditionalArtists = faker.number().numberBetween(1, 3);
                     for (int k = 0; k < numberOfAdditionalArtists; k++) {
-                        Artist additionalArtist = allArtists.get(faker.number().numberBetween(1, allArtists.size()));
+                        Artist additionalArtist = allArtists.get(
+                            faker.number().numberBetween(1, allArtists.size()));
                         artists.put(additionalArtist.getArtistId(), additionalArtist);
                     }
                 }
@@ -86,10 +87,19 @@ public class EventShowGenerator {
 
     private Event generateEvent() {
         Event event = new Event();
-        event.setName(faker.harryPotter().location());
-        event.setDuration(faker.number().numberBetween(5, 50) * 10L);
+        double rand = faker.number().randomDouble(2, 0, 1);
+
+        if (rand < 0.33) {
+            event.setName(faker.harryPotter().location() + ": " + faker.esports().event());
+
+        } else if (rand > 0.66) {
+            event.setName(faker.starTrek().location() + " - " + faker.book().title());
+        } else {
+            event.setName(faker.witcher().location() + " - " + faker.starTrek().specie());
+        }
+        event.setDuration(faker.number().numberBetween(1, 70) * 5L);
         event.setCategory(faker.options().option(Category.class));
-        event.setContent(faker.lorem().paragraph(3));
+        event.setContent(faker.lorem().paragraph(6));
         return event;
     }
 

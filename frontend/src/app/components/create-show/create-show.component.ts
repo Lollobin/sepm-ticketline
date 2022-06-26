@@ -23,6 +23,7 @@ import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from "
 import { Application } from "pixi.js";
 import { drawSeatingPlanPreview } from "src/app/shared_modules/seatingPlanGraphics";
 import { dateTimeValidator } from "./date-time-validator";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: "app-create-show",
@@ -51,10 +52,8 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     ignore: ["", [Validators.required]],
   });
   sectorPrice: SectorPrice = { price: 0, sectorId: 0 };
-  error = false;
   notFound = true;
-  errorMessage = "";
-  role = "";
+  role = '';
   faCircleQuestion = faCircleQuestion;
   faUserMinus = faUserMinus;
   sectorString = "sector";
@@ -71,8 +70,7 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   seatingPlanLayout: SeatingPlanLayout;
   pixiApplication: Application;
 
-  constructor(
-    private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
     private showService: ShowsService,
     private eventService: EventsService,
     private route: ActivatedRoute,
@@ -80,20 +78,18 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     private seatingPlansService: SeatingPlansService,
     private locationsService: LocationsService,
     private artistsService: ArtistsService,
-    private router: Router
-  ) {
-    this.showForm = this.formBuilder.group(
-      {
-        date: ["", [Validators.required]],
-        time: ["", [Validators.required]],
-        event: [],
-        location: ["", [Validators.required]],
-        seatingPlan: ["", [Validators.required]],
-        sectorPrices: [],
-      },
-      {
-        validators: dateTimeValidator,
-      }
+    private router: Router,
+    private toastr: ToastrService) {
+    this.showForm = this.formBuilder.group({
+      date: ['', [Validators.required]],
+      time: ['', [Validators.required]],
+      event: [],
+      location: ['', [Validators.required]],
+      seatingPlan: ['', [Validators.required]],
+      sectorPrices: [],
+    }, {
+      validators: dateTimeValidator,
+    }
     );
   }
 
@@ -192,16 +188,14 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         this.eventCategory = data.category;
         this.eventDuration = data.duration;
         this.eventDescription = data.content;
-        this.error = false;
         this.notFound = false;
       },
       error: (error) => {
-        console.error("Error fetching event", error.message);
-        this.error = true;
-        if (typeof error.error === "object") {
-          this.errorMessage = error.error.error;
+        console.log("Error getting event", error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       },
     });
@@ -212,17 +206,15 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     this.showService.showsGet(this.showSearch).subscribe({
       next: (data) => {
         console.log("Succesfully got shows of event with id " + id);
-        this.error = false;
         this.shows = data.shows;
         console.log(data.shows);
       },
-      error: (error) => {
-        console.error("Error getting shows", error.message);
-        this.error = true;
-        if (typeof error.error === "object") {
-          this.errorMessage = error.error.error;
+      error: error => {
+        console.log("Error getting shows", error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       },
     });
@@ -253,17 +245,16 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
         console.log("Succesfully created show");
         console.log(data.headers.get("Location"));
         this.getShowsOfEvent(this.eventId);
-        this.error = false;
         this.clearForm();
         this.submitted = false;
+        this.toastr.success("Succesfully added show!");
       },
-      error: (error) => {
-        console.log("Error creating event", error.message);
-        this.error = true;
-        if (typeof error.error === "object") {
-          this.errorMessage = error.error.error;
+      error: error => {
+        console.log("Error creating event", error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       },
     });
@@ -278,10 +269,6 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
     const mDisplay = m > 0 ? m + (m === 1 ? " minute" : " minutes") + (s > 0 ? ", " : "") : "";
     const sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds") : "";
     return hDisplay + mDisplay + sDisplay;
-  }
-
-  vanishError() {
-    this.error = false;
   }
 
   clearForm() {
@@ -299,26 +286,26 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
   }
 
   getSeatingPlanLayout(id: number) {
-    this.seatingPlansService.seatingPlanLayoutsIdGet(id).subscribe({
-      next: async (seatingPlanLayout) => {
-        this.seatingPlanLayout = seatingPlanLayout;
-        this.sectors = seatingPlanLayout.sectors;
-        this.sectorForm = this.createGroup();
-        this.error = false;
-        this.gotFromSeatingPlan = id;
-        this.showWithoutId.sectorPrices = [];
-        this.initializeSeatingPlan();
-      },
-      error: (error) => {
-        console.log("Error getting sectors of seatingPlanLayout with id", id);
-        this.error = true;
-        if (typeof error.error === "object") {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
-      },
-    });
+    this.seatingPlansService
+      .seatingPlanLayoutsIdGet(id)
+      .subscribe({
+        next: async (seatingPlanLayout) => {
+          this.seatingPlanLayout = seatingPlanLayout;
+          this.sectors = seatingPlanLayout.sectors;
+          this.sectorForm = this.createGroup();
+          this.gotFromSeatingPlan = id;
+          this.showWithoutId.sectorPrices = [];
+          this.initializeSeatingPlan();
+        },
+        error: error => {
+          console.log("Error getting sectors of seatingPlanLayout with id", id);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        },
+      });
   }
 
   getSeatingPlansOfLocation(id: number) {
@@ -329,15 +316,13 @@ export class CreateShowComponent implements OnInit, AfterViewInit {
       next: (data) => {
         console.log("Succesfully got seating plans of location with id", id);
         this.seatingPlans = data;
-        this.error = false;
       },
       error: (error) => {
         console.log("Error getting seating plans of location with id", id);
-        this.error = true;
-        if (typeof error.error === "object") {
-          this.errorMessage = error.error.error;
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       },
     });

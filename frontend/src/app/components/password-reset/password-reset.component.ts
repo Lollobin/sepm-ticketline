@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 import {PasswordReset, UserManagementService} from "../../generated-sources/openapi";
 
 @Component({
@@ -10,12 +11,11 @@ import {PasswordReset, UserManagementService} from "../../generated-sources/open
 export class PasswordResetComponent implements OnInit {
 
   clientUrl = 'http://' + window.location.host + '#/passwordUpdate';
-  error;
   successMessage: string;
   email;
   submitted=false;
 
-  constructor(private router: Router, private userManagementService: UserManagementService) {
+  constructor(private router: Router, private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -35,15 +35,19 @@ export class PasswordResetComponent implements OnInit {
             this.submitted=true;
             console.log(response);
             this.successMessage = response;
+            this.toastr.info(this.successMessage);
+            this.router.navigateByUrl("/login");
           },
-          error: (err) => this.error = err
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         }
     );
   }
-  vanishSuccess(){
-    this.successMessage=null;
-  }
-  vanishError(){
-    this.error=null;
-  }
+
 }

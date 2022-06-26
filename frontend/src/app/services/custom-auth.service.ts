@@ -7,6 +7,7 @@ import { AuthService} from "../generated-sources/openapi";
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
 import {Globals} from '../global/globals';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class CustomAuthService {
 
  // private authBaseUri: string = this.globals.backendUri + '/authentication';
 
-  constructor(private httpClient: HttpClient, private globals: Globals, private generatedAuthService: AuthService) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private generatedAuthService: AuthService,
+    private toastr: ToastrService) {
   }
 
   /**
@@ -42,6 +44,7 @@ export class CustomAuthService {
   logoutUser() {
     console.log('Logout');
     localStorage.removeItem('authToken');
+    this.toastr.success("Succesfully logged out!");
   }
 
   getToken() {

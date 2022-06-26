@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {User, UserManagementService, UsersPage} from "../../generated-sources/openapi";
 import {faArrowRight, faLockOpen, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: 'app-user-management',
@@ -15,7 +16,6 @@ export class UserManagementComponent implements OnInit {
   data: UsersPage = null;
   page = 1;
   users: User[];
-  error = "";
   faLockOpen = faLockOpen;
   faArrowRight = faArrowRight;
   faUserPlus = faUserPlus;
@@ -29,7 +29,7 @@ export class UserManagementComponent implements OnInit {
   numberOfElems = 0;
   empty = false;
 
-  constructor(private userManagementService: UserManagementService) {
+  constructor(private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -50,11 +50,22 @@ export class UserManagementComponent implements OnInit {
           this.firstLoad = false;
         }
 
+        if (!this.numberOfElems) {
+          if (this.filterLocked) {
+            this.toastr.info("There are no locked users!");
+          } else {
+            // This should never happen
+            this.toastr.error("There are no users!");
+          }
+        }
       },
-      error: err => {
-        console.log("Error fetching users: ", err);
-        this.showErrorFetch("Not allowed, " + err.message);
-
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -74,10 +85,6 @@ export class UserManagementComponent implements OnInit {
     this.userDetail = user;
   }
 
-  public vanishError(): void {
-    this.error = null;
-  }
-
   public vanishErrorFetch(): void {
     this.errorFetch = null;
   }
@@ -85,14 +92,5 @@ export class UserManagementComponent implements OnInit {
   public vanishSuccess(): void {
     this.success = null;
   }
-
-  private showError(msg: string) {
-    this.error = msg;
-  }
-
-  private showErrorFetch(msg: string) {
-    this.errorFetch = msg;
-  }
-
 
 }

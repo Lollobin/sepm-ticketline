@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 import {Address, UserManagementService, UserWithPassword} from "../../generated-sources/openapi";
 import {passwordMatchValidator} from "./passwords-match-validator";
 
@@ -13,15 +14,13 @@ export class RegistrationComponent {
 
   registrationForm: FormGroup;
   submitted=false;
-
-  error = false;
-  errorMessage = '';
   genders = [{description: "Female", value: "female"}, {
     description: "Male",
     value: "male"
   }, {description: "Other", value: "other"}];
 
-  constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private userManagementService: UserManagementService, private router: Router,
+    private toastr: ToastrService) {
     this.registrationForm = this.formBuilder.group({
           firstName: ['', [Validators.required]],
           lastName: ['', [Validators.required]],
@@ -79,22 +78,18 @@ export class RegistrationComponent {
       next: () => {
         console.log("success!");
         this.router.navigate(['/login']);
+        this.toastr.success("Succesfully registrated user!");
       },
-      error: error => {
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
         } else {
-          this.errorMessage = error.error;
+          this.toastr.warning(error.error);
         }
       }
     });
   }
-
-  vanishError() {
-    this.error = false;
-  }
-
 
   clearForm() {
     this.registrationForm.reset();
