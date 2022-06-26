@@ -95,7 +95,7 @@ export class CreateSeatingPlanComponent implements OnInit {
   }
   finish() {
     const seatingPlanLayout: SeatingPlanLayout = this.seatingPlanEditor.seatingPlan;
-
+    console.log(JSON.stringify(seatingPlanLayout))
     const seatingPlan: SeatingPlanWithoutId = {
       name: this.seatingPlanName,
       locationId: this.location.locationId,
