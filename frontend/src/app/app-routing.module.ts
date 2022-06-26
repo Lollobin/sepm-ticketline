@@ -47,13 +47,11 @@ const routes: Routes = [
   {path: 'events/:id/shows/create', component: CreateShowComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "profile", component: EditUserComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
-  {path: "orders", component: OrderOverviewComponent},
+  {path: "orders", component: OrderOverviewComponent, canActivate: [AuthGuard], data: {role: ["USER", "ADMIN"]}},
   {path:'passwordReset', component: PasswordResetComponent},
   {path:'passwordUpdate', component: PasswordUpdateComponent},
   {path: "news/overview", component: NewsOverviewComponent},
   {path: "news/overview/:id", component: ArticleDetailedViewComponent},
-  {path: 'article/create', component: CreateArticleComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
-  {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path: "users", component: UserManagementComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}},
   {path:'users/create', component: CreateUserComponent, canActivate: [AuthGuard], data: {role: "ADMIN"}}
 ];

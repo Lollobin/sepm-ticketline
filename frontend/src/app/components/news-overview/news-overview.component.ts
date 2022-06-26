@@ -3,6 +3,7 @@ import {Article, ArticlePage, ArticlesService, Sort} from "../../generated-sourc
 import {Router} from "@angular/router";
 import {CustomAuthService} from "../../services/custom-auth.service";
 import {ViewportScroller} from "@angular/common";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-overview',
@@ -13,7 +14,6 @@ export class NewsOverviewComponent implements OnInit {
 
   articles: Article[] = [];
   articleResult: ArticlePage;
-  error: Error;
   empty = false;
   filterRead = null;
   articleImages = {};
@@ -25,7 +25,8 @@ export class NewsOverviewComponent implements OnInit {
 
 
   constructor(public articleService: ArticlesService, private router: Router,
-              public authService: CustomAuthService, private scroll: ViewportScroller) {
+              public authService: CustomAuthService, private scroll: ViewportScroller,
+              private toastr: ToastrService) {
   }
 
 
@@ -55,10 +56,21 @@ export class NewsOverviewComponent implements OnInit {
 
 
         }
-
+        if (this.empty) {
+          if (this.filterRead) {
+            this.toastr.info("You have not read any news!");
+          } else {
+            this.toastr.info("There are no new news!");
+          }
+        }
       },
-      error: error => {
-        this.error = error;
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
   }
@@ -86,7 +98,15 @@ export class NewsOverviewComponent implements OnInit {
     this.articleService.imagesIdGet(id).subscribe({
       next: image => {
         this.createImageFromBlob(image, articleId);
-      },
+      }, 
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
   }
 

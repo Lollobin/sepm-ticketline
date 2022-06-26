@@ -11,6 +11,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn} from "@angular/forms";
 import {forkJoin} from "rxjs";
 import {faFileArrowDown} from "@fortawesome/free-solid-svg-icons";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-order-overview",
@@ -18,7 +19,6 @@ import {faFileArrowDown} from "@fortawesome/free-solid-svg-icons";
   styleUrls: ["./order-overview.component.scss"],
 })
 export class OrderOverviewComponent implements OnInit {
-  error = undefined;
   tickets: TicketWithShowInfo[];
   today = new Date();
   faFileArrowDown = faFileArrowDown;
@@ -26,6 +26,8 @@ export class OrderOverviewComponent implements OnInit {
   orders: OrdersPage;
   currentPage = 1;
   pageSize = 10;
+  loadingTickets = true;
+  loadingOrders = true;
 
   selectedTickets: TicketWithShowInfo;
   ticketSelectionForm: FormGroup;
@@ -33,7 +35,8 @@ export class OrderOverviewComponent implements OnInit {
   constructor(
       private ticketService: TicketsService,
       private modalService: NgbModal,
-      private formBuilder: FormBuilder
+      private formBuilder: FormBuilder,
+      private toastr: ToastrService
   ) {
   }
 
@@ -45,13 +48,23 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ticketInfoGet().subscribe({
       next: (data) => {
         this.tickets = data;
+        this.loadingTickets = false;
+        if (this.tickets.length === 0) {
+          this.toastr.info("You don't have any tickets!");
+        }
       },
       error: (error) => {
-        console.error("Error getting tickets", error.message);
-        this.setError(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+        this.loadingTickets = false;
       },
       complete: () => {
         console.log("Received tickets");
+        this.loadingTickets = false;
       },
     });
     this.reloadOrders();
@@ -61,13 +74,23 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ordersGet(this.pageSize, this.currentPage - 1).subscribe({
       next: (data) => {
         this.orders = data;
+        this.loadingOrders = false;
+        if (!this.orders?.numberOfResults) {
+          this.toastr.info("You haven't made any transactions!");
+        }
       },
       error: (error) => {
-        console.error("Error getting orders", error.message);
-        this.setError(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+        this.loadingOrders = false;
       },
       complete: () => {
         console.log("Received orders");
+        this.loadingOrders = false;
       },
     });
   }
@@ -112,8 +135,18 @@ export class OrderOverviewComponent implements OnInit {
           purchased: [],
         }),
       ]).subscribe({
-        next: (response) => console.log(response),
-        error: (error) => this.setError(error),
+        next: (response) => {
+          console.log(response);
+          this.toastr.success("Succesfully purchased selected & cancelled unselected tickets!");
+        },
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        },
         complete: () => {
           this.modalService.dismissAll();
           this.ngOnInit();
@@ -128,9 +161,15 @@ export class OrderOverviewComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.toastr.success("Succesfully purchased tickets!");
         },
         error: (error) => {
-          this.setError(error);
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
         },
         complete: () => {
           this.modalService.dismissAll();
@@ -166,9 +205,15 @@ export class OrderOverviewComponent implements OnInit {
     this.ticketService.ticketCancellationsPost(ticketStatus).subscribe({
       next: (response) => {
         console.log(response);
+        this.toastr.success("Succesfully cancelled tickets!");
       },
       error: (error) => {
-        this.setError(error);
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       },
       complete: () => {
         this.modalService.dismissAll();
@@ -183,12 +228,15 @@ export class OrderOverviewComponent implements OnInit {
         const fileURL = URL.createObjectURL(blob);
         window.open(fileURL, "_blank");
       },
-      error: (err) => this.setError(err),
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
+      }
     });
-  }
-
-  setError(error: any) {
-    this.error = error;
   }
 
   selectAll() {
@@ -214,10 +262,11 @@ export class OrderOverviewComponent implements OnInit {
       next: (blob) => {
         window.open(URL.createObjectURL(blob));
       },
-      error: () => {
+      error: (error) => {
         fileErrorCount++;
-        this.error = new Error("Failed download of " + fileErrorCount + " files");
-      },
+        error = new Error("Failed download of " + fileErrorCount + " files");
+        this.toastr.warning(error.message);
+      }
     });
   }
 

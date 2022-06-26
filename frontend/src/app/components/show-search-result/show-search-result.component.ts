@@ -6,6 +6,7 @@ import {
   ShowsService
 } from "../../generated-sources/openapi";
 import {ActivatedRoute} from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-show-search-result',
@@ -28,7 +29,7 @@ export class ShowSearchResultComponent implements OnInit {
 
 
   constructor(private showService: ShowsService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute, private toastr: ToastrService) {
 
   }
 
@@ -54,7 +55,14 @@ export class ShowSearchResultComponent implements OnInit {
           this.eventName = this.shows.shows[0]?.event.name;
           this.eventDescription = this.shows.shows[0]?.event.content;
         },
-        error: err => console.log(err.error.error)
+        error: (error) => {
+          console.log(error);
+          if (error.status === 0 || error.status === 500) {
+            this.toastr.error(error.message);
+          } else {
+            this.toastr.warning(error.error);
+          }
+        }
       });
     } else {
       console.log(this.shows);

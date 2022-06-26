@@ -1,4 +1,4 @@
-<h2 *ngIf="artist">
+<h2 *ngIf="artist && this.events?.numberOfResults">
   Events with
   <strong style="color: #4d61ff">
     <span>{{ artist.bandName }} </span>
@@ -11,7 +11,7 @@
     <span>{{ artist.lastName }} </span></strong
   >
 </h2>
-<table class="table table-striped" *ngIf="this.events?.numberOfResults">
+<table class="table table-striped table-hover" *ngIf="this.events?.numberOfResults">
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -28,26 +28,14 @@
       <td>{{ event.category }}</td>
       <td>{{ secondsToHms(event.duration) }}</td>
       <td>
-        <button routerLink="/events/{{ event.eventId }}/shows" class="btn btn-primary">
+        <button routerLink="/events/{{ event.eventId }}/shows" class="btn btn-primary float-end">
           Get shows
         </button>
       </td>
     </tr>
   </tbody>
 </table>
-<div class="container mt-3" *ngIf="!this.events?.numberOfResults && events">
-  <div class="alert alert-warning" role="alert">
-    <h4>There aren't any events fitting this input!</h4>
 
-    <button
-      type="button"
-      class="btn-close"
-      (click)="vanishEmpty()"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-</div>
 <ngb-pagination
   *ngIf="this.events?.numberOfResults"
   [collectionSize]="events?.numberOfResults"

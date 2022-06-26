@@ -4,6 +4,7 @@ import {faLock, faLockOpen, faRotateLeft, faTrashCan} from '@fortawesome/free-so
 import {AdminPasswordReset, UserManagementService} from "../../generated-sources/openapi";
 import {UnlockUserComponent} from "../unlock-user/unlock-user.component";
 import {Location} from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-detail',
@@ -15,7 +16,6 @@ export class UserDetailComponent implements OnInit {
   @Output() reload: EventEmitter<any> = new EventEmitter<any>();
 
 
-  error;
   success;
   faLockOpen = faLockOpen;
   faLockClose = faLock;
@@ -29,7 +29,7 @@ export class UserDetailComponent implements OnInit {
 
 
   constructor(private location: Location, private unlockComponent: UnlockUserComponent,
-              private route: ActivatedRoute, private userManagementService: UserManagementService) {
+              private route: ActivatedRoute, private userManagementService: UserManagementService, private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -41,8 +41,13 @@ export class UserDetailComponent implements OnInit {
         {
           next: user => {
             this.user = user;
-          }, error: err => {
-            this.error = err;
+          }, error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
           }
         }
     );
@@ -62,15 +67,18 @@ export class UserDetailComponent implements OnInit {
         this.lockStatus = status;
         this.mail = mail;
         this.success = true;
-        this.error = null;
 
+        this.toastr.success("Succesfully " + status + " account \"" + this.mail + "\"!");
         this.reload.emit( null);
         this.refreshPage();
       },
-      error: err => {
-        this.success = false;
-        this.handleError(err);
-
+      error: (error) => {
+        console.log(error);
+        if (error.status === 0 || error.status === 500) {
+          this.toastr.error(error.message);
+        } else {
+          this.toastr.warning(error.error);
+        }
       }
     });
 
@@ -88,23 +96,23 @@ export class UserDetailComponent implements OnInit {
             this.lock = false;
             this.passW = true;
 
-            this.success = "Successfully reset password of user " + this.user.email + "!";
+            this.success = "Successfully reset password of account " + this.user.email + "!";
+            this.toastr.success("Succesfully reset password of account \"" + this.user.email + "\"!");
           },
-          error: (err) => this.handleError(err)
+          error: (error) => {
+            console.log(error);
+            if (error.status === 0 || error.status === 500) {
+              this.toastr.error(error.message);
+            } else {
+              this.toastr.warning(error.error);
+            }
+          }
         }
     );
   }
 
-  handleError(error) {
-    this.error = error.message && !error.error ? error.message : error.error;
-  }
-
   back(): void {
     this.location.back();
-  }
-
-  vanishError() {
-    this.error = null;
   }
 
 

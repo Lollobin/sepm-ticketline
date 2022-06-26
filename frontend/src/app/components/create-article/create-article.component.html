@@ -1,25 +1,3 @@
-<div class="container" *ngIf="success">
-  <div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">Success!</h4>
-    <strong>Successfully</strong> created article "<strong>{{title}}</strong>"
-    <p></p>
-    <button type="button" class="btn-close" (click)="vanishSuccess()" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-  </div>
-</div>
-
-<div *ngIf="errorImage">
-  <div class="alert alert-danger" role="alert">
-    <h4>Error!</h4>{{ errorImage }}
-
-    <p></p>
-    <button type="button" class="btn-close" (click)="vanishError()" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-  </div>
-</div>
-
-<app-error-alert [error]="error"></app-error-alert>
-
 <div class="w-75 mx-auto">
 
   <h1 class="mb-3">Create Article</h1>
@@ -28,7 +6,7 @@
     <div class="row">
 
       <div class="mb-3">
-        <small for="validationDefault01" class="form-label text-muted"> Title* </small>
+        <label for="validationDefault01" class="form-label text-muted"> Title* </label>
         <input type="text" class="form-control" id="validationDefault01" formControlName="title">
         <div *ngIf="articleForm.get('title').touched || submitted" class="error">
           <small
@@ -40,7 +18,7 @@
       </div>
 
       <div class="mb-3">
-        <small for="validationDefault02" class="form-label text-muted"> Summary*</small>
+        <label for="validationDefault02" class="form-label text-muted"> Summary*</label>
         <textarea type="text" class="form-control" id="validationDefault02"
                   formControlName="summary"></textarea>
         <div *ngIf="articleForm.get('summary').touched || submitted" class="error">
@@ -53,7 +31,7 @@
       </div>
 
       <div class="mb-3">
-        <small for="validationDefault03" class="form-label text-muted"> Text* </small>
+        <label for="validationDefault03" class="form-label text-muted"> Text* </label>
         <textarea type="text" class="form-control" id="validationDefault03"
                   formControlName="text"></textarea>
         <div *ngIf="articleForm.get('text').touched || submitted" class="error">
@@ -67,32 +45,25 @@
 
       <div>
         <div class="mb-3">
-          <input type="file" #myInput multiple accept="image/png, image/jpeg" class="form-control"
+          <input type="file" #myInput accept="image/png, image/jpeg" class="form-control"
                  (change)="onFileChange($event)"/>
-
           <div class="row">
             <div class="col">
-              <small class="form-text text-muted"
-                     for="inputGroupFile04">Accepted Formats: jpg, jpeg, png</small>
+              <small class="form-text text-muted">Accepted Formats: jpg, jpeg, png</small>
             </div>
-            <div class="col" *ngIf="this.imgChangeEvt">
-              <button class="btn btn-secondary float-end mt-3"
-                      (click)="helpUpload(); reset()"
-                      [disabled]="fileToReturn === null">Add image
+            <div class="col">
+              <small class="form-text text-muted float-end">Max image size: 4MB</small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col"></div>
+            <div class="col float-end">
+              <button class="btn btn-success w-auto float-end mt-2"
+                      (click)="helpUpload()"
+                      [disabled]="fileToReturn === null">Crop & Upload Image
               </button>
             </div>
 
-          </div>
-          <div class="container mt-3" *ngIf="uploadSuccess"
-               style="width: 50%; float: right; margin-right: 0; padding-right: 0">
-            <div class="alert alert-success fade show" role="alert" style="margin-right: 0">
-              <h4 class="alert-heading">Success!</h4>
-              Successfully uploaded image!
-              <p></p>
-              <button type="button" class="btn-close" (click)="vanishUploadSuccess()"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
-            </div>
           </div>
           <div class="col-md-4">
           </div>
@@ -102,7 +73,7 @@
                   [imageChangedEvent]="imgChangeEvt"
                   [maintainAspectRatio]="true"
                   [aspectRatio]="7 / 5"
-                  format="png"
+                  format="jpeg"
                   (imageCropped)="cropImg($event)"
                   (imageLoaded)="imgLoad()"
                   (cropperReady)="initCropper()"
@@ -134,7 +105,7 @@
 
   <h4 [hidden]="this.previews.length === 0">Added images</h4>
   <div class="form-group" style="margin: 3% 0">
-    <div class="row">
+    <div class="row" style="margin-top: 2%">
       <div class="col-3" [hidden]="this.previews.length === 0"
            *ngFor='let preview of previews; index as i'>
         <button type="button" class="btn-close" (click)="removeImage(i)" aria-label="Close"

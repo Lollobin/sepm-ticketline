@@ -14,10 +14,13 @@
     <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0" class="mb-3">
       <ngb-panel *ngFor="let sector of sectors; index as index">
         <ng-template ngbPanelTitle class="d-flex">
-          <div class="fw-bold" style="color: {{ sector.color }}">
+          <div class="fw-bold" style="color:{{ sector.color }}">
             <span>{{index}}:&nbsp; </span>
-            <span *ngIf="sector.standingSector">Standing&nbsp;</span>
-            <span>Sector ({{ sector.seatCount }} seats)</span>
+            <span
+                *ngIf="sector.standingSector">
+              Standing&nbsp;sector (capacity: {{ sector.seatCount }}) </span>
+            <span *ngIf="!sector.standingSector">
+              Seating&nbsp;sector (capacity: {{ sector.seatCount }}) </span>
           </div>
         </ng-template>
         <ng-template ngbPanelContent>
@@ -25,13 +28,14 @@
             <div class="d-flex">
               <div class="mb-3 me-3">
                 <label class="form-label text-muted" for="input-color">Color</label>
-                <input type="color" class="form-control form-control-color" [(ngModel)]="sector.color"
+                <input type="color" class="form-control form-control-color"
+                       [(ngModel)]="sector.color"
                        id="input-color"/>
               </div>
               <div class="mb-3 text-muted">
-                <label class="form-label" for="input-seats">Number of seats</label>
-                <input type="number" class="form-control" [(ngModel)]="sector.seatCount"
-                       id="input-seats"/>
+                <label class="form-label" for="input-seats">Capacity*</label>
+                <input type="number" min="1" class="form-control" [(ngModel)]="sector.seatCount"
+                       id="input-seats" oninput="validity.valid||(value='');" value="0"/>
               </div>
             </div>
             <div class="form-check form-switch">
@@ -51,7 +55,8 @@
         <fa-icon [icon]="plus"></fa-icon>
         Add Sector
       </button>
-      <button class="btn btn-success ms-auto" (click)="nextPage()" *ngIf="page < 2">
+      <button class="btn btn-success ms-auto" [disabled]="seatingPlanName.trim().length===0"
+              (click)="nextPage()" *ngIf="page < 2">
         Next Page
       </button>
     </div>
@@ -256,5 +261,3 @@
     <button class="btn btn-success ms-auto" (click)="finish()" *ngIf="page >= 2">Finish</button>
   </div>
 </div>
-
-<app-error-alert [(error)]="error"></app-error-alert>

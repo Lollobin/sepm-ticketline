@@ -9,7 +9,7 @@
       <th scope="col">Actions</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody *ngIf="!this.loadingTickets">
     <tr *ngFor="let ticket of tickets; let i = index">
       <td>
         {{ ticket.ticket.length }}
@@ -74,6 +74,11 @@
     </tr>
   </tbody>
 </table>
+<div class="text-center m-5 text-primary" *ngIf="this.loadingTickets">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
 <ng-template #purchaseModal let-modal>
   <div class="modal-header">
@@ -181,7 +186,7 @@
 
 <h1 class="mb-3">Transaction History</h1>
 
-<div>
+<div *ngIf="!this.loadingOrders">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -264,4 +269,8 @@
   ></ngb-pagination>
 </div>
 
-<app-error-alert [(error)]="error"></app-error-alert>
+<div class="text-center m-5 text-primary" *ngIf="this.loadingOrders">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>

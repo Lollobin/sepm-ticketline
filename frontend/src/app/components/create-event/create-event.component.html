@@ -1,21 +1,9 @@
-<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Error occured: </strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert"
-          aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
-<div *ngIf="role !== 'ADMIN'" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Authentication error: </strong> Only admins are allowed to create events
-</div>
-
 <div *ngIf="role === 'ADMIN'" class="w-75 mx-auto">
   <h1 class="mb-3"> Create a new event </h1>
 
   <form [formGroup]="eventForm">
     <div class="mb-3">
-      <small for="name" class="form-label text-muted">Name</small>*
+      <small for="name" class="form-label text-muted">Name*</small>
       <input type="text" class="form-control" id="name" formControlName="name">
       <div *ngIf="this.name.errors" class="invalid-feedback" style="display: block">
         <div *ngIf="this.name.errors?.required && this.name.touched">Name is required!</div>
@@ -25,7 +13,7 @@
 
     <div class="row">
       <div class="col-md-6 mb-3">
-        <small for="inputCategory" class="form-label text-muted">Category</small>*
+        <small for="inputCategory" class="form-label text-muted">Category*</small>
         <select id="inputCategory" class="form-control form-override" formControlName="category"
                 style="background-position: 92%">
           <option hidden="true">Pick one</option>
@@ -38,7 +26,7 @@
         </div>
       </div>
       <div class="col-md-6 mb-3">
-        <small for="inputDuration" class="form-label text-muted">Duration</small>*
+        <small for="inputDuration" class="form-label text-muted">Duration*</small>
         <input type="range" class="form-range" min="5" max="360" step="5" value="120"
                id="inputDuration"
                oninput="this.nextElementSibling.value = this.value" required

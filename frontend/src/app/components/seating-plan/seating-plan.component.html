@@ -1,13 +1,13 @@
 <div *ngIf="show !== undefined">
   <h1 class="text-center">{{ event.name }}</h1>
-  <div class="d-flex mt-2 mb-4 justify-content-between">
+  <div class="d-flex mt-2 mb-4 justify-content-center">
     <div>
       with
       <span *ngFor="let artist of artists; index as i">
         <span class="fw-bold"
-          >{{ artist.bandName }} {{ artist.firstName }}
+        >{{ artist.bandName }} {{ artist.firstName }}
           <span *ngIf="(artist.firstName || artist.lastName) && artist.knownAs"
-            >"{{ artist.knownAs }}"
+          >"{{ artist.knownAs }}"
           </span>
           <span *ngIf="!(artist.firstName || artist.lastName)">{{ artist.knownAs }} </span>
           {{ artist.lastName }}</span
@@ -16,7 +16,6 @@
         <span *ngIf="artists.length - 2 === i"> and </span>
       </span>
     </div>
-    <div class="flex-end">starting at {{ show.date | date: "EEEE, d LLLL YYYY HH:mm" }}</div>
   </div>
   <div class="d-flex justify-content-center align-content-center">
     <div class="my-auto me-3">
@@ -24,14 +23,15 @@
     </div>
     <div class="flex-column w-33 ms-3">
       <div class="p-3 overflow-auto">
-        <h4 class="mb-3">Description of the show</h4>
-        {{ event.content }}
+        <p class="mb-3 fw-bold"> {{ show.date | date: "EEEE, d LLLL YYYY" }} <br>
+          {{ show.date | date: "HH:mm" }} ({{secondsToHms(event.duration)}})</p>
+        <p class="fst-italic">{{ event.content }}</p>
       </div>
       <div class="container m-3">
         <div class="row border-bottom border-secondary border-3">
           <div class="col text-center py-1"></div>
           <div
-            class="col border-start border-end border-secondary border-3 text-center py-1 text-truncate"
+              class="col border-start border-end border-secondary border-3 text-center py-1 text-truncate"
           >
             Selected
           </div>
@@ -40,21 +40,21 @@
         <div class="row" *ngFor="let sectorInfo of sectorBookingInformation">
           <div class="col py-1 text-truncate">
             <span
-              *ngIf="sectorInfo.isStandingSector"
-              [style.color]="numberToCssColorString(sectorInfo.color)"
+                *ngIf="sectorInfo.isStandingSector"
+                [style.color]="numberToCssColorString(sectorInfo.color)"
             >
               &#9632;
             </span>
             <span
-              *ngIf="!sectorInfo.isStandingSector"
-              [style.color]="numberToCssColorString(sectorInfo.color)"
+                *ngIf="!sectorInfo.isStandingSector"
+                [style.color]="numberToCssColorString(sectorInfo.color)"
             >
               &#9673;
             </span>
             <span> {{ convertToCurrency(sectorInfo.singlePrice) }} </span>
           </div>
           <div
-            class="col border-start border-end border-secondary border-3 text-center py-1 text-truncate"
+              class="col border-start border-end border-secondary border-3 text-center py-1 text-truncate"
           >
             {{ sectorInfo.ticketCount }}
           </div>
@@ -63,55 +63,60 @@
         <div class="row border-top border-secondary border-3 text-truncate">
           <div class="col text-center py-1 text-truncate">Total</div>
           <div
-            class="col border-start border-end border-secondary border-3 py-1 text-truncate"
+              class="col border-start border-end border-secondary border-3 py-1 text-truncate"
           ></div>
           <div class="col text-center py-1 text-truncate">{{ convertToCurrency(totalPrice) }}</div>
         </div>
       </div>
       <div class="d-flex justify-content-end" *ngIf="authService.isLoggedIn()">
         <button
-          class="btn btn-secondary mx-1"
-          data-bs-toggle="modal"
-          data-bs-target="#reserveModal"
+            class="btn btn-secondary mx-1"
+            data-bs-toggle="modal"
+            data-bs-target="#reserveModal"
         >
           Reserve tickets
         </button>
         <button
-          class="btn btn-primary mx-1"
-          data-bs-toggle="modal"
-          data-bs-target="#waitingModal"
-          (click)="confirmPurchase()"
+            class="btn btn-primary mx-1"
+            data-bs-toggle="modal"
+            data-bs-target="#waitingModal"
+            (click)="confirmPurchase()"
         >
           Buy now
         </button>
       </div>
       <div
-        class="alert alert-primary d-flex align-items-center ms-3"
-        role="alert"
-        *ngIf="!authService.isLoggedIn()"
+          class="alert alert-primary d-flex align-items-center ms-3"
+          role="alert"
+          *ngIf="!authService.isLoggedIn()"
       >
         <div>
-          <fa-icon [icon]="info"></fa-icon> To purchase/reserve tickets, you have to be logged in!
+          <fa-icon [icon]="info"></fa-icon>
+          <p>To purchase/reserve tickets, you have to be logged in!</p>
+          <button class="btn btn-outline-primary"
+                  (click)="this.router.navigate(['/login'], {queryParams: {redirectUrl: '/buyTickets/' + this.showId}});"
+                  routerLinkActive="active">Login & Buy
+          </button>
         </div>
       </div>
     </div>
     <!-- Modal -->
     <div
-      class="modal fade"
-      id="reserveModal"
-      tabindex="-1"
-      aria-labelledby="reserveModalLabel"
-      aria-hidden="true"
+        class="modal fade"
+        id="reserveModal"
+        tabindex="-1"
+        aria-labelledby="reserveModalLabel"
+        aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="reserveModalLabel">Reservation confirmation</h5>
             <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
@@ -121,12 +126,12 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              data-bs-toggle="modal"
-              data-bs-target="#waitingModal"
-              (click)="confirmReservation()"
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                data-bs-toggle="modal"
+                data-bs-target="#waitingModal"
+                (click)="confirmReservation()"
             >
               Confirm
             </button>
@@ -136,13 +141,13 @@
     </div>
     <!-- Modal for waiting on finished reservation/purchase -->
     <div
-      class="modal fade"
-      id="waitingModal"
-      tabindex="-1"
-      data-bs-keyboard="false" 
-      data-bs-backdrop="static"
-      aria-labelledby="waitingModalLabel"
-      aria-hidden="true"
+        class="modal fade"
+        id="waitingModal"
+        tabindex="-1"
+        data-bs-keyboard="false"
+        data-bs-backdrop="static"
+        aria-labelledby="waitingModalLabel"
+        aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -161,20 +166,20 @@
 
           <div class="modal-footer">
             <button
-              *ngIf="purchaseFinished"
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              (click)="printTickets()"
+                *ngIf="purchaseFinished"
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                (click)="printTickets()"
             >
               Print tickets
             </button>
             <button
-              *ngIf="purchaseFinished"
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-              (click)="goToOrders()"
+                *ngIf="purchaseFinished"
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                (click)="goToOrders()"
             >
               Go to order overview
             </button>
@@ -184,9 +189,9 @@
     </div>
     <div #infoOverlay class="position-absolute" [hidden]="hoverInfo === undefined">
       <div
-        *ngIf="hoverInfo !== undefined"
-        class="border bg-white p-2 border-2"
-        [style.color]="numberToCssColorString(hoverInfo.color)"
+          *ngIf="hoverInfo !== undefined"
+          class="border bg-white p-2 border-2"
+          [style.color]="numberToCssColorString(hoverInfo.color)"
       >
         <div>Row {{ hoverInfo.rowNumber }} Seat {{ hoverInfo.seatNumber }}</div>
         <div></div>
@@ -195,5 +200,3 @@
     </div>
   </div>
 </div>
-
-<app-error-alert [(error)]="error"></app-error-alert>
