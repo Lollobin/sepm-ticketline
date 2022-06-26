@@ -63,8 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
             .authorizeRequests()
-            //h2-console enable..
-            .antMatchers("/h2-console/**").permitAll()
 
             //please add your route here if it should be included in the "Public View" for nonauthenticated users.
             .antMatchers(HttpMethod.GET, "/events/**").permitAll()
@@ -93,13 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             securityProperties, jwtTokenizer, failureCustomHandler, successCustomHandler);
 
         http.addFilter(customFilter)
-            .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties))
-
-        ;
-
-        // enable h2-console (also check for antmatchers above for h2-console when removing)
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+            .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
     }
 
     @Override
